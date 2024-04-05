@@ -59,12 +59,12 @@ func main() {
 	if replyHelloErr != nil {
 		log.Fatalf("could not greet: %v", replyHelloErr)
 	}
-	log.Printf("Greeting: %s", replyHello.GetMessage())
+	log.Printf("Reply: %s", replyHello.GetMessage())
 
 	replyHi, replyHiErr := c.SayHi(ctx, &pb.HiRequest{Name: "Hi"})
 	if replyHiErr != nil {
 		log.Fatalf("could not greet: %v", replyHiErr)
 	}
 
-	log.Printf("Greeting: %s", replyHi.GetMessage())
+	log.Printf("Reply: %s", replyHi.GetMessage())
 }
