@@ -1,0 +1,7 @@
+language: go
+
+go:
+  - "1.11.x"
+env:
+  - BOOKMARK_ENV=testing
+script: env GO111MODULE=on make ci

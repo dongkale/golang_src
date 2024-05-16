@@ -1,0 +1,5 @@
+[build]
+cmd = "go build -o /tmp/go-build-test ./main.go" # 빌드 커맨드
+bin = "/tmp/go-build-test" # 바이너리 실행 커맨드
+include_ext = ["go"] # watch 대상이 될 파일 확장자
+exclude_dir = ["web"] # watch 대상에서 제외할 파일 디렉토리

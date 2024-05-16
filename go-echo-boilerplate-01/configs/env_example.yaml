@@ -1,0 +1,12 @@
+app:
+  name: "Your Service Name"
+  port: 8100
+  secret: "YOUR_SECRET_KEY"
+  asymmetricKey: "CYvIG8hq1bttUPF1319PjWlMQgnEljN4" #PASETO_ASYMMETRIC_KEY
+
+database:
+  host: "127.0.0.1" # YOUR MYSQL HOST
+  port: 3306 #YOUR MYSQL PORT
+  db_name: "your_db_name" #YOUR MYSQL DB NAME
+  user: "your_db_user" #YOUR MYSQL USERNAME
+  pwd: "your_db_pwd" #YOUR MYSQL PWD

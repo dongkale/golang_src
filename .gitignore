@@ -1,0 +1,8 @@
+tmp
+.idea
+__backup
+node_modules/
+*/vender/
+/vendor
+
+*.exe
