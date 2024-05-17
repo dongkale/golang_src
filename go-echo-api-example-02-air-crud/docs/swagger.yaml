@@ -1,0 +1,43 @@
+basePath: /api/v1
+definitions:
+  Models.Course:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+    required:
+    - description
+    - name
+    - price
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  title: Wookiist Sample Swagger API
+  version: "1.0"
+paths:
+  /course:
+    get:
+      consumes:
+      - application/json
+      description: Get courses info
+      parameters:
+      - description: name of course
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Models.Course'
+      summary: Get courses
+swagger: "2.0"

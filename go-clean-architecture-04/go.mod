@@ -1,4 +1,4 @@
-module github.com/yagikota/clean_architecture_wtih_go
+module go-clean_architecture-api
 
 go 1.19
 
@@ -14,6 +14,7 @@ require (
 require (
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

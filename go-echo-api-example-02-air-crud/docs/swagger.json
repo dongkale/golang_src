@@ -1,0 +1,65 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Wookiist Sample Swagger API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/course": {
+            "get": {
+                "description": "Get courses info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get courses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of course",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Models.Course"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Models.Course": {
+            "type": "object",
+            "required": [
+                "description",
+                "name",
+                "price"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

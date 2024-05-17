@@ -1,7 +1,10 @@
 package config
 
 import (
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type appConfig struct {
@@ -21,6 +24,11 @@ type MysqlInfo struct {
 }
 
 func LoadConfig() *appConfig {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	
 	addr := ":" + os.Getenv("PORT")
 
 	httpInfo := &HTTPInfo{

@@ -8,7 +8,7 @@ services:
     ports:
       - ${PORT}:${PORT}
     environment:
-      TZ: Asia/Tokyo
+      TZ: Asia/Seoul
       PORT: ${PORT}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -25,7 +25,7 @@ services:
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     environment:
-      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}

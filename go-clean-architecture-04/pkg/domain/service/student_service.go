@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/model"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/repository"
+	"go-clean_architecture-api/pkg/domain/model"
+	"go-clean_architecture-api/pkg/domain/repository"
 )
 
 // interface

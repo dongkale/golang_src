@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/model"
+	"go-clean_architecture-api/pkg/domain/model"
 )
 
 type StudentID int
@@ -36,7 +36,7 @@ func StudentFromDomainModel(m *model.Student) *Student {
 // calculate age from birthday
 func calcAge(birthday, currTime time.Time) (int, error) {
 	// set time zone
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	jst := time.FixedZone("Asia/Seoul", 9*60*60)
 	nowJST := currTime.In(jst)
 
 	thisYear, thisMonth, thisDay := nowJST.Date()

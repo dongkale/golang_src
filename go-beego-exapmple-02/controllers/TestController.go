@@ -23,5 +23,6 @@ type TestController struct {
 func (t *TestController) Hello() {
 	Response := models.TestFunction()
 	t.Data["json"] = Response
+	
 	t.ServeJSON()  
 }

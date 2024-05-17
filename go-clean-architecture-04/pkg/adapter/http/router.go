@@ -3,12 +3,13 @@ package http
 import (
 	"fmt"
 
+	"go-clean_architecture-api/pkg/domain/service"
+	"go-clean_architecture-api/pkg/infra"
+	"go-clean_architecture-api/pkg/infra/mysql"
+	"go-clean_architecture-api/pkg/usecase"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/service"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/infra"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/infra/mysql"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/usecase"
 )
 
 const (

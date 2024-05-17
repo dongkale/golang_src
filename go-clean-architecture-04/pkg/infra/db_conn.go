@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/config"
+	"go-clean_architecture-api/pkg/config"
 )
 
 const driverName = "mysql"

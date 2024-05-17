@@ -1,7 +1,7 @@
 # ===== build go binary =====
 FROM golang:1.18.3-alpine as go-builder
 
-WORKDIR /go/src/github.com/yagikota/clean_architecture_wtih_go/
+WORKDIR /go/src/go-clean_architecture-api/
 
 COPY cmd/sample_app/main.go .
 COPY go.mod .
@@ -18,6 +18,6 @@ FROM alpine
 
 RUN apk --no-cache add tzdata
 
-COPY --from=go-builder /go/src/github.com/yagikota/clean_architecture_wtih_go/server server
+COPY --from=go-builder /go/src/go-clean_architecture-api/server server
 
 ENTRYPOINT ["/server"]

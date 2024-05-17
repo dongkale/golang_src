@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"go-clean_architecture-api/pkg/usecase"
+
 	"github.com/labstack/echo/v4"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/usecase"
 )
 
 type studentHandler struct {

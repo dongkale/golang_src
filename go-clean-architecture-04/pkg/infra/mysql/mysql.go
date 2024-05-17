@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 
+	"go-clean_architecture-api/pkg/domain/model"
+	"go-clean_architecture-api/pkg/domain/repository"
+
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/model"
-	"github.com/yagikota/clean_architecture_wtih_go/pkg/domain/repository"
 )
 
 type studentRepository struct {

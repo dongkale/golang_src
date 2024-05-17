@@ -10,6 +10,13 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach to Process",
+      "type": "go",
+      "request": "attach",
+      "mode": "local",
+      "processId": 0
     }
   ]
 }

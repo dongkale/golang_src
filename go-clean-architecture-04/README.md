@@ -64,3 +64,8 @@ Then, you have fully prepared for running API.
 ## Document 
 
 https://github.com/yagikota/clean-architecture-with-go.git
+
+## Docuemtn
+
+https://zenn.dev/88888888_kota/articles/1a5caac8d743b8
+git clone https://github.com/yagikota/clean-architecture-with-go.git go-clean-architecture-09
