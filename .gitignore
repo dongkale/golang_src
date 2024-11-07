@@ -6,4 +6,12 @@ node_modules/
 /vendor
 
 *.exe
-*.exe~
+*.mov
+*.jpg
+*.png
+*.mp4
+*.mp3
+*.gif
+*.jpeg
+
+__*
