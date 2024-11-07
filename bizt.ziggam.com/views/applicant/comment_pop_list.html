@@ -1,0 +1,226 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+
+	<body style="overflow-x:hidden;background:#fff">
+	<input type="hidden" id="pp_chrg_cmt_sn">
+		<div class="messageWrap full" id="commet_pop_div">
+			<div class="topArea">
+				<p>팀 멤버 코멘트 <span id="comment_cnt">{{.CmtTotCnt}}</span></p>
+				<a href="javascript:window.close();" class="btn st02"><em></em>작게보기</a>
+			</div>
+			<div class="messageArea">
+			<ul>
+			{{if .RecruitApplyCommentList}}		
+				{{range .RecruitApplyCommentList}}		
+					<div class='box {{if eq .CmtRegId .CmtSMemId}}mine{{end}} {{if eq "01" .CmtPpChrgGbnCd}}admin{{end}} {{if eq "Y" .CmtNewYn}}new{{end}}'>
+						<p class="name">[{{.CmtPpChrgBpNm}} {{.CmtPpChrgNm}}]</p>
+						<p class="date">{{.CmtRegDt}}</p>
+						{{if or (eq .CmtRegId .CmtSMemId) (eq "01" .CmtSAuthCd)}}
+						<a href="javascript:void(0);" class="btn type_red btnDelete" id="btn_comment_del" data-pp_chrg_cmt_sn="{{.CmtPpChrgCmtSn}}">삭제</a>
+						{{end}}
+						<p class="text">{{str2html .CmtPpChrgCmt}}</p>
+					</div>
+				{{end}}
+			{{else}}
+				<p class="noData">
+					지원자에 대한 코멘트가 없습니다.<br>
+					코멘트를 통해 팀 멤버와 논의해보세요!
+				</p>			
+			{{end}}
+			</ul>
+			</div>
+			<div class="inputArea">
+				<textarea name="pp_chrg_cmt" id="pp_chrg_cmt" maxlength="1000" placeholder="코멘트는 팀 멤버에게만 보여요!" cols="30" rows="10"></textarea>
+				<a href="javascript:void(0);" id="btn_comment_reg" class="btn type_blue st02">등록</a>
+			</div>
+		</div>
+		</body>
+		<!-- 코멘트 삭제 -->
+		<div class="popupWrap" id="comment_del_pop">
+			<div class="popLayer">
+				<div class="popCont">
+					<p class="text alert">코멘트를 정말 삭제하시겠어요?</p>
+				</div>
+				<div class="btnSet">
+					<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+					<a href="javascript:void(0);" class="btn type_red" id="btn_pop_comment_del">삭제하기</a>
+				</div>
+			</div>
+			<span class="cover"></span>
+		</div>
+		<!-- //코멘트 삭제 -->
+
+		<script type="text/javascript">
+
+		// 코멘트 등록
+		$(document).off("click", "#btn_comment_reg").on("click", "#btn_comment_reg", function(e) {
+			if ($("#pp_chrg_cmt").val().length > 0 ) {
+				ajaxCommentReg();
+			}
+		});  
+	
+		// 코멘트 등록 처리
+		var ajaxCommentReg = function() {
+			var recrut_sn = "{{.RecrutSn}}";
+			var pp_mem_no = "{{.PpMemNo}}";
+			var pp_chrg_cmt = filteringXSS($("#pp_chrg_cmt").val()).replace(/'/gi,"`");
+			var pp_chrg_sn = "{{.SMemSn}}";
+			
+			/*
+			console.log("recrut_sn : "+recrut_sn);
+			console.log("pp_mem_no : "+pp_mem_no);
+			console.log("pp_chrg_cmt : "+pp_chrg_cmt);
+			console.log("pp_chrg_sn : "+pp_chrg_sn);
+			return;
+			*/
+	
+			$.ajax({
+				cache : false,
+				url : '/team/comment/insert',
+				data:{
+					recrut_sn : recrut_sn,
+					pp_mem_no : pp_mem_no,
+					pp_chrg_cmt : pp_chrg_cmt,
+					pp_chrg_sn : pp_chrg_sn,
+				},
+				type : 'POST',
+				dataType : "json",
+				error : function(e) {
+					console.log("error" + e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+	
+					if(rtnCd == "1"){
+						$(opener.location).attr("href","javascript:ajaxCommentList();");
+						$(opener.location).attr("href","javascript:$('#commet_div').animate({ scrollTop: $('#commet_div').prop('scrollHeight')}, 300);");
+						$("#pp_chrg_cmt").val("");
+						ajaxCommentList();
+						$("#commet_pop_div").animate({ scrollTop: $("#commet_pop_div").prop("scrollHeight")}, 300);
+					} else {
+						console.log("message : " + rtnMsg);
+					}
+				},
+				error : function(e) {
+					console.log("error + "+e);
+				}
+			});	  
+		}	
+	
+		// 코멘트 리스트 페이지 AJAX
+		var ajaxCommentList = function(v) {
+			var recrut_sn = "{{.RecrutSn}}";
+			var pp_mem_no = "{{.PpMemNo}}";
+	
+			$.ajax({
+				type: "POST",
+				url: "/team/comment/list",
+				data:{
+					recrut_sn : recrut_sn,
+					pp_mem_no : pp_mem_no,
+				},
+				dataType: "json",
+				error : function() {
+				},
+				success : function(rep) {
+					if(rep.RtnRecruitApplyCommentListData.length > 0){
+						$(".messageArea").find("ul").children().remove();
+						$.each(rep.RtnRecruitApplyCommentListData,function(e) {
+							var html = "";
+							html += "<div class=\"box";
+							if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}") {
+								html += " mine";
+							}
+							if (rep.RtnRecruitApplyCommentListData[e].CmtPpChrgGbnCd == "01") {
+								html += " admin";
+							}
+							if (rep.RtnRecruitApplyCommentListData[e].CmtNewYn == "Y") {
+								html += " new";
+							}
+							html += "\">";
+							html += "	<p class=\"name\">["+rep.RtnRecruitApplyCommentListData[e].CmtPpChrgBpNm+" "+rep.RtnRecruitApplyCommentListData[e].CmtPpChrgNm+"]</p>";
+							html += "	<p class=\"date\">"+rep.RtnRecruitApplyCommentListData[e].CmtRegDt+"</p>";
+							if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}" || "{{.SAuthCd}}" == "01") {
+								html += "	<a href=\"javascript:void(0);\" class=\"btn type_red btnDelete\" id=\"btn_comment_del\" data-pp_chrg_cmt_sn=\""+rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmtSn+"\">삭제</a>";
+							}
+							html += "	<p class=\"text\">"+rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmt+"</p>";
+							html += "</div>";
+							
+							$(".messageArea").find("ul").append(html);
+						})
+						$("#comment_cnt").text(rep.RtnRecruitApplyCommentListData[0].CmtTotCnt);
+					}else{
+						$(".messageArea").find("ul").children().remove();
+						var html = "";
+						html += "<p class=\"noData\">지원자에 대한 코멘트가 없습니다.<br>코멘트를 통해 팀 멤버와 논의해보세요!</p>";
+						$(".messageArea").find("ul").append(html);
+						$("#comment_cnt").text(0);
+					}
+				}
+			});				
+		}    
+		
+		// 코멘트 삭제(팝업)
+		$(document).off("click", "#btn_comment_del").on("click", "#btn_comment_del", function(e) {
+			$('body, html').animate({scrollTop:0}, 1);
+			$("#pp_chrg_cmt_sn").val($(this).data("pp_chrg_cmt_sn"));
+			openPopup("comment_del_pop");
+		}); 
+	
+		// 코멘트 팝업내 삭제
+		$(document).off("click", "#btn_pop_comment_del").on("click", "#btn_pop_comment_del", function(e) {
+			closePopup("comment_del_pop");
+			ajaxCommentDel();
+		}); 
+	
+		// 코멘트 삭제 처리
+		var ajaxCommentDel = function() {
+			var recrut_sn = "{{.RecrutSn}}";
+			var pp_mem_no = "{{.PpMemNo}}";
+			var pp_chrg_sn = "{{.SMemSn}}";
+			var pp_chrg_cmt_sn = $("#pp_chrg_cmt_sn").val();
+			/*
+			console.log("recrut_sn : "+recrut_sn);
+			console.log("pp_mem_no : "+pp_mem_no);
+			console.log("pp_chrg_sn : "+pp_chrg_sn);
+			console.log("pp_chrg_cmt_sn : "+pp_chrg_cmt_sn);
+			return;
+			*/
+	
+			$.ajax({
+				cache : false,
+				url : '/team/comment/delete',
+				data:{
+					recrut_sn : recrut_sn,
+					pp_mem_no : pp_mem_no,
+					pp_chrg_sn : pp_chrg_sn,
+					pp_chrg_cmt_sn : pp_chrg_cmt_sn,
+				},
+				type : 'POST',
+				dataType : "json",
+				error : function(e) {
+					console.log("error" + e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+	
+					if(rtnCd == "1"){
+						ajaxCommentList();
+						$(opener.location).attr("href","javascript:ajaxCommentList();");
+						$(opener.location).attr("href","javascript:$('#commet_div').animate({ scrollTop: $('#commet_div').prop('scrollHeight')}, 300);");
+					} else {
+						console.log("message : " + rtnMsg);
+					}
+				},
+				error : function(e) {
+					console.log("error + "+e);
+				}
+			});	  
+		}
+
+		</script>
+
+{{end}} 

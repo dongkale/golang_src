@@ -1,0 +1,955 @@
+{{template "include/popup_base.html" .}}
+
+<style type="text/css">
+.popLayer.size03 {position:inherit;width:1000px;overflow: auto;}
+.content {padding:55px 34px 65px}
+
+.popCont .profile span.img img{width:90px;height:90px;display:inline-block;border-radius:50%;overflow:hidden;}
+.popCont .profile span.name {padding-top:20px;line-height:15px;font-size:18px;font-weight:bold;display: block;}
+.popCont .profile span.state {padding-top:7px;color:#878d91;display: block;}
+.popCont .profile span.mail {padding-top:20px;line-height:20px}
+.popCont .profile span.mail em {display:inline-block;width:16px;height:12px;background:url(../images/ic-line-mail.png) no-repeat left top;margin-right:4px;vertical-align:middle}
+.popCont .profile span.phone {padding-top:6px;line-height:20px}
+.popCont .profile span.phone em {display:inline-block;width:16px;height:16px;background:url(../images/ic-line-phonenumber.png) no-repeat left top;margin-right:4px;vertical-align:middle}
+
+.popCont .applyInfo span.state {padding-top:10px;color:#878d91;display: block;text-align: left;}
+
+.popCont .clear {float:right;margin-top: 5px;}
+.popCont .clear a {color:#F24147;font-size: 15px;}
+
+.popCont table {width:100%;border: 1px solid #ced3d6;border-radius:3px;border-spacing: 0px;border-collapse: inherit}
+/*.popCont table {width:100%;border: 1px solid #ced3d6;border-radius:4px;border-spacing: 0px;}*/
+.popCont table th {text-align:left;line-height:54px;vertical-align:top;font-weight:bold;padding-top:20px}
+.popCont table th.st02 {padding-top:36px;line-height:22px}
+/*.popCont table td {position:relative;padding:13px;border-bottom: 1px solid #eaeeef;border: 1px solid #ced3d6;}*/
+.popCont table td {position:relative;padding:13px;border-bottom: 1px solid #eaeeef;}
+.popCont table td.radioForm .custom-radio:first-child label {margin-left:0}
+.popCont table td.radioForm label {margin-left:30px}
+.popCont table td.radioForm input.it {width:55px;padding:0 10px;margin-left:5px}
+.popCont table td textarea.textarea {padding:13px 100px 13px 24px;line-height:22px;box-sizing:border-box;height:260px;border-radius:4px; border:1px solid #ced3d6;resize:none;width:100%}
+.popCont table td textarea.textarea.st02 {height:200px}
+/*.popCont table tr:last-child td:first-child {border-bottom-left-radius: 10px;}*/
+/*.popCont table tr:last-child td:last-child {border-bottom-right-radius: 10px;}*/
+.popCont p.title{line-height:30px;font-weight:bold;color:#878d91;text-align: left;border-bottom: none;margin-top:20px;margin-bottom:5px;font-size:17px;}
+
+.popCont table tr.total_sum td{border-bottom: none;}
+
+.popCont table tr.title{background:#e5e8ee}
+.popCont table tr td.category{vertical-align: middle;background:#f8fafb;}
+.popCont table tr td.sum{vertical-align: middle;background:#f8fafb;}
+
+.popCont table tbody tr:first-child td:first-child {border-radius: 3px 0 0 0;}
+.popCont table tbody tr:first-child td:last-child {border-radius: 0 3px 0 0;}
+
+.popCont .applyInfo {margin-top:25px}
+.popCont .applyInfo dl:after {content:'';clear:both;display:block}
+.popCont .applyInfo dl dt {float:left;width:70px;line-height:34px;position:relative;text-align: left;padding-left: 15px;}
+.popCont .applyInfo dl dt:after {content:'';display:inline-block;width:3px;height:3px;border-radius:50%;overflow:hidden;background:#171717;position:absolute;left:5px;top:16px}
+.popCont .applyInfo dl dd {float:left;line-height:34px; max-width:830px}
+.popCont .applyInfo dl dd p {line-height:34px;font-size:13px;word-break:break-all}
+
+.popCont .lastUpdate {margin-top:-20px}
+.popCont .lastUpdate dl:after {content:'';clear:both;display:block}
+.popCont .lastUpdate dl dt {float:left;width:110px;line-height:34px;position:relative;text-align: left;padding-left: 15px;}
+.popCont .lastUpdate dl dt:after {content:'';display:inline-block;width:3px;height:3px;background:#171717;position:absolute;left:5px;top:16px}
+.popCont .lastUpdate dl dd {float:left;line-height:34px; max-width:830px}
+
+.popCont .tArea textarea { height: 900px;}
+
+</style>
+
+{{define "body"}}
+
+<input type="hidden" id="save_opt" value="0">
+<input type="hidden" id="close_flag" value="1">
+
+<div class="content">       
+    <!--<form id="regForm" name="regForm" method="post">-->
+    <div class="popLayer size03" >
+        <div class="popCont" id="id_to_pdf" > 
+            <div class="profile">
+                <span class="img"><img src="{{.PtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="90" height="90" alt=""></span>  
+                <span class="name">{{.Nm}}</span>     
+                <span class="state">({{.Sex}}・{{.Age}}세)</span>
+            </div>    
+            <br/>
+            <hr/>        
+            <div class="applyInfo">
+                <P class="title">지원 정보</P>
+                <dl>
+                    <dt>지원 공고:</dt>
+                    <dd>{{.RecrutTitle}}</dd>                    
+                </dl>
+                <dl>
+                    <dt>지원 분야:</dt>
+                    <dd>{{.UpJobGrp}} &gt; {{.JobGrp}}</dd>
+                </dl>
+                <dl>
+                    <dt>지원:</dt>
+                    <dd>{{.ApplyDt}}</dd>
+                </dl>
+                <!--
+                <span class="state">지원공고: <em>{{.RecrutTitle}}</em></span> 
+                <span class="state">지원분야: <em>{{.UpJobGrp}} &gt; {{.JobGrp}}</em></span> 
+                <span class="state">지원일: <em>{{.ApplyDt}}</em></span> 
+                -->
+            </div>
+            <P class="title">종합 점수</P>
+            <table id="eval_table">
+                <colgroup>
+                    <col width="150px">
+                    <col width="235px">
+                    <col width="85px">
+                    <col width="85px">
+                    <col width="85px">
+                    <col width="85px">
+                    <col width="85px">
+                    <col width="100px">                                               
+                </colgroup>                       
+                <!--http://localhost:7070/applicant/score/popup?recrut_sn=2021012421&pp_mem_no=P2019012500137-->
+                <!--https://coding-factory.tistory.com/184-->                                    
+            </table>             
+            <div class="clear">                
+                <a href="javascript:void(0);" id="btn_clear">[초기화]</a>
+            </div>
+            <div class="field st02">
+                <P class="title">종합평가 및 피드백</p>    
+                <dl>
+                    <!--<dt>종합평가 및 피드백</dt>-->
+                    <dd>
+                        <div class="tArea">
+                            <textarea name="result_comment" id="result_comment" cols="30" rows="10" maxlength="2000" class="it"
+                                      placeholder="종합 평가를 입력하세요.">{{str2html .ResultComment}}</textarea>
+                            <!-- 글자수가 입력되지 않았을때 class 없음 -->
+                            <span class="text"><em id="byteResultComment">2000</em>/2000자</span>
+                        </div>
+                        <p class="validationAlert result_comment_message"></p>
+                    </dd>
+                </dl>
+            </div>            
+            <div class="lastUpdate">
+                <dl>
+                    <dt>마지막 업데이트:</dt>
+                    {{if ne "" .PpChrgNm}}
+                        <dd><strong>{{.PpChrgNm}}</strong> {{.PpChrgBpNm}} [{{.UptDtFmt}}]</dd>                    
+                    {{end}}
+                </dl>
+            </div>
+            <div class="btnSet">            
+                <a href="#" class="btn normal" onclick="window.close();">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_save">저장</a>
+                <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_save_close">저장 후 닫기</a>
+                <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_to_pdf">PDF</a>
+            </div>
+        </div>        
+    </div>
+    <!--</form>--> 
+</div>    
+
+<div class="popupWrap common_alert" id="pop_common_alert">
+    <div class="popLayer">
+        <div class="popCont">
+            <p class="text alert" id="alert_text"></p>
+        </div>
+        <div class="btnSet">            
+            <a href="javascript:void(0);" class="btn" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+
+<div class="popupWrap" id="pop_save_yn">
+	<div class="popLayer">
+		<div class="popCont">
+			<p class="text">입력된 정보를 정말로 저장 하시겠습니까?</p>			
+		</div>
+		<div class="btnSet">
+			<a href="javascript:void(0);" class="btn" onclick="closePopup()">아니오</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_save_confirm">예</a>
+		</div>
+	</div>
+	<span class="cover"></span>
+</div>  		
+
+<div class="popupWrap" id="pop_clear_yn">
+	<div class="popLayer">
+		<div class="popCont">
+			<p class="text">입력된 정보를 정말로 초기화 하시겠습니까?</p>			
+		</div>
+		<div class="btnSet">
+			<a href="javascript:void(0);" class="btn" onclick="closePopup()">아니오</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_clear_confirm">예</a>
+		</div>
+	</div>
+	<span class="cover"></span>
+</div>  		
+
+<script type="text/javascript">
+    
+    // grade 0 은 초기값, 내용 추가시 colgroup 조정
+    var EvalItemGradeTbl = [
+                                {"Grade":1, "Value":10, "Title":"탁월"},
+                                {"Grade":2, "Value":8, "Title":"우수"},
+                                {"Grade":3, "Value":6, "Title":"보통"},
+                                {"Grade":4, "Value":4, "Title":"미흡"},
+                                {"Grade":5, "Value":2, "Title":"기준미달"},
+                           ];
+                           
+    // var EvalItemCategoryTbl = [ 
+    //                             {"Category":1, "Title":"자세 및 태도"},
+    //                             {"Category":2, "Title":"조직 적합성"},
+    //                             {"Category":3, "Title":"직무 역량"},                            
+    //                           ];
+    // var EvalItemTbl = [
+    //                     {"Num":1, "Category":1, "Title":"복장 및 면접 자세"},
+    //                     {"Num":2, "Category":1, "Title":"자신감 있는 태도" },
+    //                     {"Num":3, "Category":2, "Title":"적극성 및 진취성" },
+    //                     {"Num":4, "Category":2, "Title":"조직 적응력"},
+    //                     {"Num":5, "Category":2, "Title":"의사 소통 역량"},
+    //                     {"Num":6, "Category":2, "Title":"리더십 및 팀워크" },
+    //                     {"Num":7, "Category":3, "Title":"기업 및 직무에 대한 이해도"},
+    //                     {"Num":8, "Category":3, "Title":"직무 경험"},
+    //                     {"Num":9, "Category":3, "Title":"발전 가능성"},                        
+    //                   ];
+
+    // var EvalItemCategoryTbl = [ 
+    //                             {"Category":"S0001", "Title":"자세 및 태도"},
+    //                             {"Category":"S0002", "Title":"조직 적합성"},
+    //                             {"Category":"S0003", "Title":"직무 역량"},                            
+    //                           ];
+
+    //var EvalItemGradeTbl = [];
+
+    var EvalItemTbl = [];        
+    
+    var EvalItemCategoryTbl = [];
+    
+    //var UpdateCallback = null;  // function() {};
+
+    var IsSave = false;
+    
+    $(document).ready(function () {            
+        $('input.custom').customInput();       
+        
+        $("#result_comment").keyup();                                
+        
+        // EvalItemGradeTbl = JSON.parse("{{.EvalItemGradeTbl__}}");	
+        // console.log(EvalItemGradeTbl);   
+        
+        EvalItemTbl = JSON.parse("{{.EvalItemTable}}");	
+        console.log(EvalItemTbl);   
+
+        EvalItemCategoryTbl = JSON.parse("{{.EvalItemCategoryTable}}");	
+        console.log(EvalItemCategoryTbl);   
+
+        create_eval_item();
+        
+        create_eval_item_event();        
+                
+        var evalItemList = JSON.parse("{{.EvalItemList}}");	
+
+        console.log(`evalItemList: ${JSON.stringify(evalItemList)}`);
+
+        for (idx in evalItemList){        
+             set_eval_item(idx, evalItemList[idx]);     
+        };    
+
+        // set_eval_item(1, 1);
+        // set_eval_item(2, 2);
+        // set_eval_item(3, 3);
+        // set_eval_item(4, 4);
+        // set_eval_item(5, 5);
+        // set_eval_item(6, 4);
+        // set_eval_item(7, 3);
+        // set_eval_item(8, 2);
+        // set_eval_item(9, 1);
+        
+        // clear_eval_item_all();
+
+        sum_eval_item();
+
+        // 팝업 창 크기를 HTML 크기에 맞추어 자동으로 크기를 조정하는 함수.
+        // var strWidth;
+        // var strHeight;
+
+        // //innerWidth / innerHeight / outerWidth / outerHeight 지원 브라우저 
+        // if ( window.innerWidth && window.innerHeight && window.outerWidth && window.outerHeight ) {
+        //     strWidth = $('.userInfoPop').outerWidth() + (window.outerWidth - window.innerWidth);
+        //     strHeight = $('.userInfoPop').outerHeight() + (window.outerHeight - window.innerHeight);
+        // }
+        // else {
+        //     var strDocumentWidth = $(document).outerWidth();
+        //     var strDocumentHeight = $(document).outerHeight();
+
+        //     window.resizeTo ( strDocumentWidth, strDocumentHeight );
+
+        //     var strMenuWidth = strDocumentWidth - $(window).width();
+        //     var strMenuHeight = strDocumentHeight - $(window).height();
+
+        //     strWidth = $('.userInfoPop').outerWidth() + strMenuWidth;
+        //     strHeight = $('.userInfoPop').outerHeight() + strMenuHeight;
+        // }
+
+        // //resize 
+        // window.resizeTo( strWidth, strHeight );
+        //window.moveTo(0,0)
+
+        // ajaxToServerFileLog("Info",`[ready][beforeSet] save_opt ${$("#save_opt").val()}`)
+        // ajaxToServerFileLog("Info",`[ready][beforeSet] close_flag ${$("#close_flag").val()}`)
+
+        $("#save_opt").val(0);
+        $("#close_flag").val(1)
+
+        // ajaxToServerFileLog("Info",`[ready][afterSet] save_opt ${$("#save_opt").val()}`)
+        // ajaxToServerFileLog("Info",`[ready][afterSet] close_flag ${$("#close_flag").val()}`)
+    });    
+    
+    // 코멘트 글자 체크
+    $(document).on("keyup", "#result_comment", function () {
+        $("#close_flag").val(0);    // 다른 페이지 갈때 저장 관련 y/n 물어보지 않게
+
+        textLenCheck(this, 2000, "#byteResultComment");
+    });
+
+    function get_eval_item_id(num) {
+        return `eval_item${num}`;
+    }
+
+    function create_eval_item() {   
+
+        // 등급
+        //<tr id="eval_item_grade" align="center" class="title">
+        // $("#eval_table").append(`<tr id="eval_item_grade" align="center" class="title">`);
+        // $("#eval_table").append(`</tr>`);        
+
+        // $(`#eval_item_grade`).append(`<td></td>`);      // 타이틀은 컬럼 2개
+        // $(`#eval_item_grade`).append(`<td></td>`);  
+        
+        // for (idx in EvalItemGradeTbl){              
+        //     $(`#eval_item_grade`).append(`<td><p>${EvalItemGradeTbl[idx].Title}</p><p>(${EvalItemGradeTbl[idx].Value}점)</p></td>`);                                    
+        // };
+        // $(`#eval_item_grade`).append(`<td style="vertical-align: middle;"><p>비고</p></td>`);               
+
+        var html = "";
+
+        html += `<tr id="eval_item_grade" align="center" class="title">`;
+        html += `<td></td>`;
+        html += `<td></td>`;
+
+        for (idx in EvalItemGradeTbl){              
+            html += `<td><p>${EvalItemGradeTbl[idx].Title}</p><p>(${EvalItemGradeTbl[idx].Value}점)</p></td>`;                                    
+        };
+
+        html += `<td style="vertical-align: middle;"><p>비고</p></td>`;
+
+        $(`#eval_table`).append(html);  
+        
+        // 문항
+        html = "";
+        var category_f = "";
+        for (val in EvalItemTbl) {    
+            
+            if (EvalItemTbl[val].Category != category_f) {
+                var __category = EvalItemTbl[val].Category;
+
+                var __cnt = EvalItemTbl.filter(x => x.Category == __category).length + 1;
+                var __tit = EvalItemCategoryTbl.find(x => x.Category == __category).Title;                
+
+                //$("#eval_table").append(`<tr><td rowspan="${__cnt}" align="center" class="category">${__tit}</td></tr>`);  
+                html += `<tr><td rowspan="${__cnt}" align="center" class="category">${__tit}</td></tr>`;
+
+                category_f = EvalItemTbl[val].Category;
+            }                     
+            
+            //$("#eval_table").append(`<tr id="${EvalItemTbl[val].id}"><td align="left">${EvalItemTbl[val].Title}</td></tr>`);  
+            //html += `<tr id="${EvalItemTbl[val].id}"><td align="left">${EvalItemTbl[val].Title}</td></tr>`;                    
+            html += `<tr id="${get_eval_item_id(EvalItemTbl[val].Num)}"><td align="left">${EvalItemTbl[val].Title}</td></tr>`;                                
+
+            //console.log(get_eval_item_id(EvalItemTbl[val].Num));
+        }  
+
+        $(`#eval_table`).append(html);  
+        
+        // 종합 점수
+        html = "";
+        //$("#eval_table").append(`<tr id="total_sum" class="total_sum"><td colspan="2" align="center" class="sum">합계</td></tr>`); 
+        html += `<tr id="total_sum" class="total_sum"><td colspan="2" align="center" class="sum">합계</td></tr>`;
+        $(`#eval_table`).append(html);          
+
+        // 문항 수치 셋(라디오 버튼) 
+        for (idx in EvalItemGradeTbl){            
+            for (val in EvalItemTbl) {                                
+                $(`#${get_eval_item_id(EvalItemTbl[val].Num)}`).append(`<td><label><input type="radio" name="${get_eval_item_id(EvalItemTbl[val].Num)}" value="${EvalItemGradeTbl[idx].Value}" data-grade="${EvalItemGradeTbl[idx].Grade}"></label></td>`);                        
+            }            
+            
+            $("#total_sum").append(`<td id="sum_${EvalItemGradeTbl[idx].Grade}"></td>`);             
+        };
+
+        // 종합 점수
+        $("#total_sum").append(`<td id="sum_total"></td>`);
+
+        // 비고, 위치 이동 말것 !!
+        for (val in EvalItemTbl) { 
+            $(`#${get_eval_item_id(EvalItemTbl[val].Num)}`).append(`<td>-</td>`);       
+        }        
+    }
+    
+    function get_eval_item(eval_item_num) {    
+
+        //eval_item${eval_item_num}
+        //${get_eval_item_id(eval_item_num)}
+        
+        var value = $(`input[name="${get_eval_item_id(eval_item_num)}"]:checked`).val();
+        var grade = $(`input[name="${get_eval_item_id(eval_item_num)}"]:checked`).data("grade");
+        
+        value = (value == undefined) ? 0 : value;            
+        grade = (grade == undefined) ? 0 : grade;
+            
+        return {Grade: parseInt(grade), Value: parseInt(value)};
+    };    
+
+    function set_eval_item(eval_item_num, grade) {    
+        
+        //console.log(`============================ ${eval_item_num}, ${num}`);
+
+        $(`input[name="${get_eval_item_id(eval_item_num)}"]`).each(function (e) {    
+            
+            if ($(this).data('grade') == grade) {
+                $(this).attr("checked", true);
+
+                // 마지막에 체크되고 계산이 안되는 버그(?)가 있음..!!
+                // 그냥 체크만 하고 계산 루틴 돌리는 걸로
+                //$(this).click();            
+                //console.log(`eval_item_num:${eval_item_num}, value:${$(this).val()}, num:${$(this).data('num')}`);
+            }
+            //console.log(`eval_item_num:${eval_item_num}, value:${$(this).val()}, grade:${$(this).data('grade')}`);
+        });        
+    };    
+
+    function clear_eval_item(eval_item_num) {  
+        $(`input[name="${get_eval_item_id(eval_item_num)}"]`).each(function (e) {               
+            
+            $(this).prop('checked', false);                        
+        });          
+    }
+
+    function clear_eval_item_all() {  
+
+        for (val in EvalItemTbl) {   
+            
+            clear_eval_item(EvalItemTbl[val].Num);
+        } 
+    }
+
+    function sum_eval_item() {        
+        
+        var sum_total = 0;
+        
+        for (idx in EvalItemGradeTbl) {
+
+            var __sum = 0;
+            
+            for (val in EvalItemTbl) { 
+
+                //console.log(`============================ ${JSON.stringify(EvalItemTbl[val])}`);
+
+                var __val = get_eval_item(EvalItemTbl[val].Num);
+                if (__val.Grade == EvalItemGradeTbl[idx].Grade) {
+                    __sum += __val.Value;
+                    // console.log(`============================ ${JSON.stringify(__val)}`);
+                    // console.log(`============================ ${JSON.stringify(EvalItemTbl[val])}`);
+                }                
+            }            
+            
+            $(`#sum_${EvalItemGradeTbl[idx].Grade}`).html(__sum);    
+
+            sum_total += __sum;
+        }        
+
+        $(`#sum_total`).html(sum_total);    
+        
+        //console.log(sum_total);        
+
+        return sum_total
+    }
+
+    function create_eval_item_event() {
+
+        for (val in EvalItemTbl) {                
+            
+            $(document).off("click", `input:radio[name="${get_eval_item_id(EvalItemTbl[val].Num)}"]`).on("click", `input:radio[name="${get_eval_item_id(EvalItemTbl[val].Num)}"]`, function (e) {        
+
+                $("#close_flag").val(0);    // 다른 페이지 갈때 저장 관련 y/n 물어보지 않게
+                
+                sum_eval_item();
+            });
+        } 
+    }
+
+    $(document).off("click", "#btn_save").on("click", "#btn_save", function (e) {      
+        
+        // var evalItemString = []
+
+        // for (val in EvalItemTbl) { 
+        //     var __result = get_eval_item(EvalItemTbl[val].Num);
+
+        //     if (__result) {
+        //         evalItemString.push(`${EvalItemTbl[val].Num}:${__result.Grade}`);
+        //     }
+
+        //     console.log(`num:${EvalItemTbl[val].Num}, check:${JSON.stringify(__result)}`);
+        // }
+
+        // console.log(evalItemString.join(","));
+
+        $("#save_opt").val(0);
+
+        openPopup('pop_save_yn');
+
+        // var check1 = get_eval_item(1);
+        // var check2 = get_eval_item(2);
+        // var check3 = get_eval_item(3);
+        // var check4 = get_eval_item(4);
+        // var check5 = get_eval_item(5);
+        // var check6 = get_eval_item(6);
+
+        // var check7 = get_eval_item(7);
+        // var check8 = get_eval_item(8);
+        // var check9 = get_eval_item(9);
+
+        // console.log(`check1:${JSON.stringify(check1)}`);
+        // console.log(`check2:${JSON.stringify(check2)}`);
+        // console.log(`check3:${JSON.stringify(check3)}`);
+        // console.log(`check4:${JSON.stringify(check4)}`);
+        // console.log(`check5:${JSON.stringify(check5)}`);
+        // console.log(`check6:${JSON.stringify(check6)}`);
+
+        // console.log(`check7:${JSON.stringify(check7)}`);
+        // console.log(`check8:${JSON.stringify(check8)}`);
+        // console.log(`check9:${JSON.stringify(check9)}`);
+
+        // console.log(`sum_eval_item:${sum_eval_item()}`);
+
+        // console.log(`${1}:${check1.Grade}`);
+        // console.log(`${2}:${check2.Grade}`);
+        
+    });
+
+    $(document).off("click", "#btn_save_close").on("click", "#btn_save_close", function (e) {                    
+        
+        $("#save_opt").val(1);
+
+        openPopup('pop_save_yn');
+    });
+
+    $(document).off("click", "#btn_save_confirm").on("click", "#btn_save_confirm", function (e) {      
+
+        closePopup('pop_save_yn');
+
+        $("#close_flag").val(1);    // 저장이 이루어 지면 창닫기 물어보지 않는다
+
+        //ajaxToServerFileLog("Info",`[btn_save_confirm] close_flag ${$("#close_flag").val()}`)
+
+        var save_opt = $("#save_opt").val() == 0 ? false : true;
+        
+        // var evalItemString = []
+
+        // for (val in EvalItemTbl) { 
+        //     var __result = get_eval_item(EvalItemTbl[val].Num);
+
+        //     if (__result) {
+        //         evalItemString.push(`${EvalItemTbl[val].Num}:${__result.Grade}`);
+        //     }
+
+        //     //console.log(`num:${EvalItemTbl[val].Num}, check:${JSON.stringify(__result)}`);
+        // }
+
+        // console.log("evalItemString : " + evalItemString.join(",")); 
+
+        // ajaxScoreSave(save_opt, evalItemString);
+
+        scoreSave(save_opt);
+    });    
+
+    var scoreSave = function (save_opt) {
+
+        var evalItemString = []
+
+        for (val in EvalItemTbl) { 
+            var __result = get_eval_item(EvalItemTbl[val].Num);
+
+            if (__result) {
+                evalItemString.push(`${EvalItemTbl[val].Num}:${__result.Grade}`);
+            }
+
+            //console.log(`num:${EvalItemTbl[val].Num}, check:${JSON.stringify(__result)}`);
+        }
+
+        console.log("evalItemString : " + evalItemString.join(",")); 
+
+        ajaxScoreSave(save_opt, evalItemString);
+    }
+
+    var ajaxScoreSave = function (flag, evalItemString) {
+
+        var recrut_sn = "{{.RecrutSn}}";
+		var pp_mem_no = "{{.PpMemNo}}";
+        var eval_item = evalItemString.join(",");     
+        var result_value = sum_eval_item();
+        var result_comment= $("#result_comment").val().replace(/'/gi,"`");
+
+        console.log("recrut_sn : " + recrut_sn);
+        console.log("pp_mem_no : " + pp_mem_no);
+        console.log("eval_item : " + eval_item);
+        console.log("result_value : " + result_value);
+        console.log("result_comment : " + result_comment);        
+        
+        var formData = new FormData();
+        formData.append("recrut_sn", recrut_sn);
+        formData.append("pp_mem_no", pp_mem_no);
+        formData.append("eval_item", eval_item);
+        formData.append("result_value", result_value);
+        formData.append("result_comment", result_comment);                  
+        
+        $.ajax({
+            cache: false,
+            url: '/applicant/score/reg/update',
+            data: formData,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            error: function (e) {
+                console.log("error : " + e);
+            },
+            success: function (rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if (rtnCd == 1){
+                    //ajaxToServerFileLog("Info",`[ApplicantScore][Save] PpMemNo:${pp_mem_no}, RecruitSn:${recrut_sn}, evalItem:${eval_item}, resultValue:${result_value}, resultComment:${result_comment}`)
+
+                    //console.log(window.opener)
+                    //ajaxToServerFileLog("Info",`[ajaxScoreSave] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>${window.opener}`)
+                    if (window && window.opener && isFunction(window.opener.ajaxApplicantList)) {                        
+                        window.opener.ajaxApplicantList();
+                        //window.opener.$("#btn_search").trigger('click');
+                        ajaxToServerFileLog("Info",`[ajaxScoreSave] Call ${"ScoreUpdateCallback"}`)
+                    } else {                        
+                        ajaxToServerFileLog("Info",`[ajaxScoreSave] Null ${"ScoreUpdateCallback"}`)
+                    }
+
+                    // window.parent.parent.ajaxApplicantList();
+                    // console.log(window.parent.parent);
+
+                    
+                    
+                    // if (window.UpdateCallback && isFunction(window.UpdateCallback)) {                        
+                    //     ajaxToServerFileLog("Info",`[ajaxScoreSave] Call ${"UpdateCallback"}`)
+                    //     window.UpdateCallback();
+                    // } else {                        
+                    //     ajaxToServerFileLog("Info",`[ajaxScoreSave] Null ${"UpdateCallback"}`)
+                    // }
+
+                    
+                    // var updateCallback = sessionStorage.getItem(`ScoreUpdateCallback`);                    
+                    // //console.log(updateCallback);
+
+                    // // updateCallback();
+
+                    //var __f__ = Function('return ' + updateCallback);
+                    // var new_fn = new Function("return " + updateCallback)()
+                    // new_fn();                                        
+
+                    // opener.location.reload(); 하면 
+                    // if (isFunction(callback)) {
+                    //     callback();                    
+                    // }
+
+                    //ajaxToServerFileLog("Info",`[2] =============================== ${__UpdateCallback}`)
+
+                    // window.on.onload = function(){   
+                    //     this.UpdateCallback = __UpdateCallback;   
+                    //     ajaxToServerFileLog("Info", `[3]=============================== ${__UpdateCallback} `);                     
+                    // };
+
+                    // $(window).unload(function() {
+                    //     alert('Handler for .unload() called.');
+                    // });
+
+                    if (flag == true) {
+                        window.close();
+                    } else {
+                        window.location.reload();      
+                    }
+
+                    // for (var i = 0; i < window.frames.length; i++) {
+                    //     console.log(window.frames[i]);
+                    // }
+
+                    // console.log(window.parent);
+                    // console.log(window.parent.parent);                    
+                } else if (rtnCd == 99) {
+                    window.location.href = rtnMsg;
+                    console.log("message : " + rtnMsg);
+                } else {
+                    console.log("등록 실패 : " + rtnMsg);
+                    //$(".loading").attr("style", "display:none");
+                }
+            }
+        }); 
+    }
+
+    window.onbeforeunload = function(event) {
+        //event.preventDefault();
+
+        //ajaxToServerFileLog("Info",`[window.onbeforeunload] close_flag ${$("#close_flag").val()} -- ${event}`)
+
+        if($("#close_flag").val() == 1)    
+            return;        
+            
+        return true;
+    }
+
+    $(document).off("click", "#btn_clear").on("click", "#btn_clear", function (e) {                    
+        
+        openPopup('pop_clear_yn');        
+    });
+
+    $(document).off("click", "#btn_clear_confirm").on("click", "#btn_clear_confirm", function (e) {      
+
+        closePopup('pop_clear_yn');        
+
+        clear_eval_item_all();        
+
+        sum_eval_item();
+    });    
+
+
+
+    /*
+    var ajaxScoreSelect = function (recrut_sn, pp_mem_no) {
+
+        console.log("recrut_sn : " + recrut_sn);
+        console.log("pp_mem_no : " + pp_mem_no);
+        
+        var formData = new FormData();
+        formData.append("recrut_sn", recrut_sn);
+        formData.append("pp_mem_no", pp_mem_no);
+        
+        $.ajax({
+            cache: false,
+            url: '/applicant/score/popup',
+            data: formData,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            error: function (e) {
+                console.log("error : " + e);
+            },
+            success: function (rep) {
+                var rtnCd = rep.Rtn.RtnCd
+                var rtnMsg = rep.Rtn.RtnMsg
+                if (rtnCd == 1){
+                    console.log(`${JSON.stringify(rep)}`);                    
+                } else if (rtnCd == 99) {
+                    window.location.href = rtnMsg;
+                    console.log("message : " + rtnMsg);
+                } else {
+                    console.log("등록 실패 : " + rtnMsg);
+                    //$(".loading").attr("style", "display:none");
+                }
+            }
+        }); 
+    }
+
+    $(document).off("click", "#btn_debug").on("click", "#btn_debug", function (e) {      
+
+        var recrut_sn = "{{.RecrutSn}}";
+		var pp_mem_no = "{{.PpMemNo}}";
+
+        ajaxScoreSelect(recrut_sn,pp_mem_no );
+    });
+    */
+
+    $(document).off("click", "#btn_to_pdf").on("click", "#btn_to_pdf", function (e) {      
+
+        var result_comment= $("#result_comment").val().replace(/'/gi,"`");
+
+        // html2canvas($('#id_to_pdf')[0]).then(function (canvas) { 
+        //     var filename = 'FILENAME_' + Date.now() + '.pdf'; 
+        //     var doc = new jsPDF('p', 'mm', 'a4'); 
+        //     var imgData = canvas.toDataURL('image/png'); 
+        //     doc.addImage(imgData, 'PNG', 0, 0); 
+        //     doc.save(filename); 
+        // });
+
+
+        // html2canvas($('#id_to_pdf')[0]).then(function(canvas) { //저장 영역 div id
+		
+        //     // 캔버스를 이미지로 변환
+        //     var imgData = canvas.toDataURL('image/png');
+                
+        //     var imgWidth = 190; // 이미지 가로 길이(mm) / A4 기준 210mm
+        //     var pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
+        //     var imgHeight = canvas.height * imgWidth / canvas.width;
+        //     var heightLeft = imgHeight;
+        //     var margin = 10; // 출력 페이지 여백설정
+        //     var doc = new jsPDF('p', 'mm');
+        //     var position = 0;
+            
+        //     // 첫 페이지 출력
+        //     doc.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        //     heightLeft -= pageHeight;
+                
+        //     // 한 페이지 이상일 경우 루프 돌면서 출력
+        //     while (heightLeft >= 20) {
+        //         position = heightLeft - imgHeight;
+        //         doc.addPage();
+        //         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        //         heightLeft -= pageHeight;
+        //     }
+        
+        //     // 파일 저장
+        //     doc.save('file-name.pdf');		  
+	    // });
+        // window.scrollTo(0,0); 
+        
+        // html2canvas($('#id_to_pdf')[0],{allowTaint: true,
+        //     useCORS: true,
+        //     logging: false,
+        //     height: window.outerHeight + window.innerHeight,
+        //     windowHeight: window.outerHeight + window.innerHeight}).then(function(canvas) { // 캔버스를 이미지로 변환 
+
+        //     var result_comment= $("#result_comment").val().replace(/'/gi,"`");
+
+        //     let imgData = canvas.toDataURL('image/png'); 
+        //     let margin = 10; // 출력 페이지 여백설정 
+        //     let imgWidth = 210 - (10 * 2); // 이미지 가로 길이(mm) A4 기준 
+        //     let pageHeight = imgWidth * 1.414; // 출력 페이지 세로 길이 계산 A4 기준 
+        //     let imgHeight = canvas.height * imgWidth / canvas.width; 
+        //     let heightLeft = imgHeight; 
+        //     let doc = new jsPDF('p', 'mm'); 
+        //     let position = margin; // 첫 페이지 출력 
+            
+        //     doc.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight); 
+        //     heightLeft -= pageHeight; // 한 페이지 이상일 경우 루프 돌면서 출력 
+            
+        //     while (heightLeft >= 20) { 
+        //         position = heightLeft - imgHeight; 
+        //         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight); 
+                
+        //         // doc.addFont('malgun.ttf','malgun', 'normal');
+        //         // doc.setFont('malgun'); 
+
+        //         // doc.line(15, 19, 195, 19); // 선그리기(시작x, 시작y, 종료x, 종료y)
+        //         // doc.text(15, 40, result_comment);
+        //         doc.addPage(); 
+        //         heightLeft -= pageHeight; 
+        //     } // 파일 저장 
+            
+        //     doc.save('sample.pdf'); 
+        // });
+
+    //     html2canvas($('#id_to_pdf')[0],{scrollY: -window.scrollY}).then(function(canvas) {
+            
+    //         var doc = new jsPDF('p', 'mm', 'a4'); //jspdf객체 생성
+    //         var imgData = canvas.toDataURL('image/png'); //캔버스를 이미지로 변환
+    //         doc.addImage(imgData, 'PNG', 0, 0); //이미지를 기반으로 pdf생성
+    //         // doc.line(15, 19, 195, 19); // 선그리기(시작x, 시작y, 종료x, 종료y)
+    //         // doc.text(15, 40, result_comment);
+    //         // doc.addPage(); 
+    //         // doc.line(15, 19, 195, 19); // 선그리기(시작x, 시작y, 종료x, 종료y)
+    //         // doc.text(15, 40, result_comment);
+    //         // doc.addPage(); 
+    //         doc.save('sample-file.pdf'); //pdf저장
+    //   });
+
+        var documentDefinition = {
+            //content : pdf의 내용을 정의
+            content: [
+                {
+                    text: 'First paragraph'
+                }, // 스타일 적용 없이 그냥 출력
+                {
+                    text: 'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines',
+                    bold: true
+                }, // 텍스트에 bold 주기
+                {
+                    text: '가나다라마바사아자타카타파하',
+                    style: 'style_test'
+                }, // style 부분에 정의된 style_test 적용해보기 및 한글 꺠짐 테스트
+                {
+                    style: 'tableExample',
+                    table: {
+                        widths: [100, '*', 200, '*'],
+                        body: [
+                            ['width=100', 'star-sized', 'width=200', 'star-sized'],
+                            ['fixed-width cells have exactly the specified width', {
+                                text: 'nothing interesting here',
+                                italics: true,
+                                color: 'gray'
+                            }, {
+                                text: 'nothing interesting here',
+                                italics: true,
+                                color: 'gray'
+                            }, {
+                                text: '한글 표현',
+                                italics: true,
+                                color: 'gray'
+                            }]
+                        ]
+                    }
+                }//테이블 그리기
+            ],
+
+            //하단의 현재페이지 / 페이지 수 넣기
+            footer: function (currentPage, pageCount) {
+                return {
+                    margin: 10,
+                    columns: [{
+                        fontSize: 9,
+                        text: [{
+                                    text: '--------------------------------------------------------------------------' + '\n',
+                                    margin: [0, 20]
+                                },
+                                {
+                                    text: '' + currentPage.toString() + ' of ' +
+                                    pageCount,
+                                }
+                        ],
+                        alignment: 'center'
+                    }]
+                };
+            },
+            //필요한 스타일 정의하기
+            styles: {
+                style_test: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 0],
+                    alignment: 'center'
+                },
+                tableExample: {
+                    margin: [0, 5, 0, 15]
+                }
+            },
+
+            // 페이지 크기 용지의 크기 사이즈 넣기 또는 특정 사이즈 넣기 { width: number, height: number }
+            pageSize: 'A4',
+
+            /* 페이지 방향 portrait : 가로 , landscape : 세로 */
+            pageOrientation: 'portrait',
+        };
+
+        var pdf_name = 'pdf파일 만들기.pdf'; // pdf 만들 파일의 이름
+        pdfMake.createPdf(documentDefinition).download(pdf_name);
+    });    
+
+    // var ajaxScoreSave = function (flag, evalItemString) {
+
+    
+
+</script>
+
+{{end}} 

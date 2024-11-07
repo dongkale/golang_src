@@ -1,0 +1,1816 @@
+{{template "include/message_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+    <!-- content 영역 -->
+    <div class="cWrap">
+        <div class="container message">
+            <div class="lnb">
+            <input type="hidden" id="favr_set_yn" name="favr_set_yn" value="{{.FavrAplyPpYn}}">
+            <input type="hidden" id="pp_mem_no" name="pp_mem_no" value="{{.PpMemNo}}">
+            <input type="hidden" id="recrut_sn" name="recrut_sn" value="{{.RecrutSn}}">
+            <input type="hidden" id="msg_end_yn" name="msg_end_yn" value="0">
+            <input type="hidden" id="cfrm_yn" name="cfrm_yn" value="0">
+            <input type="hidden" id="ori_ing_cnt" name="ori_ing_cnt" value="{{.IngCnt}}">
+            <input type="hidden" id="ori_end_cnt" name="ori_end_cnt" value="{{.EndCnt}}">
+            <input type="hidden" id="select_cnt" name="select_cnt" value="0">
+            <input type="hidden" id="msg_gbn_cd">
+            <input type="hidden" id="arr_pp_chrg_sn">
+            <input type="hidden" id="live_itv_sdt">
+            <input type="hidden" id="target" value="{{.Target}}">
+            <input type="hidden" id="live_sn" value="">
+            <input type="hidden" id="live_nvn_yn" value="N">
+            <input type="hidden" id="last_msg_gbn_cd" value="">
+            <input type="hidden" id="select_member" value="">
+            <input type="hidden" id="select_sn" value="">
+            <input type="hidden" id="msg_cnt" value="0">
+                <div class="lnbMessage">
+                    <div class="messageAdminp">
+                        <p class="tit">메시지</p>
+                        <div class="search">
+                            <input type="text" name="keyword" id="keyword" class="it" maxlength="20" placeholder="지원자 이름으로 검색">
+                            <a href="javascript:void(0);" id="btn_search" class="btn type_blue st02">검색</a>
+                        </div>
+                    </div>
+                    <ul class="messageTab">
+                        <li class="active tab_ing" data-msg_end_yn="N"><a href="javascript:void(0);">대화중 <span id="message_ing_cnt">{{.IngCnt}}</span></a></li>
+                        <li class="tab_end" data-msg_end_yn="Y"><a href="javascript:void(0);">종료 <span id="message_end_cnt">{{.EndCnt}}</span></a></li>
+                    </ul>
+                    <div class="messageList message_ing">
+                    {{if .MessageMemberList}}
+                        <ul>
+                            <!-- class 정의
+                                현채창: now
+                                신규메시지: new
+                                종료메시지: end
+                            -->
+                                {{range .MessageMemberList}}
+                                <li class='{{if eq "0" .MmMsgCfrmYn}}new{{end}} member_li {{.MmPpMemNo}} {{.MmRecrutSn}}' data-recrut_sn="{{.MmRecrutSn}}" data-cfrm_yn="{{.MmMsgCfrmYn}}" data-last_msg_gbn_cd="{{.MmLastMsgGbnCd}}"  data-msg_cnt="{{.MmMsgCnt}}"><a href="javascript:void(0);">
+                                    <span class="userImg"><img src="{{.MmPtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="58" height="58" alt=""></span>
+                                    <span class="userName">{{.MmNm}}</span>
+                                    <span class="text">{{.MmMsgCont}}</span>
+                                    <span class="date">{{.MmRegDt}}</span>
+                                </a></li>
+                                {{end}}
+                        </ul>
+                    {{else}}
+                    <div class="messageList message_nodata">
+                        <p class="noData">진행 중인 대화가 없습니다.</p>
+                    </div>
+                    {{end}}
+                    </div>
+                    <div class="messageList message_end" style="display:none">
+                        <ul>
+                            <!-- class 정의
+                                현채창: now
+                                신규메시지: new
+                                종료메시지: end
+                            <li class="end member_li P2019010900086"><a href="#">
+                                <span class="userImg"><img src="/static/images/img-profile-empty-02.png" width="58" height="58" alt=""></span>
+                                <span class="userName">구준표구준표구준표</span>
+                                <span class="text">종료일 19-10-10</span>
+                                <span class="date">19.10.10</span>
+                            </a></li>
+                            -->
+                        </ul>
+                    </div>                    
+                </div>
+            </div>
+            <div class="content message_detail_info">
+            <!-- //메세지 상세 영역 시작  -->
+            {{if not .MessageMemberList}}
+            <div class="noMessage">
+                <p class="tit"><strong>직감 메시지를 통해</strong><br>채용 프로세스를 진행해보세요!</p>
+                <p class="img"><img src="/static/images/img-message-empty.png" alt=""></p>
+                <dl class="hide">
+                    <dt>직감 채용 공고에 지원한 지원자에게 메시지를 보낼 수 있습니다.</dt>
+                    <dd>먼저 메시지를 보내기 전까지 지원자는 메시지를 보낼 수 없습니다.</dd>
+                </dl>
+                <dl class="hide">
+                    <dt>라이브 인터뷰를 요청하시면 요청 메시지가 발송됩니다.</dt>
+                    <dd>요청에 대한 답변과 진행도 메시지를 통해 이루어 집니다.</dd>
+                </dl>
+                <dl class="hide">
+                    <dt>지원자를 합격 처리하시면 합격 메시지가 발송되며,대화가 시작됩니다.</dt>
+                    <dd>불합격 처리의 경우에는 1:1 메시지가 발송되지 않습니다.</dd>
+                </dl>
+            </div>
+            {{end}}
+        </div>
+            <!-- //메세지 상세 영역 끝 -->
+        </div>
+            <!--// admin계정만 가능-->
+            {{if eq "01" .SAuthCd}}
+                {{if not .MessageMemberList}}
+                <!--
+                <div class="inputMessage disabled">
+                    <textarea name="" class="disabled" disabled id="" placeholder=""></textarea>
+                    <a href="javascript:void(0);" class="btn type_blue st02 disabled">전송</a>
+                </div>
+                -->
+                {{else}}
+                <div class="inputMessage">
+                    <textarea name="msg_cont" id="msg_cont" placeholder="메시지를 입력하세요."></textarea>
+                    <a href="javascript:void(0);" id="send_msg" class="btn type_blue st02">전송</a>
+                    <a href="javascript:void(0);" id="end_msg" class="btn end">대화 종료하기</a>
+                    <div class="tooltip">
+                        <p class="text"><img src="/static/images/img-tooltip-01.png" alt="지원자와의 대화가 종료되어 메시지를 주고 받을 수 없게 됩니다.
+                            종료된 대화는 오른쪽 [종료] 탭에서 확인 가능합니다."></p>
+                    </div>
+                </div>
+                {{end}}
+            {{else}}
+                <div class="inputMessage disabled">
+                    <textarea name="" class="disabled" disabled id="" placeholder="Member 계정은 메시지를 보내실 수 없습니다."></textarea>
+                    <a href="javascript:void(0);" class="btn type_blue st02 disabled">전송</a>
+                </div>
+            {{end}}
+        </div>
+    </div>
+    <!-- // content 영역 -->
+    <!-- 라이브인터뷰취소 팝업 -->
+    <div class="popupWrap" id="pop_req_cancel">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">라이브 인터뷰 취소하기</p>
+                <ul class="message">
+                    <li>라이브 인터뷰 취소 사유를 입력해주세요.</li>
+                    <li>예정된 라이브 인터뷰가 취소되며 지원자에게 메시지가 발송됩니다.</li>
+                    <li>발송 후에는 취소가 불가능 합니다.</li>
+                </ul>
+                <div class="field">
+                        <div class="tArea">
+                            <textarea name="live_req_cancel_msg_cont" id="live_req_cancel_msg_cont" cols="30" rows="10" maxlength="2000" placeholder="라이브 인터뷰 취소 사유를 입력해주세요."></textarea>
+                            <!-- 글자수가 추가되면 class="count" 추가 -->
+                            <span class="text"><em class="count" id="byteLiveCancelMsg">2000</em>/2000자</span>
+                        </div>
+                        <p class="validationAlert live_req_cancel_msg_cont_message"></p>
+                    </div>
+                </div>
+                <div class="btnSet">
+                    <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                    <a href="javascript:void(0);" class="btn type_blue st02" id="btn_cancel_confirm">확인</a>
+                </div>
+            </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 라이브인터뷰취소 팝업 -->
+    <!-- 라이브인터뷰확정취소 팝업 -->
+    <div class="popupWrap" id="pop_ing_req_cancel">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">라이브 인터뷰 취소하기</p>
+                <ul class="message">
+                    <li>라이브 인터뷰 취소 사유를 입력해주세요.</li>
+                    <li>예정된 라이브 인터뷰가 취소되며 지원자에게 메시지가 발송됩니다.</li>
+                    <li>발송 후에는 취소가 불가능 합니다.</li>
+                </ul>
+                <div class="field">
+                        <div class="tArea">
+                            <textarea name="live_ing_req_cancel_msg_cont" id="live_ing_req_cancel_msg_cont" cols="30" rows="10" maxlength="2000" placeholder="라이브 인터뷰 취소 사유를 입력해주세요."></textarea>
+                            <!-- 글자수가 추가되면 class="count" 추가 -->
+                            <span class="text"><em class="count" id="byteLiveIngCancelMsg">2000</em>/2000자</span>
+                        </div>
+                        <p class="validationAlert live_ing_req_cancel_msg_cont_message"></p>
+                    </div>
+                </div>
+                <div class="btnSet">
+                    <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                    <a href="javascript:void(0);" class="btn type_blue st02" id="btn_ing_cancel_confirm">확인</a>
+                </div>
+            </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 라이브인터뷰취소 팝업 -->    
+    <!-- 대화종료하기 팝업 -->
+    <div class="popupWrap" id="pop_msg_end">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">대화를 종료하시겠어요?</p>
+                <p class="text">해당 지원자와 메시지를 주고 받을 수 없게 됩니다.</p>
+                <ul class="more">
+                    <li>[다시 대화하기]를 통해 대화를 다시 시작하실 수 있습니다.</li>
+                </ul>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_red" id="btn_end_confirm">종료하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 대화종료하기 팝업 -->
+    <!-- 메시지 검증 공통 팝업 -->
+    <div class="popupWrap" id="pop_msg_verify">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text" id="verify_text"></p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 메시지 검증 공통 팝업 -->    
+    <!-- 대화 다시하기확인 팝업 -->
+    <div class="popupWrap" id="pop_msg_restart">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">대화를 다시 시작하시겠어요?</p>
+                <p class="text">해당 지원자와 메시지를 주고 받을 수 있게 됩니다.</p>
+                <ul class="more">
+                    <li>지원자에게도 대화 시작 안내 메시지가<br>발송됩니다.</li>
+                </ul>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_message_restart">다시 대화하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 대화 다시하기확인 팝업 -->        
+    <!-- 공통 알럿 팝업창 -->
+    <div class="popupWrap common_alert" id="pop_common_alert">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text alert" id="alert_text"></p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" id="pop_close_btn">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 공통 알럿 팝업창 -->
+
+    <!-- 공통 컨펌 팝업창 -->
+    <div class="popupWrap common_confirm" id="pop_common_confirm">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text alert">라이브 인터뷰 요청이 완료되지 않았습니다.<br>정말 나가시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" id="btn_confirm_pop_close">취소</a>
+                <a href="javascript:void(0);" class="btn type_red" id="btn_confirm_pop_ok">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 공통 컨펌 팝업창 -->
+
+
+    <!-- 토스트박스 -->
+    <div class="toastBox noti">
+        <p class="message">관심 설정되었습니다.</p>
+        <a href="#" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+    <div class="toastBox alert">
+        <p class="message">관심 해제되었습니다.</p>
+        <a href="#" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+
+    <!--//라이브 인터뷰 요청 팝업-->
+    <form id="regForm" name="regForm" method="post">
+    <div class="popupWrap" id="pop_live">
+        <div class="popLayer size02" id="live_step1" style="display:''">
+            <div class="popCont">
+                <p class="tit">라이브 인터뷰 요청하기</p>
+                <ul class="popTab">
+                    <li class="active"><a href="javascript:void(0);">STEP <span>01</span></a></li>
+                    <li><a href="javascript:void(0);">STEP <span>02</span></a></li>
+                </ul>
+                <ul class="message interView">
+                    <li>원하시는 라이브 인터뷰 날짜와 시간을 선택해주세요.</li>
+                    <li>지원자가 요청을 수락하면 라이브 인터뷰 진행이 확정됩니다.</li>
+                    <li>지원자가 요청을 거절하거나 시간 변경을 요청하실 수 있습니다.</li>
+                </ul>
+                <div class="field st02">
+                    <dl>
+                        <dt>라이브 인터뷰 요청 날짜</dt>
+                        <dd class="date"><input type="text" name="live_itv_sd" id="live_itv_sd" class="it" readonly placeholder="라이브 면접을 원하시는 날짜를 선택해주세요."></dd>
+                        <dd class="validationAlert live_itv_sd_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>라이브 인터뷰 요청 시간</dt>
+                        <dd class="time"><input type="text" name="live_itv_st" id="live_itv_st" class="it" readonly placeholder="라이브 면접을 원하시는 시간을 선택해주세요."></dd>
+                        <dd class="validationAlert live_itv_st_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>메시지</dt>
+                        <dd>
+                            <div class="tArea">
+                                <textarea name="live_req_msg_cont" id="live_req_msg_cont" cols="30" rows="10" maxlength="2000" class="it" placeholder="요청일시와 함께 보내실 메시지를 입력해주세요."></textarea>
+                                <!-- 글자수가 입력되지 않았을때 class 없음 -->
+                                <span class="text"><em id="byteLiveMsg">2000</em>/2000자</span>
+                            </div>
+                            <p class="validationAlert live_req_msg_cont_message"></p>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn normal" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_live_next_step">다음</a>
+            </div>
+        </div>
+        <div class="popLayer size02" id="live_step2" style="display:none">
+            <div class="popCont">
+            <p class="tit">라이브 인터뷰 요청하기</p>
+            <ul class="popTab">
+                <li><a href="javascript:void(0);" id="btn_step1">STEP <span>01</span></a></li>
+                <li class="active"><a href="javascript:void(0);">STEP <span>02</span></a></li>
+            </ul>
+            <ul class="message interView">
+                <li>라이브 인터뷰 참여자를 확인해주세요.</li>
+                <li>라이브 인터뷰는 Admin 멤버를 포함하여 최대 2명까지 참여하실 수 있습니다.</li>
+            </ul>
+            <div class="liveReqMember">
+                <p class="tit">참여 멤버</p>
+                <ul class="joinMember">
+                </ul>
+                <p class="txt">아래 리스트에서 추가로 참여하실 멤버를 선택해주세요.</p>
+                <ul class="selectMember">
+                    {{range .EntpTeamMemberList}}    
+                    <li class='{{if eq "01" .EtPpChrgGbnCd}}admin{{end}} {{.EtPpChrgSn}}'><a href="javascript:void(0);" id="mem_list" data-pp_chrg_gbn_cd="{{.EtPpChrgGbnCd}}" data-pp_chrg_sn="{{.EtPpChrgSn}}" data-pp_chrg_nm="{{.EtPpChrgNm}}" data-pp_chrg_bp_nm="{{.EtPpChrgBpNm}}">
+                        <span class="name">{{.EtPpChrgNm}}</span>
+                        <span class="position">{{.EtPpChrgBpNm}}</span>
+                    </a></li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+        <div class="btnSet">
+            <a href="javascript:void(0);" class="btn normal" id="btn_live_pop_close">취소</a>
+            <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_live_reg">확인</a>
+        </div>
+    </div>
+    </form>
+    <span class="cover"></span>
+    <!--//라이브 인터뷰 요청 팝업-->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            closePopup();
+            var target_member = $("#target").val();
+            var target_recrut_sn = "{{.TargetSn}}";
+            var target_end_yn = "{{.TargetEndYn}}";
+            if (!target_member) { //타겟된 멤버가 없을 경우
+                $(".message_ing .member_li").first().removeClass("new");
+                $(".message_ing .member_li").first().click();
+            } else { //타겟된 멤버가 있을 경우
+                if (target_end_yn == "0") {
+                    $(".message_ing .member_li.{{.Target}}.{{.TargetSn}}").click();
+                } else {
+                    $(".tab_end").click();
+                    $(".message_end .member_li.{{.Target}}.{{.TargetSn}}").click();
+                }
+            }
+
+            $(".selectMember .admin").children().click();
+
+            var lst_gbn_cd = $("#last_msg_gbn_cd").val();
+            if (lst_gbn_cd == "02") {
+                var html = "";
+                $(".inputMessage").children().remove();
+                html += "<textarea name=\"\" class=\"disabled\" disabled id=\"\" placeholder=\"대화가 종료되었습니다.\"></textarea>";
+                html += "<a href=\"javascript:void(0);\" class=\"btn type_blue st02 disabled\">전송</a>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_msg_restart\" class=\"btn end\">다시 대화하기</a>";
+                html += "<div class=\"tooltip\">";
+                html += "    <p class=\"text\"><img src=\"/static/images/img-tooltip-02.png\" alt=\"지원자와 다시 대화를 주고받을 수 있게 됩니다.\"></p>";
+                html += "</div>";
+                $(".inputMessage").append(html);
+            }
+
+            /*작업완료후 삭제*/
+            //openPopup('pop_live');
+            //$("#live_step1").hide();
+            //$("#live_step2").show();            
+
+            $.datepicker.setDefaults({
+                dateFormat: 'yy-mm-dd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });            
+        });
+
+        setInterval(function() { 
+            //ajaxMemberList();
+            var select_member = $("#select_member").val();
+            var select_sn = $("#select_sn").val();
+            var msg_end_yn = $("#msg_end_yn").val();
+            var target_end_yn = "{{.TargetEndYn}}";
+
+            if (target_end_yn == "0") {
+                $(".tab_ing").click();
+                var interval = setInterval(function() { 
+                    $(".message_ing .member_li."+select_member+"."+select_sn+"").click();
+                    clearInterval(interval);
+                }, 200);
+            } else {
+                $(".tab_end").click();
+                var interval = setInterval(function() { 
+                    $(".message_end .member_li."+select_member+"."+select_sn+"").click();
+                    clearInterval(interval);
+                }, 200);
+            }
+        }, 999998);
+
+        setInterval(function() { 
+            var select_member = $("#select_member").val();
+            var select_sn = $("#select_sn").val();
+            var	pp_mem_no = select_member;	
+            var recrut_sn = select_sn;
+            var target_end_yn = "{{.TargetEndYn}}";
+
+            $.ajax({
+                cache : false,
+                url : '/message/list/count',
+                data:{
+                    pp_mem_no : pp_mem_no,
+                    recrut_sn : recrut_sn,
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    var prev_msg_cnt = $("#msg_cnt").val();
+                    //console.log("prev_msg_cnt : "+prev_msg_cnt);
+                    //console.log("now_msg_cnt : "+rep.RtnMessageListCountData[0].MsgCnt);
+                    console.log("[AJAX(/message/list/count)]: "+rep.RtnMessageListCountData);
+
+                    if (rep.RtnMessageListCountData) {
+                        if(rep.RtnMessageListCountData[0].MsgCnt != prev_msg_cnt) {
+                            //console.log("메시지 증가");
+                            if (target_end_yn == "0") {
+                                $(".message_ing .member_li."+select_member+"."+select_sn+"").data("msg_cnt",rep.RtnMessageListCountData[0].MsgCnt);
+                                $(".message_ing .member_li."+select_member+"."+select_sn+"").click();
+                            } else {
+                                $(".message_end .member_li."+select_member+"."+select_sn+"").data("msg_cnt",rep.RtnMessageListCountData[0].MsgCnt);
+                                $(".message_end .member_li."+select_member+"."+select_sn+"").click();
+                            }
+                        }
+                    } else {                        
+                        console.log("[AJAX(/message/list/count)]: Login");
+                        window.location.href = "/login";
+                    }
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	
+        }, 1111114999);
+
+		// 지원자 상세 팝업
+		$(document).off("click", "#applicant_detail").on("click","#applicant_detail",function(e) {
+			var popW = 1320
+			var popH = 1000
+			var popX = (screen.width / 2) - (popW/2)
+			var popY = (screen.height / 2) - (popH/2)
+			var recrut_sn = $("#recrut_sn").val();
+			var pp_mem_no = $("#pp_mem_no").val();
+			window.open("/applicant/detail/popup?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no,"_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+		});        
+
+        $(document).off("click", "#live_req_cancel_msg_cont").on("click", "#live_req_cancel_msg_cont", function(e) {
+            $(".validationAlert").text("");
+        });
+        
+        $(document).off("click", "#btn_live_stat").on("click", "#btn_live_stat", function(e) {
+            var live_nvn_yn = $(this).data("live_nvn_yn");
+            if (live_nvn_yn == 'Y') {
+                alert("LIVE_NVN");
+                return;
+            }
+            
+            var recrut_sn = $(this).data("recrut_sn");
+            var pp_mem_no = $(this).data("pp_mem_no");
+            window.location.href="/live/detail?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+        });
+
+        // 라이브 인터뷰 요청
+        $(document).off("click", "#live_send_req").on("click", "#live_send_req", function(e) {
+            if ("{{.SAuthCd}}" == "01") {
+                openPopupEx('pop_live');
+                $("#live_step1").show();
+                $("#live_step2").hide();
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 라이브 인터뷰 요청이<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });    
+
+        // 라이브 인터뷰 요청 상태
+        $(document).off("click", "#live_req_ing").on("click", "#live_req_ing", function(e) {
+            var recrut_sn = $("#recrut_sn").val();
+            var pp_mem_no = $("#pp_mem_no").val();
+
+            window.location.href="/live/detail?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+        });    
+
+        // 라이브 인터뷰 예정
+        $(document).off("click", "#live_schedule").on("click", "#live_schedule", function(e) {
+            var recrut_sn = $("#recrut_sn").val();
+            var pp_mem_no = $("#pp_mem_no").val();
+
+            window.location.href="/live/detail?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+        });   	
+ 
+        // 공통 알럿 팝업 닫기
+        $(document).off("click", "#pop_close_btn").on("click", "#pop_close_btn", function(e) {
+            if("{{.SAuthCd}}" == "01") {
+		    	$(".common_alert").hide();
+	    		$("#pop_live").show();
+    		} else {
+                closePopup();
+            }
+        });   
+
+        // 공통 컨펌 팝업 열기
+        $(document).off("click", "#btn_live_pop_close").on("click", "#btn_live_pop_close", function(e) {
+            $("#pop_live").hide();
+            openPopup("pop_common_confirm");
+        });   
+
+        // 공통 컨펌 팝업 닫기
+        $(document).off("click", "#btn_confirm_pop_close").on("click", "#btn_confirm_pop_close", function(e) {
+            $("#pop_common_confirm").hide();
+            $("#pop_live").show();
+        });   
+
+        // 공통 컨펌 팝업 확인
+        $(document).off("click", "#btn_confirm_pop_ok").on("click", "#btn_confirm_pop_ok", function(e) {
+            closePopup();
+            $("#live_step1").show();
+            $("#live_step2").hide();
+            /* 입력값 초기화 */
+            $("#live_itv_sd").val("");
+            $("#live_itv_st").val("");
+            $("#live_req_msg_cont").val("");
+        });   
+
+        // 라이브 인터뷰 참여멤버 선택
+        $(document).off("click", "#mem_list").on("click", "#mem_list", function(e) {
+            if (!$(this).parent().hasClass("select")) {
+                var pp_chrg_sn = $(this).data("pp_chrg_sn");
+                var pp_chrg_nm = $(this).data("pp_chrg_nm");
+                var pp_chrg_bp_nm = $(this).data("pp_chrg_bp_nm");
+                var pp_chrg_gbn_cd = $(this).data("pp_chrg_gbn_cd");
+
+                //console.log("pp_chrg_sn : "+pp_chrg_sn);
+                //console.log("pp_chrg_nm : "+pp_chrg_nm);
+                //console.log("pp_chrg_bp_nm : "+pp_chrg_bp_nm);
+                var max_cnt = 5;
+                var cnt = parseInt($("#select_cnt").val()) + 1;
+                $("#select_cnt").val(cnt);
+
+                var html = "";
+                if (pp_chrg_gbn_cd == "01") {
+                    html +="<li class=\"admin\" name=\"arr_mem[]\" data-pp_chrg_sn=\""+pp_chrg_sn+"\">";
+                } else {
+                    html +="<li name=\"arr_mem[]\" data-pp_chrg_sn=\""+pp_chrg_sn+"\">";
+                }
+                html +="    <span class=\"name\">"+pp_chrg_nm+"</span>";
+                html +="    <span class=\"position\">"+pp_chrg_bp_nm+"</span>";
+                if (pp_chrg_gbn_cd == "02") {
+                    html +="    <a href=\"javascript:void(0);\" id=\"mem_delete\" data-pp_chrg_sn=\""+pp_chrg_sn+"\" class=\"delete\">삭제</a>";
+                }
+                html +="</li>";
+                
+                if (cnt > max_cnt) { // 최대인원 수
+                    $("#pop_live").hide();
+                    openPopup("pop_common_alert");
+                    $("#alert_text").text("라이브 인터뷰는 최대 "+max_cnt+"명까지 참여 가능합니다.");
+                    $("#select_cnt").val(cnt-1);
+                    return false;
+                } else {
+                    $(this).parent().addClass("select");
+                    $(".joinMember").last("li").append(html);
+                }
+            }
+        });   
+
+        // 라이브 인터뷰 참여멤버 삭제
+        $(document).off("click", "#mem_delete").on("click", "#mem_delete", function(e) {
+            var pp_chrg_sn = $(this).data("pp_chrg_sn");
+
+            var cnt = parseInt($("#select_cnt").val()) - 1;
+            $("#select_cnt").val(cnt);
+
+            console.log("pp_chrg_sn : "+pp_chrg_sn);
+            $(this).parent().remove();
+            $("."+pp_chrg_sn).removeClass("select");
+        });   
+
+        $(document).off("click", "#live_itv_sd").on("click", "#live_itv_sd", function(e) {
+            $("#live_itv_sd").removeClass("validationAlert");
+            $(".live_itv_sd_message").text(""); // message box clear
+        });   
+        $(document).off("click", "#live_itv_st").on("click", "#live_itv_st", function(e) {
+            $("#live_itv_st").removeClass("validationAlert");
+            $(".live_itv_st_message").text(""); // message box clear
+        });   
+        $(document).off("click", "#live_req_msg_cont").on("click", "#live_req_msg_cont", function(e) {
+            $("#live_req_msg_cont").removeClass("validationAlert");
+            $(".live_req_msg_cont_message").text(""); // message box clear
+        });   
+        $(document).off("click", "#live_ing_req_msg_cont").on("click", "#live_ing_req_msg_cont", function(e) {
+            $("#live_ing_req_msg_cont").removeClass("validationAlert");
+            $(".live_ing_req_msg_cont_message").text(""); // message box clear
+        });   
+
+        // 라이브 인터뷰 요청 step2 live_next_step
+        $(document).off("click", "#btn_live_next_step").on("click", "#btn_live_next_step", function(e) {
+            if ($("#live_itv_sd").val().length == 0) {
+                $(".live_itv_sd_message").text("라이브 인터뷰 요청 날짜를 선택해주세요.");
+                $("#live_itv_sd").addClass("validationAlert");
+                return;
+            }
+            if ($("#live_itv_st").val().length == 0) {
+                $(".live_itv_st_message").text("라이브 인터뷰 요청 시간을 선택해주세요.");
+                $("#live_itv_st").addClass("validationAlert");
+                return;
+            }
+            if ($("#live_req_msg_cont").val().length == 0) {
+                $(".live_req_msg_cont_message").text("라이브 인터뷰 요청 메시지를 입력해주세요.");
+                $("#live_req_msg_cont").addClass("validationAlert");
+                return;
+            }
+            $("#live_step1").hide();
+            $("#live_step2").show();
+        });   
+
+        // 라이브 인터뷰 요청 step1 으로 이동
+        $(document).off("click", "#btn_step1").on("click", "#btn_step1", function(e) {
+            $("#live_step1").show();
+            $("#live_step2").hide();
+        });   
+        
+        // 라이브 인터뷰 등록
+        $(document).off("click", "#btn_live_reg").on("click", "#btn_live_reg", function(e) {
+            var live_itv_sd = $("#live_itv_sd").val().replace(/-/gi,"");
+            var live_itv_st = $("#live_itv_st").val()
+            var mem_sn_arr = [];
+            $('.joinMember').find("li[name='arr_mem[]']").each(function(){
+                var thisVal = $(this).data("pp_chrg_sn");
+                mem_sn_arr.push(thisVal);
+            });   
+            if (live_itv_st.length == 4) {
+                live_itv_st = "0"+live_itv_st.replace(/:/gi,"")+"00";
+            } else {
+                live_itv_st = live_itv_st.replace(/:/gi,"")+"00";
+            }
+            var live_itv_sdt = live_itv_sd+live_itv_st
+            $("#live_itv_sdt").val(live_itv_sdt);
+            $("#arr_pp_chrg_sn").val(mem_sn_arr);
+            $("#msg_gbn_cd").val("06");
+            message_send();
+        });   
+
+        // 라이브인터뷰 요청 글자수 체크
+        $(document).on("keyup","#live_req_msg_cont",function(){
+            textLenCheck(this, 2000, "#byteLiveMsg");
+        }); 
+
+        // 라이브인터뷰 요청취소 글자수 체크
+        $(document).on("keyup","#live_req_cancel_msg_cont",function(){
+            textLenCheck(this, 2000, "#byteLiveCancelMsg");
+        }); 
+
+        // 라이브인터뷰 확정취소 글자수 체크
+        $(document).on("keyup","#live_ing_req_cancel_msg_cont",function(){
+            textLenCheck(this, 2000, "#byteLiveIngCancelMsg");
+        }); 
+
+        $(function(){
+            $("#live_itv_sd").datepicker({
+            });
+            $('#live_itv_st').timepicker({
+                timeFormat: 'H:mm',
+                interval: 5,        // LDK 2020/08/05 -->
+                minTime: '05',
+                maxTime: '11:00pm',
+                startTime: '05:00',
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true     // <--
+            });
+            $(".ui-datepicker").addClass('full_size');
+        });
+
+        // 메시지 전송
+        $(document).off("click", "#send_msg").on("click", "#send_msg", function(e) {
+            //var msg_cont = $("#msg_cont").val().replace(/(?:\r\n|\r|\n)/g, '<br>');
+            var msg_cont = $("#msg_cont").val();
+            $("#msg_gbn_cd").val("99");
+            message_send();
+        });
+
+        // 대화종료
+        $(document).off("click", "#end_msg").on("click", "#end_msg", function(e) {
+            if ("{{.SAuthCd}}" == "01") {
+                $("#msg_gbn_cd").val("02");
+                var gbn = "02";
+                var val = "";
+                var rs = $("#recrut_sn").val();
+                var pp = $("#pp_mem_no").val();
+                ajaxMessageVerify(gbn, val, rs, pp);
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 대화 종료가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // 라이브 인터뷰 요청 취소
+        $(document).off("click", "#btn_live_req_cancel").on("click", "#btn_live_req_cancel", function(e) {
+            // var live_nvn_yn = $(this).data("live_nvn_yn");
+            // if (live_nvn_yn == "Y") {
+            //     $("#live_nvn_yn").val($(this).data("live_nvn_yn"));
+
+            //     if ("{{.SAuthCd}}" == "01") {
+            //         alert("LIVE_NVN");
+
+            //         $("#live_nvn_yn").val($(this).data("live_nvn_yn"));
+
+            //         var live_sn = $(this).data("live_sn");                    
+            //         // var gbn = "11";
+            //         // var val = $("#live_sn").val();
+            //         // var rs = $("#recrut_sn").val();
+            //         // var pp = $("#pp_mem_no").val();
+
+            //         openPopup('pop_req_cancel');
+            //         // var recrut_sn = $(this).data("recrut_sn");
+		    //         // var live_sn = $(this).data("live_sn");		
+		    //         // window.location.href="/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;
+            //     } else {
+            //         openPopup('pop_common_alert');
+            //         $("#alert_text").html("Member 계정은 요청 취소가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            //     } 
+            // } else {
+                $("#live_nvn_yn").val($(this).data("live_nvn_yn"));
+
+                if ("{{.SAuthCd}}" == "01") {
+                    $("#live_sn").val($(this).data("live_sn"));
+                    var gbn = "11";
+                    var val = $("#live_sn").val();
+                    var rs = $("#recrut_sn").val();
+                    var pp = $("#pp_mem_no").val();
+                    ajaxMessageVerify(gbn, val, rs, pp);
+                } else {
+                    openPopup('pop_common_alert');
+                    $("#alert_text").html("Member 계정은 요청 취소가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+                }       
+            //}     
+        });   
+
+        // 라이브 인터뷰 확정 취소
+        $(document).off("click", "#btn_ing_live_req_cancel").on("click", "#btn_ing_live_req_cancel", function(e) {
+            var live_nvn_yn = $(this).data("live_nvn_yn");
+            if (live_nvn_yn == 'Y') {
+                alert("LIVE_NVN");
+                return;
+            }
+
+            if ("{{.SAuthCd}}" == "01") {
+                $("#live_sn").val($(this).data("live_sn"));
+                var gbn = "09";
+                var val = $("#live_sn").val();
+                var rs = $("#recrut_sn").val();
+                var pp = $("#pp_mem_no").val();
+                ajaxMessageVerify(gbn, val, rs, pp);
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 요청 취소가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }            
+        });   
+
+        // 메시지 검증 프로세스
+        var ajaxMessageVerify = function(gbn, val, rs, pp) {
+            /*
+            console.log("gbn_cd : "+gbn);
+            console.log("val : "+val);
+            console.log("recrut_sn : "+rs);
+            console.log("pp_mem_no : "+pp);
+            return;
+            */
+            $.ajax({
+                cache : false,
+                url : '/message/verify',
+                data:{
+                    gbn_cd : gbn,
+                    val : val,
+                    recrut_sn : rs,
+                    pp_mem_no : pp,
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd.toString();
+                    var rtnMsg = rep.RtnMsg
+                    //console.log("rtnCd : "+rtnCd);
+
+                    $("#verify_text").html("");
+                    if(rtnCd == "1"){ // 이상없음
+                        if(gbn == "11") {//요청취소
+                            openPopup('pop_req_cancel');
+                        } else if (gbn == "03") {//대화재시작
+                            openPopup('pop_msg_restart');
+                        } else if (gbn == "02") {//대화종료
+                            openPopup('pop_msg_end');
+                        } else if (gbn == "09") {//확정취소
+                            openPopup('pop_ing_req_cancel');
+                        }
+                    } else if(rtnCd == "11"){ //이미 요청 취소
+                        $("#verify_text").html("해당 라이브 인터뷰 요청 취소는<br>이미 취소된 요청입니다.");
+                        openPopup('pop_msg_verify');
+                    } else if(rtnCd == "3"){ //대화재시작
+                        $("#verify_text").html("이미 대화는 시작되었습니다.<br>계속 대화를 진행해주세요.");
+                        openPopup('pop_msg_verify');
+                    } else if(rtnCd == "2"){ //대화종료
+                        $("#verify_text").html("라이브 인터뷰 요청 혹은 예정 상태인 경우<br>대화를 종료하실 수 없습니다.");
+                        openPopup('pop_msg_verify');
+                    } else if(rtnCd == "7"){ //이미 인터뷰 예정중 취소
+                        $("#verify_text").html("라이브 인터뷰 예정 중입니다.<br>이전 요청 취소는 할 수없습니다.");
+                        openPopup('pop_msg_verify');
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	  
+        }        
+
+        // 라이브 인터뷰 요청 취소(팝업) 확인
+        $(document).off("click", "#btn_cancel_confirm").on("click", "#btn_cancel_confirm", function(e) {
+            if ($("#live_req_cancel_msg_cont").val().length == 0) {
+                $(".live_req_cancel_msg_cont_message").text("라이브 인터뷰 취소 사유를 입력해주세요.");
+                return;
+            }
+            closePopup('pop_req_cancel');
+            $("#msg_gbn_cd").val("11");
+            message_send();
+        });   
+
+        // 라이브 인터뷰 확정 취소(팝업) 확인
+        $(document).off("click", "#btn_ing_cancel_confirm").on("click", "#btn_ing_cancel_confirm", function(e) {
+            if ($("#live_ing_req_cancel_msg_cont").val().length == 0) {
+                $(".live_ing_req_cancel_msg_cont_message").text("라이브 인터뷰 취소 사유를 입력해주세요.");
+                return;
+            }
+            closePopup('pop_ing_req_cancel');
+            $("#msg_gbn_cd").val("09");
+            message_send();
+        });  
+
+
+        // 대화종료 확인(팝업)
+        $(document).off("click", "#btn_end_confirm").on("click", "#btn_end_confirm", function(e) {
+            closePopup('pop_msg_end');
+            $("#msg_gbn_cd").val("02");
+            message_send();
+        });  
+
+        // 대화다시시작
+        $(document).off("click", "#btn_msg_restart").on("click", "#btn_msg_restart", function(e) {
+            if ("{{.SAuthCd}}" == "01") {
+                $("#msg_gbn_cd").val("03");
+                var gbn = "03";
+                var val = "";
+                var rs = $("#recrut_sn").val();
+                var pp = $("#pp_mem_no").val();
+                ajaxMessageVerify(gbn, val, rs, pp);
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 메시지 요청이<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });  
+
+        // 대화다시시작 확인(팝업)
+        $(document).off("click", "#btn_pop_message_restart").on("click", "#btn_pop_message_restart", function(e) {
+            //closePopup('pop_msg_restart')
+            $("#msg_gbn_cd").val("03");
+            message_send();
+        });                   
+
+        var message_send = function(){
+            var recrut_sn = $("#recrut_sn").val();
+            var pp_mem_no = $("#pp_mem_no").val();
+            var msg_gbn_cd = $("#msg_gbn_cd").val();
+            if (msg_gbn_cd == "06") { //라이브 인터뷰 요청 메시지
+                //var msg_cont = filteringXSS($("#live_req_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+                var msg_cont = filteringXSS($("#live_req_msg_cont").val()).replace(/'/gi,"`");
+            } else if (msg_gbn_cd == "99") { // 일반 메시지
+                //var msg_cont = filteringXSS($("#msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+                var msg_cont = filteringXSS($("#msg_cont").val()).replace(/'/gi,"`");
+            } else if (msg_gbn_cd == "11") { // 라이브 인터뷰 요청 취소 메시지
+                //var msg_cont = filteringXSS($("#live_req_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+                var msg_cont = filteringXSS($("#live_req_cancel_msg_cont").val()).replace(/'/gi,"`");                
+            } else if (msg_gbn_cd == "09") { // 라이브 인터뷰 확정 취소 메시지
+                //var msg_cont = filteringXSS($("#live_ing_req_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+                var msg_cont = filteringXSS($("#live_ing_req_cancel_msg_cont").val()).replace(/'/gi,"`");
+            } else { // 그외 메시지는 없음
+                var msg_cont = "";
+            }
+
+            var live_itv_sdt = $("#live_itv_sdt").val();
+            if (live_itv_sdt == undefined) {
+                live_itv_sdt = "";
+            }
+            var arr_pp_chrg_sn = $("#arr_pp_chrg_sn").val();
+            if (arr_pp_chrg_sn == undefined) {
+                arr_pp_chrg_sn = "";
+            }            
+            var live_sn = $("#live_sn").val();
+            if (live_sn == undefined) {
+                live_sn = ""
+            }
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("msg_gbn_cd : "+msg_gbn_cd);
+            console.log("msg_cont : "+msg_cont);
+            console.log("live_itv_sdt : "+live_itv_sdt);
+            console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+            console.log("live_sn : "+live_sn);
+            return;
+            */
+
+            var formData = new FormData();
+            formData.append("recrut_sn", recrut_sn);
+            formData.append("pp_mem_no", pp_mem_no);
+            formData.append("msg_gbn_cd", msg_gbn_cd);
+            formData.append("msg_cont", msg_cont);
+            formData.append("live_itv_sdt", live_itv_sdt);
+            formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+            formData.append("live_sn", live_sn);
+
+            $.ajax({
+                cache : false,
+                url : '/message/send',
+                data : formData,
+                type : 'POST',
+                processData: false,
+                contentType: false,
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if(rtnCd == "1"){
+                        closePopup('pop_live'); //라이브 인터뷰 요청 팝업 닫기
+                        var mem_no = $("#pp_mem_no").val();
+                        var rc_sn = $("#recrut_sn").val();
+                        $(".message_ing .member_li."+mem_no+"."+rc_sn+" .text").text($("#msg_cont").val());
+                        // 메시지 구분에 따른 상태 처리
+                        if (msg_gbn_cd == "06") { //라이브인터뷰 요청
+                            //console.log("라이브인터뷰 요청");
+                            stat_change("06");
+                        } else if (msg_gbn_cd == "11") { //라이브인터뷰 요청취소
+                            stat_change("11");
+                        } else if (msg_gbn_cd == "02") { //대화종료
+                            stat_change("02");
+                        } else if (msg_gbn_cd == "03") { //대화재시작
+                            stat_change("03");
+                        } else if (msg_gbn_cd == "09") { //라이브인터뷰 확정취소
+                            stat_change("09");
+                        } else {
+                            stat_change("999");
+                        }
+                        message_list();
+                        setTimeout(function() { 
+                        $("#mydiv").animate({ scrollTop: $('#mydiv').prop("scrollHeight")}, 0);
+                        }, 200);
+                    } else if(rtnCd == "2"){
+                        console.log("라이브 인터뷰를 이미 수락을 했을 경우 취소가 불가합니다.");
+                        return;
+                    } else {
+                        console.log("message : " + rtnMsg);
+                        // console.log("[AJAX(/message/send)]: Login");
+                        // window.location.href = "/login";
+                    }
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	  
+        }	
+
+        var stat_change = function(gbn) {
+            // 입력창 초기화
+            $("#live_itv_sdt").val("");
+            $("#arr_pp_chrg_sn").val("");
+            $("#live_sn").val("");
+            $("#live_req_cancel_msg_cont").val("");
+            $("#live_req_cont").val("");
+            $("#msg_cont").val("");
+
+            var html = "";
+            if(gbn == "06") { //라이브 인터뷰 요청
+                // LDK 2021/01/19(Review!!!) : 다대다 라이브 일단 주석처리
+                // $(".userInfo.live_stat").find("ul3").children().remove();
+                // html += "<a href=\"javascript:void(0);\" id=\"live_req_ing\" class=\"sendLive reqIng\">라이브 인터뷰 요청 상태</a>";
+                // $(".userInfo.live_stat").find("ul3").append(html);
+                // <--
+            } else if(gbn == "11") { //라이브 인터뷰 요청 취소
+                // LDK 2021/01/19(Review!!!) : 다대다 라이브 일단 주석처리
+                // $(".userInfo.live_stat").find("ul3").children().remove();
+                // html += "<a href=\"javascript:void(0);\" id=\"live_send_req\" class=\"sendLive sendReq\"><span>라이브 인터뷰 요청하기</span></a>";
+                // $(".userInfo.live_stat").find("ul3").append(html);
+                // <--
+            } else if(gbn == "09") { //라이브 인터뷰 확정 취소
+                // LDK 2021/01/19(Review!!!) : 다대다 라이브 일단 주석처리
+                // $(".userInfo.live_stat").find("ul3").children().remove();
+                // html += "<a href=\"javascript:void(0);\" id=\"live_send_req\" class=\"sendLive sendReq\"><span>라이브 인터뷰 요청하기</span></a>";
+                // $(".userInfo.live_stat").find("ul3").append(html);
+                // <--
+            } else if(gbn == "02") { //대화종료
+                $(".inputMessage").children().remove();
+                html += "<textarea name=\"\" class=\"disabled\" disabled id=\"\" placeholder=\"대화가 종료되었습니다.\"></textarea>";
+                html += "<a href=\"javascript:void(0);\" class=\"btn type_blue st02 disabled\">전송</a>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_msg_restart\" class=\"btn end\">다시 대화하기</a>";
+                html += "<div class=\"tooltip\">";
+                html += "    <p class=\"text\"><img src=\"/static/images/img-tooltip-02.png\" alt=\"지원자와 다시 대화를 주고받을 수 있게 됩니다.\"></p>";
+                html += "</div>";
+                $(".inputMessage").append(html);
+                
+                // 종료탭으로 이동
+                $(".tab_end").click();
+                // 카운트 세팅
+                var ing_cnt = parseInt($("#message_ing_cnt").text());
+                var end_cnt = parseInt($("#message_end_cnt").text());
+                $("#ori_ing_cnt").val(ing_cnt-1);
+                $("#ori_end_cnt").val(end_cnt+1);
+                $("#message_ing_cnt").text((ing_cnt-1).toString());
+                $("#message_end_cnt").text((end_cnt+1).toString());
+            } else if(gbn == "03") { //대화재시작
+                console.log("다시대화시작");
+                // 진행탭으로 이동
+                $(".tab_ing").click();
+                // 카운트 세팅
+                var ing_cnt = parseInt($("#message_ing_cnt").text());
+                var end_cnt = parseInt($("#message_end_cnt").text());
+                $("#ori_ing_cnt").val(ing_cnt+1);
+                $("#ori_end_cnt").val(end_cnt-1);
+                $("#message_ing_cnt").text((ing_cnt+1).toString());
+                $("#message_end_cnt").text((end_cnt-1).toString());
+            }
+            //<a href="javascript:void(0);" id="live_schedule" class="sendLive interview">라이브 인터뷰 예정</a>
+        }
+        
+        var message_list = function(){
+            var	pp_mem_no = $("#pp_mem_no").val();
+            var recrut_sn = $("#recrut_sn").val();
+
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            return;
+            */
+
+            $.ajax({
+                cache : false,
+                url : '/message/list',
+                data:{
+                    recrut_sn : recrut_sn,
+                    pp_mem_no : pp_mem_no,
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    console.log("msg_list");
+                    $(".messageBox.msgList").find("ul2").children().remove();
+                    $.each(rep.RtnMessageListData,function(e) {
+                        var html = "";
+                        if (rep.RtnMessageListData[e].MlLdYn == "Y") {//라인여부
+                            html += "    <p class=\"date\"><span>"+rep.RtnMessageListData[e].MlLdDt+"</span></p>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "01") {//기업 시작 메시지 01
+                            html += "        <div class=\"adminView\">";
+                            html += "            <p class=\"tit\">기업에게만 보이는 메시지입니다.</p>";
+                            html += "            <dl>";
+                            html += "                <dt>대화가 시작되었습니다!</dt>";
+                            html += "                <dd>안녕하세요. <strong>"+rep.RtnMessageListData[e].MlEntpNm+"</strong> 님! 직감의 채용 프로세스를 이용해주셔서 감사합니다.</dd>";
+                            html += "                <dd>지금부터 지원자 <strong>"+rep.RtnMessageListData[e].MlMemNm+"</strong> 님과 메시지를 통해 채용 프로세스를 진행하실 수 있습니다.</dd>";
+                            html += "                <dd>직감 메시지를 통해 <strong>채용을 편하게, 영상을 면접으로</strong>진행해보세요!</dd>";
+                            html += "            </dl>";
+                            html += "        </div>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "04") {//합격 축하 메시지 04
+                            html += "        <div class=\"messageAdmin\">";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box pass\">";
+                            html += "                    <p class=\"tit\">축하합니다!</p>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>    ";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "06") {//인터뷰 요청 메시지 06
+                            html += "        <div class=\"messageAdmin\">";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box live\">";
+                            html += "                    <p class=\"tit\">라이브 인터뷰 요청 메시지</p>";
+                            html += "                    <div class=\"reqLiveTime\">";
+                            html += "                        <p class=\"text\"><span>라이브 인터뷰 요청시간</span></p>";
+                            html += "                        <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                        <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "                    </div>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            html += "                    <div class=\"btnSet\">"; 
+                                
+                            if (rep.RtnMessageListData[e].MlLiveNvnYn == 'Y') {         
+                                html += "                        <a href=\"javascript:void(0);\" class=\"btn type_red\" id=\"btn_live_nvn_detail_go\" data-recrut_sn=\""+rep.RtnMessageListData[e].MlRecrutSn+"\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">상세 보기</a>";
+                            } else {                                
+                                html += "                        <a href=\"javascript:void(0);\" class=\"btn type_red\" id=\"btn_live_req_cancel\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">요청 취소하기</a>";
+                            }    
+
+                            html += "                    </div>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "11") {//라이브 인터뷰 요청 취소 메시지
+                            html += "        <div class=\"messageAdmin\">";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box live\">";
+                            html += "                    <p class=\"tit\">라이브 인터뷰 요청 취소 메시지</p>";
+                            html += "                    <div class=\"reqLiveTime cancel\">";
+                            html += "                        <p class=\"text\"><span>라이브 인터뷰 요청시간</span></p>";
+                            html += "                        <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                        <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "                    </div>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            
+                            if (rep.RtnMessageListData[e].MlLiveNvnYn == 'Y') {    
+                                html += "                    <div class=\"btnSet\">"; 
+                                html += "                        <a href=\"javascript:void(0);\" class=\"btn type_red\" id=\"btn_live_nvn_detail_go\" data-recrut_sn=\""+rep.RtnMessageListData[e].MlRecrutSn+"\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">상세 보기</a>"; 
+                                html += "                    </div>";
+                            }
+
+                            html += "                    <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "                </div>";
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "99" && rep.RtnMessageListData[e].MlMemGbn == "E") {//기업 일반 메시지 99
+                            html += "        <div class=\"messageAdmin\">";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box\">";
+                            html += "                    <p class=\"text\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </p>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "99" && rep.RtnMessageListData[e].MlMemGbn == "P") {//개인 일반 메시지 99
+                            html += "        <div class=\"messageUser\">";
+                            html += "            <span class=\"userImg\"><img src=\""+rep.RtnMessageListData[e].MlPtoPath+"\" onerror=\"this.src='/static/images/img-profile-empty-02.png'\" width=\"52\" height=\"52\" alt=\"\"></span>";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box\">";
+                            html += "                    <p class=\"text\" style=\"white-space:pre-line;\">"+rep.RtnMessageListData[e].MlMsgCont+"</p>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "07") {//라이브 인터뷰 수락 메시지 07
+                            html += "        <div class=\"messageUser\">";
+                            html += "            <span class=\"userImg\"><img src=\""+rep.RtnMessageListData[e].MlPtoPath+"\" onerror=\"this.src='/static/images/img-profile-empty-02.png'\" width=\"52\" height=\"52\" alt=\"\"></span>";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box\">";
+                            html += "                    <p class=\"text\">요청하신 라이브 인터뷰를 수락합니다.</p>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";
+                            html += "        <div class=\"liveView\">";
+                            html += "            <p class=\"tit\">라이브 인터뷰 진행이 확정되었습니다!</p>";
+                            html += "            <div class=\"reqLiveTime\">";
+                            html += "                <p class=\"text\"><span>라이브 인터뷰 요청시간</span></p>";
+                            html += "                <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "            </div>";
+                            html += "            <ul class=\"liveInfo\">";
+                            html += "                <li><span>진행이 확정된 라이브 인터뷰는 <strong>[라이브 인터뷰]메뉴</strong>에서 확인이 가능합니다.</span></li>";
+                            html += "                <li><span>'라이브 인터뷰'메뉴 혹은 아래 <strong>[시작하기] 버튼</strong>을 통해 라이브 인터뷰를 확인하실 수 있습니다.</span></li>";
+                            html += "            </ul>";
+                            html += "            <div class=\"btnSet\">";
+
+                            if (rep.RtnMessageListData[e].MlLiveNvnYn == 'Y') {
+                                html += "                <a href=\"javascript:void(0);\" id=\"btn_live_nvn_detail_go\" class=\"btn type_red\" data-recrut_sn=\""+rep.RtnMessageListData[e].MlRecrutSn+"\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">상세 보기</a>";
+                            } else {
+                                html += "                <a href=\"javascript:void(0);\" id=\"btn_ing_live_req_cancel\" class=\"btn type_red\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">취소하기</a>";
+                                html += "                <a href=\"javascript:void(0);\" class=\"btn start\" id=\"btn_live_stat\" data-recrut_sn=\""+rep.RtnMessageListData[e].MlRecrutSn+"\" data-pp_mem_no=\""+rep.RtnMessageListData[e].MlPpMemNo+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\"><span>시작하기</span></a>";
+                            }
+
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "08") {//라이브 인터뷰 거절 메시지 08
+                            html += "        <div class=\"messageUser\">";
+                            html += "            <span class=\"userImg\"><img src=\""+rep.RtnMessageListData[e].MlPtoPath+"\" onerror=\"this.src='/static/images/img-profile-empty-02.png'\" width=\"52\" height=\"52\" alt=\"\"></span>";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box live\">";
+                            html += "                    <p class=\"tit\">라이브 인터뷰 거절 메시지2</p>";
+                            html += "                    <div class=\"reqLiveTime\">";
+                            html += "                        <p class=\"text\"><span>라이브 인터뷰 요청시간</span></p>";
+                            html += "                        <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                        <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "                    </div>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "09" && rep.RtnMessageListData[e].MlMemGbn == "E") {//라이브 인터뷰 기업 취소 메시지 09
+                            html += "        <div class=\"messageAdmin\">";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box live\">";
+                            html += "                    <p class=\"tit\">라이브 인터뷰 취소 메시지</p>";
+                            html += "                    <div class=\"reqLiveTime cancel\">";
+                            html += "                        <p class=\"text\"><span>라이브 인터뷰 예정</span></p>";
+                            html += "                        <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                        <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "                    </div>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            html += "                    <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "                </div>";
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "09" && rep.RtnMessageListData[e].MlMemGbn == "P") {//라이브 인터뷰 개인 취소 메시지 09
+                            html += "        <div class=\"messageUser\">";
+                            html += "        <span class=\"userImg\"><img src=\""+rep.RtnMessageListData[e].MlPtoPath+"\" onerror=\"this.src='/static/images/img-profile-empty-02.png'\" width=\"52\" height=\"52\" alt=\"\"></span>";
+                            html += "            <div class=\"mWrap\">";
+                            html += "                <div class=\"box live\">";
+                            html += "                    <p class=\"tit\">라이브 인터뷰 취소 메시지</p>";
+                            html += "                    <div class=\"reqLiveTime cancel\">";
+                            html += "                        <p class=\"text\"><span>라이브 인터뷰 예정</span></p>";
+                            html += "                        <p class=\"date\">"+rep.RtnMessageListData[e].MlLiveItvSday+"</p>";
+                            html += "                        <p class=\"time\">"+rep.RtnMessageListData[e].MlLiveItvStime+"</p>";
+                            html += "                    </div>";
+                            html += "                    <div class=\"message\" style=\"white-space:pre-line;\">";
+                            html += "                        "+rep.RtnMessageListData[e].MlMsgCont+"";
+                            html += "                    </div>";
+                            html += "                </div>";
+                            html += "                <span class=\"date\">"+rep.RtnMessageListData[e].MlLdDt2+"</span>";
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "10") {//라이브 인터뷰 종료 메시지 10
+                            html += "        <div class=\"liveView end\">";
+                            html += "            <p class=\"tit\">라이브 인터뷰가 종료되었습니다.</p>";
+                            html += "            <table>";
+                            html += "                <colgroup>";
+                            html += "                    <col width=\"170px\"/><col />";
+                            html += "                </colgroup>";
+                            html += "                <tr>";
+                            html += "                    <th>날짜</th>";
+                            html += "                    <td>"+rep.RtnMessageListData[e].MlLiveItvSday+"</td>";
+                            html += "                </tr>";
+                            html += "                <tr>";
+                            html += "                    <th>시작</th>";
+                            html += "                    <td>"+rep.RtnMessageListData[e].MlLiveItvStime+"</td>";
+                            html += "                </tr>";
+                            html += "                <tr>";
+                            html += "                    <th>종료</th>";
+                            html += "                    <td>"+rep.RtnMessageListData[e].MlLiveItvEtime+"</td>";
+                            html += "                </tr>";
+                            html += "                <tr>";
+                            html += "                    <th class=\"totalTime\">총 면접 시간</th>";
+                            html += "                    <td>"+rep.RtnMessageListData[e].MlLiveItvJt+"</td>";
+                            html += "                </tr>";
+                            html += "            </table>";
+                            html += "            <div class=\"btnSet\">";
+                            
+                            if (rep.RtnMessageListData[e].MlLiveNvnYn == 'Y') {        
+                                html += "                <a href=\"javascript:void(0);\" id=\"btn_live_nvn_detail_go\" class=\"btn type_red\" data-recrut_sn=\""+rep.RtnMessageListData[e].MlRecrutSn+"\" data-live_sn=\""+rep.RtnMessageListData[e].MlLiveSn+"\" data-live_nvn_yn=\""+rep.RtnMessageListData[e].MlLiveNvnYn+"\">상세 보기</a>";
+                            } else {
+                                html += "                <a href=\"javascript:void(0);\" id=\"applicant_detail\" class=\"btn type_blue st02\">지원자 상세 보기</a>";
+                            }
+                            html += "            </div>";
+                            html += "        </div>";                            
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "02") {//대화 종료 메시지 02
+                            html += "        <div class=\"adminView\">";
+                            html += "            <p class=\"tit\">기업에게만 보이는 메시지입니다.</p>";
+                            html += "            <dl>";
+                            html += "                <dt>대화가 종료되었습니다!</dt>";
+                            html += "                <dd>직감 채용 프로세스를 이용해주셔서 감사합니다.</dd>";
+                            html += "                <dd>지원자 <strong>"+rep.RtnMessageListData[e].MlMemNm+"</strong>님과의 대화가 종료되어 더이상 메시지 수신 및 발신이 불가능합니다.</dd>";
+                            html += "                <dd>종료된 대화는 오른쪽 메시지 리스트의 [종료]탭을 클릭하여 확인해주세요.</dd>";
+                            html += "            </dl>";
+                            html += "            <div class=\"btnSet\">";
+                            html += "                <a href=\"javascript:void(0);\" id=\"btn_msg_restart\" class=\"btn type_blue st02\">다시 대화하기</a>";
+                            html += "            </div>";
+                            html += "        </div>";
+                        }
+                        if (rep.RtnMessageListData[e].MlMsgGbnCd == "03") {//대화 다시시작 메시지 03
+                            html += "        <div class=\"adminView\">";
+                            html += "            <p class=\"tit\">기업에게만 보이는 메시지입니다.</p>";
+                            html += "            <dl>";
+                            html += "                <dt>다시 대화가 시작되었습니다!</dt>";
+                            html += "                <dd>지원자 <strong>"+rep.RtnMessageListData[e].MlMemNm+"</strong>님과의 다시 메시지를 주고 받으실 수 있습니다.</dd>";
+                            html += "                <dd>직감 메시지를 통해 더욱 편하게 채용 프로세스를 진행해보세요!</dd>";
+                            html += "            </dl>";
+                            html += "        </div>";
+                        }
+                        $(".messageBox.msgList").find("ul2").append(html);
+                    })
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	  
+        }	
+
+        // 검색(Enter Key)
+        $(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+            if (event.keyCode == 13) {
+                ajaxMemberList();
+            }
+        });
+
+        // 검색 (클릭)
+        $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+            ajaxMemberList();
+        });        
+
+        // 메시지 리스트 TAB 대화중
+        $(document).off("click", ".tab_ing").on("click", ".tab_ing", function(e){
+            $(".message_end").css("display","none");
+            $(".message_ing").css("display","");
+            $("#msg_end_yn").val("0");
+            $(this).addClass("active");
+            $(".tab_end").removeClass("active");
+            var html = "";
+            $(".inputMessage").children().remove();
+            if("{{.SAuthCd}}" == "01") { //어드민계정
+                html += "<textarea name=\"msg_cont\" id=\"msg_cont\" placeholder=\"메시지를 입력하세요.\"></textarea>";
+                html += "<a href=\"javascript:void(0);\" id=\"send_msg\" class=\"btn type_blue st02\">전송</a>";
+                html += "<a href=\"javascript:void(0);\" id=\"end_msg\" class=\"btn end\">대화 종료하기</a>";
+                html += "<div class=\"tooltip\">";
+                html += "<p class=\"text\"><img src=\"/static/images/img-tooltip-01.png\" alt=\"지원자와의 대화가 종료되어 메시지를 주고 받을 수 없게 됩니다.\종료된 대화는 오른쪽 [종료] 탭에서 확인 가능합니다.></p>";
+                html += "</div>";
+            } else { //멤버계정
+                html += "    <textarea name=\"\" class=\"disabled\" disabled id=\"\" placeholder=\"Member 계정은 메시지를 보내실 수 없습니다.\"></textarea>";
+                html += "    <a href=\"javascript:void(0);\" class=\"btn type_blue st02 disabled\">전송</a>";
+            }
+            $(".inputMessage").append(html);
+            ajaxMemberList();
+            //$(".message_ing .member_li").first().click();
+        });
+
+        // 메시지 리스트 TAB 종료
+        $(document).off("click", ".tab_end").on("click", ".tab_end", function(e){
+            $(".message_ing").css("display","none");
+            $(".message_end").css("display","");
+            $("#msg_end_yn").val("1");
+            $(this).addClass("active");
+            $(".tab_ing").removeClass("active");
+            $(".message_end .member_li").first().click();
+            var html = "";
+            $(".inputMessage").children().remove();
+            if("{{.SAuthCd}}" == "01") { //어드민계정
+                var cnt = parseInt($("#message_end_cnt").text());
+                html += "<textarea name=\"\" class=\"disabled\" disabled id=\"\" placeholder=\"대화가 종료되었습니다.\"></textarea>";
+                html += "<a href=\"javascript:void(0);\" class=\"btn type_blue st02 disabled\">전송</a>";
+                if (cnt == 0) {
+                    html += "<a href=\"javascript:void(0);\" id=\"\" class=\"btn end disabled\">다시 대화하기</a>";
+                } else {
+                    html += "<a href=\"javascript:void(0);\" id=\"btn_msg_restart\" class=\"btn end\">다시 대화하기</a>";
+                }
+                html += "<div class=\"tooltip\">";
+                html += "    <p class=\"text\"><img src=\"/static/images/img-tooltip-02.png\" alt=\"지원자와 다시 대화를 주고받을 수 있게 됩니다.\"></p>";
+                html += "</div>";
+            } else { //멤버계정
+                html += "    <textarea name=\"\" class=\"disabled\" disabled id=\"\" placeholder=\"Member 계정은 메시지를 보내실 수 없습니다.\"></textarea>";
+                html += "    <a href=\"javascript:void(0);\" class=\"btn type_blue st02 disabled\">전송</a>";
+            }
+            $(".inputMessage").append(html);
+            ajaxMemberList();
+        });
+
+        // 진행 지원자 선택
+        $(document).off("click", ".message_ing .member_li").on("click", ".message_ing .member_li", function(e){
+            $(".message_ing .member_li").removeClass("now");
+            $(this).removeClass("new");
+            $(this).addClass("now");
+            $("#cfrm_yn").val($(this).data("cfrm_yn"));
+            $("#recrut_sn").val($(this).data("recrut_sn"));
+            $("#last_msg_gbn_cd").val($(this).data("last_msg_gbn_cd"));
+            $("#msg_cnt").val($(this).data("msg_cnt"));
+            applicant_select();
+        });
+
+        // 종료 지원자 선택
+        $(document).off("click", ".message_end .member_li").on("click", ".message_end .member_li", function(e){
+            $(".message_end .member_li").removeClass("now");
+            $(this).removeClass("new");
+            $(this).addClass("now");
+            $("#cfrm_yn").val($(this).data("cfrm_yn"));
+            $("#recrut_sn").val($(this).data("recrut_sn"));
+            $("#last_msg_gbn_cd").val($(this).data("last_msg_gbn_cd"));
+            $("#msg_cnt").val($(this).data("msg_cnt"));
+            applicant_select();
+        });
+
+        var applicant_select = function(){
+            var	pp_mem_no = $(".messageList").find(".now").attr("class").split(" ")[1];	
+            var recrut_sn = $("#recrut_sn").val();
+            $("#select_member").val(pp_mem_no);
+            $("#select_sn").val(recrut_sn);
+            var cfrm_yn = $("#cfrm_yn").val();
+            var last_msg_gbn_cd = $("#last_msg_gbn_cd").val();
+            $("#pp_mem_no").val(pp_mem_no);
+            var data = "";
+            data += "recrut_sn=" + recrut_sn;
+            data += "&pp_mem_no=" + pp_mem_no;
+            /*
+            console.log("data : "+data);
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            return;
+            */
+
+            if (cfrm_yn == "1") { //메시지 확인
+                $(".content.message_detail_info").load("/message/detail?"+data);
+            } else { //메시지 미확인
+                $.ajax({
+                    cache : false,
+                    url : '/message/confirm/update',
+                    data:{
+                        recrut_sn : recrut_sn,
+                        pp_mem_no : pp_mem_no,
+                    },
+                    type : 'POST',
+                    dataType : "json",
+                    error : function(e) {
+                        console.log("error" + e);
+                    },
+                    success : function(rep) {
+                        var rtnCd = rep.RtnCd
+                        var rtnMsg = rep.RtnMsg
+
+                        if(rtnCd == "1"){
+                            $(".content.message_detail_info").load("/message/detail?"+data);
+                        } else {
+                            console.log("message : " + rtnMsg);
+                        }
+                    },
+                    error : function(e) {
+                        console.log("error + "+e);
+                    }
+                });	  
+            }
+        }	 
+
+      // 리스트 페이지 AJAX
+      var ajaxMemberList = function(v) {
+        var recrut_sn = $("#recrut_sn").val();
+        var msg_end_yn = $("#msg_end_yn").val();
+        var keyword = $("#keyword").val().replace(/'/gi,"`");
+        /*
+        console.log("msg_end_yn : "+msg_end_yn);
+        console.log("recrut_sn : "+recrut_sn);
+        return;
+        */
+        
+        $.ajax({
+            type: "POST",
+            url: "/message",
+            data:{
+                recrut_sn : recrut_sn,
+                msg_end_yn : msg_end_yn,
+                keyword : keyword,
+            },
+            dataType: "json",
+            error : function() {
+            },
+            success : function(rep) {
+                if(rep.RtnMessageMemberListData.length > 0){
+                    $(".messageList").find("ul").children().remove();
+                    $.each(rep.RtnMessageMemberListData,function(e) {
+
+                    var html = "";
+                    if (rep.RtnMessageMemberListData[e].MmMsgCfrmYn == "0") {
+                        html += "<li class=\"new member_li "+rep.RtnMessageMemberListData[e].MmPpMemNo+" "+rep.RtnMessageMemberListData[e].MmRecrutSn+"\" data-recrut_sn=\""+rep.RtnMessageMemberListData[e].MmRecrutSn+"\" data-cfrm_yn=\""+rep.RtnMessageMemberListData[e].MmMsgCfrmYn+"\" data-last_msg_gbn_cd=\""+rep.RtnMessageMemberListData[e].MmLastMsgGbnCd+"\" data-msg_cnt=\""+rep.RtnMessageMemberListData[e].MmMsgCnt+"\"><a href=\"javascript:void(0);\">";
+                    } else {
+                        html += "<li class=\"member_li "+rep.RtnMessageMemberListData[e].MmPpMemNo+" "+rep.RtnMessageMemberListData[e].MmRecrutSn+"\" data-recrut_sn=\""+rep.RtnMessageMemberListData[e].MmRecrutSn+"\" data-cfrm_yn=\""+rep.RtnMessageMemberListData[e].MmMsgCfrmYn+"\" data-last_msg_gbn_cd=\""+rep.RtnMessageMemberListData[e].MmLastMsgGbnCd+"\" data-msg_cnt=\""+rep.RtnMessageMemberListData[e].MmMsgCnt+"\"><a href=\"javascript:void(0);\">";
+                    }
+                    html += "<span class=\"userImg\"><img src=\""+rep.RtnMessageMemberListData[e].MmPtoPath+"\" onerror=\"this.src='/static/images/img-profile-empty-02.png'\" width=\"58\" height=\"58\" alt=\"\"></span>";
+                    html += "<span class=\"userName\">"+rep.RtnMessageMemberListData[e].MmNm+"</span>";
+                    html += "<span class=\"text\">"+rep.RtnMessageMemberListData[e].MmMsgCont.replace(/<br>/gi,"")+"</span>";
+                    html += "<span class=\"date\">"+rep.RtnMessageMemberListData[e].MmRegDt+"</span>";
+                    html += "</a></li>";
+                    //$("#message_ing_cnt").text(rep.RtnMessageMemberListData[0].MmTotCnt);
+                    if (keyword.trim().length == 0) {
+                        $("#message_ing_cnt").text($("#ori_ing_cnt").val());
+                        $("#message_end_cnt").text($("#ori_end_cnt").val());
+                    } else {
+                        if (msg_end_yn == "0") {
+                            $("#message_ing_cnt").text(rep.RtnMessageMemberListData[0].MmTotCnt);
+                            $("#message_end_cnt").text("0");
+                        } else {
+                            $("#message_ing_cnt").text("0");
+                            $("#message_end_cnt").text(rep.RtnMessageMemberListData[0].MmTotCnt);
+                        }
+                    }
+                    $(".messageList").find("ul").append(html);
+                })
+                if (msg_end_yn == "0") {
+                    $(".messageList.message_ing .member_li").first().click();
+                } else {
+                    $(".messageList.message_end .member_li").first().click();
+                }
+                } else {
+                    $(".messageList").find("ul").children().remove();
+                    var html = "";
+                    html += "<div class=\"messageList message_nodata\">";
+                    if (msg_end_yn == "0") {
+                        html += "<p class=\"noData\">진행 중인 대화가 없습니다.</p>";
+                        $("#message_ing_cnt").text("0");
+                        $("#message_end_cnt").text("0");
+                    } else {
+                        html += "<p class=\"noData\">종료된 대화가 없습니다.</p>";
+                        $("#message_ing_cnt").text("0");
+                        $("#message_end_cnt").text("0");
+                    }
+                    html += "</div>";
+                    $.each(rep.RtnMessageMemberListData,function(e) {
+                    if (keyword.trim().length == 0) {
+                        $("#message_ing_cnt").text($("#ori_ing_cnt").val());
+                        $("#message_end_cnt").text($("#ori_end_cnt").val());
+                    } else {
+                        if (msg_end_yn == "0") {
+                            $("#message_ing_cnt").text(rep.RtnMessageMemberListData[0].MmTotCnt);
+                            $("#message_end_cnt").text("0");
+                        } else {
+                            $("#message_ing_cnt").text("0");
+                            $("#message_end_cnt").text(rep.RtnMessageMemberListData[0].MmTotCnt);
+                        }
+                    }
+                })
+                $(".messageList").find("ul").append(html);
+              }
+            }
+          });				
+        }   
+
+        // LDK 2020/12/28 : 다대다 라이브 처리 -->
+        // 요청 취소
+        // 확정 취소
+        // 취소하기
+        // 들어가기
+        var live_nvn_proc = function (gbn_cd) {			
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";
+			var live_stat_cd = "{{.LiveStatCd}}";
+			
+			var apply_mem_sn_arr = [];
+			var push_apply_mem_sn_arr = [];
+			var applyList = {{.LiveApplyList}};
+			for (var i = 0; i < applyList.length; i++) {
+				apply_mem_sn_arr.push(applyList[i].LmPpMemNo);            				
+				push_apply_mem_sn_arr.push({pp_mem_no:applyList[i].LmPpMemNo, name:applyList[i].LmNm});            
+			}
+			
+			var arr_pp_chrg_sn = [];
+			var memList = {{.LiveMemList}};
+			for (var i = 0; i < memList.length; i++) {				
+				arr_pp_chrg_sn.push(memList[i].LmPpChrgSn);
+			}			
+			
+			var msg_cont = filteringXSS($("#live_itv_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+
+			var msg_gbn_cd = gbn_cd;		// 취소	
+			
+			/*
+			console.log("recrut_sn : "+recrut_sn);
+			console.log("msg_gbn_cd : "+msg_gbn_cd);
+			console.log("msg_cont : "+msg_cont);
+			console.log("live_itv_sdt : "+live_itv_sdt);
+			console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+			console.log("live_sn : "+live_sn);
+			return;
+			*/
+			console.log("arr_pp_chrg_sn : "+JSON.stringify(arr_pp_chrg_sn));
+			console.log("apply_mem_no_arr : "+JSON.stringify(apply_mem_sn_arr));
+			console.log("push_apply_mem_sn_arr : "+JSON.stringify(push_apply_mem_sn_arr));
+
+			var formData = new FormData();
+			formData.append("recrut_sn", recrut_sn);			
+			formData.append("msg_gbn_cd", msg_gbn_cd);
+			formData.append("msg_cont", msg_cont);
+			formData.append("live_itv_sdt", "");
+			formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+			formData.append("apply_mem_no_arr", apply_mem_sn_arr);
+			formData.append("live_sn", live_sn);
+            formData.append("push_apply_mem_sn_arr", JSON.stringify(push_apply_mem_sn_arr));
+            formData.append("check_apply_cnt", 0);
+            formData.append("check_mem_cnt", 0);
+			
+			// 메시지 등록처리
+			$.ajax({
+				cache: false,
+				url: '/live/nvn/proc',
+				data: formData,
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				error: function (e) {
+					console.log("error" + e);
+				},
+				success: function (rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+					if (rtnCd == "1") {						
+						var lv_sn = live_sn;						
+						var rc_sn = recrut_sn;
+						
+						window.location.href="/live/nvn/detail?recrut_sn="+rc_sn+"&live_sn="+lv_sn;						
+					} else {
+						console.log("message : " + rtnMsg);
+						console.log("[AJAX(/live/nvn/proc)]: Login");
+						window.location.href = "/login";
+					}
+				},
+				error: function (e) {
+					console.log("error + " + e);
+				}
+			});
+        };   
+        
+        // 라이브 인터뷰 상세 화면 가기
+        $(document).off("click", "#btn_live_nvn_detail_go").on("click", "#btn_live_nvn_detail_go", function(e) {
+            $("#live_nvn_yn").val($(this).data("live_nvn_yn"));
+            
+            var recrut_sn = $(this).data("recrut_sn");
+		    var live_sn = $(this).data("live_sn");		
+		    window.location.href="/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;            
+        });   
+
+        // 메시지 검증 프로세스
+        var ajaxLiveNvnMessageVerify = function(gbn, val, rs, pp) {
+            /*
+            console.log("gbn_cd : "+gbn);
+            console.log("val : "+val);
+            console.log("recrut_sn : "+rs);
+            console.log("pp_mem_no : "+pp);
+            return;
+            */
+            $.ajax({
+                cache : false,
+                url : '/live/nvn/message/verify',
+                data:{
+                    gbn_cd : gbn,
+                    val : val,
+                    recrut_sn : rs,
+                    pp_mem_no : pp,
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd.toString();
+                    var rtnMsg = rep.RtnMsg
+                    //console.log("rtnCd : "+rtnCd);
+
+                    $("#verify_text").html("");
+                    if(rtnCd == "1"){ // 이상없음
+                        if(gbn == "11") {//요청취소
+                            openPopup('pop_req_cancel');
+                        } else if (gbn == "09") {//확정취소
+                            openPopup('pop_ing_req_cancel');
+                        }
+                    } else if(rtnCd == "11"){ //이미 요청 취소
+                        $("#verify_text").html("해당 라이브 인터뷰 요청 취소는<br>이미 취소된 요청입니다.");
+                        openPopup('pop_msg_verify');
+                    } else if(rtnCd == "7"){ //이미 인터뷰 예정중 취소
+                        $("#verify_text").html("라이브 인터뷰 예정 중입니다.<br>이전 요청 취소는 할 수없습니다.");
+                        openPopup('pop_msg_verify');
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	  
+        }    
+        //<--
+
+        // 다대다 라이브
+        var liveNvnReq = function (recrut_sn, pp_mem_no, name, sex, age) {
+            var param = [];
+
+            // var recrut_sn = "{{.RecrutSn}}";            
+            // var pp_mem_no = "{{.PpMemNo}}";            
+            // var name = "{{.Nm}}";
+            // var sex = "{{.Sex}}";
+            // var age = "{{.Age}}";
+
+            var select_recrut_sn = recrut_sn;
+
+            param.push({pp_mem_no:pp_mem_no, name:name, sex:sex, age:Number(age)});
+
+            console.log(`[live_itv_nvn_req][confirm] name:${name}, sex:${sex}, age:${age}, recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}`);
+            
+            var popW = 800;
+            var popH = 1024;
+            var popX = (screen.width / 2) - (popW/2);
+            var popY = (screen.height / 2) - (popH/2);
+            
+            var uri = `/live/nvn/req/popup?recrut_sn=${select_recrut_sn}&apply_mem_list=${JSON.stringify(param)}&req_to_detail=false&recrut_change=true`;
+            var encodedUri = encodeURI(uri);
+            
+            var result = window.open(encodedUri,                                    
+                                    "_blank",
+                                    "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+            result.focus();			
+
+            result.onbeforeunload = function(){ 	
+            }
+        }
+
+        $(document).off("click", "#btn_live_nvn_detail_go").on("click", "#btn_live_nvn_detail_go", function(e) {
+            // old id="live_req_ing">라이브 인터뷰 요청 상태</a>
+            // old id="live_schedule">라이브 인터뷰 요청 상태</a>
+            // old id="live_req_end">라이브 인터뷰 요청 상태</a>
+                
+            var recrut_sn = $(this).data("recrut_sn");
+            var live_sn = $(this).data("live_sn");		
+            var pp_mem_no = $(this).data("pp_mem_no");		
+            
+            console.log(`[btn_live_nvn_detail_go] recrut_sn: ${recrut_sn}, live_sn(last):${live_sn}, pp_mem_no:${pp_mem_no}`);
+            
+            if (recrut_sn && live_sn) {
+                window.location.href = "/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;             
+            }
+        });   
+
+        // 라이브 인터뷰 요청
+        $(document).off("click", "#live_nvn_send_req").on("click", "#live_nvn_send_req", function (e) {
+
+            var recrut_sn = $(this).data("recrut_sn");
+            var live_sn = $(this).data("live_sn");
+            var pp_mem_no = $(this).data("pp_mem_no");
+            var nm = $(this).data("nm");
+            var sex = $(this).data("sex");
+            var age = $(this).data("age");
+
+            console.log(`[live_nvn_send_req] recrut_sn: ${recrut_sn}, live_sn(last):${live_sn}, pp_mem_no:${pp_mem_no}, nm:${nm}, sex:${sex}, age:${age}`); 
+            
+            if ("{{.SAuthCd}}" == "01") {
+                liveNvnReq(recrut_sn, pp_mem_no, nm, sex, age);
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 라이브 인터뷰 요청이<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });        
+        // <--   
+
+    </script>
+{{end}} 

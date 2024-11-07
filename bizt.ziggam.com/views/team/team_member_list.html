@@ -1,0 +1,361 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+	<input type="hidden" id="arr_member">
+	<input type="hidden" id="pp_chrg_sn">
+		<h2>팀 멤버 관리</h2>
+		<div class="teamMember">
+			<div class="gridTop">
+				<h3 class="admin">Admin</h3>
+			</div>
+			<div class="gridWrap">
+				<table>
+					<colgroup>
+						<col width="64px"/>
+						<col width=""/>
+						<col width="137px"/>
+						<col width="130px"/>
+						<col width="295px"/>
+					</colgroup>
+					<thead>
+						<tr>
+							<th>번호</th>
+							<th>이름</th>
+							<th>부서･직책</th>
+							<th>아이디</th>
+							<th>메일주소</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{.TaPpChrgSn}}</td>
+							<td>{{.TaPpChrgNm}}</td>
+							<td>{{.TaPpChrgBpNm}}</td>
+							<td>{{.TaEntpMemId}}</td>
+							<td>{{.TaEmail}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			{{if eq "01" .SAuthCd}}
+			<div class="gridTop st02">
+				<h3 class="sub">Member</h3>
+				<p class="optionBtn">
+					<a href="javascript:void(0);" class="btn type_red" id="btn_delete">삭제</a>
+					<a href="javascript:void(0);" id="add_member" class="btn icoPlus"><em></em> 팀 멤버 추가하기</a>
+				</p>
+			</div>
+			{{else}}
+			<div class="gridTop st02">
+				<h3>Member</h3>
+			</div>
+			{{end}}
+			<div class="gridWrap">
+				<table>
+					<colgroup>
+						{{if eq "01" .SAuthCd}}
+						<col width="48px"/>
+						<col width="64px"/>
+						<col width="69px"/>
+						<col width="137px"/>
+						<col width="130px"/>
+						<col width=""/>
+						<col width="46px"/>
+						{{else}}
+						<col width="64px"/>
+						<col width=""/>
+						<col width="137px"/>
+						<col width="130px"/>
+						<col width="295px"/>
+						{{end}}
+					</colgroup>
+					<thead>
+						<tr>
+							{{if eq "01" .SAuthCd}}
+							<th class="checkbox"><input type="checkbox" name="tbl_check_all" id="tbl_check_all" class="custom"><label for="tbl_check_all">전체 선택</label></th>
+							{{end}}
+							<th>번호</th>
+							<th>이름</th>
+							<th>부서･직책</th>
+							<th>아이디</th>
+							<th>메일주소</th>
+							{{if eq "01" .SAuthCd}}
+							<th>&nbsp;</th>
+							{{end}}
+						</tr>
+					</thead>
+					<tbody>
+					{{if .EntpTeamMemberList}}
+						{{if eq "01" .SAuthCd}}
+						{{range .EntpTeamMemberList}}
+						<tr>
+							<td class="cehckbox">
+								<input type="checkbox" name="mem_check" id="mem_check{{.EtRowNo}}" data-pp_chrg_sn="{{.EtPpChrgSn}}" class="custom check_member {{.EtPpChrgSn}}"><label for="mem_check{{.EtRowNo}}">체크1</label>
+							</td>
+							<td>{{.EtPpChrgSn}}</td>
+							<td>{{.EtPpChrgNm}}</td>
+							<td>{{.EtPpChrgBpNm}}</td>
+							<td>{{.EtEntpMemId}}</td>
+							<td>{{.EtEmail}}</td>
+							<td class="more">
+								<span class="ico"><a href="javascript:void(0);" id="btn_menu_more" data-pp_chrg_sn="{{.EtPpChrgSn}}">더보기</a></span>
+								<div class="box" style="display:none">
+									<ul>
+										<li><a href="/team/member/modify?pp_chrg_sn={{.EtPpChrgSn}}" id="">정보수정</a></li>
+										<li><a href="/team/member/pwd/modify?pp_chrg_sn={{.EtPpChrgSn}}" id="">비밀번호 변경</a></li>
+										<li><a href="javascript:void(0);" id="menu_auth_trans" data-pp_chrg_nm="{{.EtPpChrgNm}}" data-pp_chrg_sn="{{.EtPpChrgSn}}">Admin 권한 양도</a></li>
+										<li><a href="javascript:void(0);" id="menu_mem_del" data-pp_chrg_sn="{{.EtPpChrgSn}}" data-rowno="{{.EtRowNo}}">삭제</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						{{end}}
+						{{else}}
+						{{range .EntpTeamMemberList}}
+						<tr>
+							<td>{{.EtPpChrgSn}}</td>
+							<td>{{.EtPpChrgNm}}</td>
+							<td>{{.EtPpChrgBpNm}}</td>
+							<td>{{.EtEntpMemId}}</td>
+							<td>{{.EtEmail}}</td>
+						</tr>
+						{{end}}
+						{{end}}
+					{{else}}
+						<tr>
+							<td colspan="6" class="noData">
+								<p class="text">팀 멤버를 추가하여 직감의 인재를 함께 만나보세요.</p>
+								<a href="javascript:void(0);" id="add_member" class="btn icoPlus"><em></em> 팀 멤버 추가하기</a>
+							</td>
+						</tr>
+					{{end}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- 권한양도팝업 -->
+    <div class="popupWrap" id="pop_team_auth">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">Admin 권한을 양도하시겠어요?</p>
+                <p class="text" id="auth_text"></p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" id="btn_pop_close">취소</a>
+                <a href="javascript:void(0);" class="btn type_red" id="btn_pop_change">양도하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <!-- 알럿팝업 -->
+    <div class="popupWrap" id="del_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text alert">삭제할 팀멤버를 선택해주세요.</p>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 알럿팝업 -->
+	
+	<!-- 팀멤버삭제 팝업 -->
+    <div class="popupWrap" id="team_mem_del">
+	<div class="popLayer">
+		<div class="popCont">
+			<p class="tit">정말 삭제하시겠어요?</p>
+			<p class="text">삭제 후에는 팀 멤버의 모든 정보가 삭제되며,<br>다시 확인할 수 없습니다.</p>
+		</div>
+		<div class="btnSet">
+			<a href="javascript:void(0);" class="btn" id="btn_pop_mem_del_cancel">취소</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_pop_mem_del_ok">삭제하기</a>
+		</div>
+	</div>
+	<span class="cover"></span>
+	<!-- 팀멤버삭제 팝업 -->
+
+    <script type="text/javascript">
+	$(document).ready(function() {
+		$('input.custom').customInput();
+	});	
+	$('html').click(function(e) { 
+		if(!$(e.target).hasClass("more")) { 
+			$(".box").hide();
+		} 
+	});
+
+	// 메뉴 더보기
+	$(document).off("click", "#btn_menu_more").on("click", "#btn_menu_more", function(e) {
+		$(this).parent().next().addClass("chk");
+		$(this).parent().next().show();
+	});  
+	
+	// 메뉴 멤버삭제
+	$(document).off("click", "#menu_mem_del").on("click", "#menu_mem_del", function(e) {
+		$('input:checkbox[name="tbl_check_all"]').prop("checked",false);
+		$('input:checkbox[name="mem_check"]').prop("checked",false);
+		$("#pp_chrg_sn").val($(this).data("pp_chrg_sn"));
+		var pp_chrg_sn = $("#pp_chrg_sn").val();
+		var rowno = $(this).data("rowno");
+		$('input:checkbox[id="mem_check'+rowno+'"]').prop("checked",true);
+		$('input.custom').customInput();
+		$("#arr_member").val(pp_chrg_sn);
+		openPopup('team_mem_del');
+	});   
+
+	// 권한양도
+	$(document).off("click", "#menu_auth_trans").on("click", "#menu_auth_trans", function(e) {
+		var admin_nm = "{{.TaPpChrgNm}}";
+		var pp_chrg_nm = $(this).data("pp_chrg_nm");
+		$("#pp_chrg_sn").val($(this).data("pp_chrg_sn"));
+		$("#auth_text").html("'"+pp_chrg_nm+"'에게 Admin 권한이 양도되며<br>'"+admin_nm+"'님은 Member 계정으로 전환됩니다.<br>확인시 로그아웃 되며, 다시 로그인 하셔야 합니다.");
+		openPopup('pop_team_auth');
+	});    
+	
+	// 권한 양도 처리 확인(팝업)
+	$(document).off("click", "#btn_pop_change").on("click", "#btn_pop_change", function(e) {
+		var pp_chrg_sn = $("#pp_chrg_sn").val();
+		ajaxMemberAuthSet(pp_chrg_sn);
+	});    
+
+	// 권한 양도 처리 취소(팝업)
+	$(document).off("click", "#btn_pop_close").on("click", "#btn_pop_close", function(e) {
+		$("#pp_chrg_sn").val("");
+		closePopup('pop_team_auth');
+	});    
+
+    // 팀멤버 권한 처리
+    var ajaxMemberAuthSet = function(sn) {
+        var pp_chrg_sn = sn;
+        /*
+        console.log("pp_chrg_sn : "+pp_chrg_sn);
+        return;
+        */
+
+        $.ajax({
+            cache : false,
+            url : '/team/member/auth/update',
+            data:{
+                pp_chrg_sn : pp_chrg_sn,
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+
+                if(rtnCd == "1"){
+					//window.location.reload();
+					window.location.replace("/logout");
+				} else {
+                    console.log("message : " + rtnMsg);
+                }
+            },
+            error : function(e) {
+                console.log("error + "+e);
+            }
+        });	  
+    }
+	
+	// 팀멤버 추가
+	$(document).off("click", "#add_member").on("click", "#add_member", function(e) {
+		window.location.href="/team/member/write";
+	});    
+
+	// 팀멤버 삭제
+	$(document).off("click", "#btn_delete").on("click", "#btn_delete", function(e) {
+		
+		if ($("input:checkbox[name='mem_check']:checked").length == 0) {
+			openPopup("del_alert");
+			return;
+		}
+
+		var arr_member = [];
+		$("input:checkbox[name='mem_check']").each(function(i) {
+			//console.log($(this).prop("checked"));
+			if($(this).prop("checked")){
+				arr_member.push($(this).data("pp_chrg_sn"));
+			}
+		});			
+		//console.log("arr_member : "+arr_member);
+		$("#arr_member").val(arr_member);
+		openPopup("team_mem_del");
+	});   
+	
+	// 팀멤버 삭제 확인(팝업)
+	$(document).off("click", "#btn_pop_mem_del_ok").on("click", "#btn_pop_mem_del_ok", function(e) {
+		ajaxMemberDel();
+	});   
+
+	// 팀멤버 삭제 취소(팝업)
+	$(document).off("click", "#btn_pop_mem_del_cancel").on("click", "#btn_pop_mem_del_cancel", function(e) {
+		$("#arr_member").val("");
+		$('input:checkbox[name="tbl_check_all"]').prop("checked",false);
+		$('input:checkbox[name="mem_check"]').prop("checked",false);
+		$('input.custom').customInput();
+		closePopup();
+	});   
+
+	// 전체선택/해제
+	$(document).off("click", "#tbl_check_all").on("click","#tbl_check_all",function(e) {
+		if($(this).is(":checked") == true){ // 표시
+			//console.log("checked");
+			$('input:checkbox[name="mem_check"]').prop("checked",true);	
+			$(".check_member").customInput();
+		}else{
+			//console.log("unchecked");
+			$('input:checkbox[name="mem_check"]').prop("checked",false);
+			$(".check_member").customInput();
+		}
+		$(".check_member").customInput();
+	});
+
+    // 팀멤버 삭제 처리
+    var ajaxMemberDel = function() {
+        var arr_pp_chrg_sn = $("#arr_member").val();
+        /*
+        console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+        return;
+        */
+        $.ajax({
+            cache : false,
+            url : '/team/member/delete',
+            data:{
+                arr_pp_chrg_sn : arr_pp_chrg_sn,
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+
+                if(rtnCd == "1"){
+					window.location.reload();
+                } else {
+                    console.log("message : " + rtnMsg);
+                }
+            },
+            error : function(e) {
+                console.log("error + "+e);
+            }
+        });	  
+    }	
+	</script>
+{{end}} 

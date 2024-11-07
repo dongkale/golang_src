@@ -1,0 +1,143 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+
+<style type="text/css">    
+body {
+    font-size:11pt; 
+    padding:0; 
+    margin:0;
+    overflow: hidden;
+}
+
+/*
+h3 {
+    color: #85144b; 
+    font-size: 14pt;
+}
+
+#promotionBanner {
+    width: 100%; 
+    height: 110px; 
+    background-color:#A9AFB3; 
+    color: #f1f1f1; 
+    overflow: hidden;
+}
+*/
+.popContents {    
+    width: 488px; 
+    height: 460px; 
+    margin: 0 auto; 
+    padding: 0; 
+    overflow: hidden; 
+    text-align: center;
+    margin:10px;    
+    background-color: #e0e0e0; 
+}
+
+.popBottom {
+    width: 450px; 
+    margin: 0 auto; 
+    text-align: right; 
+    font-size: 9pt; 
+    padding: 0;
+    vertical-align: middle;
+}
+
+.popBottom img{
+    vertical-align: middle;
+}
+
+.popBottom input {
+    vertical-align: middle;
+}
+
+.popBottom label[for=chkday] { 
+    cursor: pointer; 
+    color: black; 
+    padding-right: 5px;
+    margin: 5px;
+    vertical-align: middle;
+}
+
+/*
+#chkday {
+    color: #5a5a5a;
+}
+
+.contents {
+    width: 600px; 
+    margin: 0 auto; 
+    height: 900px; 
+    background-color: #e0e0e0; 
+    overflow: hidden; 
+    padding: 20px;
+}
+*/    
+</style>
+
+    <div class="popContents">
+        <a href="javascript:void(0);" id="goContents"><img src="/static/images/banner_apply_score.png" width="488" height="460" ></a>
+    </div>
+
+    <div class="popBottom">
+	    <input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루 그만보기 </label> 
+        <a href="javascript:void(0);" id="btnClose"><img src="/static/images/ic-close-callout.png" alt="배너 닫기" width="15" /></a>
+    </div>    
+
+<!--
+<div id="" class="contents">
+	<div style="margin:10px;overflow-y: none;overflow-x: none;">
+        <img src="/static/images/img-bn-chrome@2x.jpg">        
+    </div>
+</div>
+
+<div id="promotionBanner">
+	<div class="popContents">
+		<img src="/img/banner/top_pop_banner.png" height="80">
+		<div class="popClose">
+		    <input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루 그만보기 </label> 
+            <a href="#none" class="btnClose"><img src="/static/images/ic-close-callout.png" alt="배너 닫기" width="15" /></a>
+        </div>
+	</div>
+</div>  
+-->
+<script type="text/javascript">
+    
+    $(document).ready(function () {        
+        
+		// 	//팝업창을 위로 애니메이트 시킨다. 혹은 slideUp()
+		// 	//$('#promotionBanner').animate({height: 0}, 500);
+		// 	$('#promotionBanner').slideUp(500); 
+		// });        
+    });
+
+    $(document).off("click", "#chkday").on("click", "#chkday", function (e) {      
+        //setCookie('adsToday','Y', 1);	               
+
+        if($(this).is(':checked')) {
+            setCookie('adsToday','Y', 1);	       
+            console.log(`SetCookie: ${'Y'}`);
+        } else {
+            //setCookie('adsToday','N', 1);	   
+            delCookie('adsToday');
+            console.log(`SetCookie: ${''}`);
+        }
+    });
+
+    $(document).off("click", "#btnClose").on("click", "#btnClose", function (e) {      
+        window.close();   
+    });
+
+    //저장된 해당 쿠키가 있으면 창을 안 띄운다 없으면 뛰운다.
+	// cookiedata = document.cookie;    
+	// if ( cookiedata.indexOf("topPop=done") < 0 ){      
+	// 	document.all['promotionBanner'].style.display = "block";
+	// 	} 
+	// else {
+	// 	document.all['promotionBanner'].style.display = "none"; 
+	// }
+    
+</script>
+
+{{end}} 

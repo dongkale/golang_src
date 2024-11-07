@@ -1,0 +1,2034 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+	<input type="hidden" id="recrut_sn">
+	<input type="hidden" id="pp_mem_no">
+	<input type="hidden" id="pp_mem_nm">
+	<input type="hidden" id="live_sn">
+	<input type="hidden" id="msg_gbn_cd">
+	<input type="hidden" id="gbn_cd">
+	<input type="hidden" id="pp_chrg_sn">	
+	<div class="content">
+		<h2>라이브 인터뷰 상세</h2>
+		<div class="interViewDetail">
+			<div class="interViewState">				
+				<!-- 라이브 인터뷰 확정(예정) -->
+				{{if eq "02" .LiveStatCd}}
+				<div class="boxWrap">
+					<div class="box"> <!--style="text-overflow:ellipsis;width:300px;white-space: nowrap; overflow: hidden"-->
+						<!--<p class="tit"><span><a href="/recruit/post/detail?recrut_sn={{.RecrutSn}}" style="text-decoration:underline">{{.RecrutTitle}}</a></span></p>-->				
+						<!--style="width: 300px;display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" -->
+						<p class="tit"><span class="st02"><img src="/static/images/ic-calendar-circle.png"></img><a href="/recruit/post/detail?recrut_sn={{.RecrutSn}}">{{.RecrutTitle}}</a></span></p>				
+						<div class="date">
+							<p class="info schedule">예정</p>
+							<p class="text">{{.LiveItvSday}} {{.LiveItvStime}}</p>
+						</div>
+					</div>
+					<p class="btnSet">
+						<!--<a href="javascript:void(0);" class="btn small type_red" style="min-width: 58px;" id="btn_live_itv_close_debug">종료(Debug)</a>-->
+						<!--<a href="javascript:void(0);" class="btn small type_red" style="min-width: 58px;margin-right: 30px;" id="btn_live_itv_cancel_debug">취소(Debug)</a>-->						
+					
+						<a href="javascript:void(0);" class="btn type_red" id="btn_live_itv_cancel">취소하기</a>
+						<a href="javascript:void(0);" class="btn type_blue" id="btn_live_itv_enter">입장하기</a>
+					</p>					
+					<p class="txtInfo">・ 입장후에는 <strong>취소가 불가능합니다.</strong></p>
+					<p class="txtInfo">・ 인터뷰 예정시간 이후에는 <strong>취소가 불가능합니다.</strong></p>
+				</div>
+				{{end}}
+				<!-- 라이브 인터뷰 확정(예정) -->
+				<!-- 라이브 인터뷰 종료 -->
+				{{if eq "03" .LiveStatCd}}
+				<div class="boxWrap">
+					<div class="box">
+						<p class="tit"><span class="st02"><img src="/static/images/ic-calendar-circle.png"></img><a href="/recruit/post/detail?recrut_sn={{.RecrutSn}}" style="text-decoration:underline">{{.RecrutTitle}}</a></span></p>
+						<div class="date">
+							<p class="info end">종료</p>
+							<p class="text">{{.LiveItvSday}} {{.LiveItvStime}} ~ {{.LiveItvEday}} {{.LiveItvETime}}</p>
+						</div>
+					</div>
+				</div>
+				{{end}}
+				<!-- 라이브 인터뷰 종료 -->
+				<!-- 라이브 인터뷰 취소(확정) -->
+				{{if eq "05" .LiveStatCd}}
+				<div class="boxWrap">
+					<div class="box">
+						<p class="tit"><span class="st02"><img src="/static/images/ic-calendar-circle.png"></img><a href="/recruit/post/detail?recrut_sn={{.RecrutSn}}" style="text-decoration:underline">{{.RecrutTitle}}</a></span></p>
+						<div class="date">
+							<p class="info cancel">취소</p>
+							<p class="text end">{{.LiveItvSday}} {{.LiveItvStime}}</p>
+							<p>취소일시 {{.LiveItvEdtFmt}}</p>
+						</div>
+					</div>
+				</div>
+				{{end}}
+				<!-- 라이브 인터뷰 취소(확정) -->
+			</div>
+			<div class="interViewMore">
+				<div class="applyMemList">						
+					<div class="userBox">
+						<p class="subTit member">참여 지원자</p>
+						<div class="userInfo">
+							<div class="infoMore">
+								{{if .LiveApplyList}}
+									{{range .LiveApplyList}}											
+										{{if or (eq "01" .LmLiveStatCd) (eq "02" .LmLiveStatCd) (eq "03" .LmLiveStatCd) (eq "04" .LmLiveStatCd) (eq "05" .LmLiveStatCd) (eq "06" .LmLiveStatCd) (eq "08" .LmLiveStatCd) (eq "09" .LmLiveStatCd) (eq "10" .LmLiveStatCd) (eq "11" .LmLiveStatCd) }}
+										<dl>									
+											<dt class="pic"><img src="{{.LmPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="40" height="40" alt=""></dt>	
+											<dt class="profile" title='{{.LmNm}}({{if eq "M" .LmSex}}남{{else}}여{{end}} {{.LmAge}}세)' ><a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}" data-read_end_day="{{.LmReadEndDay}}"><strong>{{.LmNm}}</strong> ({{if eq "M" .LmSex}}남{{else}}여{{end}}・{{.LmAge}}세)</a></dt>
+											<dt class="state">
+												<a href="javascript:void(0);" id="applicant_message_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}" data-end_yn="{{.LmMsgEndYn}}">
+													{{if eq "01" .LmLiveStatCd}}
+														<strong>응답대기</strong>
+													{{else if eq "02" .LmLiveStatCd}}
+														<strong style="color:#F24147">요청 취소</strong>													
+													{{else if eq "03" .LmLiveStatCd}}
+														<strong style="color:#F24147">취소</strong>													
+													{{else if eq "04" .LmLiveStatCd}}
+														<strong style="color:#4C80F1">수락</strong>													
+													{{else if eq "05" .LmLiveStatCd}}
+														<strong style="color:#F24147">거절</strong>													
+													{{else if eq "06" .LmLiveStatCd}}
+														<strong style="color:#F24147">수락 취소</strong>													
+													{{/*else if eq "07" .LmLiveStatCd*/}}
+														<!--삭제-->													
+													{{else if eq "08" .LmLiveStatCd}}
+														<strong style="color:#F24147">취소</strong>													
+													{{else if eq "09" .LmLiveStatCd}}
+														<strong style="color:#F24147">종료</strong>
+													{{else if eq "10" .LmLiveStatCd}}
+														<strong style="color:#F24147">미응답</strong>
+													{{else if eq "11" .LmLiveStatCd}}
+														<strong style="color:#A9AFB3">완료</strong>	
+													{{end}}																							
+												</a>			
+											</dt>												
+											<dt class="apply_control" id="apply_control">
+												<span>
+													{{if eq "01" .LmLiveStatCd}} 		<!--응답대기-->
+														<a href="javascript:void(0);" 
+														   id="btn_apply_req_cancel" 
+														   class="btn" 
+														   data-gbn_cd="22" 
+														   data-pp_mem_no="{{.LmPpMemNo}}" 
+														   data-pp_mem_nm="{{.LmNm}}" 
+														   data-stat_cd="{{.LmLiveStatCd}}" 
+														   data-trc04_req_stat_cd="{{.LmTRC04LiveReqStatCd}}" 
+														   data-trc04_live_sn="{{.LmTRC04LiveSn}}">요청 취소</a> <!-- 요청취소 -->
+													<!--요청 취소--><!--취소--><!--거절--><!--수락 취소--><!--취소-->		   
+													{{else if or (eq "02" .LmLiveStatCd) (eq "03" .LmLiveStatCd) (eq "05" .LmLiveStatCd) (eq "06" .LmLiveStatCd) (eq "09" .LmLiveStatCd) (eq "10" .LmLiveStatCd)}}	
+														<a href="javascript:void(0);" 
+														   id="btn_apply_del" 
+														   class="btn type_red" 														   
+														   style="color: red;"
+														   data-gbn_cd="25" 
+														   data-pp_mem_no="{{.LmPpMemNo}}" 
+														   data-pp_mem_nm="{{.LmNm}}" 
+														   data-stat_cd="{{.LmLiveStatCd}}" 
+														   data-trc04_req_stat_cd="{{.LmTRC04LiveReqStatCd}}" 
+														   data-trc04_live_sn="{{.LmTRC04LiveSn}}">삭제</a>	<!-- 삭제 -->
+													{{else if eq "04" .LmLiveStatCd}}	<!--수락-->	 					
+														<a href="javascript:void(0);" 
+														   id="btn_apply_one_cancel" 
+														   class="btn" 
+														   data-gbn_cd="21" 			
+														   data-pp_mem_no="{{.LmPpMemNo}}" 
+														   data-pp_mem_nm="{{.LmNm}}" 
+														   data-stat_cd="{{.LmLiveStatCd}}" 
+														   data-trc04_req_stat_cd="{{.LmTRC04LiveReqStatCd}}" 
+														   data-trc04_live_sn="{{.LmTRC04LiveSn}}">취소</a>	<!-- 확정 취소 -->
+													{{else if eq "07" .LmLiveStatCd}}	<!--삭제-->	 						   
+													{{/*else if eq "09" .LmLiveStatCd*/}}	<!--종료-->	 						   
+													{{end}}														
+												</span>	
+											</dt>																	
+										</dl>											
+										{{end}}	
+									{{end}}									
+								{{end}}	
+								{{if eq "02" .LiveStatCd}}
+								<dl class='added' id="dl_apply_req_added" style="display: none;">
+									<dt class='added'><a href="javascript:void(0);" id="apply_req_added"><strong>+ 추가하기</strong></a></dt>
+								</dl>
+								{{end}}
+							</div>
+						</div>							
+					</div>
+				</div>				
+				<div class="entpMemList">					
+					<div class="userBox">						
+						<p class="subTit member">참여 멤버</p>
+						<ul class="memberList">
+							{{if .LiveMemList}}
+								{{range .LiveMemList}}
+									{{if or (eq "01" .LmPpLiveStatCd)}}
+										{{if eq "01" .LmPpChrgGbnCd}}
+											<li class="admin">
+												<span class="st02" title="{{.LmPpChrgNm}} {{.LmPpChrgBpNm}}"><strong>{{.LmPpChrgNm}}</strong>{{.LmPpChrgBpNm}}</span>											
+											</li>									
+										{{else}}
+											<li>
+												<span class="st02" title="{{.LmPpChrgNm}} {{.LmPpChrgBpNm}}"><strong >{{.LmPpChrgNm}}</strong>{{.LmPpChrgBpNm}}</span>
+											{{if eq "02" .LmLiveSchedStatCd}}
+												<span>
+													<a href="javascript:void(0);" 
+														id="btn_mem_control" 														
+														class="btn type_red" 
+														data-gbn_cd="26" 	
+														data-pp_chrg_gbn_cd="{{.LmPpChrgGbnCd}}" 	
+														data-pp_chrg_nm="{{.LmPpChrgNm}}" 
+														data-pp_chrg_bp_nm="{{.LmPpChrgBpNm}}" 
+														data-pp_chrg_sn="{{.LmPpChrgSn}}" 
+														data-pp_live_stat_cd="{{.LmPpLiveStatCd}}" disabled>삭제</a>
+												</span>
+											{{end}}			
+											</li>
+										{{end}}
+									{{end}}	
+								{{end}}								
+							{{end}}		
+							{{if eq "02" .LiveStatCd}}
+							<li id="dl_mem_req_added" style="display: none;">
+								<a href="javascript:void(0);" id="entp_mem_req_added"><strong style="margin-left: 65px;">+ 추가하기</strong></a>
+							</li>					
+							{{end}}
+						</ul>
+					</div>
+				</div>				
+				<div class="infoState nvn">					
+					<p class="tit">진행 상태</p>
+					<table>
+						<colgroup>
+							<col width="160x">
+							<col width="210px">
+							<col width="120px">
+							<col width="180px">
+							<col width="">
+						</colgroup>
+						<tr>
+							<th>시간</th>	
+							<th>내용</th>	
+							<th>대상</th>	
+							<th>주체</th>								
+						</tr>			
+						<tr>
+							<td>{{.LiveItvSdtFmt}}</td>
+							<td><p class="test"><span class="info schedule">예정</span> 라이브 인터뷰 생성</p></td>
+							<!--<td><p class="test">[예정] 라이브 인터뷰 생성</p></td>-->
+							<td>-</td>
+							<td>{{.PpChrgNm}} {{.PpChrgBpNm}}</td>
+						</tr>	
+						{{range .LiveHistoryList}}
+							<tr>
+								<td>{{.LhMsgRegDtFmt}}</td>
+								<td>
+									{{if eq "06" .LhMsgGbnCd}}		<!-- 라이브 요청(기업) -->
+										<p class="text">요청</p>	
+									{{else if eq "07" .LhMsgGbnCd}} <!-- 라이브 요청 수락(개인) -->	
+										<p class="text">수락</p>										
+									{{else if eq "08" .LhMsgGbnCd}} <!-- 라이브 요청 거절(개인) -->	
+										<p class="text">거절</p>		
+									{{else if eq "09" .LhMsgGbnCd}} <!-- 라이브 확정 취소(개인/기업) -->	
+										{{if eq "E" .LhMemGbn}}
+											<p class="text">확정 취소</p>	
+										{{else}}	
+											<p class="text">수락 취소</p>
+										{{end}}	
+									{{else if eq "10" .LhMsgGbnCd}} <!-- 스케쥴 종료(기업) -->		
+										<p class="text">종료</p>		
+									{{else if eq "11" .LhMsgGbnCd}} <!-- 요청 취소(기업) : 지정 유저 -->		
+										<p class="text">요청 취소</p>	
+									{{else if eq "12" .LhMsgGbnCd}} <!-- 삭제 -->		
+										<p class="text">삭제</p>	
+									{{end}}									
+								</td>
+								{{if eq "E" .LhMemGbn}}
+									<td>{{.LhPpMemNm}}</td>
+									<td>{{.LhPpChrgNm}} {{.LhPpChrgBpNm}}</td>
+								{{else}}
+									<td>-</td>
+									<td>{{.LhPpMemNm}}</td>
+								{{end}}
+							</tr>							
+						{{end}}		
+						<tr>
+							{{if eq "03" .LiveStatCd}}
+								<td>{{.LiveItvEdtFmt}}</td>							
+								<!--<td><p class="test">[종료] 라이브 인터뷰 종료</p></td>-->
+								<td><p class="test"><span class="info end">종료</span> 라이브 인터뷰 종료</p></td>
+								<td>-</td>
+								<td>{{.PpChrgNm}} {{.PpChrgBpNm}}</td>							
+							{{else if eq "05" .LiveStatCd}}
+								<td>{{.LiveItvEdtFmt}}</td>							
+								<!--<td><p class="test">[취소] 라이브 인터뷰 취소</p></td>-->
+								<td><p class="test"><span class="info cancel">취소</span> 라이브 인터뷰 취소</p></td>
+								<td>-</td>
+								<td>{{.PpChrgNm}} {{.PpChrgBpNm}}</td>
+							{{end}}
+							
+						</tr>						
+					</table>
+				</div>
+
+
+
+
+
+
+
+				<!------------------------------------------>
+				<div class="infoState nvn">					
+					<p class="tit">진행 상태</p>
+					<table>
+						<colgroup>
+							<col width="160x">
+							<col width="200px">
+							<col width="100px">
+							<col width="200px">
+							<col width="">
+						</colgroup>
+						<!--<tr><th><p class="tit">진행 상태</p></th></tr>-->
+						<!--<tr><td colspan="4">진행 상태</td></tr>-->						
+						<tr>
+							<th>시간</th>	
+							<th>내용</th>	
+							<th>대상</th>	
+							<th>주체</th>								
+						</tr>												
+						{{range .LiveHistoryList}}
+							<!--<tr> 								
+								<td>{{.LhMsgRegDtFmt}}</td>
+								<td>{{.LhMsgGbnNm}}</td>
+							</tr>	
+							-->							
+							{{if eq "07" .LhMsgGbnCd}} <!--//라이브 확정-->
+								{{if eq "10" .LhNMsgGbnCd}} <!--//라이브 확정 이후 라이브 종료일 경우-->
+									<!--<tr>-->
+								{{else}}
+									<!--<tr class="liveInterView schedule">-->
+								{{end}}
+							{{else if eq "09" .LhMsgGbnCd}} <!--//라이브 확정 취소-->
+								<!--<tr class="liveInterView end">-->
+							{{else}}
+								<!--<tr>-->
+							{{end}}	
+
+							<tr>
+								<td>{{.LhMsgRegDtFmt}}</td>
+								<td>
+									{{if eq "07" .LhMsgGbnCd}} <!--//라이브 확정-->
+										{{/*if eq "10" .LhNMsgGbnCd*/}} <!--//라이브 확정 이후 라이브 종료일 경우-->
+											<!--<p>라이브 인터뷰</p>-->
+										{{/*else*/}}
+											<!--<p><span class="info schedule">예정</span> 라이브 인터뷰</p>-->
+										{{/*end*/}}
+										<p class="text">{{.LhMsgGbnNm}}</p>
+									{{else if eq "09" .LhMsgGbnCd}} <!--//라이브 확정 취소-->
+										<!--<p><span class="info scheduleEnd">예정</span> 라이브 인터뷰</p>-->
+									{{else}} <!--//일반-->
+										<p class="text">{{.LhMsgGbnNm}}</p>
+									{{end}}									
+								</td>																
+
+								{{if eq "E" .LhMemGbn}}
+									<td>{{.LhPpMemNm}}</td>
+									<td>{{.LhPpChrgNm}} {{.LhPpChrgBpNm}}</td>								
+								{{else}}
+									<td>-</td>
+									<td>{{.LhPpMemNm}}</td>
+								{{end}}
+							</tr>
+							{{if eq "09" .LhMsgGbnCd}} <!--//라이브 확정 취소-->
+							<tr>
+								<td>{{.LhMsgRegDtFmt}}</td>
+								<td>
+									<p class="text">라이브 인터뷰 취소</p>
+									<!--p class="textInfo">취소자 : {{if eq "E" .LhMemGbn}}기업{{else}}개인{{end}}</p>-->
+								</td>								
+								{{if eq "E" .LhMemGbn}}
+									<td>{{.LhPpMemNm}}</td>
+									<td>{{.LhPpChrgNm}} {{.LhPpChrgBpNm}}</td>
+								{{else}}
+									<td>-</td>
+									<td>{{.LhPpMemNm}}</td>								
+								{{end}}
+							</tr>
+							{{end}}									
+						{{end}}						
+					</table>
+				</div>
+				<!------------------------------------------>
+				<!--	
+				<div class="infoUser">						
+					<div class="userBox">
+						<p class="subTit">지원자 정보</p>
+						<div class="userInfo">
+							<div class="infoMore">
+								<table>
+									<colgroup>
+										<col width="128px">
+										<col width="">
+									</colgroup>									
+									<tr>
+										<th>th1</th>
+										<td>td1</td>
+									</tr>
+									<tr>
+										<th>th2</th>
+										<td>td2</td>
+									</tr>
+								</table>
+							</div>
+						</div>	
+					</div>
+				</div>	
+				-->
+				<!---------------------------------------------->	
+				<!--<div class="interViewMore">	-->				
+				<!--
+				<div class="infoUser">						
+					<div class="userBox">
+						<p class="subTit">지원자 정보</p>
+						<div class="userInfo">
+							<div class="infoMore">
+								<dl>
+									<dt><a href="javascript:void(0);"><img src="PtoPath" onerror="this.src='/static/images/ic-home-people-empty.png'" width="48" height="48" alt=""></a></dt>
+									<dt>지원 직군101</dt>
+									<dt>지원 직군1-2</dt>										
+								</dl>									
+								<dl>
+									<dt><a href="javascript:void(0);"><img src="PtoPath" onerror="this.src='/static/images/ic-home-people-empty.png'" width="48" height="48" alt=""></a></dt>
+									<dt>지원 ㅊㅊㅊㅊㅊ직군2-1</dt>
+									<dt>지원 직군2-2</dt>										
+								</dl>									
+							</div>
+						</div>							
+					</div>
+				</div>
+				-->
+				<!--</div>-->
+				<!---------------------------------------------->	
+
+				<!---------------------------------------------->		
+				<!--
+				<div class="applyMemList">						
+					<div class="userBox">
+						<p class="subTit member">지원자 정보</p>
+						<div class="userInfo">
+							<div class="infoMore">
+								{{if .LiveApplyList}}
+									{{range .LiveApplyList}}	
+										<dl>									
+											<dt class="pic"><img src="{{.LmPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="40" height="40" alt=""></dt>	
+											<dt class="profile"><a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}"><strong>{{.LmNm}}</strong>({{if eq "M" .LmSex}}남{{else}}여{{end}}・{{.LmAge}}세)</a></dt>
+											<dt class="state"><a href="javascript:void(0);" id="applicant_message_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}">
+												<strong>
+													{{if eq "01" .LmLiveStatCd}}										
+														응답대기
+													{{end}}
+													{{if eq "02" .LmLiveStatCd}}
+														요청 취소
+													{{end}}
+													{{if eq "03" .LmLiveStatCd}}
+														취소
+													{{end}}
+													{{if eq "04" .LmLiveStatCd}}
+														수락
+													{{end}}
+													{{if eq "05" .LmLiveStatCd}}
+														거절
+													{{end}}
+													{{if eq "06" .LmLiveStatCd}}
+														수락 취소
+													{{end}}
+													{{if eq "07" .LmLiveStatCd}}
+														삭제
+													{{end}}
+													{{if eq "08" .LmLiveStatCd}}
+														취소
+													{{end}}
+													{{if eq "09" .LmLiveStatCd}}
+														종료
+													{{end}}
+													</strong>												
+												</a>			
+											</dt>
+											<dt>
+												<span><a href="javascript:void(0);" id="btn_eval_pass" class="btn" disabled>버튼</a></span>
+											</dt>									
+										</dl>			
+									{{end}}
+								{{end}}	
+								<dl class='added'>									
+									<dt class='added'><a href="javascript:void(0);"><strong>+ 추가하기</strong></dt>
+								</dl>
+							</div>
+						</div>							
+					</div>
+				</div>			
+				-->			
+				<!---------------------------------------------->	
+				<!--
+				<div class="applyMemList">					
+					<div class="userBox">						
+						<p class="subTit member">참여 지원자</p>
+						<ul class="memberList">
+							{{if .LiveApplyList}}
+								{{range .LiveApplyList}}										
+									<li>
+									<img src="{{.LmPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="40" height="40" alt="">
+									<a href="javascript:void(0);" style="text-decoration:underline;margin-left:5px" id="applicant_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}"><strong>{{.LmNm}}</strong>({{if eq "M" .LmSex}}남{{else}}여{{end}}・{{.LmAge}}세)</a>
+									<a href="javascript:void(0);" style="text-decoration:underline;margin-left:7px" id="applicant_message_detail" data-recrut_sn="{{.LmRecrutSn}}" data-pp_mem_no="{{.LmPpMemNo}}" data-end_yn="{{.LmMsgEndYn}}">
+										<strong>
+										{{if eq "01" .LmLiveStatCd}}										
+											응답대기
+										{{end}}
+										{{if eq "02" .LmLiveStatCd}}
+											요청 취소
+										{{end}}
+										{{if eq "03" .LmLiveStatCd}}
+											취소
+										{{end}}
+										{{if eq "04" .LmLiveStatCd}}
+											수락
+										{{end}}
+										{{if eq "05" .LmLiveStatCd}}
+											거절
+										{{end}}
+										{{if eq "06" .LmLiveStatCd}}
+											수락 취소
+										{{end}}
+										{{if eq "07" .LmLiveStatCd}}
+											삭제
+										{{end}}
+										{{if eq "08" .LmLiveStatCd}}
+											취소
+										{{end}}
+										{{if eq "09" .LmLiveStatCd}}
+											종료
+										{{end}}
+										</strong>												
+									</a>
+									<span><a href="javascript:void(0);" id="btn_eval_pass" class="btn" disabled>버튼</a></span>
+									</li>													
+								{{end}}
+							{{end}}							
+							<li>
+								<a href="javascript:void(0);"><strong style="margin-left: 140px;">+ 추가하기</strong>
+							</li>
+						</ul>
+					</div>					
+				</div>
+				-->	
+
+			</div>
+		</div>
+	</div>	
+    <!-- 라이브 인터뷰 전체 취소 팝업 -->
+    <div class="popupWrap" id="pop_live_all_cancel">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">라이브 인터뷰 취소하기</p>
+				<ul class="message">
+					<li>라이브 인터뷰 취소와 함께 발송될 메시지를 입력해주세요.</li>
+					<li>라이브 인터뷰 참여자에게 취소 메시지가 발송됩니다.</li>
+					<li>발송 후에는 취소가 불가능 합니다.</li>
+				</ul>
+				<div class="field">
+						<div class="tArea">
+							<textarea name="live_all_cancel_msg_cont" id="live_all_cancel_msg_cont" cols="30" rows="10" maxlength="2000" placeholder="라이브 인터뷰 취소 사유를 입력해주세요."></textarea>
+							<!-- 글자수가 추가되면 class="count" 추가 -->
+							<span class="text"><em class="count" id="byteLiveAllCancelMsg">2000</em>/2000자</span>
+						</div>
+						<p class="validationAlert live_all_cancel_msg_cont_message"></p>
+					</div>
+				</div>
+				<div class="btnSet">
+					<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_live_all_cancel_confirm">확인</a>
+				</div>
+			</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 라이브 인터뷰 취소(확정) 팝업 -->
+	<!-- 라이브 인터뷰 확정 취소(부분) 팝업 -->
+    <div class="popupWrap" id="pop_live_one_cancel">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">라이브 인터뷰 취소하기</p>
+				<ul class="message">
+					<li>라이브 인터뷰 취소와 함께 발송될 메시지를 입력해주세요.</li>
+					<li>라이브 인터뷰 참여자에게 취소 메시지가 발송됩니다.</li>
+					<li>발송 후에는 취소가 불가능 합니다.</li>
+				</ul>
+				<div class="field">
+						<div class="tArea">
+							<textarea name="live_one_cancel_msg_cont" id="live_one_cancel_msg_cont" cols="30" rows="10" maxlength="2000" placeholder="라이브 인터뷰 취소 사유를 입력해주세요."></textarea>
+							<!-- 글자수가 추가되면 class="count" 추가 -->
+							<span class="text"><em class="count" id="byteLiveOneCancelMsg">2000</em>/2000자</span>
+						</div>
+						<p class="validationAlert live_one_cancel_msg_cont_message"></p>
+					</div>
+				</div>
+				<div class="btnSet">
+					<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_live_one_cancel_confirm">확인</a>
+				</div>
+			</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 라이브 인터뷰 확정 취소(부분) 팝업 -->
+	<!-- 라이브 인터뷰 요청 취소(부분) 팝업 -->
+    <div class="popupWrap" id="pop_live_req_cancel">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">라이브 인터뷰 요청 취소하기</p>
+				<ul class="message">
+					<li>라이브 인터뷰 요청 취소 사유를 입력해주세요.</li>
+					<li>라이브 요청이 취소되며 지원자에게 메시지가 발송됩니다.</li>
+					<li>발송 후에는 취소가 불가능 합니다.</li>
+				</ul>
+				<div class="field">
+						<div class="tArea">
+							<textarea name="live_req_cancel_msg_cont" id="live_req_cancel_msg_cont" cols="30" rows="10" maxlength="2000" placeholder="라이브 인터뷰 요청 취소 사유를 입력해주세요."></textarea>
+							<!-- 글자수가 추가되면 class="count" 추가 -->
+							<span class="text"><em class="count" id="byteLiveReqCancelMsg">2000</em>/2000자</span>
+						</div>
+						<p class="validationAlert live_req_cancel_msg_cont_message"></p>
+					</div>
+				</div>
+				<div class="btnSet">
+					<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_live_req_cancel_confirm">확인</a>
+				</div>
+			</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 라이브 인터뷰 요청 취소(부분) 팝업 -->
+	<!-- 라이브 인터뷰 종료(확정) 팝업 -->  
+	<div class="popupWrap" id="pop_live_itv_close">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">정말 종료하시겠습니까?</p>			
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+				<a href="javascript:void(0);" class="btn type_red" id="btn_live_itv_close_confirm">종료하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>  
+	<!-- 라이브 인터뷰 종료(확정) 팝업 -->
+
+	<!-- 라이브 인터뷰 결과 팝업 -->
+	<div class="popupWrap" id="live_result_pop">
+		<div class="popLayer">	
+			<div class="popCont">
+				<string name="live_inter view_end_name" style="font-size:18px;letter-spacing:1px;line-height:1.5;">
+					<b id="result_name1" style="font-size:18px;line-height:1.5;"></b>님.<br>감사합니다.<br><br>
+				</string>
+				<!-- <string name="live_interview_end_comment1" style="font-size:18px;letter-spacing:1px;line-height:1.5;">					
+					<b id="result_name2" style="font-size:18px;line-height:1.5;"></b>님과의<br>라이브 인터뷰가 종료되었습니다.<br>
+				</string> -->
+				<br><br><br>
+				<table style="border-collapse:inherit;text-align:center;border:1px #e5e8ee solid;font-size:17px;line-height:2.5;border-radius: 2px;width: -webkit-fill-available;">
+					<tr>
+						<td class="tit" style="font-size:17px;color:black;background:#e5e8ee">날짜</td>   
+						<td class="tit" id="result_text1" style="font-size:17px;"></td>                
+					</tr>
+					<tr>
+						<td class="tit" style="font-size:17px;color:black;background:#e5e8ee">입장</td>                
+						<td class="tit" id="result_text2" style="font-size:17px;"></td>                
+					</tr>
+					<tr>   
+						<td class="tit" style="font-size:17px;color:black;background:#e5e8ee">퇴장</td>                
+						<td class="tit" id="result_text3" style="font-size:17px;"></td>                
+					</tr>
+					<tr>
+						<td class="tit" style="font-size:17px;color:black;background:#e5e8ee">참여시간</td>                
+						<td class="tit" id="result_text4" style="font-size:17px;"></td>                
+					</tr>
+				</table>			
+				<div class="btnSet">		
+					<a href="javascript:void(0);" class="btn" id="btn_live_result_ok">확인</a>
+				</div>	
+			</div>		
+		</div>	
+		<span class="cover"></span>
+	</div>
+	<!-- 라이브 인터뷰 결과 팝업 -->
+	
+	<!-- 알림 공통 팝업 -->
+	<div class="popupWrap" id="pop_common_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text" id="alert_text"></p>
+			</div>
+			<div class="btnSet">
+				<a href="#" class="btn" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 알림 공통 팝업 -->	
+    <!-- 권한 체크  -->
+    <div class="popupWrap" id="pop_admin_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">권한이 없습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+	</div>
+	<!-- 권한 체크  -->
+		
+	<div class="popupWrap" id="pop_live_itv_enter">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text">입장 후에는 인터뷰를 취소하실 수 없습니다. 정말 입장하시겠어요?</p>			
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" onclick="closePopup()">아니오</a>
+				<a href="javascript:void(0);" class="btn type_red" id="btn_live_itv_enter_confirm">입장하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>  
+		
+	<div class="popupWrap" id="pop_live_all_cancel_req">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">정말 라이브 인터뷰를 취소하시겠어요??</p>			
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" onclick="closePopup()">아니오</a>
+				<a href="javascript:void(0);" class="btn type_red" id="btn_live_all_cancel_req_confirm">취소하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>  
+
+	<div class="popupWrap" id="pop_live_itv_mem_del">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">정말 삭제하시겠습니까?</p>			
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+				<a href="javascript:void(0);" class="btn type_red" id="btn_live_itv_mem_del_confirm">삭제하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>  
+
+	<!-- 취소/종료  -->
+    <div class="popupWrap" id="pop_close_end_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">종료(취소)된 라이뷰 인터뷰는 취소 또는 삭제를 하실 수 없습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+	</div>
+	<!-- 취소/종료  -->
+
+	<div class="popupWrap" id="pop_live_apply_del">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">정말 삭제하시겠습니까?</p>			
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+				<a href="javascript:void(0);" class="btn type_red" id="btn_live_apply_del_confirm">삭제하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>  
+
+
+	<!-- 삭제 확인  -->
+    <div class="popupWrap" id="pop_delete">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">삭제 되었습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+	</div>
+	<!-- 삭제 확인  -->
+
+	<div class="popupWrap" id="pop_90_check" >
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">마감일로 부터 90일이 지난 채용 공고의</p>
+                <p class="text">지원자 정보는 제공되지 않습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+	</div>	
+
+	<div class="popupWrap" id="not_found_apply" >
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">인터뷰 진행할 지원자가 없습니다</p>                
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+		
+	<script type="text/javascript">
+		//const LIVE_NVN_APPLY_MAX_CNT = 4;
+		//const LIVE_NVN_MEM_MAX_CNT = 4;
+		
+		$(document).ready(function() {			
+			
+			var live_apply_log_list = {{.LiveApplyList}};
+			if (live_apply_log_list) {
+				for (var i = 0; i < live_apply_log_list.length; i++) {
+					var __data_log = live_apply_log_list[i];
+
+					console.log("pp_mem_no : " + __data_log.LmPpMemNo + " Nm : " +  __data_log.LmNm + " ItvLink : " +  __data_log.LmItvLink);
+
+				}
+			}
+
+			if (getCurrentApplyTotalCount() < LIVE_NVN_VIEW_APPLY_MAX_CNT) {			
+				$("#dl_apply_req_added").show();
+			}
+			
+			if (getCurrentMemTotalCount() < LIVE_NVN_VIEW_MEM_MAX_CNT) {			
+				$("#dl_mem_req_added").show();	
+			}
+
+			// console.log("=======================: "+ LIVE_NVN_APPLY_MAX_CNT);
+			// console.log("=======================: " +LIVE_NVN_MEM_MAX_CNT);
+			// console.log("=======================: "+ LIVE_NVN_VIEW_APPLY_MAX_CNT);
+			// console.log("=======================: " +LIVE_NVN_VIEW_MEM_MAX_CNT);
+
+			// var confirm_popup = "{{.ConfirmPopup}}";
+			// if (confirm_popup) {
+			// 	openPopup(confirm_popup);
+			// } 			
+		});
+
+		function getCurrentApplyCount() {
+			var apply_cnt = 0;
+
+			var live_apply_req_list = {{.LiveApplyList}};
+			if (live_apply_req_list) {
+            	for (var i = 0; i < live_apply_req_list.length; i++) {
+					var __data = live_apply_req_list[i];
+
+					if (__data.LmLiveStatCd == '01' || 
+						__data.LmLiveStatCd == '04' ){
+						apply_cnt++;
+					} 
+				}				
+			}
+
+			return apply_cnt;
+		}
+
+		function getCurrentMemCount() {
+			var mem_cnt = 0;
+
+			var live_mem_req_list = {{.LiveMemList}};
+			if (live_mem_req_list) {
+            	for (var i = 0; i < live_mem_req_list.length; i++) {
+					var __data = live_mem_req_list[i];
+
+					if (__data.LmPpLiveStatCd == '01'){
+						mem_cnt++;
+					} 
+				}				
+			}
+			
+			return mem_cnt;
+		}
+
+		function getCurrentApplyTotalCount() {
+			var apply_cnt = 0;
+
+			var live_apply_req_list = {{.LiveApplyList}};
+			if (live_apply_req_list) {
+				apply_cnt = live_apply_req_list.length;
+			}
+
+			return apply_cnt;
+		}
+
+		function getCurrentMemTotalCount() {
+			var mem_cnt = 0;
+
+			var live_mem_req_list = {{.LiveMemList}};
+			if (live_mem_req_list) {
+            	mem_cnt = live_mem_req_list.length;
+			}
+			
+			return mem_cnt;
+		}
+		
+		
+		// 라이브 인터뷰 전체 취소 글자 초기화
+		$(document).off("click", "#live_all_cancel_msg_cont ").on("click", "#live_all_cancel_msg_cont ", function(e) {
+            $(".validationAlert").text("");
+		});
+		
+		// 라이브 인터뷰 전체 취소 글자수 체크
+        $(document).on("keyup","#live_all_cancel_msg_cont ",function(){
+            textLenCheck(this, 2000, "#byteLiveAllCancelMsg");
+		}); 
+		
+
+		// 라이브 인터뷰 확정 취소(부분) 글자 초기화
+		$(document).off("click", "#live_one_cancel_msg_cont ").on("click", "#live_one_cancel_msg_cont ", function(e) {
+            $(".validationAlert").text("");
+		});
+		
+		// 라이브 인터뷰 확정 취소(부분) 글자수 체크
+        $(document).on("keyup","#live_one_cancel_msg_cont ",function(){
+            textLenCheck(this, 2000, "#byteLiveOneCancelMsg");
+		}); 
+
+		// 라이브 인터뷰 요청 취소(부분) 글자 초기화
+		$(document).off("click", "#live_req_cancel_msg_cont ").on("click", "#live_req_cancel_msg_cont ", function(e) {
+            $(".validationAlert").text("");
+		});
+		
+		// 라이브 인터뷰 요청 취소(부분) 글자수 체크
+        $(document).on("keyup","#live_req_cancel_msg_cont ",function(){
+            textLenCheck(this, 2000, "#byteLiveReqCancelMsg");
+		}); 
+		
+        $(document).off("click", "#btn_live_itv_enter").on("click", "#btn_live_itv_enter", function(e) {
+            if ("{{.SAuthCd}}" == "01" || "{{.SAuthCd}}" == "02") {
+				var mem_list = {{.LiveMemList}}
+
+				var is_check = false;
+				for (var i = 0; i < mem_list.length; i++) {
+					var __lmPpChrgGbnCd = mem_list[i].LmPpChrgGbnCd;
+					var __lmPpChrgNm = mem_list[i].LmPpChrgNm;
+					var __lmPpChrgBpNm = mem_list[i].LmPpChrgBpNm;
+					var __lmPpChrgSn = mem_list[i].LmPpChrgSn;
+					
+					console.log(`============================= LmPpChrgGbnCd: ${__lmPpChrgGbnCd}, LmPpChrgNm: ${__lmPpChrgNm}, LmPpChrgBpNm: ${__lmPpChrgBpNm}, LmChrgSn: ${__lmPpChrgSn}`);				
+
+					if (__lmPpChrgSn == "{{.SMemSn}}") {
+					 	is_check = true;
+					 	console.log('============================= JoinMember');				
+					 	break;
+					}
+				}
+				
+				if (is_check == false) {
+				 	$('body, html').animate({scrollTop:0}, 1);
+				 	openPopup('pop_common_alert');
+                 	$("#alert_text").html("참여 멤버가 아니라 입장하실 수 없습니다.");					
+				 	return;
+				}
+
+				// 인원수 체크
+				
+				//var apply_list1 = JSON.parse("{{.LiveApplyListJS}}");								
+				var apply_list = {{.LiveApplyList}};
+
+				is_check = false;
+				for (var i = 0; i < apply_list.length; i++) {
+					var __data = apply_list[i];
+
+					console.log(`============================= LmLiveSchedStatCd: ${__data.LmLiveSchedStatCd}, LmPpMemNo: ${__data.LmPpMemNo}, LmNm: ${__data.LmNm}, LmLiveStatCd: ${__data.LmLiveStatCd}. LmTRC04LiveReqStatCd:${__data.LmTRC04LiveReqStatCd}`);				
+
+					if (__data.LmLiveStatCd == "01" || __data.LmLiveStatCd == "04" ) {
+					 	is_check = true;
+					 	console.log('============================= LmLiveStatCd: 01, 04');				
+					 	break;
+					}
+				}
+
+				if (is_check == false) {
+				 	$('body, html').animate({scrollTop:0}, 1);
+				 	openPopup('pop_common_alert');
+                 	$("#alert_text").html("인터뷰 진행할 지원자가 없습니다.");					
+				 	return;
+				}
+
+				var itvJoinCnt = "{{.LiveItvJoinCnt}}";
+				if (itvJoinCnt == 0) {
+					openPopup('pop_live_itv_enter');
+				} else {	
+					$("#btn_live_itv_enter_confirm").click();
+				}
+
+				// var recrut_sn = "{{.RecrutSn}}";
+				// var live_sn =  "{{.LiveSn}}";
+
+				// ajaxLiveNvnJoinCnt(2, recrut_sn, live_sn);
+			}
+		});
+
+		$(document).off("click", "#btn_live_itv_enter_confirm").on("click", "#btn_live_itv_enter_confirm", function(e) {
+			closePopup('pop_live_itv_enter');
+
+			var popW = 1024
+			var popH = 1024
+			var popX = (screen.width / 2) - (popW/2)
+			var popY = (screen.height / 2) - (popH/2)
+			var recrut_sn = "{{.RecrutSn}}";
+			// var pp_mem_no = $(this).data("pp_mem_no");
+			// var pp_mem_nm = $(this).data("pp_mem_nm");
+			// var pto_path = $(this).data("pto_path");
+			var live_sn =  "{{.LiveSn}}";
+			var entp_mem_no = "{{.EntpMemNo}}";
+			var chrg_cd = "{{.SMemSn}}";
+
+			$("#recrut_sn").val(recrut_sn);
+			$("#pp_mem_no").val(pp_mem_no);
+			$("#live_sn").val(live_sn);				
+			
+			var isDuplicate = false;
+			var sessonLiveItv = sessionStorage.getItem(`LiveItv_${live_sn}`);
+
+			// console.log(`Step 0. recrut_sn:${recrut_sn}, live_sn:${live_sn}); 			
+			// console.log(`Step 0. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+		
+			if (sessonLiveItv == null) {					
+				console.log(`Step 1. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 					
+				
+				sessionStorage.setItem(`LiveItv_${live_sn}`, Date.now());
+
+				isDuplicate = false;
+
+				console.log(`Step 2. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+			} else {
+				
+				console.log(`Step 3. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+
+				isDuplicate = true;					
+			}				
+
+			if (isDuplicate == false) {
+				var result = window.open("/live/conference/popup?live_sn="+live_sn+"&recrut_sn="+recrut_sn+"&entp_mem_no="+entp_mem_no+"&my_mem_no="+chrg_cd,
+										 "_blank",
+										 "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0");
+				result.focus();			
+			} else {
+				console.log(`Step 4. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+				//alert( "기존 인터뷰창을 종료하고 다시 시작하세요.");
+
+				$('body, html').animate({scrollTop:0}, 1);
+				openPopup('pop_common_alert');
+				$("#alert_text").html("해당 계정으로 이미 라이브 인터뷰가 진행 중입니다. 진행중인 창을 종료하고 다시 시작하세요");
+			}            
+		});
+
+		/*
+		$(document).off("click", "#btn_live_itv_enter").on("click", "#btn_live_itv_enter", function(e) {
+            if ("{{.SAuthCd}}" == "01" || "{{.SAuthCd}}" == "02") {
+                //$("#live_sn").val($(this).data("live_sn"));
+                // var gbn = "09";
+                // var val = $(this).data("live_sn");
+                // var rs = $(this).data("recrut_sn");
+				// var pp = $(this).data("pp_mem_no");
+				// console.log(val)
+				// console.log(rs)
+				// console.log(pp)
+				//$("#recrut_sn").val(rs);
+				//$("#pp_mem_no").val(pp);
+				//$("#live_sn").val(val);
+				//ajaxMessageVerify(gbn, val, rs, pp);
+				
+				//console.log('============================= OK : ' + {{.SAuthCd}});
+				var mem_list = {{.LiveMemList}}
+
+				console.log('============================= SMemId: ' + "{{.SMemId}}");
+				console.log('============================= SMemNo: ' + "{{.SMemNo}}");
+				console.log('============================= SMemSn: ' + "{{.SMemSn}}");
+				console.log('============================= BsPpChrgNm: ' + "{{.BsPpChrgNm}}");	
+				console.log('============================= BsPpChrgBpNm: ' + "{{.BsPpChrgBpNm}}");					
+				
+				var is_check = false;
+				for (var i = 0; i < mem_list.length; i++) {
+					var __lmPpChrgGbnCd = mem_list[i].LmPpChrgGbnCd;
+					var __lmPpChrgNm = mem_list[i].LmPpChrgNm;
+					var __lmPpChrgBpNm = mem_list[i].LmPpChrgBpNm;
+					var __lmChrgSn = mem_list[i].LmChrgSn;
+
+					console.log(`============================= LmPpChrgGbnCd: ${__lmPpChrgGbnCd}, LmPpChrgNm: ${__lmPpChrgNm}, LmPpChrgBpNm: ${__lmPpChrgBpNm}, LmChrgSn: ${__lmChrgSn}`);				
+
+					// if (__lmPpChrgNm == "{{.BsPpChrgNm}}") {
+					// 	is_check = true;
+					// 	console.log('============================= JoinMember');				
+					// 	break;
+					// }
+
+					if (__lmChrgSn == "{{.SMemSn}}") {
+					 	is_check = true;
+					 	console.log('============================= JoinMember');				
+					 	break;
+					}
+				}				
+
+				// ZSP_LIVE_MEM_LIST_R 수정 해야함 !!!!	
+				// if (is_check == false) {
+				// 	$('body, html').animate({scrollTop:0}, 1);
+				// 	openPopup('pop_common_alert');
+                // 	$("#alert_text").html("참여 맴버가 아니라 입장하실 수 없습니다.");					
+				// 	return;
+				// }
+
+				var popW = 1024
+				var popH = 1024
+				var popX = (screen.width / 2) - (popW/2)
+				var popY = (screen.height / 2) - (popH/2)
+				var recrut_sn = "{{.RecrutSn}}";
+				// var pp_mem_no = $(this).data("pp_mem_no");
+				// var pp_mem_nm = $(this).data("pp_mem_nm");
+				// var pto_path = $(this).data("pto_path");
+				var live_sn =  "{{.LiveSn}}";
+				var entp_mem_no = "{{.EntpMemNo}}";
+				var chrg_cd = "{{.SMemSn}}";
+
+				$("#recrut_sn").val(recrut_sn);
+				$("#pp_mem_no").val(pp_mem_no);
+				$("#live_sn").val(live_sn);				
+				
+				var isDuplicate = false;
+				var sessonLiveItv = sessionStorage.getItem(`LiveItv_${live_sn}`);
+
+				// console.log(`Step 0. recrut_sn:${recrut_sn}, live_sn:${live_sn}); 
+				
+				// console.log(`Step 0. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+		
+				if (sessonLiveItv == null) {					
+					console.log(`Step 1. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 					
+					
+					sessionStorage.setItem(`LiveItv_${live_sn}`, Date.now());
+
+					isDuplicate = false;
+
+					console.log(`Step 2. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+				} else {
+					
+					console.log(`Step 3. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+
+					isDuplicate = true;					
+				}				
+
+				if (isDuplicate == false) {
+					var result = window.open("/live/conference/popup?live_sn="+live_sn+"&recrut_sn="+recrut_sn+"&entp_mem_no="+entp_mem_no+"&my_mem_no="+chrg_cd,
+											 "_blank",
+											 "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")
+											//"width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",toolbars=no,menubar=no,location=no,scrollbars=no,resizable=no,fullscreen=no,chrome=1,centerscreen=1")
+					result.focus();			
+				} else {
+					console.log(`Step 4. LiveItvSession:${sessionStorage.getItem(`LiveItv_${live_sn}`)}`); 
+					//alert( "기존 인터뷰창을 종료하고 다시 시작하세요.");
+
+					$('body, html').animate({scrollTop:0}, 1);
+					openPopup('pop_common_alert');
+					$("#alert_text").html("해당 계정으로 이미 라이브 인터뷰가 진행 중입니다. 진행중인 창을 종료하고 다시 시작하세요");
+				}
+            } else {			
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 라이브 인터뷰가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }            
+		});   
+		*/		
+		
+		function getLiveItvResult(returnValue) {
+			var result = JSON.parse(returnValue);
+
+			console.log(`[LiveItvResult] LiveItvSession:${sessionStorage.getItem(`LiveItv_${result.live_sn}`)}`); 
+
+			var enterTime_Str = sessionStorage.getItem(`LiveItv_${result.live_sn}`);
+			var enterTime = new Date(parseInt(enterTime_Str));
+			var nowTime = new Date();
+			
+			if (result.stat == "Close" || result.stat == "Exit") {
+				openPopup("live_result_pop");
+
+				$("#result_name1").text(result.entp_nm);
+				$("#result_name2").text(result.pp_mem_nm);
+
+				// $("#result_text1").text("날짜: " + result.live_itv_sday);
+				// $("#result_text2").text("입장: " + `${enterTime.getHours()}:${enterTime.getMinutes()}:${enterTime.getSeconds()}`);				
+				// $("#result_text3").text("퇴장: " + `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}`);
+				// $("#result_text4").text("참여시간: " + `${nowTimeDiff(enterTime)}`);				
+				$("#result_text1").text(result.live_itv_sday);
+				$("#result_text2").text(`${enterTime.getHours()}:${enterTime.getMinutes()}:${enterTime.getSeconds()}`);				
+				$("#result_text3").text(`${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}`);
+				$("#result_text4").text(`${nowTimeDiff(enterTime)}`);				
+			}
+
+			sessionStorage.removeItem(`LiveItv_${result.live_sn}`);
+
+			console.log(`[LiveItvResult] LiveItvSession:${sessionStorage.getItem(`LiveItv_${result.live_sn}`)}`); 
+
+			console.log(`[LiveItvResult] ${returnValue}`); 
+						
+			//window.location.href="/live/detail?recrut_sn="+result.recrut_sn+"&pp_mem_no="+result.pp_mem_no;		
+		}
+
+		// LDK 2020/08/04: 라이브 인터뷰 확인
+        $(document).off("click", "#btn_live_result_ok").on("click", "#btn_live_result_ok", function(e) {
+			
+			var recrut_sn = $("#recrut_sn").val();
+            var live_sn = $("#live_sn").val();			
+			
+			window.location.href="/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;
+            
+			closePopup();
+			//location.reload();
+		});  
+
+		function nowTimeDiff(diffTime) 
+		{
+			var peroidTime = "";
+			
+			var nowTime = Date.now();
+			var period = nowTime - diffTime;
+			if (period < 0) {
+				return "0";
+			}
+			
+			var day     = parseInt(((period / (1000*60*60)) / 24),10);
+			var hours   = parseInt(((period / (1000*60*60)) % 24),10);
+			var minutes = parseInt(((period / (1000*60)) % 60),10);
+			var seconds = parseInt((period / 1000) % 60,10);
+			if(day != 0){
+				peroidTime += day + "일 ";
+			}
+			if(hours != 0){
+				peroidTime += hours + "시간 ";
+			}
+			if(minutes != 0){
+				peroidTime += minutes + "분 ";
+			}
+			if(seconds != 0){
+				peroidTime += seconds + "초 ";
+			}
+			
+			return peroidTime;
+		}
+		// <--
+
+		// 메시지 검증 프로세스
+		/*
+        var ajaxMessageVerify = function(gbn, val, rs, pp) {
+            
+            //console.log("gbn_cd : "+gbn);
+            //console.log("val : "+val);
+            //console.log("recrut_sn : "+rs);
+            //console.log("pp_mem_no : "+pp);
+            //return;
+            
+            $.ajax({
+                cache : false,
+                url : '/message/verify',
+                data:{
+                    gbn_cd : gbn,
+                    val : val,
+                    recrut_sn : rs,
+                    pp_mem_no : pp,
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    console.log("error" + e);
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+                    //console.log("rtnCd : "+rtnCd);
+					$('body, html').animate({scrollTop:0}, 1);
+                    $("#verify_text").html("");
+                    if(rtnCd == "1"){ // 이상없음
+                        if(gbn == "11") {//요청취소
+                            openPopup('pop_req_cancel');
+                        } else if (gbn == "09") {//확정취소
+                            openPopup('pop_ing_req_cancel');
+                        }
+                    } else if(rtnCd == "11"){ //이미 요청 취소
+                        $("#verify_text").html("해당 라이브 인터뷰 요청 취소는<br>이미 취소된 요청입니다.");
+                        openPopup('pop_msg_verify');
+                    } else if(rtnCd == "7"){ //이미 인터뷰 예정중 취소
+                        $("#verify_text").html("라이브 인터뷰 예정 중입니다.<br>이전 요청 취소는 할 수없습니다.");
+                        openPopup('pop_msg_verify');
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error : function(e) {
+                    console.log("error + "+e);
+                }
+            });	  
+        }        
+
+        // 라이브 인터뷰 요청 취소(팝업) 확인
+        $(document).off("click", "#btn_cancel_confirm").on("click", "#btn_cancel_confirm", function(e) {
+            if ($("#live_req_cancel_msg_cont").val().length == 0) {
+                $(".live_req_cancel_msg_cont_message").text("라이브 인터뷰 취소 사유를 입력해주세요.");
+                return;
+            }
+            closePopup('pop_req_cancel');
+            $("#msg_gbn_cd").val("11");
+            message_send();
+		});   
+		*/        		
+        
+		// 지원자 상세 팝업
+		$(document).off("click", "#applicant_detail").on("click","#applicant_detail",function(e) {
+			var read_end_day = $(this).data("read_end_day");                       
+			if (read_end_day == "Y") {
+				openPopup('pop_90_check');
+				return;
+			}
+		
+			var popW = 1320
+			var popH = 1000
+			var popX = (screen.width / 2) - (popW/2)
+			var popY = (screen.height / 2) - (popH/2)
+			var recrut_sn = $(this).data("recrut_sn");
+			var pp_mem_no = $(this).data("pp_mem_no");
+
+			window.open("/applicant/detail/popup?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no,"_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+		});		
+		
+        // 라이브 인터뷰 취소
+        $(document).off("click", "#btn_live_itv_cancel").on("click", "#btn_live_itv_cancel", function(e) {			
+
+			// var liveItvSdt = "{{.LiveItvSdt}}";
+
+			// var curDate = new Date();								
+			// var checkDate = new Date(convDtFmtToDate(liveItvSdt));
+
+			// checkDate.setMinutes( checkDate.getMinutes() - LIVE_NVN_CONTROL_BEFORE_MIN );
+			
+			// // console.log("================== " + liveItvSdt );						
+			// // console.log("================== " + liveItvSdt.replace(pattern,'$1-$2-$3-$4-$5-$6') );
+			// // console.log("================== " + curDate.format('yyyyMMddhhmmss') );						
+			// // console.log("================== " + checkDate.format('yyyyMMddhhmmss') );						
+			// // console.log("================== " + liveItvSdt );						
+			// // console.log("==================>>> " + getCurrentTimeFromServer().format('yyyyMMddhhmmss') );
+			
+			// if (curDate > checkDate) {
+			// 	//$('body, html').animate({scrollTop:0}, 1);
+			// 	openPopup('pop_common_alert');
+            // 	$("#alert_text").html("인터뷰 시간 이후에는 취소하실 수 없습니다.");					
+			// 	return;	
+			// }
+
+            if ("{{.SAuthCd}}" == "01") {
+				// var itvJoinCnt = "{{.LiveItvJoinCnt}}";
+				// if (itvJoinCnt != 0) {
+				// 	$('body, html').animate({scrollTop:0}, 1);
+                // 	openPopup('pop_common_alert');
+				// 	$("#alert_text").html("입장 내역이 있어 취소하실 수 없습니다.");
+				// 	return;
+				// }
+
+                //$("#live_sn").val($(this).data("live_sn"));
+                //var gbn = "09";
+                //var val = $(this).data("live_sn");
+                //var rs = $(this).data("recrut_sn");
+				
+				//$("#recrut_sn").val(rs);
+				//$("#pp_mem_no").val(pp);
+				//$("#live_sn").val(val);			
+
+				//openPopup('pop_live_itv_cancel');
+
+				var recrut_sn = "{{.RecrutSn}}";
+				var live_sn =  "{{.LiveSn}}";
+
+				// 입장 갯수 확인하여 사유 메시지 창 출력
+				ajaxLiveNvnJoinCnt(1, recrut_sn, live_sn);
+            } else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            }            
+		});   
+		
+		// 라이브 인터뷰 확정 취소(팝업) 확인
+        $(document).off("click", "#btn_live_all_cancel_confirm").on("click", "#btn_live_all_cancel_confirm", function(e) {
+            if ($("#live_all_cancel_msg_cont").val().length == 0) {
+                $(".live_all_cancel_msg_cont_message").text("라이브 인터뷰 취소 사유를 입력해주세요.");
+                return;
+			}
+			
+			closePopup('pop_live_all_cancel');
+
+			openPopup('pop_live_all_cancel_req');
+		});
+
+		$(document).off("click", "#btn_live_all_cancel_req_confirm").on("click", "#btn_live_all_cancel_req_confirm", function(e) {
+            
+			closePopup('pop_live_all_cancel_req');
+			//location.reload();
+
+			// 라이브 인터뷰 취소하기
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";
+			var live_stat_cd = "{{.LiveStatCd}}";
+
+			var apply_list_arr = [];			
+			var apply_list = {{.LiveApplyList}};			
+
+			for (var i = 0; i < apply_list.length; i++) {
+				apply_list_arr.push({pp_mem_no:apply_list[i].LmPpMemNo, pp_mem_nm:apply_list[i].LmNm})
+				//apply_mem_sn_arr.push(applyList[i].LmPpMemNo);            				
+				//push_apply_mem_sn_arr.push({pp_mem_no:applyList[i].LmPpMemNo, name:applyList[i].LmNm});            
+			}
+
+			var mem_list_arr = [];
+			var mem_list = {{.LiveMemList}};
+			for (var i = 0; i < mem_list.length; i++) {								
+				mem_list_arr.push(mem_list[i].LmPpChrgSn)
+			}	
+
+			var msg_cont = filteringXSS($("#live_all_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+
+			var gbn_cd = "24";
+
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+		});
+
+		// Debug ---------------------
+		// 라이브 인터뷰 취소(테스트용)
+		$(document).off("click", "#btn_live_itv_cancel_debug").on("click", "#btn_live_itv_cancel_debug", function(e) {           
+			openPopup('pop_live_all_cancel');
+		});   
+
+		// 라이브 인터뷰 종료(테스트용)
+		$(document).off("click", "#btn_live_itv_close_debug").on("click", "#btn_live_itv_close_debug", function(e) {
+			openPopup('pop_live_itv_close');
+		});   
+
+        // $(document).off("click", "#btn_live_itv_close").on("click", "#btn_live_itv_close", function(e) {
+        //     if ("{{.SAuthCd}}" == "01") {
+        //         openPopup('pop_live_itv_close');
+        //     } else {
+		// 		$('body, html').animate({scrollTop:0}, 1);
+        //         openPopup('pop_common_alert');
+        //         $("#alert_text").html("Member 계정은 종료가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+        //     }            
+		// });   
+		
+		// 라이브 인터뷰 종료(테스트용)
+        $(document).off("click", "#btn_live_itv_close_confirm").on("click", "#btn_live_itv_close_confirm", function(e) {
+           
+			closePopup('pop_live_itv_close');
+
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";
+			var live_stat_cd = "{{.LiveStatCd}}";
+
+			var applyList = "";
+			var memList = "";
+
+			var msg_cont = "";
+
+			var gbn_cd = "23";		
+
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, applyList, memList, msg_cont);
+		});
+		// Debug ---------------------
+
+		var live_nvn_proc = function (gbn_cd, recrut_sn, live_sn, apply_list, mem_list, msg_cont) {			
+			// var recrut_sn = "{{.RecrutSn}}";
+			// var live_sn = "{{.LiveSn}}";
+			// var live_stat_cd = "{{.LiveStatCd}}";
+			
+			var apply_mem_sn_arr = [];
+			var push_apply_mem_sn_arr = [];
+
+			//var applyList = {{.LiveApplyList}};
+			// for (var i = 0; i < applyList.length; i++) {
+			// 	apply_mem_sn_arr.push(applyList[i].LmPpMemNo);            				
+			// 	push_apply_mem_sn_arr.push({pp_mem_no:applyList[i].LmPpMemNo, name:applyList[i].LmNm});            
+			// }
+			for (var i = 0; i < apply_list.length; i++) {
+			 	apply_mem_sn_arr.push(apply_list[i].pp_mem_no);            				
+			 	push_apply_mem_sn_arr.push({pp_mem_no:apply_list[i].pp_mem_no, name:apply_list[i].pp_mem_nm});            
+			}
+			
+			var arr_pp_chrg_sn = [];
+
+			//var memList = {{.LiveMemList}};
+			// for (var i = 0; i < memList.length; i++) {				
+			// 	arr_pp_chrg_sn.push(memList[i].LmPpChrgSn);
+			// }			
+			for (var i = 0; i < mem_list.length; i++) {				
+				arr_pp_chrg_sn.push(mem_list[i]);
+			}			
+			
+			//var msg_cont = filteringXSS($("#live_itv_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+
+			var msg_gbn_cd = gbn_cd;		// 취소	
+			
+			/*
+			console.log("recrut_sn : "+recrut_sn);
+			console.log("msg_gbn_cd : "+msg_gbn_cd);
+			console.log("msg_cont : "+msg_cont);
+			console.log("live_itv_sdt : "+live_itv_sdt);
+			console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+			console.log("live_sn : "+live_sn);
+			return;
+			*/
+			console.log("arr_pp_chrg_sn : "+JSON.stringify(arr_pp_chrg_sn));
+			console.log("apply_mem_no_arr : "+JSON.stringify(apply_mem_sn_arr));
+			console.log("push_apply_mem_sn_arr : "+JSON.stringify(push_apply_mem_sn_arr));
+
+			var formData = new FormData();
+			formData.append("recrut_sn", recrut_sn);			
+			formData.append("msg_gbn_cd", msg_gbn_cd);
+			formData.append("msg_cont", msg_cont);
+			formData.append("live_itv_sdt", "");
+			formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+			formData.append("apply_mem_no_arr", apply_mem_sn_arr);
+			formData.append("live_sn", live_sn);
+			formData.append("push_apply_mem_sn_arr", JSON.stringify(push_apply_mem_sn_arr));
+			formData.append("check_apply_cnt", LIVE_NVN_APPLY_MAX_CNT);
+			formData.append("check_mem_cnt", LIVE_NVN_MEM_MAX_CNT);
+						
+			$.ajax({
+				cache: false,
+				url: '/live/nvn/proc',
+				data: formData,
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				error: function (e) {
+					console.log("error" + e);
+				},
+				success: function (rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+					if (rtnCd == "1") {						
+						var lv_sn = live_sn;						
+						var rc_sn = recrut_sn;
+
+						var confirm_popup = "";
+						if (gbn_cd == "25") {		// 지원자 삭제
+							confirm_popup = 'pop_delete';
+						} else if(gbn_cd == "26") { 	// 기업 멤버 삭제
+							confirm_popup = 'pop_delete';
+						}
+						
+						window.location.href="/live/nvn/detail?recrut_sn="+rc_sn+"&live_sn="+lv_sn+"&confirm_popup="+confirm_popup;						
+					} else {
+						console.log("message : " + rtnMsg);
+						console.log("[AJAX(/live/nvn/proc)]: Login");
+						window.location.href = "/login";
+					}
+				},
+				error: function (e) {
+					console.log("error + " + e);
+				}
+			});
+		}; 
+
+		var ajaxLiveNvnJoinCnt = function (check_type, recrut_sn, live_sn) {	
+			var formData = new FormData();
+			formData.append("recrut_sn", recrut_sn);						
+			formData.append("live_sn", live_sn);
+			
+			$.ajax({
+				cache: false,
+				url: '/live/nvn/joincnt',
+				data: formData,
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				error: function (e) {
+					console.log("error" + e);
+				},
+				success: function (rep) {
+					var rtnCd = rep.Rtn.RtnCd
+					var rtnMsg = rep.Rtn.RtnMsg
+					var joinCnt = rep.JoinCnt;			
+
+					console.log(`rtnCd:${rtnCd}, rtnMsg:${rtnMsg}, JoinCnt:${joinCnt}`);
+					if (rtnCd == "1") {		
+						if (check_type == 1) {				
+							if (joinCnt != 0) {
+								$('body, html').animate({scrollTop:0}, 1);
+								openPopup('pop_common_alert');
+								$("#alert_text").html("입장 내역이 있어 취소하실 수 없습니다.");						
+							} else {						
+								openPopup('pop_live_all_cancel');
+							}
+						} else if (check_type == 2) {	
+							if (joinCnt == 0) {
+								openPopup('pop_live_itv_enter');
+							} else {
+								$("#btn_live_itv_enter_confirm").click();
+							}
+						}
+					} else {
+						console.log("message : " + rtnMsg);
+						console.log("[AJAX(//live/nvn/joincnt)]: Login");
+						window.location.href = "/login";
+					}
+				},
+				error: function (e) {
+					console.log("error + " + e);
+				}
+			});	
+		}
+
+		// 메시지 페이지 이동
+		$(document).off("click", "#applicant_message_detail").on("click", "#applicant_message_detail", function (e) {			
+			var recrut_sn = $(this).data("recrut_sn");
+			var pp_mem_no = $(this).data("pp_mem_no");
+			var end_yn = $(this).data("end_yn");
+
+            window.location.href = `/message?target=${pp_mem_no}&sn=${recrut_sn}&end_yn=${end_yn}`;
+		    //window.close();
+		
+			console.log(`recrut_sn:${recrut_sn}, pp_mem_no:${pp_mem_no}, end_yn:${end_yn}`)
+		});	
+		
+		$(document).off("click", "#apply_req_added").on("click", "#apply_req_added", function (e) {			
+			// 시간 체크
+			// var liveItvSdt = "{{.LiveItvSdt}}";
+
+			// var curDate = new Date();								
+			// var checkDate = new Date(convDtFmtToDate(liveItvSdt));
+
+			// checkDate.setMinutes( checkDate.getMinutes() - LIVE_NVN_CONTROL_BEFORE_MIN );
+			
+			// if (curDate > checkDate) {
+			// 	//$('body, html').animate({scrollTop:0}, 1);
+			// 	openPopup('pop_common_alert');
+            // 	$("#alert_text").html("인터뷰 시간 이후에는 추가하실 수 없습니다.");					
+			// 	return;	
+			// }
+			
+			// 라이브 공고 체크
+			// if ("{{.LiveStatCd}}" != "02" )	{				 
+			// 	openPopup("pop_close_end_check");
+			//  	return;
+			// }
+
+			if ("{{.SAuthCd}}" == "01") {
+				var popW = 805;
+				var popH = 1080;
+				var popX = (screen.width / 2) - (popW/2);
+				var popY = (screen.height / 2) - (popH/2);
+
+				var recrut_sn = "{{.RecrutSn}}";
+				var recrut_title = "{{.RecrutTitle}}";
+				var live_sn =  "{{.LiveSn}}";
+				var entp_mem_no = "{{.EntpMemNo}}";
+				var req_type = "01";
+				var check_cnt = getCurrentApplyCount();
+				
+				//var uri = `/live/nvn/req/added/popup?recrut_sn=${recrut_sn}&apply_mem_list=${JSON.stringify(param)}`;            
+				var uri = `/live/nvn/req/added/popup?recrut_sn=${recrut_sn}&recrut_title=${recrut_title}&live_sn=${live_sn}&req_type=${req_type}&check_cnt=${check_cnt}`;            
+				var encodedUri = encodeURI(uri);
+				
+				var result = window.open(encodedUri,                                    
+										"_blank",
+										"width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+				result.focus();			
+
+				result.onbeforeunload = function(){ 	
+
+				}
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+			}	
+		});	
+		
+		$(document).off("click", "#entp_mem_req_added").on("click", "#entp_mem_req_added", function (e) {	
+			// 시간 체크
+			// var liveItvSdt = "{{.LiveItvSdt}}";
+
+			// var curDate = new Date();								
+			// var checkDate = new Date(convDtFmtToDate(liveItvSdt));
+
+			// checkDate.setMinutes( checkDate.getMinutes() - LIVE_NVN_CONTROL_BEFORE_MIN );
+			
+			// if (curDate > checkDate) {
+			// 	//$('body, html').animate({scrollTop:0}, 1);
+			// 	openPopup('pop_common_alert');
+            // 	$("#alert_text").html("인터뷰 시간 이후에는 추가하실 수 없습니다.");					
+			// 	return;	
+			// }
+
+			// 라이브 공고 체크
+			if ("{{.LiveStatCd}}" != "02" )	{				 
+				openPopup("pop_close_end_check");
+			 	return;
+			}
+
+			if ("{{.SAuthCd}}" == "01") {
+				var popW = 805;
+				var popH = 1080;
+				var popX = (screen.width / 2) - (popW/2);
+				var popY = (screen.height / 2) - (popH/2);
+
+				var recrut_sn = "{{.RecrutSn}}";
+				var recrut_title = "{{.RecrutTitle}}";
+				var live_sn =  "{{.LiveSn}}";
+				var entp_mem_no = "{{.EntpMemNo}}";			
+				var req_type = "02";		
+				var check_cnt = getCurrentMemCount();				
+				
+				var uri = `/live/nvn/req/added/popup?recrut_sn=${recrut_sn}&recrut_title=${recrut_title}&live_sn=${live_sn}&req_type=${req_type}&check_cnt=${check_cnt}`;          
+				var encodedUri = encodeURI(uri);
+				
+				var result = window.open(encodedUri,                                    
+										"_blank",
+										"width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+				result.focus();			
+
+				result.onbeforeunload = function(){ 	
+
+				}
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+			}	
+		});	
+
+		/*
+		$(document).off("click", "#btn_apply_control").on("click", "#btn_apply_control", function (e) {	
+			// 시간 체크
+			// 채용 공고 체크
+			// if ("{{.LiveStatCd}}" != "02" )	{
+			// 	alert("!!!!")
+			// 	return;
+			// }
+
+			if ("{{.SAuthCd}}" == "01") {
+				var recrut_sn = "{{.RecrutSn}}";
+				var live_sn = "{{.LiveSn}}";
+				
+				var gbn_cd = $(this).data("gbn_cd");
+				var pp_mem_no = $(this).data("pp_mem_no");
+				var pp_mem_nm = $(this).data("pp_mem_nm");
+				var stat_cd = $(this).data("stat_cd");
+
+				var trc04_req_stat_cd = $(this).data("trc04_req_stat_cd");
+				var trc04_live_sn = $(this).data("trc04_live_sn");			
+
+				console.log(`gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}, stat_cd:${stat_cd}, trc04_req_stat_cd:${trc04_req_stat_cd}, trc04_live_sn:${trc04_live_sn}`)
+
+				var msg_cont = "";
+
+				var apply_list_arr = [];
+				apply_list_arr.push({pp_mem_no:pp_mem_no, pp_mem_nm:pp_mem_nm});
+
+				var mem_list_arr = [];
+				
+				live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            } 
+		});
+		*/
+
+		// 멤버 삭제
+		$(document).off("click", "#btn_mem_control").on("click", "#btn_mem_control", function (e) {	
+			// 시간 체크 --> 시간 체크 하지 않음
+						
+			// 라이브 공고 체크
+			// if ("{{.LiveStatCd}}" != "02" )	{				 
+			// 	openPopup("pop_close_end_check");
+			//  	return;
+			// }
+
+			if ("{{.SAuthCd}}" == "01") {
+				// var recrut_sn = "{{.RecrutSn}}";
+				// var live_sn = "{{.LiveSn}}";
+				
+				//var gbn_cd = $(this).data("gbn_cd");
+				// var pp_chrg_gbn_cd = $(this).data("pp_chrg_gbn_cd");
+				// var pp_chrg_nm = $(this).data("pp_chrg_nm");
+				// var pp_chrg_bp_nm = $(this).data("pp_chrg_bp_nm");
+				//var pp_chrg_sn = $(this).data("pp_chrg_sn");
+				//var pp_live_stat_cd = $(this).data("pp_live_stat_cd");
+				
+				// console.log(`gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_chrg_gbn_cd:${pp_chrg_gbn_cd}, pp_chrg_nm:${pp_chrg_nm}, pp_chrg_bp_nm:${pp_chrg_bp_nm}, pp_chrg_sn:${pp_chrg_sn}, pp_live_stat_cd:${pp_live_stat_cd}`)
+
+				// var msg_cont = "";
+
+				// var apply_list_arr = [];
+
+				// var mem_list_arr = [];
+				// mem_list_arr.push(pp_chrg_sn);				
+				
+				// live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+
+				var gbn_cd = $(this).data("gbn_cd");
+				var pp_chrg_sn = $(this).data("pp_chrg_sn");
+
+				openPopup("pop_live_itv_mem_del");
+
+				$("#gbn_cd").val(gbn_cd);
+				$("#pp_chrg_sn").val(pp_chrg_sn);
+				
+            } else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            } 
+		});
+
+		$(document).off("click", "#btn_live_itv_mem_del_confirm").on("click", "#btn_live_itv_mem_del_confirm", function (e) {	
+			closePopup("pop_live_itv_mem_del");				
+
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";			
+			
+			var gbn_cd = $("#gbn_cd").val();
+			var pp_chrg_sn = $("#pp_chrg_sn").val();
+			
+			console.log(`gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_chrg_sn:${pp_chrg_sn}`)
+
+			var msg_cont = "";
+
+			var apply_list_arr = [];
+
+			var mem_list_arr = [];
+			mem_list_arr.push(pp_chrg_sn);				
+			
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+		});
+
+		// 확정 취소
+		$(document).off("click", "#btn_apply_one_cancel").on("click", "#btn_apply_one_cancel", function (e) {	
+			// 시간 체크
+			// var liveItvSdt = "{{.LiveItvSdt}}";
+
+			// var curDate = new Date();								
+			// var checkDate = new Date(convDtFmtToDate(liveItvSdt));
+
+			// checkDate.setMinutes( checkDate.getMinutes() - LIVE_NVN_CONTROL_BEFORE_MIN );
+			
+			// if (curDate > checkDate) {
+			// 	//$('body, html').animate({scrollTop:0}, 1);
+			// 	openPopup('pop_common_alert');
+            // 	$("#alert_text").html("인터뷰 시간 이후에는 추가하실 수 없습니다.");					
+			// 	return;	
+			// }
+
+			// 라이브 공고 체크
+			if ("{{.LiveStatCd}}" != "02" )	{				 
+				openPopup("pop_close_end_check");
+			 	return;
+			}
+
+			if ("{{.SAuthCd}}" == "01") {
+				var recrut_sn = "{{.RecrutSn}}";
+				var live_sn = "{{.LiveSn}}";
+				
+				var gbn_cd = $(this).data("gbn_cd");
+				var pp_mem_no = $(this).data("pp_mem_no");
+				var pp_mem_nm = $(this).data("pp_mem_nm");
+				var stat_cd = $(this).data("stat_cd");
+
+				var trc04_req_stat_cd = $(this).data("trc04_req_stat_cd");
+				var trc04_live_sn = $(this).data("trc04_live_sn");			
+
+				var msg_cont = filteringXSS($("#live_one_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+
+				console.log(`[btn_apply_one_cancel][1] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}, stat_cd:${stat_cd}, trc04_req_stat_cd:${trc04_req_stat_cd}, trc04_live_sn:${trc04_live_sn}`)
+
+				// var apply_list_arr = [];
+				// apply_list_arr.push({pp_mem_no:pp_mem_no, pp_mem_nm:pp_mem_nm});
+
+				// var mem_list_arr = [];
+				
+				// live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+
+				openPopup("pop_live_one_cancel");
+
+				$("#gbn_cd").val(gbn_cd);
+				$("#pp_mem_no").val(pp_mem_no);
+				$("#pp_mem_nm").val(pp_mem_nm);
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            } 
+		});
+
+		$(document).off("click", "#btn_live_one_cancel_confirm").on("click", "#btn_live_one_cancel_confirm", function (e) {	
+			closePopup("pop_live_one_cancel");				
+
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";			
+
+			var gbn_cd = $("#gbn_cd").val();
+			var pp_mem_no = $("#pp_mem_no").val();
+			var pp_mem_nm = $("#pp_mem_nm").val();
+
+			console.log(`[btn_apply_one_cancel][2] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}`)
+
+			var msg_cont = filteringXSS($("#live_one_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+			var apply_list_arr = [];
+			apply_list_arr.push({pp_mem_no:pp_mem_no, pp_mem_nm:pp_mem_nm});
+
+			var mem_list_arr = [];		
+
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+		});
+
+		// 요청 취소
+		$(document).off("click", "#btn_apply_req_cancel").on("click", "#btn_apply_req_cancel", function (e) {	
+			// 시간 체크
+			// var liveItvSdt = "{{.LiveItvSdt}}";
+
+			// var curDate = new Date();								
+			// var checkDate = new Date(convDtFmtToDate(liveItvSdt));
+
+			// checkDate.setMinutes( checkDate.getMinutes() - LIVE_NVN_CONTROL_BEFORE_MIN );
+			
+			// if (curDate > checkDate) {
+			// 	//$('body, html').animate({scrollTop:0}, 1);
+			// 	openPopup('pop_common_alert');
+            // 	$("#alert_text").html("인터뷰 시간 이후에는 취소하실 수 없습니다.");					
+			// 	return;	
+			// }
+
+			// 라이브 공고 체크
+			if ("{{.LiveStatCd}}" != "02" )	{				 
+				openPopup("pop_close_end_check");
+			 	return;
+			}
+
+			if ("{{.SAuthCd}}" == "01") {
+				var recrut_sn = "{{.RecrutSn}}";
+				var live_sn = "{{.LiveSn}}";
+				
+				var gbn_cd = $(this).data("gbn_cd");
+				var pp_mem_no = $(this).data("pp_mem_no");
+				var pp_mem_nm = $(this).data("pp_mem_nm");
+				var stat_cd = $(this).data("stat_cd");
+
+				var trc04_req_stat_cd = $(this).data("trc04_req_stat_cd");
+				var trc04_live_sn = $(this).data("trc04_live_sn");			
+
+				var msg_cont = filteringXSS($("#live_req_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');                
+
+				console.log(`[btn_apply_req_cancel][1] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}, stat_cd:${stat_cd}, trc04_req_stat_cd:${trc04_req_stat_cd}, trc04_live_sn:${trc04_live_sn}`)
+
+				openPopup("pop_live_req_cancel");
+
+				$("#gbn_cd").val(gbn_cd);
+				$("#pp_mem_no").val(pp_mem_no);
+				$("#pp_mem_nm").val(pp_mem_nm);
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            } 
+		});
+
+		$(document).off("click", "#btn_live_req_cancel_confirm").on("click", "#btn_live_req_cancel_confirm", function (e) {	
+			closePopup("pop_live_req_cancel");				
+
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";			
+
+			var gbn_cd = $("#gbn_cd").val();
+			var pp_mem_no = $("#pp_mem_no").val();
+			var pp_mem_nm = $("#pp_mem_nm").val();
+
+			console.log(`[btn_apply_req_cancel][2] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}`)
+
+			var msg_cont = filteringXSS($("#live_req_cancel_msg_cont").val()).replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+			var apply_list_arr = [];
+			apply_list_arr.push({pp_mem_no:pp_mem_no, pp_mem_nm:pp_mem_nm});
+
+			var mem_list_arr = [];		
+
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+		});
+		
+		// 삭제
+		$(document).off("click", "#btn_apply_del").on("click", "#btn_apply_del", function (e) {	
+			// 시간 체크 --> 시간 체크 하지 않음!!
+
+			// 라이브 공고 체크
+			// if ("{{.LiveStatCd}}" != "02" )	{				 
+			// 	openPopup("pop_close_end_check");
+			//  	return;
+			// }
+
+			if ("{{.SAuthCd}}" == "01") {
+				var recrut_sn = "{{.RecrutSn}}";
+				var live_sn = "{{.LiveSn}}";
+				
+				var gbn_cd = $(this).data("gbn_cd");
+				var pp_mem_no = $(this).data("pp_mem_no");
+				var pp_mem_nm = $(this).data("pp_mem_nm");
+				var stat_cd = $(this).data("stat_cd");
+
+				var trc04_req_stat_cd = $(this).data("trc04_req_stat_cd");
+				var trc04_live_sn = $(this).data("trc04_live_sn");			
+
+				var msg_cont = "";
+
+				console.log(`[btn_apply_del][1] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}, stat_cd:${stat_cd}, trc04_req_stat_cd:${trc04_req_stat_cd}, trc04_live_sn:${trc04_live_sn}`)
+
+				openPopup("pop_live_apply_del");
+
+				$("#gbn_cd").val(gbn_cd);
+				$("#pp_mem_no").val(pp_mem_no);
+				$("#pp_mem_nm").val(pp_mem_nm);
+			} else {
+				$('body, html').animate({scrollTop:0}, 1);
+                openPopup("pop_admin_check");
+            } 
+		});
+
+		$(document).off("click", "#btn_live_apply_del_confirm").on("click", "#btn_live_apply_del_confirm", function (e) {	
+			closePopup("pop_live_apply_del");				
+
+			var recrut_sn = "{{.RecrutSn}}";
+			var live_sn = "{{.LiveSn}}";			
+
+			var gbn_cd = $("#gbn_cd").val();
+			var pp_mem_no = $("#pp_mem_no").val();
+			var pp_mem_nm = $("#pp_mem_nm").val();
+
+			console.log(`[btn_apply_del][2] gbn_cd:${gbn_cd}, recrut_sn:${recrut_sn}, live_sn:${live_sn}, pp_mem_no:${pp_mem_no}, pp_mem_nm:${pp_mem_nm}`)
+
+			var msg_cont = "";
+
+			var apply_list_arr = [];
+			apply_list_arr.push({pp_mem_no:pp_mem_no, pp_mem_nm:pp_mem_nm});
+
+			var mem_list_arr = [];		
+
+			live_nvn_proc(gbn_cd, recrut_sn, live_sn, apply_list_arr, mem_list_arr, msg_cont);
+		});
+	</script>
+{{end}} 

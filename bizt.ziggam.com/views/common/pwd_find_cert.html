@@ -1,0 +1,99 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 아이디,비밀번호찾기 영역 -->
+    <div class="joinWrap">
+        <div class="memberFind">
+            <ul class="tabMenu">
+                <li><a href="/common/id/find">아이디 찾기</a></li>
+                <li class="active"><a href="javascript:void(0);">비밀번호 찾기</a></li>
+            </ul>
+            <div class="idFindText">
+                <p>입력하신 이메일로 인증번호를 전송했습니다.</p>
+                <p>이메일로 전송된 인증번호를 아래 입력해주세요.</p>
+            </div>
+            <div class="fieldList">
+                <dl>
+                    <dt class="hide">아이디</dt>
+                    <dd><input type="text" name="cert_no"  id="cert_no" maxlength="6" class="it" placeholder="인증번호 입력"></dd>
+                </dl>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_cert">인증</a>
+            </div>
+            <div class="alertMessage" style="display:none"><!--인증번호가 일치하지 않습니다.--></div>
+        </div>
+    </div>
+    <!-- // 아이디,비밀번호찾기 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    
+    <script type='text/javascript'>
+
+        $(document).ready(function() {
+            
+        });
+
+
+        // 인증번호 요청
+        $(document).off("click", "#btn_cert").on("click", "#btn_cert", function(){
+            var rtn = "";
+            var mem_id = "{{.MemId}}";
+            var pp_chrg_nm = "{{.PpChrgNm}}";
+            var email = "{{.Email}}";
+            var cert_no = $("#cert_no").val();
+      
+            if($("#cert_no").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("인증번호를 입력해주세요.");
+                $("#cert_no").focus();
+                return;
+            }
+      
+            $.ajax({
+              cache : false,
+              url : '/common/pwd/find/cert',
+              data : {
+                mem_id : mem_id,
+                pp_chrg_nm : pp_chrg_nm,
+                email : email,
+                cert_no : cert_no,
+              },
+              type : 'POST',
+              async : false,
+              dataType : "json",
+              success : function(rep) {
+                var rtnCd = rep.RtnCd;
+                var rtnMsg = rep.RtnMsg;
+      
+                if (rtnCd == 1){
+                    // 비밀번호 재설정 이동
+                    window.location.href="/common/pwd/reset";
+                } else {
+                    $(".alertMessage").show();
+                    $(".alertMessage").html("인증번호가 일치하지 않습니다.<br>다시 한 번 확인해주세요.");
+                    rtn = false;
+                }
+              },
+              error : function(e) {
+                console.log("error:"+JSON.stringify(e));
+                //window.location.replace("/");
+                rtn = false;
+              },
+            });
+            return rtn;
+        });
+
+        $(document).off("click", "#cert_no").on("click", "#cert_no", function(){
+            $(".alertMessage").hide();
+            $(".alertMessage").text("");
+        });  
+
+    </script>          
+{{end}} 

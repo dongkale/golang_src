@@ -1,0 +1,572 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+	<input type="hidden" id="view_type" value="L">
+	<input type="hidden" id="gbn_cd1" value="01">
+	<input type="hidden" id="gbn_cd2" value="02">
+	<input type="hidden" id="gbn_cd3" value="03">
+	<input type="hidden" id="gbn_cd4" value="04">
+	<div class="content" id="view_grid" style="display:none">
+		<div class="liveInterViewWrap">
+			<h2>라이브 인터뷰 <span class="count"></span></h2>
+			<div class="bannerArea">
+				<a href="/setting/notice/detail?sn=42&pn=1">
+				<p class="img"><img src="/static/images/img-live-main-00.png" alt="배너이미지"></p>
+				</a>
+				<!--<a href="javascript:void(0);" class="btnClose"><img src="/static/images/ic-close-top-banner.png" alt="닫기"></a>-->
+			</div>
+			<div class="interViewTop">
+				<p class="posL">
+					<input type="text" name="keyword" id="keyword" class="it" placeholder="지원자 이름으로 검색">
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_search">검색</a>
+				</p>
+				<div class="posR">
+					<a href="javascript:void(0);" class="btn btnCancel" id="btn_cancel_reject">
+						<em></em>거절・취소 내역 보기
+						<img src="/static/images/img-tooltip-live-04.png" alt="요청이 거절되거나 확정된 후에 취소된 인터뷰입니다." class="imgTooltip">
+					</a>
+					<span class="viewMode">
+						<!-- 활성화 보기에 class="active" 추가 -->
+						<a href="javascript:void(0);" id="btn_list" class="tableView">테이블보기</a>
+						<a href="javascript:void(0);" id="btn_grid" class="active gridView">그리드보기</a>
+					</span>
+					<ul2 class="cancel-reject">
+					<div class="cancelList">
+						<div class="searchArea">
+							<input type="text" name="pop_keyword" id="pop_keyword" class="it" placeholder="지원자">
+							<a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_search">검색</a>
+						</div>
+						<ul>
+							<!--//팝업 취소.거절 리스트-->
+						</ul>
+					</div>
+					</ul2>
+				</div>
+			</div>
+			<div class="interViewGrid">
+				<div class="request">
+					<p class="countTit">
+						요청 <span id="wait_cnt">{{.WaitCnt}}</span>
+						<img src="/static/images/img-tooltip-live-01.png" alt="지원자에게 라이브 인터뷰를 요청 후 응답을 기다리는 인터뷰입니다." class="imgTooltip">
+					</p>
+					<ul>
+					{{if .LiveList01}}
+						{{range .LiveList01}}
+						<li><a href="javascript:void(0);" id="live_detail" data-recrut_sn="{{.S01RecrutSn}}" data-pp_mem_no="{{.S01PpMemNo}}">
+							<span class="img"><img src="{{.S01PtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="66" height="66" alt=""></span>
+							<span class="userName">{{.S01Nm}}</span>
+							<!--<span class="userInfo">{{.S01Sex}}・{{.S01Age}}세</span>-->
+							<span class="userInfo">{{.S01Sex}}・{{if eq 0 .S01Age}}O세{{else}}{{.S01Age}}세{{end}}</span>
+							<span class="date">{{.S01LiveItvSday}}<br>{{.S01LiveItvStime}}</span>
+							<span class="member">
+								{{range .S01SubList}}
+								<em class='{{if eq "01" .LmPpChrgGbnCd}}admin{{end}}'><strong>{{.LmPpChrgNm}}</strong> {{.LmPpChrgBpNm}}</em>
+								<!--<em><strong>정혜영</strong> 기획팀</em>-->
+								{{end}}
+							</span>
+						</a></li>
+						{{end}}
+					{{else}}
+						<li class="noData">요청중인 라이브 인터뷰가<br>없습니다.</li>
+					{{end}}
+					</ul>
+				</div>
+				<div class="schedule">
+					<p class="countTit">
+						예정 <span id="ing_cnt">{{.IngCnt}}</span>
+						<img src="/static/images/img-tooltip-live-02.png" alt="지원자에게 요청한 라이브 인터뷰가 수락되어 진행이 확정된 인터뷰입니다." class="imgTooltip">
+					</p>
+					<ul>
+					{{if .LiveList02}}
+						{{range .LiveList02}}
+						<li class="modify"><a href="#">
+							<span class="img"><img src="{{.S02PtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="66" height="66" alt=""></span>
+							<span class="userName">{{.S02Nm}}</span>
+							<!--<span class="userInfo">{{.S02Sex}}・{{.S02Age}}세</span>-->
+							<span class="userInfo">{{.S02Sex}}・{{if eq 0 .S02Age}}O세{{else}}{{.S02Age}}세{{end}}</span>
+							<span class="date">{{.S02LiveItvSday}}<br>{{.S02LiveItvStime}}</span>
+							<span class="member">
+								{{range .S02SubList}}
+								<em class='{{if eq "01" .LmPpChrgGbnCd}}admin{{end}}'><strong>{{.LmPpChrgNm}}</strong> {{.LmPpChrgBpNm}}</em>
+								<!--<em><strong>정혜영</strong> 기획팀</em>-->
+								{{end}}
+							</span>
+						</a></li>
+						{{end}}
+					{{else}}
+						<li class="noData">예정된 라이브 인터뷰가<br>없습니다.</li>
+					{{end}}
+				</div>
+				<div class="end">
+					<p class="countTit">
+						종료 <span id="end_cnt">{{.EndCnt}}</span>
+						<img src="/static/images/img-tooltip-live-03.png" alt="종료된 라이브 인터뷰입니다." class="imgTooltip">
+					</p>
+					<ul>
+					{{if .LiveList03}}
+						{{range .LiveList03}}
+						<li class="modify"><a href="#">
+							<span class="img"><img src="{{.S03PtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="66" height="66" alt=""></span>
+							<span class="userName">{{.S03Nm}}</span>
+							<!--<span class="userInfo">{{.S03Sex}}・{{.S03Age}}세</span>-->
+							<span class="userInfo">{{.S03Sex}}・{{if eq 0 .S03Age}}O세{{else}}{{.S03Age}}세{{end}}</span>
+							<span class="date">{{.S03LiveItvSday}}<br>{{.S03LiveItvStime}}</span>
+							<span class="member">
+								{{range .S03SubList}}
+								<em class='{{if eq "01" .LmPpChrgGbnCd}}admin{{end}}'><strong>{{.LmPpChrgNm}}</strong> {{.LmPpChrgBpNm}}</em>
+								<!--<em><strong>정혜영</strong> 기획팀</em>-->
+								{{end}}
+							</span>
+						</a></li>
+						{{end}}
+					{{else}}
+						<li class="noData">종료된 라이브 인터뷰가<br>없습니다.</li>
+					{{end}}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="content st02" id="view_table">
+		<div class="liveInterViewWrap">
+			<h2>라이브 인터뷰 <span class="count"></span></h2>
+			<div class="bannerArea">
+				<a href="/setting/notice/detail?sn=42&pn=1">
+				<p class="img"><img src="/static/images/img-live-main-00.png" alt="배너이미지"></p>				
+				</a>
+				<!--<a href="#" class="btnClose"><img src="/static/images/ic-close-top-banner.png" alt="닫기"></a>-->
+			</div>
+			<div class="interViewTop">
+				<p class="posL">
+					<input type="text" name="keyword2" id="keyword2" class="it st02" placeholder="지원자 이름으로 검색">
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_search2">검색</a>
+
+				</p>
+				<div class="posR">
+					<span class="viewMode">
+						<!-- 활성화 보기에 class="active" 추가 -->
+						<a href="javascript:void(0);" id="btn_list" class="active tableView">테이블보기</a>
+						<a href="javascript:void(0);" id="btn_grid" class="gridView">그리드보기</a>
+					</span>
+				</div>
+			</div>
+			<div class="interViewTable">
+				<div class="tableTop">
+					<ul>
+						<li class="state request disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="01">요청 <span>{{.WaitCnt}}</span></a>
+							<img src="/static/images/img-tooltip-live-01.png" alt="지원자에게 라이브 인터뷰를 요청 후 응답을 기다리는 인터뷰입니다." class="imgTooltip">
+						</li>
+						<li class="state schedule">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="02">예정 <span>{{.IngCnt}}</span></a>
+							<img src="/static/images/img-tooltip-live-02.png" alt="지원자에게 요청한 라이브 인터뷰가 수락되어 진행이 확정된 인터뷰입니다." class="imgTooltip">
+						</li>
+						<li class="state end disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="03">종료 <span>{{.EndCnt}}</span></a>
+							<img src="/static/images/img-tooltip-live-03.png" alt="종료된 라이브 인터뷰입니다." class="imgTooltip">
+						</li>
+						<li class="state cancel disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="04">거절･취소 <span>{{.CnclCnt}}</span></a>
+							<img src="/static/images/img-tooltip-live-04.png" alt="요청이 거절되거나 확정된 후에 취소된 인터뷰입니다." class="imgTooltip">
+						</li>
+					</ul>
+				</div>
+				<div class="gridWrap live_list">
+					<table>
+						<colgroup>
+							<col width="94px">
+							<col width="93px">
+							<col width="">
+							<col width="47px">
+							<col width="122px">
+							<col width="236px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>상태</th>
+							<th><a href="#">이름</a>
+								<ul class="filterOption">
+									<li><a href="#">이름 오름차 순</a></li>
+									<li><a href="#">이름 내림차 순</a></li>
+								</ul>
+							</th>
+							<th>성별</th>
+							<th>나이</th>
+							<th><a href="#">인터뷰 일시</a>
+								<ul class="filterOption">
+									<li><a href="#">시간 임박 순</a></li>
+									<li><a href="#">시간 과거 순</a></li>
+								</ul>
+							</th>
+							<th>참여 멤버</th>
+						</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+
+		//$("#view_table").hide();
+		//$("#view_grid").show();
+		//console.log("cookie : "+getCookie("notToday"));
+		if(getCookie("notToday")=="Y"){
+			$(".bannerArea").hide();
+		} 
+		
+		//$("#state_request").removeClass("state request");		
+		//$("#state_request").addClass("disabled");		
+		$(".state request").addClass("disabled");		
+		$(".state schedule").addClass("disabled");		
+		$(".state end").addClass("disabled");		
+		$(".state cancel").addClass("disabled");		
+
+		$("#gbn_cd1").val("");
+		$("#gbn_cd2").val("02");
+		$("#gbn_cd3").val("");
+		$("#gbn_cd4").val("");
+		
+		ajaxLiveList();
+	});
+
+    // table th filter 클릭이벤트
+    $('.gridWrap th a').on('click',function(){
+        $('.gridWrap th').removeClass('active')
+        $(this).closest('th').addClass('active')
+        return false
+    })
+    $(document).on('click',function(e){
+      if(!$(e.target).closest('th').hasClass('active')) {
+          $('.gridWrap th').removeClass('active')
+      }
+	})
+	
+	// 리스트 상세이동
+	$(document).off("click", "#live_detail").on("click", "#live_detail", function(e) {
+		var recrut_sn = $(this).data("recrut_sn");
+		var pp_mem_no = $(this).data("pp_mem_no");
+		window.location.href="/live/detail?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+	});
+
+	// 리스트 탭메뉴 선택
+	$(document).off("click", "#tab_menu").on("click", "#tab_menu", function(e) {
+		if ($(this).parent().hasClass("disabled")) {
+			//$(this).parent().removeClass("state");
+			$(this).parent().removeClass("disabled");
+			var thisVal = $(this).data("stat_cd");
+			if (thisVal == "01") {
+				$("#gbn_cd1").val("01");
+			} else if (thisVal == "02") {
+				$("#gbn_cd2").val("02");
+			} else if (thisVal == "03") {
+				$("#gbn_cd3").val("03");
+			} else {
+				$("#gbn_cd4").val("04");
+			}
+			ajaxLiveList();
+		} else {
+			$(this).parent().addClass("disabled");
+			//$(this).parent().addClass("state disabled");
+			var thisVal = $(this).data("stat_cd");
+			if (thisVal == "01") {
+				$("#gbn_cd1").val("");
+			} else if (thisVal == "02") {
+				$("#gbn_cd2").val("");
+			} else if (thisVal == "03") {
+				$("#gbn_cd3").val("");
+			} else {
+				$("#gbn_cd4").val("");
+			}
+			ajaxLiveList();
+		}
+	});
+
+	// 리스트보기 선택
+	$(document).off("click", "#btn_list").on("click", "#btn_list", function(e) {
+		if(!$(this).hasClass("active")) {
+			$(".gridView").removeClass("active");
+			$(".tableView").addClass("active");
+			$("#view_type").val("L");
+			$("#view_table").show();
+			$("#view_grid").hide();
+			ajaxLiveList();
+		}
+	});
+
+	// 그리드보기 선택
+	$(document).off("click", "#btn_grid").on("click", "#btn_grid", function(e) {
+		if(!$(this).hasClass("active")) {
+			$(".gridView").addClass("active");
+			$(".tableView").removeClass("active");
+			$("#view_type").val("G");
+			$("#view_table").hide();
+			$("#view_grid").show();
+			ajaxLive01List("01");
+			ajaxLive01List("02");
+			ajaxLive01List("03");
+		}
+	});
+
+	// 지원자 검색(Enter Key) - 그리드
+	$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+		if (event.keyCode == 13) {
+			ajaxLive01List("01");
+			ajaxLive01List("02");
+			ajaxLive01List("03");
+		}
+	});
+	// 지원자 검색(클릭) - 그리드
+	$(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+		ajaxLive01List("01");
+		ajaxLive01List("02");
+		ajaxLive01List("03");
+	}); 
+	// 지원자 검색(Enter Key) - 리스트
+	$(document).off("keydown", "#keyword2").on("keydown", "#keyword2", function(e) {
+		if (event.keyCode == 13) {
+			ajaxLiveList();
+		}
+	});	
+	// 지원자 검색(클릭) - 리스트
+	$(document).off("click", "#btn_search2").on("click", "#btn_search2", function(e) {
+		ajaxLiveList();
+	}); 
+	// 팝업 지원자 검색(Enter Key) - 리스트
+	$(document).off("keydown", "#pop_keyword").on("keydown", "#pop_keyword", function(e) {
+		if (event.keyCode == 13) {
+			ajaxLive01List("04");
+		}
+	});	
+	// 팝업 지원자 검색 (클릭)
+	$(document).off("click", "#btn_pop_search").on("click", "#btn_pop_search", function(e) {
+		ajaxLive01List("04");
+	});  
+
+	// 라이브 요청 리스트(그리드 타입) AJAX
+	var ajaxLive01List = function(v) {
+		var stat_cd = v;
+		if (stat_cd == "04") { //팝업내 검색일 경우
+			var keyword = $("#pop_keyword").val();
+		} else {
+			var keyword = $("#keyword").val();
+		}
+		var view_type = "G";
+
+		$.ajax({
+			type: "POST",
+			url: "/live/list",
+			data:{
+				stat_cd : stat_cd,
+				keyword : keyword,
+				view_type : view_type,
+			},
+			dataType: "json",
+			error : function() {
+			},
+			success : function(rep) {
+				if(rep.RtnLiveList01Data.length > 0){
+					if (stat_cd == "01") {
+						$(".interViewGrid .request").find("ul").children().remove();
+					} else if (stat_cd == "02") {
+						$(".interViewGrid .schedule").find("ul").children().remove();
+					} else if (stat_cd == "03") {
+						$(".interViewGrid .end").find("ul").children().remove();
+					} else {
+						$(".cancelList").find("ul").children().remove();
+					}
+					
+					$.each(rep.RtnLiveList01Data,function(e) {
+						var args = rep.RtnLiveList01Data[e];
+						var html = "";
+
+						html +="<li><a href=\"javascript:void(0);\" id=\"live_detail\" data-recrut_sn=\""+rep.RtnLiveList01Data[e].S01RecrutSn+"\" data-pp_mem_no=\""+rep.RtnLiveList01Data[e].S01PpMemNo+"\">";
+						html +="	<span class=\"img\"><img src=\""+rep.RtnLiveList01Data[e].S01PtoPath+"\" onerror=\"this.src='/static/images/ic-home-people-empty.png'\" width=\"66\" height=\"66\" alt=\"\"></span>";
+						html +="	<span class=\"userName\">"+rep.RtnLiveList01Data[e].S01Nm+"</span>";
+						html +="	<span class=\"userInfo\">"+rep.RtnLiveList01Data[e].S01Sex+"・";
+						if (rep.RtnLiveList01Data[e].S01Age == 0) {
+							html += "O세</span>";
+						} else {							
+							html += rep.RtnLiveList01Data[e].S01Age+"세</span>";
+						}
+						html +="	<span class=\"date\">"+rep.RtnLiveList01Data[e].S01LiveItvSday+"<br>"+rep.RtnLiveList01Data[e].S01LiveItvStime+"</span>";
+						html +="	<span class=\"member\">";
+						$.each(args.S01SubList,function(e) {
+							if (args.S01SubList[e].LmPpChrgGbnCd == "01") {
+								html +="		<em class=\"admin\"><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</em>";
+							} else {
+								html +="		<em><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</em>";
+							}
+						})
+						html +="	</span>";
+						html +="</a></li>";
+						
+						if (stat_cd == "01") {
+							$("#wait_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+							$(".interViewGrid .request").find("ul").append(html);
+						} else if (stat_cd == "02") {
+							$("#ing_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+							$(".interViewGrid .schedule").find("ul").append(html);
+						} else if (stat_cd == "03") {
+							$("#end_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+							$(".interViewGrid .end").find("ul").append(html);
+						} else {
+							$(".cancelList").find("ul").append(html);
+						}
+					})
+				}else{
+						var html ="";
+					if (stat_cd == "01") {
+						$(".interViewGrid .request").find("ul").children().remove();
+						html +="<li class=\"noData\">요청중인 라이브 인터뷰가<br>없습니다.</li>";
+						$("#wait_cnt").text(0);
+						$(".interViewGrid .request").find("ul").append(html);
+					} else if (stat_cd == "02") {
+						$(".interViewGrid .schedule").find("ul").children().remove();
+						html +="<li class=\"noData\">예정된 라이브 인터뷰가<br>없습니다.</li>";
+						$("#ing_cnt").text(0);
+						$(".interViewGrid .schedule").find("ul").append(html);
+					} else if (stat_cd == "03") {
+						$(".interViewGrid .end").find("ul").children().remove();
+						html +="<li class=\"noData\">종료된 라이브 인터뷰가<br>없습니다.</li>";
+						$("#end_cnt").text(0);
+						$(".interViewGrid .end").find("ul").append(html);
+					} else {
+						$(".cancelList").find("ul").children().remove();
+						html +="<li class=\"noData\">거절・취소된<br>라이브 인터뷰가<br>없습니다.</li>";
+						$("#pop_keyword").val("");
+						$(".cancelList").find("ul").append(html);
+					}
+				}
+			}
+		});				
+	}    		
+
+	// 라이브 요청 리스트(리스트 타입) AJAX
+	var ajaxLiveList = function(v) {
+		var keyword = $("#keyword2").val();
+		var view_type = "L";
+		var gbn_cd1 = $("#gbn_cd1").val();
+		var gbn_cd2 = $("#gbn_cd2").val();
+		var gbn_cd3 = $("#gbn_cd3").val();
+		var gbn_cd4 = $("#gbn_cd4").val();
+
+		$.ajax({
+			type: "POST",
+			url: "/live/list",
+			data:{
+				keyword : keyword,
+				view_type : view_type,
+				gbn_cd1 : gbn_cd1,
+				gbn_cd2 : gbn_cd2,
+				gbn_cd3 : gbn_cd3,
+				gbn_cd4 : gbn_cd4,
+			},
+			dataType: "json",
+			error : function() {
+			},
+			success : function(rep) {
+				if(rep.RtnLiveList01Data.length > 0){
+					$(".live_list").find("tbody").children().remove();
+					$.each(rep.RtnLiveList01Data,function(e) {
+						var args = rep.RtnLiveList01Data[e];
+						var html = "";
+						html +="<tr>";
+							if (rep.RtnLiveList01Data[e].S01LiveStatCd == "01") {
+								html +="	<td class=\"state request\">요청</td>";
+							} else if (rep.RtnLiveList01Data[e].S01LiveStatCd == "02") {
+								html +="	<td class=\"state schedule\">예정</td>";
+							} else if (rep.RtnLiveList01Data[e].S01LiveStatCd == "03") {
+								html +="	<td class=\"state end\">종료</td>";
+							} else {
+								html +="	<td class=\"state cancel\">거절･취소</td>";
+							}
+						html +="	<td class=\"name\"><a href=\"javascript:void(0);\" id=\"live_detail\" data-recrut_sn=\""+rep.RtnLiveList01Data[e].S01RecrutSn+"\" data-pp_mem_no=\""+rep.RtnLiveList01Data[e].S01PpMemNo+"\">"+rep.RtnLiveList01Data[e].S01Nm+"</a></td>";
+						html +="	<td>"+rep.RtnLiveList01Data[e].S01Sex+"</td>";
+						if (rep.RtnLiveList01Data[e].S01Age == 0) {
+							html +="	<td>"+"O"+"</td>";
+						} else {						 
+							html +="	<td>"+rep.RtnLiveList01Data[e].S01Age+"</td>";
+						}
+						html +="	<td>"+rep.RtnLiveList01Data[e].S01LiveItvSday+"<br>"+rep.RtnLiveList01Data[e].S01LiveItvStime+"</td>";
+						html +="	<td class=\"member\">";
+						$.each(args.S01SubList,function(e) {
+							if (args.S01SubList[e].LmPpChrgGbnCd == "01") {
+								html +="		<p class=\"admin\"><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</p>";
+							} else {
+								html +="		<p><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</p>";
+							}
+						})
+						html +="	</td>";
+						html +="</tr>";
+						$(".live_list").find("tbody").append(html);
+					})
+				}else{
+						$(".live_list").find("tbody").children().remove();
+						var html ="";
+						html +="<tr>";
+						html +="	<td colspan=\"7\" class=\"noData\">";
+						html +="		<p class=\"text\">해당되는 라이브 인터뷰가 없습니다.</p>";
+						html +="	</td>";
+						html +="</tr>";
+						$(".live_list").find("tbody").append(html);
+				}
+			}
+		});				
+	}    		
+
+    // 배너 닫기
+    $('.bannerArea .btnClose').on('click',function(){
+		setCookie('notToday','Y', 1);
+        $('.bannerArea').hide("fade");
+    })
+
+    $(document).on('click',function(e){
+      // 거절.취소 내역보기외에 클릭시
+      if(!$(e.target).closest('ul2').hasClass('cancel-reject')) {
+          $('.cancelList').fadeOut('fast');
+		}
+	})
+	
+	// 거절/취소 내역 보기
+	$(document).off("click", "#btn_cancel_reject").on("click", "#btn_cancel_reject", function(e) {
+		$('.cancelList').fadeIn('fast');
+		ajaxLive01List("04");
+        return false;
+	});
+
+    // 툴팁관련
+    $('.tableTop li.state').on('mouseover',function(){
+        $(this).find('.imgTooltip').show();
+    })
+    $('.tableTop li.state').on('mouseleave',function(){
+        $(this).find('.imgTooltip').hide();
+	})
+	
+    // 툴팁관련
+    $('.countTit').on('mouseover',function(){
+        $(this).find('.imgTooltip').show();
+    })
+    $('.countTit').on('mouseleave',function(){
+        $(this).find('.imgTooltip').hide();
+    })
+    $('.btnCancel').on('mouseover',function(){
+        $(this).find('.imgTooltip').show();
+    })
+    $('.btnCancel').on('mouseleave',function(){
+        $(this).find('.imgTooltip').hide();
+	})	
+	
+	</script>
+
+{{end}} 

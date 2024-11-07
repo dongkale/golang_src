@@ -1,0 +1,198 @@
+	<!-- header 영역 -->
+    <div class="hWrap">
+		<div class="header">
+			<h1><a href="/"><img src="/static/images/logo-admin-top.png" alt="직감 기업관리자"></a></h1>
+			<div class="topMenu">
+				<ul class="message">
+					<li><a href="/message?target=" class="m01 msg_confirm">메시지</a>{{if lt 0 .BsMsgCnt}}<span id="top_msg_count">{{.BsMsgCnt}}</span>{{end}}</li>
+					<li><a href="javascript:void(0);" class="m02 noti_confirm">알림</a>{{if lt 0 .BsNotiCnt}}<span id="top_noti_count">{{.BsNotiCnt}}</span>{{end}}</li>
+				</ul>
+				<a href="javascript:void(0);" class="member">{{.BsPpChrgBpNm}} {{.BsPpChrgNm}}</a>
+				<div class="alertList">
+					<p class="tit">알림</p>
+					<!--<a href="#" class="settBtn"><i class="fa fa-cog"></i>설정</a>-->
+					<div class="scrollList">
+					<ul2>
+
+					</ul2>
+					</div>
+					<a href="/notification/list" class="allView">모두 보기 &gt;</a>
+				</div>
+				<ul class="moreMenu">
+					<li><a href="/setting/member/modify">회원정보 변경</a></li>
+					<li><a href="/setting/member/pwd/modify">비밀번호 변경</a></li>
+					<!--<li><a href="#">알림 설정</a></li>-->
+					<li><a href="/logout">로그아웃</a></li>
+					<li class="group"><a href="/setting/notice/list">공지사항</a></li>
+					<li><a href="/setting/inquiry/list">문의하기</a></li>
+					<li class="group"><a href="https://www.notion.so/qrate/2020-05-21-2771f60b52484a6fa8c0f9a5394d4f44" target="_blank">이용약관</a></li>
+					<li><a href="https://www.notion.so/qrate/2020-05-21-121a2c50e88c48ee969020106c174da8" target="_blank">개인정보처리방침</a></li>
+					<li><a href="https://www.notion.so/Quest-to-Create-5ada340831c2436dabf1aeee844fc9de" target="_blank">회사소개</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+    <!-- 알림 공통 팝업 -->
+    <div class="popupWrap" id="pop_top_common_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text" id="alert_top_text"></p>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>	
+	<!-- 알림 공통 팝업 -->	
+	<!-- // header 영역 -->
+	<script type="text/javascript">
+
+		// 알림 확인
+		$(document).off("click", "#noti_confirm").on("click","#noti_confirm",function(e) {
+			var recrut_sn = $(this).data("recrut_sn");
+			var mem_no = $(this).data("mem_no");
+			var pp_mem_no = $(this).data("pp_mem_no");
+			var knd_cd = $(this).data("knd_cd");
+			var reg_dt = $(this).data("reg_dt");
+			var gbn_cd = $(this).data("gbn_cd");
+			var reg_dy = $(this).data("reg_dy");
+			var end_yn = $(this).data("end_yn");
+			var live_sn = $(this).data("live_sn");
+			var live_nvn_yn = $(this).data("live_nvn_yn");
+			
+			// LDK 2021/01/15 : 다대다 라이브
+			//ajaxNotificationSet(recrut_sn, mem_no, pp_mem_no, knd_cd ,reg_dt, gbn_cd, reg_dy, end_yn);
+			ajaxNotificationSet(recrut_sn, mem_no, pp_mem_no, knd_cd ,reg_dt, gbn_cd, reg_dy, end_yn, live_sn, live_nvn_yn);
+			// <--
+		});
+		
+		// 알림 확인 처리
+		var ajaxNotificationSet = function(rs, mn, pmn, kc, rd, gc, rg, eyn, lv_sn, lv_nvn_yn) {
+			///*
+			console.log("recrut_sn : "+rs);
+			console.log("mem_no : "+mn);
+			console.log("pp_mem_no : "+pmn);
+			console.log("knd_cd : "+kc);
+			console.log("reg_dt : "+rd);
+			console.log("gbn_cd : "+gc);
+			console.log("reg_dy : "+rg);
+			console.log("end_yn : "+eyn);
+			console.log("live_sn : "+lv_sn);
+			console.log("lv_nvn_yn : "+lv_nvn_yn);			
+			//return;
+			//*/
+			$.ajax({
+				cache : false,
+				url : '/notification/update',
+				data:{
+					recrut_sn : rs,
+					mem_no : mn,
+					pp_mem_no : pmn,
+					knd_cd : kc,
+					reg_dt : rd,
+					gbn_cd : gc,
+					reg_dy : rg,
+				},
+				type : 'POST',
+				dataType : "json",
+				error : function(e) {
+					console.log("error" + e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+
+					if(rtnCd == "1"){
+						if (kc == "1003") { //일반메시지
+							window.location.href="/message?target="+pmn+"&sn="+rs+"&end_yn="+eyn;
+						} else if (kc == "1004") { //대화 종료
+							window.location.href="/message?target="+pmn+"&sn="+rs+"&end_yn="+eyn;
+						} else if (kc == "1005") { //대화 다시 시작
+							window.location.href="/message?target="+pmn+"&sn="+rs+"&end_yn="+eyn;
+						} else if (kc == "1006") { //라이브인터뷰 요청
+							// LDK 2021/01/15 : 다대다 라이브
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+							// <--
+						} else if (kc == "2001" || kc == "03") { //신규지원자
+							window.location.href="/recruit/post/detail?recrut_sn="+rs
+						} else if (kc == "2002") { //라이브인터뷰 확정
+							// LDK 2021/01/15 : 다대다 라이브
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+							// <--
+						} else if (kc == "2003") { //라이브인터뷰 예정 알림
+							// LDK 2021/01/15 : 다대다 라이브
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+							// <--
+						} else if (kc == "2004") { //메시지 수신
+							window.location.href="/message?target="+pmn+"&sn="+rs+"&end_yn="+eyn;
+						} else if (kc == "3005") { //회원가입
+							window.location.href="/";
+						} else if (kc == "3006") { //지원자코멘트
+							var popW = 1320
+							var popH = 1000
+							var popX = (screen.width / 2) - (popW/2)
+							var popY = (screen.height / 2) - (popH/2)
+							window.open("/applicant/detail/popup?recrut_sn="+rs+"&pp_mem_no="+pmn,"_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+						} else if (kc == "3007") { //문의완료
+							window.location.href="/setting/inquiry/detail?sn="+rg+"&pn=1";
+						} else if (kc == "3008") { //문의답변
+							window.location.href="/setting/inquiry/detail?sn="+rg+"&pn=1";
+						} else if (kc == "2005") { //라이브인터뷰 거절(지원자)     // LDK 2021/01/18 : 다대다 라이브
+							//console.log("=============================================== else ks " + kc);
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+						} else if (kc == "2006") { //라이브인터뷰 취소(지원자)	   // LDK 2021/01/18 : 다대다 라이브
+							//console.log("=============================================== else ks " + kc);
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+						} else if (kc == "1008") { //라이브인터뷰 확정 취소(기업)  // LDK 2021/01/18 : 다대다 라이브
+							//console.log("=============================================== else ks " + kc);
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+						} else if (kc == "1009") { //라이브인터뷰 요청 취소(기업)  // LDK 2021/01/18 : 다대다 라이브
+							//console.log("=============================================== else ks " + kc);
+							if (lv_nvn_yn == "N") {
+								window.location.href="/live/detail?recrut_sn="+rs+"&pp_mem_no="+pmn;
+							} else {
+								window.location.href="/live/nvn/detail?recrut_sn="+rs+"&live_sn="+lv_sn;
+							}
+						} else {
+							console.log("=============================================== else ks " + kc);
+						}
+					} else if(rtnCd == "9") {
+						$("#alert_top_text").text("해당 채용공고는 삭제되었습니다.");
+						openPopup("pop_top_common_alert");
+					} else {
+						console.log("message : " + rtnMsg);
+					}					
+				},
+				error : function(e) {
+					console.log("error + "+e);
+				}
+			});	  
+		}		
+				
+	</script>	

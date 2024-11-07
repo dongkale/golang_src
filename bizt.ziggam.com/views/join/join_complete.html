@@ -1,0 +1,34 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 회원가입 영역 -->
+    <div class="joinWrap">
+        <div class="memberJoin">
+            <div class="joinComplete">
+                <p class="cText01">Welcome!</p>
+                <p class="cText02">이제 직감과 함께<br/><strong>채용을 편하게, 면접을 영상으로</strong></p>
+            </div>
+            <div class="boxInfo">
+                <dl>
+                    <dt><i class="fa fa-exclamation-circle"></i>직감은 구인과 구직의 안전을 위해 기업 정보 검수를 하고 있어요.</dt>
+                    <dd>1일에서 최대 3일까지 소요될 수 있으니 조금만 기다려주세요.</dd>
+                    <dd>가입이 완료되면 메일을 통해 알려드릴게요.</dd>
+                    <dd>가입과 관련된 사항은 <a href="mailto:support@ziggam.com">support@ziggam.com</a>으로 문의해주세요.</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <!-- // 회원가입 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+	<!-- footer end -->
+    <!-- Event snippet for 기업회원 가입 conversion page -->
+    <script>
+        gtag('event', 'conversion', {'send_to': 'AW-661333810/RQIACMrwkMwBELLOrLsC'});
+    </script>
+{{end}} 

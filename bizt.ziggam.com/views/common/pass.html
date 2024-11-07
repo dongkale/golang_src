@@ -1,0 +1,37 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+	<script src="/static/js/jquery-3.3.1.min.js"></script>
+	<script>
+      $(document).ready(function() {
+		loginProc();
+      });
+
+      var loginProc = function(){
+	  var id = "{{.MemID}}";
+      var bizUrl = '/admin/simple/pass/login';
+      $.ajax({
+          cache : false,
+          url : bizUrl,
+          data : {
+            mem_id : id,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+                window.location.replace("/");
+            }
+          },
+          error : function(e) {
+            window.location.replace("/");
+          },
+        });      
+      }	
+	</script>
+
+{{end}} 

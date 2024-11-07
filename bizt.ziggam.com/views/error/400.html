@@ -1,0 +1,18 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- // header 영역 -->
+    <!-- 404에러영역 -->
+    <div class="errorWrap">
+        <dl class="pageError">
+            <dt>불편을 드려 죄송합니다.</dt>
+            <dd>요청하신 페이지를 찾을 수 없습니다.</dd>
+        </dl>
+    </div>
+    <!-- // 404에러영역 -->
+{{end}} 

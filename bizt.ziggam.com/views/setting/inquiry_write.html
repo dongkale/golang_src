@@ -1,0 +1,264 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+	<form id="regForm" name="regForm" method="post">
+		{{if eq "evp" .RefGbn}}
+		<h2>기업 홍보 영상 서비스 문의하기</h2>
+		{{else}}
+		<h2>고객센터</h2>
+		{{end}}
+		<div class="customer">
+			<div class="gridTop">
+				{{if ne "evp" .RefGbn}}
+				<h3>문의 하기</h3>
+				{{if eq "01" .SAuthCd}}
+				<p class="txtDropOut"><a href="/setting/withdraw">혹시 탈퇴를 원하시나요?</a></p>
+				{{end}}
+				{{end}}
+			</div>
+			<div class="tForm">
+				<table>
+					<colgroup>
+						<col width="140px"><col>
+					</colgroup>
+					<tr>
+						<th>구분</th>
+						<td class="selectForm">
+							{{if eq "evp" .RefGbn}}
+							<select name="inq_gbn_cd" id="inq_gbn_cd" disabled>
+								<option value="04">기업 홍보 영상</option>
+							</select>
+							{{else}}
+							<select name="inq_gbn_cd" id="inq_gbn_cd">
+								<option value="">구분</option>
+								{{range .InqCommonCdList}}
+									<option value="{{.IqCdId}}">{{.IqCdNm}}</option>
+								{{end}}
+							</select>
+							{{end}}
+						</td>
+					</tr>
+					<tr>
+						<th>제목</th>
+						<td>
+							<div class="countWrap">
+								{{if eq "evp" .RefGbn}}
+								<input type="text" name="inq_title" id="inq_title" maxlength="30" class="it count" value="[{{.BsEntpKoNm}}] 기업 홍보 영상 서비스 문의" placeholder="[{{.BsEntpKoNm}}] 기업 홍보 영상 서비스 문의">
+								{{else}}
+								<input type="text" name="inq_title" id="inq_title" maxlength="30" class="it count" placeholder="제목을 입력해주세요">
+								{{end}}
+								<span class="count"><strong><em id="byteTitle">30</em></strong>/30자</span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td>
+							<div class="countWrap">
+								<textarea name="inq_cont" id="inq_cont" cols="30" maxlength="2000" rows="10" class="textarea"></textarea>
+								<span class="count"><strong><em id="byteCont">2000</em></strong>/2000자</span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>답변 받을 이메일</th>
+						<td>
+							<input type="text" name="email" id="email" class="it" maxlength="30" value="{{.BsEmail}}">
+							<p class="agree">
+								<input type="checkbox" checked name="agree" id="agree" class="custom"><label for="agree">개인정보 수집 및 이용 안내</label>
+								<span class="agreeMore">문의에 대한 처리 및 답변을 위한 이메일 정보 수집을 동의합니다.</span>
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:history.go(-1);" class="btn">취소</a>
+				<a href="javascript:void(0);" class="btn type_blue st02" id="btn_reg">문의하기</a>
+			</div>
+		</div>
+	</form>
+
+    <div class="popupWrap" id="common_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">문의사항 정보입력 알림</p>
+				<p class="text alert" id="alert_text"></p>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>	
+	</div>
+
+    <script type="text/javascript">
+		$(document).ready(function() {
+			$('input.custom').customInput();
+
+			if ("{{.RefGbn}}" == "evp") {
+				var placeholder = "-회사명 : OOO<br>-신청자 : OOO<br>-연락처 : 010-0000-0000<br>-내용 입력 : 추가 문의 사항을 입력해주세요.";
+				placeholder = placeholder.replace(/<br\s?\/?>/g,"\n");
+				$("#inq_cont").html(placeholder);
+			}
+		});
+
+		// 문의제목 글자수 체크
+		$(document).on("keyup","#inq_title",function(){
+			textLenCheck(this, 30, "#byteTitle");
+		}); 
+
+		// 문의내용 글자수 체크
+		$(document).on("keyup","#inq_cont",function(){
+			textLenCheck(this, 2000, "#byteCont");
+		}); 		
+
+		// 개인정보 수집 및 이용안내
+		$(document).off("click", "#agree").on("click", "#agree", function(e) {
+			if($('input:checkbox[id="agree"]').is(":checked") == false){
+				console.log("동의안함");
+			} else {
+				console.log("동의");
+			}
+		}); 	
+
+		// 문의 신청
+		$(document).off("click", "#btn_reg").on("click", "#btn_reg", function(e) {
+			if(!$("#inq_gbn_cd").val()) {
+				$("#alert_text").text("");
+				openPopup('common_alert');
+				$("#alert_text").html("문의하실 내용의 구분을 선택해주세요.");
+				return;
+			}
+			if(!$("#inq_title").val()) {
+				$("#alert_text").text("");
+				openPopup('common_alert');
+				$("#alert_text").text("문의하실 제목을 입력해주세요.");
+				return;
+			}
+			if(!$("#inq_cont").val()) {
+				$("#alert_text").text("");
+				openPopup('common_alert');
+				$("#alert_text").text("문의하실 내용을 입력해주세요.");
+				return;
+			}
+			if(!$("#email").val()) {
+				$("#alert_text").text("");
+				openPopup('common_alert');
+				$("#alert_text").text("답변 받으실 이메일을 입력해주세요.");
+				return;
+			}
+			if($('input:checkbox[id="agree"]').is(":checked") == false){
+				$("#alert_text").text("");
+				openPopup('common_alert');
+				$("#alert_text").text("개인정보 수집 및 이용 안내에 대해 동의해주세요.");
+				return;
+			}
+
+			var inq_gbn_cd = $("#inq_gbn_cd").val();
+			var inq_title = $("#inq_title").val().replace(/'/gi,"`");
+			var inq_cont = $("#inq_cont").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+			var email = $("#email").val();
+
+			/*
+			console.log("inq_gbn_cd : "+inq_gbn_cd);
+			console.log("inq_title : "+inq_title);
+			console.log("inq_cont : "+inq_cont);
+			console.log("email : "+email);
+			return;
+			*/
+			var formData = new FormData();
+			formData.append("inq_gbn_cd", inq_gbn_cd);
+			formData.append("inq_title", inq_title);
+			formData.append("inq_cont", inq_cont);
+			formData.append("email", email);
+
+			$.ajax({
+				cache : false,
+				url : '/setting/inquiry/insert',
+				data : formData,
+				type : 'POST',
+				processData: false,
+				contentType: false,
+				dataType : "json",
+				error : function(e) {
+					console.log("error" + e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+
+					if(rtnCd == "1"){
+						sendSlack();
+						//window.location.href="/setting/inquiry/list";
+					} else {
+						console.log("message : " + rtnMsg);
+					}
+				},
+				error : function(e) {
+					console.log("error + "+e);
+				}
+			});	  
+
+		}); 
+
+	</script>
+
+<script>
+    function sendSlack() {
+		var EntpMemNo = "{{.EntpMemNo}}";
+		var BsEntpKoNm = "{{.BsEntpKoNm}}";
+		var inq_gbn_name = $("#inq_gbn_cd option:selected").text();
+		var inq_title = $("#inq_title").val().replace(/'/gi,"`");
+		var inq_cont = $("#inq_cont").val();
+
+		var today = new Date();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", 'https://hooks.slack.com/services/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', true);
+
+        //Send the proper header information along with the request
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function() { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // Request finished. Do processing here.
+				window.location.href="/setting/inquiry/list";
+            }
+        }
+        var payload = {
+            "text": "고객센터 문의내용",
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+						"type": "mrkdwn",
+						"text": "고객센터 문의내용"
+					}
+                },
+                {
+                    "type": "section",
+                    "block_id": "section123",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "날짜: "+ today.toLocaleString() +"\n\n기업번호: "+ EntpMemNo + " (" + BsEntpKoNm + ") " + "\n\n문의종류: "+ inq_gbn_name +"\n\n제목: "+ inq_title +"\n\n내용\n"+ inq_cont +"\n\n"
+                        }
+                    ]
+                }
+            ]
+        };
+        xhr.send( JSON.stringify(payload));
+        
+    }
+
+</script>
+
+{{end}} 

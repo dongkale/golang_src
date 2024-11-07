@@ -1,0 +1,1303 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <div class="content">
+        <form id="regForm" name="regForm" method="post">
+            <input type="hidden" name="recrut_gbn_cd" id="recrut_gbn_cd" value="{{.RecrutGbnCd}}">
+            <input type="hidden" name="tr_cnt" id="tr_cnt" value="{{.QstTotCnt}}">
+            <div id="step01" class="step01">
+                <div class="top_step01">
+                    <ul class="popTab">
+                        <li class="active"><a href="javascript:void(0);"> STEP <span>1. 채용 정보</span></a></li>
+                        <li id="id02"><a href="javascript:void(0);"> STEP <span>2. 지원 절차</span></a></li>
+                    </ul>
+                </div>
+                <br>
+                <div id="contents_step01">
+                    <h2>채용 정보를 입력해주세요.</h2>
+                    <ul class="titInfoList">
+                        <li>채용에 필요한 기본 정보들을 모두 입력해주세요.</li>
+                        <li>부적절한 내용이 포함되어 있을 경우 사전 경고 없이 변경 혹은 삭제될 수 있습니다.</li>
+                    </ul>
+                    <div class="tForm">
+                        <table>
+                            <colgroup>
+                                <col width="140px">
+                                <col>
+                            </colgroup>
+                            <tr>
+                                <th>공고 제목</th>
+                                <td>
+                                    <div class="countWrap">
+                                        <input type="text" name="recrut_title" id="recrut_title" maxlength="30"
+                                               value="{{.RecrutTitle}}"
+                                               class="it"
+                                               placeholder="공고 제목을 입력해주세요.">
+                                        <span class="count"><strong><em id="byteTitle">30</em></strong>/30자</span>
+                                    </div>
+                                    <p class="validationAlert recrut_title_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>직무</th>
+                                <td class="selectForm" id="job_grp">
+                                    <select name="up_job_grp_cd" id="up_job_grp_cd" required>
+                                        <option value="" disabled selected>직군을 선택해주세요.</option>
+                                        {{range .JobGrpList}}
+                                            <option {{if eq .ChkUpJobGrpCd .JobGrpCd}}selected{{end}}
+                                                    value="{{.JobGrpCd}}">{{.JobGrpNm}}</option>
+                                        {{end}}
+                                    </select>
+                                    <span>
+							        <select name="job_grp_cd" id="job_grp_cd" required>
+								        <option value="" disabled selected>직무를 선택해주세요</option>
+							        </select>
+							        </span>
+                                    <p class="validationAlert up_job_grp_cd_message job_grp_cd_message"></p>
+                                    <ul class="formGuide">
+                                        <li>채용 직군은 등록 후에 수정이 불가능합니다.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <!-- LDK 2020/08/28: 채용 정보 코드화 -->
+                            <tr>
+                                <th>경력 조건</th>
+                                <td class="selectForm">
+                                    <select name="carr_gbn_cd" id="carr_gbn_cd" required>
+                                        <option value="00" disabled selected>경력 조건을 선택해주세요.</option>                                                                                                                        
+                                        {{range $key, $value := .CarrGbnMap}}
+                                            {{if ne $key "00"}}
+                                                <option value="{{$key}}">{{$value}}</option>
+                                            {{end}} 
+                                        {{end}}                                 
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>근무 형태</th>
+                                <td class="selectForm">
+                                    <select name="empl_typ_cd" id="empl_typ_cd" required>
+                                        <option value="00" disabled selected>근무 형태를 선택해주세요.</option>                                                                                                                        
+                                        {{range $key, $value := .EmplTypMap}}
+                                            {{if ne $key "00"}}
+                                                <option value="{{$key}}">{{$value}}</option>
+                                            {{end}} 
+                                        {{end}}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>최종 학력</th>
+                                <td class="selectForm">
+                                    <select name="lst_edu_gbn_cd" id="lst_edu_gbn_cd" required>
+                                        <option value="00" disabled selected>최종 학력을 선택해주세요.</option>                                                                                                                        
+                                        {{range $key, $value := .LstEduGbnMap}}
+                                            {{if ne $key "00"}}
+                                                <option value="{{$key}}">{{$value}}</option>
+                                            {{end}} 
+                                        {{end}}                                      
+                                    </select>
+                                </td>
+                            </tr>
+                            <!-- LDK 2020/08/28: 채용 정보 코드화 -->
+                            <tr>
+                                <th>모집인원</th>
+                                <td class="radioForm">
+                                    <input type="radio" name="rdo_recrut_cnt" id="recrut_cnt01" checked class="custom"
+                                           {{if eq "01" .RecrutGbnCd}}checked{{end}} value="01"><label
+                                            for="recrut_cnt01">0명</label>
+                                    <input type="radio" name="rdo_recrut_cnt" id="recrut_cnt02" class="custom"
+                                           {{if eq "02" .RecrutGbnCd}}checked{{end}} value="02"><label
+                                            for="recrut_cnt02">00명</label>
+                                    <input type="radio" name="rdo_recrut_cnt" id="recrut_cnt03" class="custom"
+                                           {{if eq "03" .RecrutGbnCd}}checked{{end}} value="03"><label
+                                            for="recrut_cnt03">000명</label>
+                                    <input type="radio" name="rdo_recrut_cnt" id="recrut_cnt04" class="custom"
+                                           {{if eq "99" .RecrutGbnCd}}checked{{end}} value="99"><label
+                                            for="recrut_cnt04">직접입력</label>
+                                    <input type="text" name="recrut_text_cnt" id="recrut_text_cnt" class="it"
+                                           maxlength="5" value="{{.RecrutCnt}}" readonly numberOnly value="0"> 명
+                                    <p class="validationAlert recrut_cnt_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>역할</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="rol" id="rol" cols="30" rows="10" maxlength="2000"
+                                              class="textarea st02"
+                                              placeholder="어떤 역할을 하실 인재를 구하시는지 입력해주세요.">{{str2html .Rol}}</textarea>
+                                        <span class="count"><strong><em id="byteRol">2000</em></strong>/2000자</span>
+                                    </div>
+                                    <p class="validationAlert rol_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="st02">지원자격</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="aply_qufct" id="aply_qufct" cols="30" rows="10" maxlength="2000"
+                                              class="textarea st02" placeholder="지원자의 지원 자격을 입력해주세요.">{{str2html .AplyQufct}}</textarea>
+                                        <span class="count"><strong><em id="byteQufct">2000</em></strong>/2000자</span>
+                                    </div>
+                                    <p class="validationAlert aply_qufct_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="st02">우대사항<br><span style="color: #82878c">(선택사항)</span></th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="perfer_trtm" id="perfer_trtm" cols="30" rows="10" maxlength="2000"
+                                              class="textarea st02" placeholder="지원자의 우대 사항을 입력해주세요.">{{str2html .PerferTrtm}}</textarea>
+                                        <span class="count"><strong><em id="byteTrtm">2000</em></strong>/2000자</span>
+                                    </div>
+                                    {{/*						<p class="validationAlert aply_qufct_message"></p>*/}}
+                                </td>
+                            </tr>
+                            <!-- LDK 2020/08/28: 채용 정보 코드화 -->
+                            <tr>
+                                <th>근무지역</th>
+                                <td class="selectForm" id="rgn_grp">
+                                    <select name="up_rgn_grp_cd" id="up_rgn_grp_cd">
+                                        <option value="" disabled selected>지역을 선택해주세요.</option>
+                                        {{range .RgnGrpList}}
+                                            <option value="{{.Code}}">{{.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                    <span>
+							        <select name="rgn_grp_cd" id="rgn_grp_cd">
+								        <option value="" disabled selected>2차 지역을 선택해주세요</option>
+							        </select>
+							        </span>
+                                    <p class="validationAlert up_rgn_grp_cd_message rgn_grp_cd_message"></p>
+                                </td>
+                            </tr>                            
+                            <tr>
+                                <th class="st02">전형 절차</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="prgs_stat_step" id="prgs_stat_step" cols="30" rows="10" maxlength="100"
+                                              class="textarea st03" placeholder="전형 절차를 입력해주세요.">{{str2html .PrgsStatStep}}</textarea>
+                                        <span class="count"><strong><em id="bytePrgsStatStep">100</em></strong>/100자</span>
+                                    </div>
+                                    <p class="validationAlert prgs_stat_step_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="st02">임금(연봉)</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="annual_salary" id="annual_salary" cols="30" rows="10" maxlength="100"
+                                              class="textarea st03" placeholder="임금(연봉) 입력해주세요.">{{str2html .AnnualSalary}}</textarea>
+                                        <span class="count"><strong><em id="byteAnnualSalary">100</em></strong>/100자</span>
+                                    </div>
+                                    <p class="validationAlert annual_salary_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="st02">근무 요일</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="work_days" id="work_days" cols="30" rows="10" maxlength="100"
+                                              class="textarea st03" placeholder="근무 요일 입력해주세요.">{{str2html .WorkDays}}</textarea>
+                                        <span class="count"><strong><em id="byteWorkDays">100</em></strong>/100자</span>
+                                    </div>
+                                    <p class="validationAlert work_days_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="st02">복리 후생</th>
+                                <td>
+                                    <div class="countWrap">
+                                    <textarea name="welfare" id="welfare" cols="30" rows="10" maxlength="1000"
+                                              class="textarea st02" placeholder="복리 후생을 입력해주세요.">{{str2html .Welfare}}</textarea>
+                                        <span class="count"><strong><em id="byteWelfare">1000</em></strong>/1000자</span>
+                                    </div>                                    
+                                </td>
+                            </tr>                            
+                            <tr>
+                                <th>박람회 등록</th>
+                                <td class="selectForm">
+                                    <select class="select wid310" name="jobfair" id="jobfair" style="width:310px;" required>
+                                        <option value="" disabled selected>등록할 박람회를 선택해주세요.</option>
+                                        <option value="0">선택하지 않음</option>
+                                        {{range .JobFairList}}
+                                            <option value="{{.MngCd}}">{{.Title}}</option>
+                                        {{end}}
+                                    </select>                                    
+                                </td>
+                            </tr>                            
+                            <!-- LDK 2020/08/28: 채용 정보 코드화 -->
+                            <tr>
+                                <th>접수기간</th>
+                                <td>
+                                    <div class="dateArea">
+                                        <div class="section sday_date">
+                                            <input type="text" name="sday" id="sday" class="it datePicker" readonly
+                                                   placeholder="시작일 선택">
+                                        </div>
+                                        <span class="dash">-</span>
+                                        <div class="section eday_date">
+                                            <input type="text" name="eday" id="eday" class="it datePicker" readonly
+                                                   placeholder="종료일 선택">
+                                        </div>
+                                    </div>
+                                    <p class="validationAlert sday_message eday_message"></p>
+                                    <ul class="formGuide">
+                                        <!--<li>설정한 접수 기간 동안 지원자에게 채용 공고가 노출됩니다.</li>-->
+                                        <li>접수 기간은 최대<strong>30</strong>일까지 설정이 가능합니다.</li>
+                                        <!--<li>채용 공고 등록 후에는 접수 기간 수정이 불가능합니다.</li>-->
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" id="btn_write_cancel" class="btn type_white st02 medium">취소</a>
+                        <a href="javascript:void(0);" id="btn_next_stop02" class="btn type_blue st02 medium">다음</a>
+                    </div>
+                </div>
+                {{/*            <div id="recrut_write_step02" style="display: none;">*/}}
+            </div>
+            <div id="step02" class="step02" style="display: none;">
+                <div class="top_step01">
+                    <ul class="popTab">
+                        <li><a id="id01" href="javascript:void(0);"> STEP <span>1. 채용 정보</span></a></li>
+                        <li class="active"><a href="javascript:void(0);"> STEP <span>2. 지원 절차</span></a></li>
+                    </ul>
+                </div>
+                <br>
+                <div id="contents_step02">
+                    <h2>지원 절차를 선택해주세요.</h2>
+                    <ul class="titInfoList">
+                        <li>채용공고의 지원 절차를 설정해주세요.</li>
+                        <li style="color: red;">지원자가 발생한 후에는 지원 절차 변경이 불가능합니다. 신중하게 선택해주세요.</li>
+                    </ul>
+                    <div class="tForm">
+                        <table>
+                            <colgroup>
+                                <col width="140px">
+                                <col>
+                            </colgroup>
+                            <tr>
+                            <tr>
+                                <th>서류 전형</th>
+                                <td class="radioForm">
+                                    <input type="radio" name="dcmnt_evl_use" id="dcmnt_evl_use_y" class="custom" {{if eq "1" .DcmntEvlUseCd}}checked{{end}}
+                                           value="1"><label for="dcmnt_evl_use_y">진행</label>
+                                    <input type="radio" name="dcmnt_evl_use" id="dcmnt_evl_use_n" class="custom" {{if eq "0" .DcmntEvlUseCd}}checked{{end}}
+                                           value="0"><label for="dcmnt_evl_use_n">진행 안함</label>
+                                    <ul class="titInfoList">
+                                        <li>직감의 기본 이력 항목과 영상 자기소개서 외에 별도로 받을 수 있는 첨부파일 형태의 지원 서류입니다.</li>
+                                        <li style="color: blue;">'진행 안함'을 선택하셔도 직감의 기본 이력 항목과 영상 자기소개서는 확인 가능합니다.</li>
+                                        <li>첨부 파일은 10MB 이내의 pdf 파일로만 이용 가능합니다.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>원웨이 인터뷰</th>
+                                <td class="radioForm">
+                                    <input type="radio" name="onwy_intrv_use" id="onwy_intrv_use_y" {{if eq "1" .OnwyIntrvUseCd}}checked{{end}}
+                                           class="custom"
+                                           value="1"><label for="onwy_intrv_use_y">진행</label>
+                                    <input type="radio" name="onwy_intrv_use" id="onwy_intrv_use_n" class="custom" {{if eq "0" .OnwyIntrvUseCd}}checked{{end}}
+                                           value="0"><label for="onwy_intrv_use_n">진행 안함</label>
+                                    <ul class="titInfoList" style="border-bottom: none">
+                                        <li><span style="font-weight: bold;">원웨이 인터뷰</span>는 미리 등록한 질문에 대해 지원자가 답변 영상을
+                                            촬영하여
+                                            제출하는 형태의 인터뷰입니다.
+                                        </li>
+                                        <li>원웨이 인터뷰 진행하실 경우 최소 1개의 질문을 등록해야 합니다.</li>
+                                        <li>지원자가 등록된 질문에 대한 답변 영상을 촬영하여 제출하게 됩니다.</li>
+                                    </ul>
+                                    <div class="jui" id="qst_area" style="display :{{if eq "0" .OnwyIntrvUseCd}}none{{end}}">
+                                        <div class="input-group">
+                                            <input type="text" id="qst_add_value" class="it form-control" maxlength="50"
+                                                   class="it" placeholder="질문을 입력하세요." aria-label="qst_add_value"
+                                                   aria-describedby="basic-addon1" style="margin-left:0px;width:40%; height: 28px;">
+                                            <div class="form-control">
+                                                <a href="javascript:void(0);" id="add_quest" class="form-control"
+                                                   style="width: 100%">
+                                                    <span class="btn normal" style="width: 100%">추가</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <table id="table_qst" class="table classic" style="border: 0px;">
+                                            <thead>
+                                            <tr style="display: none;">
+                                                <th width="20px">check</th>
+                                                <th width="20px">No</th>
+                                                <th>qst</th>
+                                                <th width="150px">button</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <a href="javascript:void(0);" class="btn mini" style="width: 50px"
+                                                       id="qst_select_all">
+                                                        전체선택
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn mini" style="width: 50px"
+                                                       id="qst_select_delete">
+                                                        선택삭제
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+
+                                        <!-- 공고등록취소 팝업 -->
+                                        <script id="tpl_table" type="application/json">
+                                            <tr>
+                                            <td width="20px">
+                                            <input type="checkbox" value="<!= row.index !>">
+                                            </td>
+                                            <td width="20px">
+                                            <! var qst_index = Number(row.index) + 1; !>
+                                            <!= qst_index !>
+                                            </td>
+                                            <td><!= qst !></td>
+                                            <td width="80px">
+                                            <div class="input-group">
+                                            <a href="javascript:void(0);" class="btn small" style="min-width: 0px" id="qst_edit_<!= row.index !>" onclick="table_qst.showEditRow(<!= row.index !>)"><i class="fas fa-edit"></i></a>
+                                            <a href="javascript:void(0);" class="btn small qst_del" style="min-width: 0px" id="qst_del_<!= row.index !>" onclick="table_qst.remove(<!= row.index !>)"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="javascript:void(0);" class="btn small" style="min-width: 0px; display:none;" id="qst_update_<!= row.index !>" onclick="table_qst.updateRow(<!= row.index !>)"><i class="fas fa-check"></i></a>
+                                            </div>
+                                            </td>
+                                            </tr>
+                                        </script>
+
+                                        <script data-jui="#table_qst" data-tpl="none" type="application/json">
+                                            <tr>
+                                            <td colspan="4" class="none" align="center">등록된 질문이 없습니다.</td>
+                                            </tr>
+                                        </script>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>라이브 인터뷰</th>
+                                <td class="radioForm">
+                                    <input type="radio" name="live_intrv_use" id="live_intrv_use_y" {{if eq "1" .LiveIntrvUseCd}}checked{{end}}
+                                           class="custom"
+                                           value="1"><label for="live_intrv_use_y">진행</label>
+                                    <input type="radio" name="live_intrv_use" id="live_intrv_use_n" class="custom" {{if eq "0" .LiveIntrvUseCd}}checked{{end}}
+                                           value="0"><label for="live_intrv_use_n">진행 안함</label>
+                                    <ul class="titInfoList">
+                                        <li><span style="font-weight: bold;">라이브 인터뷰</span>는 지원자와 지정된 시간에 실시간으로 진행하는 형태의
+                                            인터뷰입니다.
+                                        </li>
+                                        <li>공고 등록 후 해당 공고 지원자의 프로필・이력서・원웨이 인터뷰를 확인하신 후 <span
+                                                    style="font-weight: bold;">별도 요청</span>을
+                                            통해 진행하실 수 있습니다.
+                                        </li>
+                                        <li style="color: red">별도 요청을 하지 않으실 경우 라이브 인터뷰는 진행되지 않습니다.</li>
+                                        <li>라이브 인터뷰는 <span style="color: blue;">최대 4명의 지원자와 4명의 면접관</span>이 참여하실 수 있습니다.
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" id="btn_back_stop01" class="btn type_white st02 medium">뒤로</a>
+                        <a href="javascript:void(0);" id="btn_reg" class="btn type_blue st02 medium">채용공고 등록하기</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 공고등록취소 팝업 -->
+    <div class="popupWrap" id="pop_write_cancel">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">채용 공고 등록이 완료되지 않았어요.</p>
+                <p class="text">입력 중이시던 내용은 저장되지 않습니다.</p>
+                <p class="text">정말 나가시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_btn_write_cencel_confirm">나가기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+
+    <script type="text/javascript">
+        var table_qst;
+        var qst_list = [];
+        //var qst_length_check_msg = "질문은 0자이상, 50자 이하여야 합니다.";
+        // javascript  쪽 TblConfig.OneWayQAMaxLength 사용 안됨,  go 쪽 {{.TblConfig.OneWayQAMaxLength}} 사용
+        //  --> 초기화 관련  문제인듯
+        var qst_length_check_msg = `질문은 0자이상, ${"{{.TblConfig.OneWayQAMaxLength}}"}자 이하여야 합니다.`;
+
+        $(document).ready(function () {
+
+            // TblConfig.OneWayQAMaxLength --> 자바 스크립트 함수 안에서
+            // {{.TblConfig.OneWayQAMaxLength}} --> 자바 스크립트 함수 안 이외(html, 전역)
+            $("#qst_add_value").prop("maxLength", TblConfig.OneWayQAMaxLength);
+            
+            $('input.custom').customInput();
+
+            $("#recrut_title").keyup();
+            $("#rol").keyup();
+            $("#aply_qufct").keyup();
+            $("#perfer_trtm").keyup();
+
+            $("#prgs_stat_step").keyup();
+            $("#annual_salary").keyup();
+            $("#work_days").keyup();
+            $("#welfare").keyup();    
+
+            setQuestArea();
+
+            //직군 자동 선택
+            $("#up_job_grp_cd > option:selected").trigger("change");
+
+            if ("{{.RecrutGbnCd}}" == "99") {
+                $("#recrut_text_cnt").attr("readonly", false);
+            } else {
+                $("#recrut_text_cnt").val("0");
+            }
+
+            // LDK 2020/08/26: 채용 정보 코드화 -->            
+            var carr_gbn_cd = "{{.CarrGbnCd}}";
+            if (carr_gbn_cd) {            
+                $("#carr_gbn_cd").val(carr_gbn_cd);
+                console.log('carr_gbn_cd');
+            }
+
+            var empl_typ_cd = "{{.EmplTypeCd}}";
+            if (empl_typ_cd ) {
+                $("#empl_typ_cd").val(empl_typ_cd);
+                console.log('empl_typ_cd');
+            }
+
+            var lst_edu_gbn_cd = "{{.LstEduGbnCd}}";
+            if(lst_edu_gbn_cd) {
+                $("#lst_edu_gbn_cd").val(lst_edu_gbn_cd);
+                console.log('lst_edu_gbn_cd');
+            }
+
+            var entp_addr = {{.EntpAddr}};
+            if (entp_addr) {
+                var up_entp_addr = entp_addr.split(' ')[0];
+
+                if (up_entp_addr) {
+                    var resultCd = null;
+                    var rgnList = {{.RgnGrpList}};
+                    for (var i = 0; i < rgnList.length; i++) {                
+                        if (rgnList[i].Name == up_entp_addr) {
+                            resultCd = rgnList[i].Code;
+                            break;
+                        }
+                    }
+                    
+                    if (resultCd) {
+                        $("#up_rgn_grp_cd").val(resultCd);
+
+                        rgnGrp2(resultCd, entp_addr);
+
+                        console.log('============ resultCd:' + resultCd);               
+                    }
+                }               
+
+                console.log('============ EntpAddr:' + "{{.EntpAddr}}");               
+                console.log('============ up_entp_addr:' + up_entp_addr);               
+            }   
+
+            console.log('============ entp_addr: ' + entp_addr);             
+            console.log('============ Step: ' + "{{.Step}}");            
+            
+            
+            var jobfair = "{{.JobfairMngCd}}";
+            jobfair = (jobfair == ' ' || jobfair == '') ? '0' : jobfair;
+            $("#jobfair").val(jobfair);            
+            // <--
+
+        });
+
+        // 질문 그리드 설정
+        function setQuestArea() {
+            var org_qst_list = {{.RecruitQuestionList}};
+            var data_list = [];
+
+            for(var i=0; i < org_qst_list.length; i++) {
+
+                var vdTitle = org_qst_list[i].VdTitle;
+                var item = {qst : vdTitle};
+
+                data_list.push(item);
+            }
+
+            jui.ready(["grid.table"], function (table) {
+                table_qst = table("#table_qst", {
+                    fields: [null, null, "qst", null],
+                    data: data_list,
+                    moveRow: true,
+                    editRow: ["qst"],
+                    event: {
+                        editstart: function (row) {
+                            var input_element = row.list[2].children;
+                            $(input_element).attr("maxlength", TblConfig.OneWayQAMaxLength);     // LDK 2020/10/12: 질문 길이 설정, qst_add_value 찾아서 maxlength 변경
+
+
+                            $("#qst_edit_" + row.index).hide();
+                            $("#qst_del_" + row.index).hide();
+                            $("#qst_update_" + row.index).show();
+                        },
+                        editend: function (row) {
+                            console.log(row.data.qst);
+                            row.data.qst = row.data.qst.replace(/,/gi, "，").replace(/'/gi, "`");
+                            if (row.data.qst.length == 0 || row.data.qst.length > TblConfig.OneWayQAMaxLength) {     // LDK 2020/10/12: 질문 길이 설정, qst_add_value 찾아서 maxlength 변경
+                                alert(qst_length_check_msg);
+
+                                row.data.qst = row.data.qst.slice(0, TblConfig.OneWayQAMaxLength);   // LDK 2020/10/12: 질문 길이 설정, qst_add_value 찾아서 maxlength 변경
+                                return false;
+                            }
+
+                            $("#qst_update_" + row.index).hide();
+                            $("#qst_edit_" + row.index).show();
+                            $("#qst_del_" + row.index).show();
+                        },
+                    },
+                    tpl: {
+                        row: $("#tpl_table").html()
+                    },
+                });
+
+                table_qst.updateRow = function (index) {
+                    var qst_val = $("#table_qst").find('input.edit').val();
+
+                    // LDK, 2021/03/15 채용공고_버그_수정: "," 입력(수정)시 오류 해결 -->
+                    qst_val = qst_val.replace(/,/gi, "，").replace(/'/gi, "`");
+                    $("#table_qst").find('input.edit').val(qst_val);
+                    // <--
+
+                    table_qst.update(index, {qst: qst_val});
+                }
+            });
+
+            // LDK 2020/10/07: 채용 질문 갯수 조정
+            var destCnt = 5;
+
+            //var resultCnt = getOneWayQACnt("{{.EntpMemNo}}", "{{.RecrutSn}}");
+
+            if ("{{.EntpMemNo}}" == "E2020082001961" )
+                destCnt = 6;
+            else if("{{.EntpMemNo}}" == "E2020121504242" ) 	
+			    destCnt = 10;
+            else
+                destCnt = 5;
+                
+            //if (org_qst_list.length >= 5) {
+            if (org_qst_list.length >= destCnt) {
+                $("#add_quest").hide();
+            }
+        }
+
+        // 등록완료
+        $(document).off("click", "#btn_reg").on("click", "#btn_reg", function (e) {
+            if ($("#regForm").valid()) {
+                if ($("#recrut_cnt").val() == "99") {
+                    if ($("#recrut_text_cnt").val().length == 0) {
+                        $(".recrut_cnt_message").text("모집인원을 직접 입력해주세요.");
+                        $("#recrut_text_cnt").addClass("validationAlert");
+                        return;
+                    }
+                }
+
+                var recrut_title = $("#recrut_title").val().replace(/'/gi, "`"); //채용제목
+                var job_grp_cd = $("select[id=job_grp_cd] option:selected").val(); //직무
+                var recrut_gbn_cd = $("#recrut_gbn_cd").val(); //모집인원구분코드
+                var recrut_cnt = $("#recrut_text_cnt").val(); //모집인원
+                if (!recrut_cnt) {
+                    recrut_cnt = "0";
+                }
+                //var rol = $("#rol").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>'); //역할
+                //var aply_qufct = $("#aply_qufct").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>'); //지원자격 및 우대사항
+                var rol = $("#rol").val().replace(/'/gi, "`"); //역할
+                var aply_qufct = $("#aply_qufct").val().replace(/'/gi, "`"); //지원자격 및 우대사항
+                var perfer_trtm = $("#perfer_trtm").val().replace(/'/gi, "`"); //지원자격 및 우대사항
+                var sdy = $("#sday").val().replace(/-/gi, ""); //시작시간
+                var edy = $("#eday").val().replace(/-/gi, ""); //종료시간
+
+                var dcmnt_evl_use_cd = $(":radio[name='dcmnt_evl_use']:checked").val();
+                var onwy_intrv_use_cd = $(":radio[name='onwy_intrv_use']:checked").val();
+                var live_intrv_use_cd = $(":radio[name='live_intrv_use']:checked").val();
+
+                var qst_title_arr = "";
+                var qst_list_count = 0;
+
+                if (onwy_intrv_use_cd == "0" && live_intrv_use_cd == 0) {
+                    openPopup('pop_common_alert');
+                    $("#alert_text").html("최소 하나의 영상 인터뷰를 진행해주세요.<br>(원웨이 인터뷰 혹은 라이브 인터뷰)");
+
+                    return false;
+                }
+                
+                if (onwy_intrv_use_cd == "1") {
+                    var qst_list = table_qst.listAll();
+                    qst_list_count = qst_list.length;
+
+                    for (var i = 0; i < qst_list.length; i++) {
+                        // LDK, 2020/10/19: 문자열 이므로 "'" 문자을 다른 문자로 대체 <-->
+                        // LDK, 2021/03/15 채용공고_버그_수정: "," 입력(수정)시 오류 해결 <-->
+                        qst_title_arr += qst_list[i].data.qst.replace(/,/gi, "，").replace(/'/gi, "`") + ",";
+                    }
+
+                    qst_title_arr = qst_title_arr.slice(0, qst_title_arr.length - 1);
+                }
+                // LDK, 2021/03/13 채용공고_버그_수정: "," 입력시 오류 해결, 다른 문자로 대체 -->                
+                // if (onwy_intrv_use_cd == "1") {
+                //     var qst_list = table_qst.listAll();
+                //     qst_list_count = qst_list.length;                 
+
+                //     // LDK, 2020/10/19: 문자열 이므로 "'" 문자을 다른 문자로 대체 <-->
+                //     var __temp_qst_title_arr = [];
+                //     for (var i = 0; i < qst_list.length; i++) {                        
+                //         __temp_qst_title_arr.push(qst_list[i].data.qst.replace(/'/gi, "`"));
+                //     }            
+                    
+                //     qst_title_arr = __temp_qst_title_arr.join(ONEWAY_QA_SPLIT_CHAR);
+                // }
+                // <--
+
+                if (onwy_intrv_use_cd == "1" && qst_list_count == 0) {
+                    openPopup('pop_common_alert');
+                    $("#alert_text").html("최소 1개의 질문을 입력해주세요.");
+
+                    return false;
+                }
+
+                // LDK 2020/08/26 : 채용 정보 코드화 -->                
+                var job_grp = $("#job_grp_cd option:checked").text();
+                var up_job_grp = $("#up_job_grp_cd option:checked").text();
+
+                // 수정 불가이고 DB 에 저장도 하지 않는다    
+                //var up_job_grp_cd = $("select[id=up_job_grp_cd] option:selected").val(); // 2차 직군 코드
+
+                var carr_gbn_cd = $("select[id=carr_gbn_cd] option:selected").val();     // 경력 조건(무관,신입,경력,기타)
+                var entp_addr = $("select[id=rgn_grp_cd] option:selected").val();        // 근무지역
+
+                var empl_typ_cd = $("select[id=empl_typ_cd] option:selected").val();         // 근무형태(정규직,계약직,인턴,..) 코드
+                var lst_edu_gbn_cd = $("select[id=lst_edu_gbn_cd] option:selected").val();   // 최종 학력 코드
+
+                var prgs_stat_step = $("#prgs_stat_step").val().replace(/'/gi, "`");        // 전형 절차
+                var annual_salary = $("#annual_salary").val().replace(/'/gi, "`");          // 임금(연봉)
+                var work_days = $("#work_days").val().replace(/'/gi, "`");                  // 근무 요일	
+                var welfare	= $("#welfare").val().replace(/'/gi, "`");                      // 복리 후생
+                
+                var jobfair = $("select[id=jobfair] option:selected").val();                // 박람회
+
+                jobfair = (jobfair == '0') ? '' : jobfair;
+                
+                console.log("up_job_grp : "+up_job_grp);
+                console.log("job_grp : "+job_grp);
+
+                console.log("carr_gbn_cd : "+carr_gbn_cd);                
+                console.log("entp_addr : "+entp_addr);
+
+                console.log("empl_typ_cd : "+empl_typ_cd);
+                console.log("lst_edu_gbn_cd : "+lst_edu_gbn_cd);
+
+                console.log("prgs_stat_step : "+prgs_stat_step);
+                console.log("annual_salary : "+annual_salary);
+                console.log("work_days : "+work_days);
+                console.log("welfare : "+welfare);
+
+                console.log("jobfair : "+jobfair);                
+                // <--
+
+                /*
+                console.log("========================================");
+                console.log("chk_val : "+chk_val);
+                console.log("recrut_title : "+recrut_title);
+                console.log("job_grp_cd : "+job_grp_cd);
+                console.log("recrut_gbn_cd : "+recrut_gbn_cd);
+                console.log("recrut_cnt : "+recrut_cnt);
+                console.log("rol : "+rol);
+                console.log("aply_qufct : "+aply_qufct);
+                console.log("sdy : "+sdy);
+                console.log("edy : "+edy);
+                console.log("qst_title_arr : "+qst_title_arr);
+                return;
+                */
+                var formData = new FormData();
+                formData.append("recrut_title", recrut_title);
+                formData.append("job_grp_cd", job_grp_cd);
+                formData.append("recrut_gbn_cd", recrut_gbn_cd);
+                formData.append("recrut_cnt", recrut_cnt);
+                formData.append("rol", rol);
+                formData.append("aply_qufct", aply_qufct);
+                formData.append("perfer_trtm", perfer_trtm);
+                formData.append("sdy", sdy);
+                formData.append("edy", edy);
+                formData.append("qst_title_arr", qst_title_arr);
+                formData.append("dcmnt_evl_use_cd", dcmnt_evl_use_cd);
+                formData.append("onwy_intrv_use_cd", onwy_intrv_use_cd);
+                formData.append("live_intrv_use_cd", live_intrv_use_cd);
+
+                // LDK 2020/08/24 채용 정보 코드화 -->                
+                //formData.append("job_grp_cd", job_grp_cd);
+                formData.append("carr_gbn_cd", carr_gbn_cd);
+                formData.append("entp_addr", entp_addr);
+                formData.append("empl_typ_cd", empl_typ_cd);
+                formData.append("lst_edu_gbn_cd", lst_edu_gbn_cd);
+                formData.append("prgs_stat_step", prgs_stat_step);
+                formData.append("annual_salary", annual_salary);
+                formData.append("work_days", work_days);
+                formData.append("welfare", welfare);
+                formData.append("jobfair", jobfair);
+                // <--
+
+                $(".loading").attr("style", "display:''");
+
+                $.ajax({
+                    cache: false,
+                    url: '/recruit/insert',
+                    data: formData,
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    error: function (e) {
+                        //console.log("error" + JSON.stringify(e));
+                        console.log("error : " + e);
+                        $(".loading").attr("style", "display:none");
+                    },
+                    success: function (rep) {
+                        var rtnCd = rep.RtnCd
+                        var rtnMsg = rep.RtnMsg
+                        if (rtnCd == 1) {
+                            window.location.href = "/recruit/post/list";
+                        } else {
+                            console.log("등록 실패 : " + rtnMsg);
+                            $(".loading").attr("style", "display:none");
+                        }
+                    }
+                });
+            }
+        });
+
+        // 채용공고 등록 Validation
+        var validOption01 = {
+            onkeyup: false
+            , onclick: false
+            , onfocusout: function (element) {		// 포커스 아웃 시 동작
+                if ($(element).valid()) {				// 체크 통과
+                    var id = $(element).attr("id");
+                    $("." + id + "_message").text("");	// message box clear
+                }
+            }
+            , onfocusin: function (element) {			// 포커스 인 시 동작
+                var id = $(element).attr("id");
+                //console.log("input id : "+id);
+                $("#" + id).removeClass("validationAlert");
+                $("." + id + "_date").removeClass("validation");
+                resetInput(id);
+            }
+            , rules: {
+                recrut_title: {
+                    required: true,
+                },
+                up_job_grp_cd: {
+                    required: true,
+                },
+                job_grp_cd: {
+                    required: true,
+                },
+                rol: {
+                    required: true,
+                },
+                aply_qufct: {
+                    required: true,
+                },
+                sday: {
+                    required: true,
+                },
+                eday: {
+                    required: true,
+                },
+                qst_title1: {
+                    required: true,
+                },
+                carr_gbn_cd: {
+                    required: true,
+                },
+                empl_typ_cd: {
+                    required: true,
+                },
+                lst_edu_gbn_cd: {
+                    required: true,
+                },
+            }
+            , errorPlacement: function (error, element) {
+                var id = element.attr("id");
+                //console.log("err_id :"+id);
+                $("." + id + "_message").text(error.text());
+                $("#" + id).addClass("validationAlert");
+                $("." + id + "_date").addClass("validation");
+            }
+            , messages: {
+                recrut_title: {
+                    required: "공고 제목을 입력해주세요."
+                },
+                up_job_grp_cd: {
+                    required: "직군을 선택해주세요."
+                },
+                job_grp_cd: {
+                    required: "직무를 선택해주세요."
+                },
+                rol: {
+                    required: "역할을 입력해주세요."
+                },
+                aply_qufct: {
+                    required: "지원 자격을 입력해주세요."
+                },
+                sday: {
+                    required: "접수 기간을 선택해주세요."
+                },
+                eday: {
+                    required: "접수 기간을 선택해주세요."
+                },
+                carr_gbn_cd: {
+                    required: "경력 조건을 선택해주세요."
+                },
+                empl_typ_cd: {
+                    required: "근무 형태를 선택해주세요."
+                },
+                lst_edu_gbn_cd: {
+                    required: "최종 학력을 선택해주세요."
+                },
+            }
+            , success: function (element) {
+                var str = $(element).attr("id");
+                var id = str.substring(0, str.length - 6);
+                $("#" + id).removeClass("validationAlert");
+                $("." + id + "_date").removeClass("validation");
+            }
+        }
+
+        // input box reset
+        var resetInput = function (id) {
+            //console.log("id : "+id);
+            $("." + id + "_message").text(""); // message box clear
+        }
+
+        // 질문추가
+        $(document).off("click", "#add_quest").on("click", "#add_quest", function () {
+            var qst_add_value = $("#qst_add_value").val();
+            qst_add_value = qst_add_value.replace(/,/gi, "，").replace(/'/gi, "`");
+            if (qst_add_value.length == 0 || qst_add_value.length > TblConfig.OneWayQAMaxLength) {      // LDK 2020/10/12: 질문 길이 설정, qst_add_value 찾아서 maxlength 변경
+                alert(qst_length_check_msg);
+
+                $("#qst_add_value").val(qst_add_value.slice(0, TblConfig.OneWayQAMaxLength));   // LDK 2020/10/12: 질문 길이 설정, qst_add_value 찾아서 maxlength 변경
+                return false;
+            }            
+
+            var rows = [];
+            rows.push({qst: qst_add_value});
+            table_qst.append(rows);
+
+            // $("#qst_title" + trCnt + 1).val(qst_add_value);
+            $("#qst_add_value").val('');
+
+            check_qst_list();
+        });
+
+        function check_qst_list() {
+            var trCnt = $("#table_qst").find('tr').length;
+            $("#tr_cnt").val(trCnt);
+            //console.log("trCnt : "+trCnt);
+
+            var trCnt2 = $("#table_qst").find('input:checkbox').length; // --> 질문 실제 갯수
+            console.log("trCnt2 : "+trCnt2); 
+            console.log("EntpMemNo : "+"{{.EntpMemNo}}");
+
+            // LDK 2020/10/07: 채용 질문 갯수 조정
+            var destCnt = 5;
+
+            //var resultCnt = getOneWayQACnt("{{.EntpMemNo}}", "{{.RecrutSn}}");
+
+            if ("{{.EntpMemNo}}" == "E2020082001961" )
+                destCnt = 6;
+            else if("{{.EntpMemNo}}" == "E2020121504242" ) 	
+			    destCnt = 10;
+            else
+                destCnt = 5;
+
+            //if (trCnt >= 7) {  // 10개 제한인데 왜 12일까? 연구대상
+            if (trCnt2 >= destCnt) {  // 10개 제한인데 왜 12일까? 연구대상  --> trCnt 가 2부터 시작!! (table_qst.tr 2개가 있음)
+                $("#add_quest").hide();
+            } else
+                $("#add_quest").show();
+        }
+
+
+        // 질문 전체 선택
+        $(document).off("click", "#qst_select_all").on("click", "#qst_select_all", function () {
+            var table = $(this).closest('table');
+            var checkbox_list = $(table).find('input:checkbox');
+
+            var checked = $(table).find('input:checkbox').length == $(table).find('input:checkbox:checked').length ? false : true;
+
+            // 전체선택되어있음 전체해제 아님 전체선택
+            $(checkbox_list).prop('checked', checked);
+
+            checked == true ? false : true;
+        });
+
+        // 질문 선택 삭제
+        $(document).off("click", "#qst_select_delete").on("click", "#qst_select_delete", function () {
+            var tr_list = $("#table_qst").find('tr');
+
+            if (tr_list.length > 0) {
+                for (var i = tr_list.length - 1; i >= 1; i--) {
+                    var tr = tr_list[i];
+
+                    var checkbox = $(tr).find('input:checkbox')[0];
+
+                    if (checkbox != null && checkbox != undefined && checkbox.checked == true) {
+                        $(tr).find('.qst_del')[0].click();
+                    }
+                }
+            }
+
+            check_qst_list();
+
+            return;
+        });
+
+        $(document).off("click", ".qst_del").on("click", ".qst_del", function () {
+            check_qst_list();
+
+            return;
+        });
+
+        // 날짜 선택시
+        $(document).off("focusout", "#eday").on("focusout", "#eday", function () {
+            var startDateString = $("#sday").val();
+            var endDateString = $("#eday").val();
+
+            var startDateArray = startDateString.split("-");
+            var endDateArray = endDateString.split("-");
+
+            var startDateObj = new Date(startDateArray[0], Number(startDateArray[1]) - 1, startDateArray[2]);
+            var endDateObj = new Date(endDateArray[0], Number(endDateArray[1]) - 1, endDateArray[2]);
+            var betweenDay = ((endDateObj.getTime() - startDateObj.getTime()) / 1000 / 60 / 60 / 24) + 1;
+
+            //console.log("betweenDay : "+betweenDay);
+            var endDateSet = date_add(startDateString, 30);
+            if (betweenDay > 30) {
+                $("#eday").val(endDateSet);
+            }
+        });
+
+        function date_add(sDate, nDays) {
+            var yy = parseInt(sDate.substr(0, 4), 10);
+            var mm = parseInt(sDate.substr(5, 2), 10);
+            var dd = parseInt(sDate.substr(8), 10);
+            d = new Date(yy, mm - 1, dd + nDays);
+
+            yy = d.getFullYear();
+            mm = d.getMonth() + 1;
+            mm = (mm < 10) ? '0' + mm : mm;
+            dd = d.getDate();
+            dd = (dd < 10) ? '0' + dd : dd;
+            return '' + yy + '-' + mm + '-' + dd;
+        }
+
+        // 직군 선택시
+        $(document).off("change", "#up_job_grp_cd").on("change", "#up_job_grp_cd", function () {
+            var empl_cd = "01";
+            var pUpJobGrpCd = $('select[id=up_job_grp_cd] option:selected').val();
+            // 직무생성
+            jobGrp2(empl_cd, pUpJobGrpCd);
+        })
+
+        // 직무 생성
+        var jobGrp2 = function (empl_typ_cd, up_job_grp_cd) {
+            $.ajax({
+                type: "POST",
+                url: "/common/jobgrp",
+                data: {
+                    empl_typ_cd: empl_typ_cd,
+                    up_job_grp_cd: up_job_grp_cd
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (args.RtnJobGrpListData.length > 0) {
+                        //$(".selectForm").find("span").children().remove();
+                        $("#job_grp").find("span").children().remove();
+                        var html = "";
+                        var chkJobGrpCd = "{{.SelJobGrpCd}}";
+                        html += "<select name=\"job_grp_cd\" id=\"job_grp_cd\">";
+                        html += "<option value=\"\" disabled selected>직무를 선택해주세요.</option>";
+                        $.each(args.RtnJobGrpListData, function (e) {
+                            var grp1 = args.RtnJobGrpListData[e];
+                            if (chkJobGrpCd == grp1.JobGrpCd) {
+                                html += "<option selected value='" + grp1.JobGrpCd + "'>" + grp1.JobGrpNm + "</option>";
+                            } else {
+                                html += "<option value='" + grp1.JobGrpCd + "'>" + grp1.JobGrpNm + "</option>";
+                            }
+                        })
+                        html += "</select>";
+                        //$(".selectForm").find("span").append(html);
+                        $("#job_grp").find("span").append(html);
+                    } else {
+                        console.log("no-data");
+                        var html = "";
+                        html += "<select name=\"job_grp_cd\" id=\"job_grp_cd\">";
+                        html += "<option value=\"\" disabled selected>직무를 선택해주세요.</option>";
+                        html += "</select>";
+                        //$(".selectForm").find("span").append(html);
+                        $("#job_grp").find("span").append(html);
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        }
+
+        // 모집인원 체크
+        $(document).off("click", "input:radio[name='rdo_recrut_cnt']").on("click", "input:radio[name='rdo_recrut_cnt']", function (e) {
+            var recrut_gbn_cd = $(":radio[name='rdo_recrut_cnt']:checked").val();
+            $("#recrut_gbn_cd").val(recrut_gbn_cd);
+            //console.log("recrut_gbn_cd : "+$("#recrut_gbn_cd").val());
+            if (recrut_gbn_cd == "99") {
+                $("#recrut_text_cnt").attr("readonly", false);
+                $("#recrut_text_cnt").val("");
+                $("#recrut_text_cnt").focus();
+            } else {
+                $("#recrut_text_cnt").val("0");
+                $("#recrut_text_cnt").attr("readonly", true);
+            }
+        });
+
+        //숫자만 입력가능
+        $("input:text[numberOnly]").on("focus", function () {
+            var x = $(this).val();
+        }).on("focusout", function () {
+            var x = $(this).val();
+            if (x && x.length > 0) {
+                if (!$.isNumeric(x)) {
+                    x = x.replace(/[^0-9]/g, "");
+                }
+                $(this).val(x);
+            }
+        }).on("keyup", function () {
+            $(this).val($(this).val().replace(/[^0-9]/g, ""));
+        });
+
+        // 공고 제목 글자수 체크
+        $(document).on("keyup", "#recrut_title", function () {
+            textLenCheck(this, 30, "#byteTitle");
+        });
+
+        // 역할 글자수 체크
+        $(document).on("keyup", "#rol", function () {
+            textLenCheck(this, 2000, "#byteRol");
+        });
+
+        // 지원자격 글자수 체크
+        $(document).on("keyup", "#aply_qufct", function () {
+            textLenCheck(this, 2000, "#byteQufct");
+        });
+
+        // 우대사항 글자수 체크
+        $(document).on("keyup", "#perfer_trtm", function () {
+            textLenCheck(this, 2000, "#byteTrtm");
+        });
+
+        // LDK 2020/08/26 : 채용 정보 코드화        
+        // 전형 절차
+        $(document).on("keyup", "#prgs_stat_step", function () {
+            textLenCheck(this, 100, "#bytePrgsStatStep");
+        });
+
+        // 임금
+        $(document).on("keyup", "#annual_salary", function () {
+            textLenCheck(this, 100, "#byteAnnualSalary");
+        });
+
+        // 근무 요일
+        $(document).on("keyup", "#work_days", function () {
+            textLenCheck(this, 100, "#byteWorkDays");
+        });
+
+        // 복리 후생
+        $(document).on("keyup", "#welfare", function () {
+            textLenCheck(this, 1000, "#byteWelfare");
+        });
+        
+        // 지역 선택시
+        $(document).off("change", "#up_rgn_grp_cd").on("change", "#up_rgn_grp_cd", function () {
+            //var empl_cd = "01";
+            var pUpRGnGrpCd = $('select[id=up_rgn_grp_cd] option:selected').val();
+            
+            // 2차 지역 생성
+            rgnGrp2(pUpRGnGrpCd);
+        })
+
+        var rgnGrp2 = function (up_rgn_grp_cd, rgn_grp_cd) {
+            $.ajax({
+                type: "POST",
+                url: "/common/rgngrp",
+                data: {                    
+                    up_rgn_grp_cd: up_rgn_grp_cd
+                },
+                dataType: "json",
+                success: function (args) {
+                    
+                    console.log(args);
+
+                    if (args.length > 0) {
+                        $("#rgn_grp").find("span").children().remove();
+                        var html = "";
+                        html += "<select name=\"rgn_grp_cd\" id=\"rgn_grp_cd\">";
+                        html += "<option value=\"\" disabled selected>2차 지역을 선택해주세요.</option>";
+                        $.each(args, function (e) {
+                            var __grp = args[e];;
+                            html += "<option value='" + __grp.FullName + "'>" + __grp.Name + "</option>";
+                            //console.log(__grp);
+                        })
+                        html += "</select>";
+                        $("#rgn_grp").find("span").append(html);
+                        //$('#rgn_grp_cd').append(html);
+                        
+                        if (rgn_grp_cd) {
+                            $("#rgn_grp_cd").val(rgn_grp_cd);
+
+                            var pRGnGrpCd = $('select[id=rgn_grp_cd] option:selected').val();
+
+                            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + rgn_grp_cd);
+                            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + $("#rgn_grp_cd").val());
+                            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + pRGnGrpCd);
+                        }
+                    } else {
+                        console.log("no-data");
+                        var html = "";
+                        html += "<select name=\"rgn_grp_cd\" id=\"rgn_grp_cd\">";
+                        html += "<option value=\"\" disabled selected>2차 지역을 선택해주세요.</option>";
+                        html += "</select>";
+                        $("#rgn_grp").find("span").append(html);
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        }
+        // <--
+
+        // * 버튼 이벤트 * //
+
+        $(document).off("click", "#pop_close_btn").on("click", "#pop_close_btn", function (e) {
+            if ("{{.SAuthCd}}" == "01") {
+                $(".common_alert").hide();
+                $("#pop_live").show();
+            } else {
+                closePopup();
+            }
+        });
+
+        $(document).off("click", "#btn_next_stop02").on("click", "#btn_next_stop02", function (e) {
+            $("#regForm").validate(validOption01);
+            if ($("#regForm").valid()) {
+                $(".step01").hide();
+                $(".step02").show();
+                $('html, body').animate({scrollTop: 0}, 'fast');
+            }
+            $("#regForm").validate(null);
+        });
+
+        $(document).off("click", "#btn_back_stop01").on("click", "#btn_back_stop01", function (e) {
+            $(".step02").hide();
+            $(".step01").show();
+            $('html, body').animate({scrollTop: 0}, 'fast');
+        });
+
+        $(document).off("click", "#id02").on("click", "#id02", function (e) {
+            $("#btn_next_stop02").click();
+        });
+
+        $(document).off("click", "#id01").on("click", "#id01", function (e) {
+            $("#btn_back_stop01").click();
+        });
+
+        // 원웨이 선택시 질문 처리
+        $(document).off("click", "#onwy_intrv_use_n").on("click", "#onwy_intrv_use_n", function (e) {
+            var len = table_qst.listAll().length;
+            // for(;0< len; len--){
+            //     table_qst.remove(len-1);
+            // }
+            $("#qst_area").hide();
+        });
+
+        // 원웨이 선택시 질문 처리
+        $(document).off("click", "#onwy_intrv_use_y").on("click", "#onwy_intrv_use_y", function (e) {
+            var len = table_qst.listAll().length;
+            // for(;0< len; len--){
+            //     table_qst.remove(len-1);
+            // }
+            $("#qst_area").show();
+        });
+
+        // * 버튼 이벤트 * //
+
+        // * 팝업 오픈 이벤트 모음 * //
+
+        $(document).off("click", "#btn_write_cancel").on("click", "#btn_write_cancel", function (e) {
+            openPopup("pop_write_cancel");
+        });
+
+        // * 팝업 오픈 이벤트 모음 * //
+
+        // * 팝업 이벤트 * //
+
+        // 팝업 취소 이벤트 //
+        $(document).off("click", "#pop_btn_write_cencel_confirm").on("click", "#pop_btn_write_cencel_confirm", function (e) {
+            history.back();
+        });
+        // * 팝업 이벤트 * //
+
+        // * 버튼 이벤트 * //
+
+
+        $(function () {
+            var now = new Date();
+            $('#sday').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: ct ? now : false,
+                        maxDate: $('#eday').val() ? $('#eday').val() : false
+                    })
+                },
+                timepicker: false,
+                scrollMonth: false,
+                scrollTime: false,
+                scrollInput: false,
+            });
+            $('#eday').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: $('#sday').val() ? $('#sday').val() : false
+                    })
+                },
+                timepicker: false,
+                scrollMonth: false,
+                scrollTime: false,
+                scrollInput: false,
+            });
+        });
+    </script>
+{{end}} 

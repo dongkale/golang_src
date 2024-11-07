@@ -1,0 +1,49 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 아이디,비밀번호찾기 영역 -->
+    <div class="joinWrap">
+        <div class="memberFind">
+            <ul class="tabMenu">
+                <li class="active"><a href="/common/id/find">아이디 찾기</a></li>
+                <li><a href="/common/pwd/find">비밀번호 찾기</a></li>
+            </ul>
+            <div class="idFindText">
+                <p>입력하신 정보로 등록된 아이디입니다.</p>
+                <p>개인정보 보호를 위해 일부만 표시욉니다.</p>
+            </div>
+            <div class="resultForm">
+                {{if .IdFindResult}}
+                    {{range .IdFindResult}}
+                        <p class="text">{{.MemId}}</p>
+                    {{end}}
+                {{end}}
+                <!--
+                <ul>
+                    <li><input type="radio" class="custom" checked name="select" id="sel01"><label for="sel01">hyhy****33333333</label></li>
+                    <li><input type="radio" class="custom" name="select" id="sel02"><label for="sel02">hyhy****11111111</label></li>
+                    <li><input type="radio" class="custom" name="select" id="sel03"><label for="sel03">hyhy****22222222</label></li>
+                </ul>
+                -->
+            </div>
+            <div class="btnSet multi">
+                <a href="/login" class="btn type_blue st02">로그인</a>
+                <a href="/common/pwd/find" class="btn type_blue">비밀번호 찾기</a>
+            </div>
+        </div>
+    </div>
+    <!-- // 아이디,비밀번호찾기 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    
+    <script type="text/javascript">
+
+    </script>
+    
+{{end}} 

@@ -1,0 +1,44 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+		<h2>알림</h2>
+		<div class="notiList">
+			{{range .NotificationList}}
+				{{if eq "Y" .NtLdYn}}
+				<p class="date">{{.NtDtDd}}</p>
+				{{end}}
+				<ul>
+					{{if eq 0 .NtSn}} <!--일반알림-->
+					<a href="javascript:void(0);" data-recrut_sn="{{.NtRecrutSn}}" data-mem_no="{{.NtMemNo}}" data-pp_mem_no="{{.NtPpMemNo}}" data-knd_cd="{{.NtNotiKndCd}}" data-reg_dt="{{.NtRegDt}}" data-gbn_cd="{{.NtInqGbnCd}}" data-reg_dy="{{.NtInqRegDt}}" data-end_yn="{{.NtMsgEndYn}}" data-live_sn="{{.NtLiveSn}}" data-live_nvn_yn="{{.NtLiveNvnYn}}" id="noti_confirm">
+					{{else}}<!--공지사항-->
+					<a href="/setting/notice/detail?sn={{.NtSn}}">
+					{{end}}
+					{{if not .NtCfrmDt}}
+					<li class="point">
+					{{else}}
+					<li>
+					{{end}}
+						{{if eq "CHK" .NtCfrmDt}}
+						<p class="img"><img src="/static/images/img-noti.png"width="40" height="40" alt=""></p>
+						{{else}}
+							{{if eq "3005" .NtNotiKndCd}}
+								<p class="img"><img src="/static/images/btn-zinggam-home.png" width="40" height="40" alt=""></p>
+							{{else}}
+								<p class="img"><img src="{{.NtPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="40" height="40" alt=""></p>
+							{{end}}
+						{{end}}
+						<p class="text">{{.NtNotiCont}}</p>
+						<p class="time">{{.NtDtHh}}</p>
+					</li>
+					</a>
+				</ul>
+			{{end}}
+		</div>
+	</div>
+{{end}} 

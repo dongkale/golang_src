@@ -1,0 +1,60 @@
+<!-- head start -->
+{{template "include/head.html" .}}
+<!-- head end -->
+	<body>
+		<div class="wrap">
+			<!-- Header start -->
+			{{template "include/header.html" .}}
+			<!-- Header end -->
+
+			<div class="cWrap">
+				<div class="container">
+			
+				<!-- left menu start -->
+				{{template "include/left_menu.html" .}}
+				<!-- left menu -->
+
+				<!-- body start -->
+				{{template "body" .}}
+				<!-- body end -->
+        
+				</div>
+			</div>
+			<!-- loading -->
+			<div class="loading" style="display:none">
+				<p class="img"><img src="/static/images/loading_ziggam.gif" alt="로딩중입니다"></p>
+				<span class="cover"></span>
+			</div>
+			<!-- loading -->
+		</div>
+    </body>
+
+	<script type="text/javascript">	
+		const MemId = "{{.SMemId}}";
+		const MemNo = "{{.SMemNo}}";
+		const MemSn = "{{.SMemSn}}";
+		const AuthCd = "{{.SAuthCd}}"
+
+		const BsPpChrgNm = "{{.BsPpChrgNm}}";
+		const BsPpChrgBpNm = "{{.BsPpChrgBpNm}}";
+		const BsRepNm = "{{.BsRepNm}}";
+
+		const TblConfig = {{.TblConfig}};
+
+		console.log(`[base.html] SMemId:${MemId}, SMemNo:${MemNo}, SMemSn:${MemSn}, SAuthCd:${AuthCd}`)	
+		console.log(`[base.html] BsPpChrgNm:${BsPpChrgNm}, BsPpChrgBpNm:${BsPpChrgBpNm}, BsRepNm:${BsRepNm}`)
+		console.log(`[base.html] TableConfig:${TblConfig}`)	
+			
+		// const jsonTblConfig = "{{.TblConfig}}";
+		console.log(`[base.html] TblConfig: ${JSON.stringify(TblConfig)}`);
+		//console.log(TblConfig)
+
+		// const TblConfig2 = JSON.parse("{{.TableConfigFmt}}");
+		// console.log(`[base.html] TblConfig2: ${JSON.stringify(TblConfig2)}`);
+		//console.log(TableConfig)
+			
+		const SuperAdmin = "{{.SuperAdmin}}";	
+		console.log(`[base.html] SuperAdmin: ${SuperAdmin}`);
+	
+	</script>
+</html>

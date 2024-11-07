@@ -1,0 +1,823 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+<!-- Header start -->
+{{template "include/header.html" .}}
+<!-- Header end -->    
+<input type="hidden" id="sort_gbn" value="">
+<input type="hidden" id="vp_yn" value="9">
+<input type="hidden" id="favr_aply_pp" value="9">
+<input type="hidden" id="live_req_stat_cd" value="A">
+<input type="hidden" id="view_type" value="L">
+<input type="hidden" id="page_no" value="1">
+<input type="hidden" id="arr_applicant" value="">
+<input type="hidden" id="arr_recrut_sn" value="">
+<input type="hidden" id="check_all_list" value="0">
+
+<div class="content">
+    <!--
+    <ul class="tabMenu tabGbn">
+        <li class='{{if eq "00" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                href="/applicant/list?evl_prgs_stat=00">
+                전체 <span>1000</span>
+            </a>
+        </li>                    
+        <li><span>1000</span></li>
+    </ul>
+    -->
+    <div>
+        <h2 class="h2 pt1">지원자 초대내역</h2>   
+    </div>
+    <div class="fieldList">   
+        <dl class="tForm">  
+            <table>
+                <colgroup>
+                    <col width="380px">
+                    <col>
+                </colgroup>
+                <br><br>
+                <tr>                    
+                    <td class="selectForm" id="recuit_select">
+                        <select class="select wid100" name="recuit_select_cd" id="recuit_select_cd" required>
+                            <option value="00" selected>전체</option>                                        
+                            <option value="01">대기중</option>
+                            <option value="02">채용중</option>
+                            <option value="03">마감</option>
+                        </select>
+                        <span>
+                        <select class="select wid580" name="recuit_select_list" id="recuit_select_list" required>
+                            <option value="" disabled selected>채용 선택해 등록해 주세요</option>                                
+                            <option value="">전체</option>
+                            {{range .RecruitList}}
+                                <option value="{{.SRecrutSn}}">[{{.SUpJobGrp}}>{{.SJobGrp}}] {{.SRecrutTitle}}</option>
+                            {{end}}                                
+                        </select>
+                        </span>                            
+                    </td>                                
+                </tr>
+            </table>    
+        </dl> 
+    </div>    
+    <div class="searchForm inviteList">            
+        <tr>                
+            <td>
+                <div class="dateArea">
+                    <div class="section sday_date">
+                        <input type="text" name="sday" id="sday" class="it datePicker" readonly placeholder="시작일 선택">
+                    </div>
+                    <span class="dash">-</span>
+                    <div class="section eday_date">
+                        <input type="text" name="eday" id="eday" class="it datePicker" readonly placeholder="종료일 선택">
+                    </div>
+        			<div class="search st03">
+            			<!--<input type="text" name="keyword" id="keyword" maxlength="20" placeholder="검색 키워드를 입력해주세요." class="it">-->
+                        <a href="javascript:void(0);" id="btn_search" class="btn type_blue st02">검색</a>
+                    </div>      
+                </div>                          
+                <!-- <p class="validationAlert sday_message eday_message"></p> -->                    
+            </td>
+        </tr>                                    
+    </div>
+    <div class="inviteList">
+        <div class="tit">
+            <p class="total">
+                총 <strong><span id="tcnt">{{.RslTotCnt}}</span></strong>건                    
+            </p>                
+        </div>
+        <div class="gridWrap invite_list">
+            <table>
+                <colgroup>
+                    <col width="80px"/>
+                    <col width="50px"/>
+                    <col width="200px"/>                    
+                    <col width="50px"/>                        
+                </colgroup>
+                <thead>
+                <tr>                        
+                    <th style="cursor: default">발송 일시</th>                        
+                    <th style="cursor: default">발송자</th>                        
+                    <th style="cursor: default">채용 공고</th>                        
+                    <th style="cursor: default">수신자수</th>                        
+                </tr>
+                </thead>
+                <tbody>
+                {{if .InviteSendList}}
+                    {{range .InviteSendList}}                            
+                        <tr>
+                            <td>{{.RslSendDtFmt}}</td>
+                            <td>{{.RslSenderName}}</td>
+                            <!--<td>{{.RslRecrutTitle}}</td>-->
+                            <td><a href="/recruit/post/detail?recrut_sn={{.RslRecrutSn}}" style="text-decoration:underline">{{.RslRecrutTitle}}</a></td>
+                            <!--<td>{{.RslCnt}}</td>-->
+                            <td class="name"><a href="javascript:void(0);" 
+                                   id="btn_invite_list_detail" 
+                                   data-recrut_sn="{{.RslRecrutSn}}" 
+                                   data-send_dt="{{.RslSendDt}}">{{.RslCnt}}
+                                </a>
+                            </td>
+                        </tr>
+                    {{end}}
+                {{else}}
+                    <tr style="height: 200px;">
+                        <td colspan="3" style="text-align:center; color: #878d91;">초대 내역이 없습니다.</td>
+                    </tr>
+                {{end}}
+                </tbody>
+            </table>
+        </div>
+        <div class="paging">
+            {{str2html .Pagination}}
+        </div>
+    </div>
+</div>
+<!-- 알림 공통 팝업 -->
+<div class="popupWrap" id="pop_common_alert">
+    <div class="popLayer">
+        <div class="popCont">
+            <p class="text" id="alert_text"></p>
+        </div>
+        <div class="btnSet">
+            <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+<!-- 알림 공통 팝업 -->
+
+<!--
+<form action="Gate" name="popForm" method="post">
+<input type="hidden" name="recrut_sn" value=""/>
+<input type="hidden" name="send_dt" value=""/>
+</form>  
+-->
+
+<!--
+<form name="frmPopup">
+    <input type="hidden" name="recrut_sn">
+    <input type="hidden" name="send_dt">
+</form>
+-->
+
+<!--
+<form name="frmData" id="frmData" method="post" action="/invite/send/list/detail/popup">
+    <input type="text" name="recrut_sn" id="recrut_sn" value="" />
+    <input type="text" name="send_dt" id="send_dt" value="" />
+</form>    
+--> 
+
+<!--
+<form name="frm" id="frm" method="post">
+    <input type="hidden" name="recrut_sn" id="recrut_sn">
+    <input type="hidden" name="send_dt" id="send_dt">
+</form>
+-->
+
+<script type="text/javascript">
+
+    const pop_view_day = 30;        // 상세 정보 보여줄 기간
+
+    $(document).ready(function () {
+        $('input.custom').customInput();
+    });
+
+    var ajaxInviteList = function (v) {
+        //var keyword = $("#keyword").val();        
+        var recrut_sn = $("select[id=recuit_select_list] option:selected").val();             
+        var sdy = $("#sday").val().replace(/-/gi, ""); //시작시간
+        var edy = $("#eday").val().replace(/-/gi, ""); //종료시간
+        
+        var page_no = $("#page_no").val();
+        
+        console.log("recrut_sn : "+recrut_sn);
+        console.log("sdy : "+sdy);
+        console.log("edy : "+edy);
+        console.log("page_no : "+page_no);
+
+        // if (edy == "") {
+        //     var __today = new Date();
+        //     edy = __today.format('yyyyMMdd');
+
+        //     console.log("edy(conv) : "+edy);
+        // }        
+
+        /*
+        console.log("keyword : "+keyword);
+        console.log("sort_gbn : "+sort_gbn);
+        console.log("page_no : "+page_no);
+        console.log("view_type : "+view_type);
+        return;
+        */
+        $.ajax({
+            type: "POST",
+            url: "/invite/send/list",
+            data: {
+                recrut_sn: recrut_sn,
+                sdy: sdy,
+                edy: edy,
+                pn: page_no,
+            },
+            dataType: "json",
+            error: function () {
+                console.log("[ajax][/invite/send/list] error");
+            },
+            success: function (rep) {                    
+                if (rep.RtnInviteSendListData) {
+                    if (rep.RtnInviteSendListData.length > 0) {
+                        $(".gridWrap.invite_list").show();                        
+                        //$(".boxWrap").find("ul").children().remove();
+                        $(".gridWrap.invite_list").find("tbody").children().remove();
+                        $.each(rep.RtnInviteSendListData, function (e) {
+                                
+                            var html = "";
+                            html += "<tr>";                                                                
+                            html += "	<td>" + rep.RtnInviteSendListData[e].RslSendDtFmt + "</td>";
+                            html += "	<td>" + rep.RtnInviteSendListData[e].RslSenderName + "</td>";
+                            //html += "	<td>" + rep.RtnInviteSendListData[e].RslRecrutTitle + "</td>";
+                            html += "	<td><a href=\"/recruit/post/detail?recrut_sn=" + rep.RtnInviteSendListData[e].RslRecrutSn + "\" style=\"text-decoration:underline\">" + rep.RtnInviteSendListData[e].RslRecrutTitle + "</a></td>";
+
+                            //html += "	<td>" + rep.RtnInviteSendListData[e].RslCnt + "</td>";
+                            html += "	<td class=\"name\"><a href=\"javascript:void(0);\""; 
+                            html += "       id=\"btn_invite_list_detail\""; 
+                            html += "       data-recrut_sn=\"" + rep.RtnInviteSendListData[e].RslRecrutSn + "\"";
+                            html += "       data-send_dt=\"" + rep.RtnInviteSendListData[e].RslSendDt + "\">";
+                            html += "       " + rep.RtnInviteSendListData[e].RslCnt + "</a>";
+                            html += "   </td>";
+                            html += "</tr>";
+                            $(".gridWrap.invite_list").find("tbody").append(html);                        
+                        })                         
+                        
+                        $(".paging").children().remove();
+                        $(".paging").append(rep.RtnInviteSendListData[0].Pagination);
+                        $("#tcnt").text(rep.RtnInviteSendListData[0].RslTotCnt);
+                    } else {
+                            $("colgroup").show();
+                            $("thead").show();
+                            $(".gridWrap.invite_list").find("tbody").children().remove();
+                            //$(".boxWrap").find("ul").children().remove();
+                            var html = "";
+                            html += "<tr style=\"height: 200px;\">";
+                            html += "<td colspan=\"3\" style=\"text-align:center; color: #878d91;\">초대 내역이 없습니다.</td>";
+                            html += "</tr>";
+                            $(".gridWrap.invite_list").find("tbody").append(html);
+                        
+                        $(".paging").children().remove();
+                        $("#tcnt").text(0);
+                        $("#page_no").val("1");                        
+                    }    
+                } else {
+                    console.log(rep);
+                    window.location.href = "/login";
+                }           
+            }
+        });
+    }
+
+    // 페이징처리
+    $(document).off("click", ".prev.goPage").on("click", ".prev.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".next.goPage").on("click", ".next.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    var paging = function (pageno) {
+        $("#page_no").val(pageno);
+        ajaxInviteList();
+    }
+    
+    $(document).off("click", "#btn_search").on("click", "#btn_search", function (e) {
+        $("#page_no").val("1");
+        ajaxInviteList();
+    });
+    
+    $(document).off("change", "#recuit_select_list").on("change", "#recuit_select_list", function (e) {
+        $("#page_no").val("1");
+        ajaxInviteList();
+    });
+    
+    $(document).off("focusout", "#eday").on("focusout", "#eday", function () {
+        var startDateString = $("#sday").val();
+        var endDateString = $("#eday").val();
+        var startDateArray = startDateString.split("-");
+        var endDateArray = endDateString.split("-");
+        var startDateObj = new Date(startDateArray[0], Number(startDateArray[1]) - 1, startDateArray[2]);
+        var endDateObj = new Date(endDateArray[0], Number(endDateArray[1]) - 1, endDateArray[2]);
+        var betweenDay = ((endDateObj.getTime() - startDateObj.getTime()) / 1000 / 60 / 60 / 24) + 1;
+        //console.log("betweenDay : "+betweenDay);
+        var endDateSet = date_add(startDateString, 30);
+        if (betweenDay > 30) {
+            $("#eday").val(endDateSet);
+        }
+    });
+
+    function date_add(sDate, nDays) {
+        var yy = parseInt(sDate.substr(0, 4), 10);
+        var mm = parseInt(sDate.substr(5, 2), 10);
+        var dd = parseInt(sDate.substr(8), 10);
+        d = new Date(yy, mm - 1, dd + nDays);
+
+        yy = d.getFullYear();
+        mm = d.getMonth() + 1;
+        mm = (mm < 10) ? '0' + mm : mm;
+        dd = d.getDate();
+        dd = (dd < 10) ? '0' + dd : dd;
+
+        return '' + yy + '-' + mm + '-' + dd;
+    }
+
+    $(function () {
+        var now = new Date();
+        $('#sday').datetimepicker({
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    //minDate: ct ? now : false,
+                    maxDate: $('#eday').val() ? $('#eday').val() : false
+                })
+            },
+            timepicker: false,
+            scrollMonth: false,
+            scrollTime: false,
+            scrollInput: false,
+        });
+        $('#eday').datetimepicker({
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: $('#sday').val() ? $('#sday').val() : false
+                })
+            },
+            timepicker: false,
+            scrollMonth: false,
+            scrollTime: false,
+            scrollInput: false,
+        });
+    });
+
+    // 채용 공고 종류 선택시
+    $(document).off("change", "#recuit_select_cd").on("change", "#recuit_select_cd", function () {
+        
+        var recruit_cd = $('select[id=recuit_select_cd] option:selected').val();
+
+        recruitList(recruit_cd);
+    })
+
+    // 채용정보 상세이동
+    // $(document).off("click", "#go_recrut").on("click", "#go_recrut", function (e) {
+    //         var recrut_sn = "{{.RecrutSn}}";
+    //         window.close();
+    //         opener.window.location.href = "/recruit/post/detail?recrut_sn=" + recrut_sn;
+    // });
+    
+    var recruitList = function (recruit_cd) {
+        $.ajax({
+            type: "POST",
+            url: "/invite/recurit/list",
+            data: {
+                recruit_cd: recruit_cd
+            },
+            dataType: "json",
+            success: function (args) {
+                if(args.RtnRecruitSubListData) {
+                    if (args.RtnRecruitSubListData.length > 0) {                        
+                        $("#recuit_select").find("span").children().remove();
+                        var html = "";
+                        html += "<select class=\"select wid580\" name=\"recuit_select_list\" id=\"recuit_select_list\" required>";
+                        html += "<option value=\"\" disabled selected>채용 공고를 선택해 주세요.</option>";
+                        $.each(args.RtnRecruitSubListData, function (e) {
+                            var grp1 = args.RtnRecruitSubListData[e];
+                            html += "<option value='" + grp1.SRecrutSn + "'>" + "[" + grp1.SUpJobGrp + ">" + grp1.SJobGrp + "] " + grp1.SRecrutTitle + "</option>";
+                        })
+                        html += "</select>";                        
+                        $("#recuit_select").find("span").append(html);
+                    } else {
+                        console.log("no-data");
+                        $("#recuit_select").find("span").children().remove();
+                        var html = "";
+                        html += "<select class=\"select wid580\" name=\"recuit_select_list\" id=\"recuit_select_list\">";
+                        html += "<option value=\"\" disabled selected>채용 공고를 선택해 주세요.</option>";
+                        html += "</select>";                        
+                        $("#recuit_select").find("span").append(html);
+                    }
+                } else {
+                    console.log(args);
+                    window.location.href = "/login";
+                }
+            },
+            error: function (e) {
+                console.log("[ajax][/invite/recurit/list] error");
+                alert("fail " + e.responseText);
+            }
+        });
+    }
+
+    function diff_days(dt1, dt2) 
+    {
+        var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+        diff /= (60 * 60 * 24);
+
+        //return Math.abs(Math.round(diff));    
+        return Math.round(diff);    
+    }
+
+    function diff_day_count(dt1, dt2) 
+    {        
+        var day1 = new Date(dt1.getFullYear(),dt1.getMonth(), dt1.getDate(),0,0,0);
+        var day2 = new Date(dt2.getFullYear(),dt2.getMonth(), dt2.getDate(),0,0,0);
+        
+        return diff_days(day1,day2);    
+    }
+
+    $(document).off("click", "#btn_invite_list_detail").on("click", "#btn_invite_list_detail", function(e) {        
+        
+        //var popW = 875;
+        var popW = 920;
+		var popH = 1024;
+		var popX = (screen.width / 2) - (popW/2);
+		var popY = (screen.height / 2) - (popH/2);
+
+		var recrut_sn = $(this).data("recrut_sn");
+        var send_dt = $(this).data("send_dt");
+
+        // 1일 이전 
+        var before_day = new Date(new Date().setDate(new Date().getDate() - pop_view_day));
+        // var today = new Date()
+        // var prior_date = new Date().setDate(today.getDate()-1);
+
+        var check_before_day = new Date(before_day.getFullYear(),before_day.getMonth(), before_day.getDate(),0,0,0);
+        
+        // YYYYMMDDHHMISS -> javascript Date 변환
+        var send_date_by_js = new Date(String(send_dt).replace(
+            /^(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)$/,
+            '$4:$5:$6 $2/$3/$1'
+        ));
+        
+        console.log(`[Date][Before] ${new Date(before_day.getFullYear(),before_day.getMonth(), before_day.getDate(),0,0,0)}`);
+        console.log(`[Date][DiffCount] ${diff_day_count(before_day,send_date_by_js)}`);
+
+        // var diff_day = diff_days( new Date(send_date_by_js.getFullYear(),send_date_by_js.getMonth(), send_date_by_js.getDate(),0,0,0),
+        //                           new Date(before_day.getFullYear(),before_day.getMonth(), before_day.getDate(),0,0,0))
+        // console.log("==" + diff_day );
+
+        if (send_date_by_js.getTime() >= check_before_day.getTime()) {        // 30일 지난거 테스트
+            console.log(`[Date] ${pop_view_day} Popup1`);        
+        } 
+
+        if (diff_day_count(before_day, send_date_by_js) >= 0) { 
+            console.log(`[Date] ${pop_view_day} Popup2`);        
+        } 
+
+        // var phone_no = "0105226-2107"
+        // var conv_phone_no = String(phone_no).replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-");
+
+        // console.log(`[Conv] ${phone_no} --> ${conv_phone_no}`);
+        // console.log(`[Check] ${conv_phone_no.match( /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/ )}`);
+
+        //if (send_date_by_js.getTime() >= check_before_day.getTime()) {        // 30일 지난거 테스트    		
+        if (diff_day_count(before_day, send_date_by_js) >= 0) { 
+            var uri = `/invite/send/list/detail/popup?recrut_sn=${recrut_sn}&send_dt=${send_dt}`;
+            var encodedUri = encodeURI(uri);
+
+            //var result = window.open("/invite/send/list/detail/popup?recrut_sn="+recrut_sn+"&send_dt="+send_dt,                                    
+            var result = window.open(encodedUri,                                    
+                                    "_blank",
+                                    "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+		    result.focus();			
+
+		    result.onbeforeunload = function(){ 	
+            }
+            
+            // var url = "/invite/send/list/detail/popup?recrut_sn="+recrut_sn+"&send_dt="+send_dt;
+            
+            // var iframe = '<html><head><style>body, html {width: 100%; height: 100%; margin: 0; padding: 0}</style></head><body><iframe src=' + "\"" + url + "\"" + ' style="height:calc(100% - 4px);width:calc(100% - 4px)"></iframe></html></body>';
+
+            // var win = window.open("","","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",toolbar=no,menubar=no,resizable=yes");
+            // win.document.write(iframe);
+            // win.focus();			
+
+            //https://m.blog.naver.com/PostView.nhn?blogId=koalagon&logNo=110166325923&proxyReferer=https:%2F%2Fwww.google.co.kr%2F
+
+
+            // fullscreen = window.open('about:blank', "fullscreen", 'top=0,left=0,width='+(screen.availWidth-10)+',height='+(screen.availHeight-48)+',fullscreen=yes,toolbar=0,location=0,directories=0,status=0,menubar=0,resizable=0,scrolling=0');
+            // document.getElementById('name').value="recrut_sn="+recrut_sn+"&send_dt="+send_dt;
+            // var obj=document.getElementById('frm')
+            // obj.target='fullscreen'
+            // obj.action='/invite/send/list/detail/popup'
+            // obj.submit()
+
+            // <form name=frm id=frm method=post>
+            // <input type=hidden name=name id=name>
+            // </form>
+            // <a href="#" onclick="fscreen('/invite/send/list/detail/popup','사과');">사과</a>
+
+            //https://milkye.tistory.com/354
+
+            /* !!!!!!!!!!!!!!!!
+            var frmPop = document.frmPopup;
+            var url = "/invite/send/list/detail/popup";
+            var result = window.open("",                                    
+                                    "popupView",
+                                    "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")
+            frmPop.action = url;
+            frmPop.target = "popupView";
+            frmPop.method = "get";
+            frmPop.recrut_sn.value = recrut_sn;
+            frmPop.send_dt.value = send_dt;
+            frmPop.submit()
+            */
+            
+            // var pop_title = "popupOpener" ;
+         
+            // window.open("", pop_title,
+            //                         "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")			 						
+            
+            // var frmData = document.frmData ;
+            // frmData.target = pop_title ;
+            // //frmData.action = "/invite/send/list/detail/popup" ;            
+            // frmData.recrut_sn.value = recrut_sn;
+            // frmData.send_dt.value = send_dt;
+            // frmData.submit() ;
+            
+
+            // <form name=frm>
+            //  <input type=hiden name=arg1/>
+            //  <input type=hiden name=arg2/>
+            // </form>
+
+            // var url = "/invite/send/list/detail/popup";
+            // fullscreen = window.open('about:blank', "fullscreen", `width=${popW},height=${popH},left=${popX},top=${popY},resizable=0`);
+            // document.getElementById('recrut_sn').value=recrut_sn
+            // document.getElementById('send_dt').value=send_dt
+            // var obj=document.getElementById('frm');
+            // obj.target='fullscreen';
+            // obj.action=url;
+            // obj.submit();
+
+        } else {
+            openPopup('pop_common_alert');            
+            $("#alert_text").html(`발송일로부터 ${pop_view_day}일이 경과되었습니다.`);
+		}                
+	});	  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 지원자(팝업) 삭제
+        $(document).off("click", "#btn_pop_delete").on("click", "#btn_pop_delete", function (e) {
+            var del_cnt = parseInt($("input:checkbox[name='tbl_check']:checked").length);
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                //console.log($(this).prop("checked"));
+                if ($(this).prop("checked")) {
+                    var pp_mem_no = $(this).data("pp_mem_no");
+                    var recrut_sn = $(this).data("recrut_sn");
+                    /*
+                    console.log("=====================");
+                    console.log("cnt : "+cnt);
+                    console.log("del_cnt : "+del_cnt);
+                    console.log("pp_mem_no : "+pp_mem_no);
+                    console.log("recrut_sn : "+recrut_sn);
+                    return;
+                    */
+                    $.ajax({
+                        cache: false,
+                        url: '/applicant/each/delete',
+                        data: {
+                            pp_mem_no: pp_mem_no,
+                            recrut_sn: recrut_sn,
+                        },
+                        type: 'POST',
+                        dataType: "json",
+                        error: function (e) {
+                            console.log("error" + e);
+                        },
+                        success: function (rep) {
+                            var rtnCd = rep.RtnCd
+                            var rtnMsg = rep.RtnMsg
+
+                            if (rtnCd == "1") {
+                                closePopup("pop_applicant_del");
+                                ajaxApplicantList();
+                            } else {
+                                closePopup("pop_applicant_del");
+                                console.log("message : " + rtnMsg);
+                            }
+                        },
+                        error: function (e) {
+                            closePopup("pop_applicant_del");
+                            console.log("error + " + e);
+                        }
+                    });
+                }
+            });
+        });
+
+        // 삭제 처리
+        var ajaxApplicantDel = function () {
+            var arr_applicant = $("#arr_applicant").val();
+            var arr_recrut_sn = $("#arr_recrut_sn").val();
+
+            /*
+            console.log("arr_applicant : "+arr_applicant);
+            console.log("arr_recrut_sn : "+arr_recrut_sn);
+            return;
+            */
+            $.ajax({
+                cache: false,
+                url: '/applicant/delete',
+                data: {
+                    arr_pp_mem_no: arr_applicant,
+                    arr_recrut_sn: arr_recrut_sn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        closePopup("pop_applicant_del");
+                        ajaxApplicantList();
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }       
+        
+        
+        var message_send = function () {
+            var pp_mem_no = "";
+            var recrut_sn = "";
+            var msg_gbn_cd = "";
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                if ($(this).prop("checked")) {
+                    pp_mem_no = $(this).data("pp_mem_no");
+                    recrut_sn = $(this).data("recrut_sn");
+                    msg_gbn_cd = $("#msg_gbn_cd").val();
+                    if (msg_gbn_cd == "06") { //라이브 인터뷰 요청 메시지
+                        var msg_cont = $("#live_req_msg_cont").val().replace(/'/gi, "`");
+                    } else if (msg_gbn_cd == "04") { // 합격 메시지
+                        var msg_cont = $("#pass_msg_cont").val().replace(/'/gi, "`");
+                    } else if (msg_gbn_cd == "05") { // 불합격 메시지
+                        //var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+                        var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi, "`");
+                    } else { // 그외 메시지는 없음
+                        var msg_cont = "";
+                    }
+                    var live_itv_sdt = $("#live_itv_sdt").val();
+                    if (live_itv_sdt == undefined) {
+                        live_itv_sdt = "";
+                    }
+                    var arr_pp_chrg_sn = $("#arr_pp_chrg_sn").val();
+                    if (arr_pp_chrg_sn == undefined) {
+                        arr_pp_chrg_sn = "";
+                    }
+                    var live_sn = $("#live_sn").val();
+                    if (live_sn == undefined) {
+                        live_sn = ""
+                    }
+                    /*
+                    console.log("recrut_sn : "+recrut_sn);
+                    console.log("pp_mem_no : "+pp_mem_no);
+                    console.log("msg_gbn_cd : "+msg_gbn_cd);
+                    console.log("msg_cont : "+msg_cont);
+                    console.log("live_itv_sdt : "+live_itv_sdt);
+                    console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+                    console.log("live_sn : "+live_sn);
+                    return;
+                    */
+                    var formData = new FormData();
+                    formData.append("recrut_sn", recrut_sn);
+                    formData.append("pp_mem_no", pp_mem_no);
+                    formData.append("msg_gbn_cd", msg_gbn_cd);
+                    formData.append("msg_cont", msg_cont);
+                    formData.append("live_itv_sdt", live_itv_sdt);
+                    formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+                    formData.append("live_sn", live_sn);
+
+                    // 메시지 등록처리
+                    $.ajax({
+                        cache: false,
+                        url: '/message/send',
+                        data: formData,
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        error: function (e) {
+                            console.log("error" + e);
+                        },
+                        success: function (rep) {
+                            var rtnCd = rep.RtnCd
+                            var rtnMsg = rep.RtnMsg
+
+                            if (rtnCd == "1") {
+                                if (msg_gbn_cd == "05") { //불합격
+                                    //window.opener.$("#btn_search").trigger('click');
+                                    closePopup("pop_unpass");
+                                    //location.reload(true);
+                                } else { //라이브인터뷰 요청, 합격
+                                    //location.reload(true);
+                                }
+                            } else {
+                                console.log("message : " + rtnMsg);
+                                // console.log("[AJAX(/message/send)]: Login");
+                                // window.location.href = "/login";
+                            }
+                        },
+                        error: function (e) {
+                            console.log("error + " + e);
+                        }
+                    });
+                }
+                if (msg_gbn_cd != "05")
+                    window.location.href = "/message?target=" + pp_mem_no + "&sn=" + recrut_sn + "&end_yn=0";
+            })
+        }
+
+        // 엑셀 저장
+        $(document).off("click", "#excel_download").on("click", "#excel_download", function (e) {
+            openPopup("excel_pop");
+        });
+
+        // 엑셀 저장 확인
+        $(document).off("click", "#btn_excel_confirm").on("click", "#btn_excel_confirm", function (e) {
+            var entp_mem_no = $("#entp_mem_no").val();
+            var evl_prgs_stat_cd = $("#evl_prgs_stat").val();
+            var recrut_sn = $("#p_recrut_sn").val();
+            excelDownload(entp_mem_no, evl_prgs_stat_cd, recrut_sn);
+        });
+
+        $(document).off("click", ".sort").on("click", ".sort", function (e) {
+            var apply_sort_cd = $(this).attr("data-sort-code");
+            var apply_sort_way = $(this).attr("data-sort-way");
+            apply_sort_way == "ASC" ? $(this).find("i:first").attr("class", "fas fa-arrow-up") : $(this).find("i:first").attr("class", "fas fa-arrow-down");
+            apply_sort_way == "ASC" ? $("#apply_sort_way").val("DESC") : $("#apply_sort_way").val("ASC");
+            apply_sort_way = $("#apply_sort_way").val();
+            window.location.href = "/applicant/list?recrut_sn={{.RecrutSn}}&apply_sort_cd=" + apply_sort_cd + "&apply_sort_way=" + apply_sort_way;
+        });
+
+        var excelDownload = function (entp, evl, recru) {
+            $.ajax({
+                cache: false,
+                url: '/recruit/apply/member/excel',
+                data: {
+                    entp_mem_no: entp,
+                    evl_prgs_stat_cd: evl,
+                    recrut_sn: recru,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                    closePopup();
+                },
+                success: function (rep) {
+                    var downFile = rep.RtnRecruitApplyMemberExcelData[0].DownloadPath;
+                    window.location.replace(downFile);
+                    closePopup();
+                },
+            });
+        }        
+    </script>
+
+{{end}} 

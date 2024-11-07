@@ -1,0 +1,265 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+	<div class="content">
+	<form id="regForm" name="regForm" method="post">
+	<input type="hidden" id="pp_chrg_sms_recv_yn" value="{{.SmsRecvYn}}">
+	<input type="hidden" id="pp_chrg_email_recv_yn" value="{{.EmailRecvYn}}">
+    <input type="hidden" id="pp_chrg_push_recv_yn" value="{{.PushAgreeYn}}">
+		<h2>팀 멤버 추가</h2>
+		<div class="business">
+			<div class="fieldList first">
+				<h3>팀 멤버 정보{{.PpChrgSn}}</h3>
+				<dl>
+					<dt>이름</dt>
+					<dd><input type="text" name="pp_chrg_nm"  id="pp_chrg_nm" maxlength="20" class="it" value="{{.PpChrgNm}}" placeholder="계정의 관리자 이름을 입력해주세요."></dd>
+					<dd class="validationAlert pp_chrg_nm_message"></dd>
+				</dl>
+				<dl>
+					<dt>부서･직책</dt>
+					<dd><input type="text" name="pp_chrg_bp_nm" id="pp_chrg_bp_nm" maxlength="10" class="it" value="{{.PpChrgBpNm}}" placeholder="부서･팀명 혹은 직책을 입력해주세요. (최대 10자)"></dd>
+					<dd class="validationAlert pp_chrg_bp_nm_message"></dd>
+				</dl>
+				<dl>
+					<dt>번호</dt>
+					<dd><input type="text" name="pp_chrg_tel_no" id="pp_chrg_tel_no" maxlength="15" class="it" value="{{.PpChrgTelNo}}" placeholder="담당자의 내선번호 혹은 휴대폰 번호를 입력해주세요."></dd>
+                    <dd class="validationAlert pp_chrg_tel_no_message"></dd>
+					<dd class="agree"><input type="checkbox" class="custom" name="pp_chrg_sms_recv" id="pp_chrg_sms_recv" {{if eq "1" .SmsRecvYn}}checked{{end}}><label for="pp_chrg_sms_recv">수신 동의</label></dd>
+				</dl>
+				<dl>
+					<dt>이메일</dt>
+					<dd><input type="text" name="pp_chrg_email" id="pp_chrg_email" maxlength="50" class="it" value="{{.Email}}" placeholder="담당자의 이메일을 입력해주세요."></dd>
+                    <dd class="validationAlert pp_chrg_email_message"></dd>
+                    <dd><input type="checkbox" class="custom" name="pp_chrg_email_recv" id="pp_chrg_email_recv" {{if eq "1" .EmailRecvYn}}checked{{end}}><label for="pp_chrg_email_recv">수신 동의</label></dd>
+				</dl>
+                <dl>
+					<dt>마케팅 정보 수신</dt>
+                    <dd><input type="checkbox" class="custom" name="pp_chrg_push_recv" id="pp_chrg_push_recv" {{if eq "1" .PushAgreeYn}}checked{{end}}><label for="pp_chrg_push_recv">수신 동의</label></dd>
+				</dl>
+			</div>
+            
+
+		</div>
+		<div class="btnSet">
+			<a href="javascript:history.go(-1);" class="btn">취소</a>
+			<a href="javascript:void(0);" id="btn_add_member" class="btn type_blue st02">완료</a>
+		</div>
+	</form>
+	</div>
+
+
+    <script type="text/javascript">
+	$(document).ready(function() {
+		$('input.custom').customInput();
+
+		// Form Validation Check
+		$("#regForm").validate(validOption);
+	});	
+
+    // 이메일 확인 루틴
+    function isEmail(e) {
+        var regEmail = /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        return regEmail.test(e);
+    }
+
+    function isTelChk(phone) {
+        
+        var reg_phone =/^[0-9]{2,5}-[0-9]{3,5}-[0-9]{3,5}$/;
+        var reg_phone2 =/^[0-9]{2,15}$/;
+        if(reg_phone.test(phone) == true)
+            return true;
+        if(reg_phone2.test(phone) == true)
+            return true;
+        return false;
+    }
+            
+            
+    // 등록완료
+    $(document).off("click", "#btn_add_member").on("click", "#btn_add_member", function(e) {
+
+        if($("#regForm").valid()){
+
+            var pp_chrg_sn = "{{.PpChrgSn}}"; //담당자순번
+            var pp_chrg_nm = $("#pp_chrg_nm").val(); //담당자명
+            var pp_chrg_bp_nm = $("#pp_chrg_bp_nm").val().replace(/'/gi,"`"); //부서/직책
+            var pp_chrg_tel_no = $("#pp_chrg_tel_no").val(); //담당자연락처
+            var pp_chrg_email = $("#pp_chrg_email").val(); //담당자이메일
+            var pp_chrg_sms_recv_yn = $("#pp_chrg_sms_recv_yn").val(); //담당자SMS수신여부
+            var pp_chrg_email_recv_yn = $("#pp_chrg_email_recv_yn").val(); //담당자이메일수신여부
+            var pp_chrg_push_recv_yn = $("#pp_chrg_push_recv_yn").val(); //담당자 마케팅 푸시 수신여부
+
+            if(isEmail(pp_chrg_email) == false)
+            {
+                alert("이메일을 확인해 주세요?");
+                return ;
+            }
+
+            if(isTelChk(pp_chrg_tel_no) == false)
+            {
+                alert("전화번호를 확인해 주세요?");
+                return ;
+            }
+
+            /*
+            console.log("********** INSERT DATA **********");
+            console.log("pp_chrg_sn : "+pp_chrg_sn);
+            console.log("pp_chrg_nm : "+pp_chrg_nm);
+            console.log("pp_chrg_bp_nm : "+pp_chrg_bp_nm);
+            console.log("pp_chrg_tel_no : "+pp_chrg_tel_no);
+            console.log("pp_chrg_sms_recv_yn : "+pp_chrg_sms_recv_yn);
+            console.log("pp_chrg_email : "+pp_chrg_email);
+            console.log("pp_chrg_email_recv_yn : "+pp_chrg_email_recv_yn);
+            return;
+            */
+
+            var formData = new FormData();
+            formData.append("pp_chrg_sn", pp_chrg_sn);
+            formData.append("pp_chrg_nm", pp_chrg_nm);
+            formData.append("pp_chrg_bp_nm", pp_chrg_bp_nm);
+            formData.append("pp_chrg_tel_no", pp_chrg_tel_no);
+            formData.append("pp_chrg_sms_recv_yn", pp_chrg_sms_recv_yn);
+            formData.append("pp_chrg_email", pp_chrg_email);
+            formData.append("pp_chrg_email_recv_yn", pp_chrg_email_recv_yn);
+            formData.append("pp_chrg_push_recv_yn", pp_chrg_push_recv_yn);
+
+            //$(".loading").attr("style", "display:''");
+
+            $.ajax({
+                cache : false,
+                url : '/team/member/update',
+                data : formData,
+                type : 'POST',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                dataType : "json",
+                error : function(e) {
+                    //console.log("error" + JSON.stringify(e));
+                    console.log("error : "+e);
+                    $(".loading").attr("style", "display:none");
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+                    if(rtnCd == 1){
+                        window.location.href="/team/member/list";
+                    } else {
+                        console.log("등록 실패 : "+rtnMsg);
+                        $(".loading").attr("style", "display:none");
+                    }
+                }
+            });
+        }
+    });    
+
+    // 담당자번호 수신여부
+    $(document).off("click", "#pp_chrg_sms_recv").on("click", "#pp_chrg_sms_recv", function(e) {
+        if($('input:checkbox[id="pp_chrg_sms_recv"]').is(":checked") == false){
+            $("#pp_chrg_sms_recv_yn").val("0");
+        } else {
+            $("#pp_chrg_sms_recv_yn").val("1");
+        }
+    });      
+
+    // 담당자이메일 수신여부
+    $(document).off("click", "#pp_chrg_email_recv").on("click", "#pp_chrg_email_recv", function(e) {
+        if($('input:checkbox[id="pp_chrg_email_recv"]').is(":checked") == false){
+            $("#pp_chrg_email_recv_yn").val("0");
+        } else {
+            $("#pp_chrg_email_recv_yn").val("1");
+        }
+    });       
+
+        // 담당자 마케팅 정보 수신여부
+    $(document).off("click", "#pp_chrg_push_recv").on("click", "#pp_chrg_push_recv", function(e) {
+        if($('input:checkbox[id="pp_chrg_push_recv"]').is(":checked") == false){
+            $("#pp_chrg_push_recv_yn").val("0");
+        } else {
+            $("#pp_chrg_push_recv_yn").val("1");
+        }
+    });    
+
+    // 멤버수정 Validation
+    var validOption = {
+        onkeyup: false
+        ,onclick: false
+        ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+            if($(element).valid()){				// 체크 통과
+                var id = $(element).attr("id");	
+                $("."+id+"_message").text("");	// message box clear
+            }
+        }
+        ,onfocusin: function(element) {			// 포커스 인 시 동작
+            var id = $(element).attr("id");
+            //console.log("input id : "+id);
+            $("#"+id).removeClass("validationAlert");
+            resetInput(id);
+        }
+        ,rules: {
+            pp_chrg_nm : {
+                required: true, 
+                maxlength: 30
+            },
+            pp_chrg_bp_nm : {
+                required: true
+            },
+            pp_chrg_tel_no : {
+                required: true, 
+                maxlength: 15,
+            },
+            pp_chrg_email : {
+                required: true, 
+                remote: {
+                    url:"/common/dup_chk"
+                    ,type: "post"
+                    ,data: {
+                        gbn_cd: '002'
+                        ,item_val: function() {
+                            return $("#pp_chrg_email").val();
+                        }
+                        ,entp_mem_no : "{{.SMemNo}}"
+                    }
+                }	
+            },
+        }
+        ,errorPlacement: function(error, element){		
+            var id = element.attr("id");
+            //console.log("err_id :"+id);
+            $("."+id+"_message").text(error.text());
+            $("#"+id).addClass("validationAlert");
+        }
+        ,messages: {
+            pp_chrg_nm: {
+                required: "계정의 관리자 이름을 입력해주세요."
+            },
+            pp_chrg_bp_nm: {
+                required: "부서･팀명 혹은 직책을 입력해주세요. (최대 10자)"
+               ,maxlength: "부서･팀명은 최대 10자입니다."
+            },
+            pp_chrg_tel_no: {
+                required: "담당자 연락처를 입력해주세요."
+            },
+            pp_chrg_email: {
+                required: "담당자 이메일을 입력해주세요."
+                ,remote: "이미 존재하는 이메일입니다."
+            },
+        }
+        ,success: function(element){
+            var str = $(element).attr("id");
+            var id = str.substring(0,str.length-6);
+            $("#"+id).removeClass("validationAlert");
+
+        }
+    }
+
+    // input box reset
+    var resetInput = function(id){
+        //console.log("id : "+id);
+        $("."+id+"_message").text(""); // message box clear
+    }		
+	</script>
+{{end}} 

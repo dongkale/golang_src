@@ -1,0 +1,687 @@
+{{template "include/base.html" .}}
+
+<style type="text/css">
+/*.infoMemMore {margin:0px -4px -6px -5px;}*/
+.infoMemMore dl {margin:5px 5px 5px 5px;border-bottom: 1px solid #eaeeef;min-height: 32px;}
+.infoMemMore dl:after {content:'';display:block;clear:both}
+.infoMemMore dl dt {float:left;width:100px;line-height:28px}
+.infoMemMore dl dt.profile{width: 110px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:inline-block;padding-left: 5px;}
+.infoMemMore dl dt.profile a{text-decoration:none}
+.infoMemMore dl dt.profile a:hover{text-decoration:underline}
+
+.liveNvNInterView .interViewList a.goLiveNvNList  {text-decoration:none}
+.liveNvNInterView .interViewList a.goLiveNvNList :hover{text-decoration:underline;color:white}
+
+/*.recruitNotice .recruitList a.goRecruit {text-decoration:none} */
+/*.recruitNotice .recruitList a.goRecruit :hover{text-decoration:underline} */
+
+/*.mainApplicant .applicantList a.link {text-decoration:none}*/
+/*.mainApplicant .applicantList a.link:hover{text-decoration:underline}*/
+
+/*.main .mainApplicant .applicantList {height: 905px;}*/
+/*.main .liveNvNInterView {height: 460px;}*/
+
+/*
+.infoMemMoreEx dl dt span {display:block;}
+.infoMemMoreEx dl dt span.img {width:46px;height:46px;margin:15px auto 0;border-radius:50%;overflow:hidden;border:1px solid #eaeeef;box-sizing:border-box}
+.infoMemMoreEx dl dt span.name {font-size:16px;line-height:18px;padding-top:15px;font-weight:bold}
+.infoMemMoreEx dl dt span.info {color:#878d91;line-height:20px;padding-top:10px;font-size: 13px;text-overflow:ellipsis;white-space: nowrap; overflow: hidden;}
+
+.infoMemMoreExEx dl dt span {display:block;}
+.infoMemMoreExEx dl dt span.img {margin-left:20px;position:absolute; display:inline-block;width:46px;height:46px;border-radius:50%;overflow:hidden;border:1px solid #eaeeef;box-sizing:border-box}
+.infoMemMoreExEx dl dt span.name {line-height:15px;font-weight:bold}
+.infoMemMoreExEx dl dt span.info {font-size:13px;color:#878d91}
+*/
+
+/*
+.main .liveNvNInterView .interViewList ul li span {display:block;}
+.main .liveNvNInterView .interViewList ul li span.img {margin-left:20px;position:absolute; display:inline-block;width:46px;height:46px;border-radius:50%;overflow:hidden;border:1px solid #eaeeef;box-sizing:border-box}
+.main .liveNvNInterView .interViewList ul li span.name {line-height:15px;font-weight:bold}
+.main .liveNvNInterView .interViewList ul li {font-size:13px;color:#878d91}
+*/
+
+/*
+.infoMemMoreEx dl dt span {display:block;}
+.infoMemMoreEx dl dt span.img {margin-left:20px;position:absolute; display:inline-block;width:40px;height:40px;border-radius:50%;overflow:hidden;border:1px solid #eaeeef;box-sizing:border-box}
+.infoMemMoreEx dl dt span.name {line-height:15px;font-weight:bold}
+.infoMemMoreEx dl dt span.info {font-size:13px;color:#878d91}
+*/
+
+/*
+.main .liveNvNInterView {width:458px;height:423px;box-sizing:border-box;border:1px solid #eaeeef;position:relative}
+.main .liveNvNInterView p.tit:after {background:#4c80f1}
+.main .liveNvNInterView .interViewList p.noData {text-align:center;padding-top:174px;color:#878d91;font-size:13px;background:url(../images/ic-home-interview-empty.png) no-repeat center 64px}
+.main .liveNvNInterView .interViewList p.noApply {text-align:center;padding-top:120px;color:#878d91;font-size:13px;background:url(../images/ic-home-interview-empty.png) no-repeat center 20px}
+.main .liveNvNInterView .interViewList ul {margin-top:15px}
+.main .liveNvNInterView .interViewList ul:after {content:'';display:block;clear:both}
+.main .liveNvNInterView .interViewList ul li {box-sizing:border-box;width:133px;float:left;margin-left:15px;border:1px solid #eaeeef;height:337px}
+.main .liveNvNInterView .interViewList ul li span {display:block;text-align:center;}
+.main .liveNvNInterView .interViewList ul li span.img {margin:15px 0 0 10px;position:absolute; display:inline-block;width:40px;height:40px;border-radius:50%;overflow:hidden;border:1px solid #eaeeef;box-sizing:border-box}
+.main .liveNvNInterView .interViewList ul li span.name {margin-left:33px;font-size:16px;line-height:18px;font-weight:bold}
+.main .liveNvNInterView .interViewList ul li span.info {margin-left:33px;color:#878d91;line-height:20px;font-size: 13px;text-overflow:ellipsis;white-space: nowrap; overflow: hidden;}
+*/
+</style>
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+	<input type="hidden" id="applicant_new_yn" name="applicant_new_yn" value="Y">
+		<div class="main">
+			<p class="bannerImg" style="display: none;">
+				<a href="/setting/notice/detail?sn=41&pn=1"><img src="/static/images/img-live-main-01.png" width="695" height="155" alt="영상 채용의 끝판왕 직감 라이브 인터뷰를 통해 앉은 자리에서 지금 바로 지원자를 만나보세요! 직감 라이브 인터뷰 자세히 보기"></a>
+				<a href="javascript:void(0);" class="btnClose" id="top_banner_close"><img src="/static/images/ic-close-top-banner.png" width="23" height="24" alt=""></a>				
+			</p>
+			<div class="topArea">
+				<dl>
+					<dt>안녕하세요, <strong>{{.MnPpChrgBpNm}} {{.MnPpChrgNm}}</strong>님!</dt>
+					<dd class="text">오늘의 <strong>{{.MnEntpKoNm}}</strong> 채용 현황입니다.</dd>
+					{{if eq 0 .MnInfoCnt}}
+					<dd class="img">
+						<a href="/entp/info/modify"><img src="/static/images/img-main-banner-01.png" width="347" height="175" alt=""></a>
+						<a href="javascript:void(0);" class="btnClose" id="btn_entp_info_close"><img src="/static/images/ic-close-top-banner.png" width="23" height="24" alt=""></a>
+					</dd>
+					{{end}}
+				</dl>
+			</div>
+			<div class="countList">
+				<ul>
+					<li class="movie"><a href="/entp/video">
+						{{if eq 0 .MnVdCnt}}
+						<span class="tit">기업 홍보 영상</span>
+						<span class="txtGuide">기업 홍보 영상을 신청하세요!<br>직감에서 직접 만들어 드립니다.</span>
+						<span class="img"><img src="/static/images/ic-home-evp.png" width="44" height="44" alt=""></span>
+						{{else}}
+						<span class="tit">기업 홍보<br>영상 재생</span>
+						<span class="date">TODAY</span>
+						<span class="count">{{.VideoTodayCnt | IntFmt}}</span>
+						<span class="total">･ TOTAL <em>{{.VideoTotCnt | IntFmt}}</em></span>
+						<span class="img"><img src="/static/images/ic-home-evp.png" width="44" height="44" alt=""></span>
+						{{end}}
+					</a></li>
+					<li><a href="/recruit/post/list">
+						<span class="tit">채용 공고</span>
+						<span class="date">NOW</span>
+						<span class="count">{{.RecrutIngCnt | IntFmt}}</span>
+						<span class="total">･ TOTAL <em>{{.RecrutTotCnt | IntFmt}}</em></span>
+						<span class="img"><img src="/static/images/ic-home-jobnoti.png" width="44" height="44" alt=""></span>
+					</a></li>
+					<li><a href="/applicant/list">
+						<span class="tit">지원자</span>
+						<span class="date">NOW</span>
+						<span class="count">{{.ApplyTodayCnt | IntFmt}}</span>
+						<span class="total">･ TOTAL <em>{{.ApplyTotCnt | IntFmt}}</em></span>
+						<span class="img"><img src="/static/images/ic-home-people.png" width="44" height="44" alt=""></span>
+					</a></li>
+				</ul>
+			</div>
+			<div class="boxArea">								
+				<div class="liveInterView" id="old_live_list" style="display: none;">	
+					<p class="tit">예정된 라이브 인터뷰</p>
+					<a href="/live/list" class="moreView">전체 보기 &gt;</a>
+					<div class="interViewList">
+					{{if .MainLiveList}}	
+						<ul>
+							{{range .MainLiveList}}					
+							<li><a href="javascript:void(0);" id="live_detail" data-recrut_sn="{{.MnlRecrutSn}}" data-pp_mem_no="{{.MnlPpMemNo}}">
+								<span class="date">{{.MnlLiveItvSd}}<br>{{.MnlLiveItvSt}}</span>
+								<span class="img"><img src="{{.MnlPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="56" height="56" alt=""></span>
+								<span class="name">{{.MnlNm}}</span>
+								<!--<span class="info">{{.MnlSex}}・{{.MnlAge}}세</span>-->					
+								<span class="info">{{.MnlSex}}・{{if eq 0 .MnlAge}}O세{{else}}{{.MnlAge}}세{{end}}</span>
+							</a></li>
+							{{end}}
+						</ul>
+					{{else}}
+						<p class="noData">예정된 라이브 인터뷰가 없습니다.</p>
+					{{end}}
+					</div>
+				</div>				
+				<div class="liveNvNInterView" id="new_live_list" style="display: none;">	
+					<p class="tit">예정된 라이브 인터뷰</p>
+					<a href="/live/nvn/list" class="moreView">전체 보기 &gt;</a>
+					<div class="interViewList">
+					{{if .MainLiveNvNList}}	
+						<ul>
+							{{range .MainLiveNvNList}}					
+							<li>
+								<a class="goLiveNvNList" href="javascript:void(0);" id="live_nvn_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-live_sn="{{.MlnLiveSn}}">
+									<span class="date">{{.MlnLiveItvSd}}<br>{{.MlnLiveItvSt}}</span>
+								</a>
+								{{if .MainLiveNvNListApply}}	
+									<div class="infoMemMore">									
+									{{range .MainLiveNvNListApply}}									
+										<dl>
+											<dt class="profile">
+												{{if eq "00" .MlnLiveStatCd}}
+													<a href="javascript:void(0);">														
+													</a>
+												{{else if eq "01" .MlnLiveStatCd}}
+													<a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}" title="{{.MlnNm}} {{.MlnSex}} {{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}">
+														<strong>{{.MlnNm}}</strong> <em style="color:#878d91;">{{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}</em>
+													</a>
+												{{else if eq "04" .MlnLiveStatCd}}														
+													<a href="javascript:void(0);" style="color:#4C80F1" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}"  title="{{.MlnNm}} {{.MlnSex}} {{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}">
+														<strong style="color:#4C80F1">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+													</a>											
+												{{else if eq "11" .MlnLiveStatCd}}											
+													<a href="javascript:void(0);" style="color:#A9AFB3" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}"  title="{{.MlnNm}} {{.MlnSex}} {{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}">
+														<strong style="color:#A9AFB3">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+													</a>
+												{{else}}													
+													<a href="javascript:void(0);" style="color:#F24147" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}"  title="{{.MlnNm}} {{.MlnSex}} {{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}">
+														<strong style="color:#F24147">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+													</a>											
+												{{end}}										
+											</dt>
+										</dl>		
+										<!--
+										<span class="info">
+										{{if eq "01" .MlnLiveStatCd}}														
+											<a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}">
+												<strong>{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+											</a>
+										{{else if eq "04" .MlnLiveStatCd}}														
+											<a href="javascript:void(0);" style="color:#4C80F1" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}">
+												<strong style="color:#4C80F1">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+											</a>											
+										{{else if eq "11" .MlnLiveStatCd}}											
+											<a href="javascript:void(0);" style="color:#A9AFB3" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}">
+												<strong style="color:#A9AFB3">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+											</a>
+										{{else}}													
+											<a href="javascript:void(0);" style="color:#F24147" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}">
+												<strong style="color:#F24147">{{.MlnNm}}</strong> {{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}
+											</a>											
+										{{end}}									
+										</span>	
+										-->									
+									
+									{{end}}									
+									</div>
+								{{else}}
+									<p class="noApply">지원자가 없습니다.</p>
+								{{end}}	
+							</li>
+							{{end}}
+						</ul>
+					{{else}}
+						<p class="noData">예정된 라이브 인터뷰가 없습니다.</p>
+					{{end}}
+					</div>
+				</div>		
+				<div class="liveNvNInterView" id="new_live_list_ex" style="display: none;">	
+					<p class="tit">예정된 라이브 인터뷰</p>
+					<a href="/live/nvn/list" class="moreView">전체 보기 &gt;</a>
+					<div class="interViewList">
+					{{if .MainLiveNvNList}}	
+						<ul>
+							{{range .MainLiveNvNList}}					
+							<li>
+								<a class="goLiveNvNList" href="javascript:void(0);" id="live_nvn_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-live_sn="{{.MlnLiveSn}}">
+									<span class="date">{{.MlnLiveItvSd}}<br>{{.MlnLiveItvSt}}</span>
+								</a>								
+								{{if .MainLiveNvNListApply}}																			
+									{{range .MainLiveNvNListApply}}																			
+										<dl>
+											<dt>
+												<a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.MlnRecrutSn}}" data-pp_mem_no="{{.MlnPpMemNo}}" title="{{.MlnNm}} {{.MlnSex}} {{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}">
+												<span class="img"><img src="" onerror="this.src='/static/images/ic-home-people-empty.png'" width="41" height="41" alt=""></span>
+												<span class="name"><strong>{{.MlnNm}}</strong></span>
+												<span class="info"><em style="color:#878d91;">{{.MlnSex}}・{{if eq 0 .MlnAge}}O세{{else}}{{.MlnAge}}세{{end}}</em></span> 
+												</a>												
+											</dt>
+										</dl>																						
+									{{end}}								
+								{{else}}
+									<p class="noApply">지원자가 없습니다.</p>
+								{{end}}																	
+							</li>
+							{{end}}
+						</ul>
+					{{else}}
+						<p class="noData">예정된 라이브 인터뷰가 없습니다.</p>
+					{{end}}
+					</div>
+				</div>		
+				<div class="recruitNotice">
+					<p class="tit">채용 중인 공고</p>
+					<a href="/recruit/post/list" class="moreView">전체 보기 &gt;</a>
+					<div class="recruitList">
+					{{if .MainRecruitList}}
+						<ul>
+						{{range .MainRecruitList}}
+							<li><a class="goRecruit" href="/recruit/post/detail?recrut_sn={{.MnrRecrutSn}}">
+								<span class="dDay">D-{{.MnrDdy}}</span>
+								<span class="text">{{.MnrRecrutTitle}}</span>
+								{{if eq 0 .MnrNewCnt}}
+								<span class="count no">신규 지원 0</span>
+								{{else}}
+								<span class="count">신규 지원 {{.MnrNewCnt}}</span>
+								{{end}}
+							</a></li>
+						{{end}}
+						</ul>
+					{{else}}
+					<p class="noData">채용 중인 공고가 없습니다.</p>
+					{{end}}
+					</div>
+				</div>
+				<div class="notice">
+					<p class="tit">공지사항</p>
+					<a href="/setting/notice/list" class="moreView">전체 보기 &gt;</a>
+					<p class="list"><a href="/setting/notice/detail?sn={{.MnnSn}}&pn=1">
+						<span class="date">{{.MnnRegDt}}</span>
+						<span class="text">{{.MnnTitle}}</span>
+					</a></p>
+				</div>
+				<ul class="qLink">
+					<li class="q01"><a href="/entp/video">기업 홍보 영상</a></li>
+					<!--<li class="q02"><a href="/live/list">라이브 인터뷰</a></li>-->
+					<li class="q02"><a href="https://www.notion.so/qrate/d8b010b6713d49fea3936325abd7b289">라이브 인터뷰</a></li>
+					<li class="q03"><a href="/message?target=">직감 메시지</a></li>
+					<li class="q04"><a href="https://www.youtube.com/channel/UCnhL2nN0fX-ZvuQtdCBDPPQ" target="_blank">직감 TV</a></li>
+				</ul>
+				<div class="mainApplicant">
+					<ul class="tabMenu">
+						<li class="active tab_new" data-applicant_new_yn="Y"><a href="javascript:void(0);">신규 지원자</a></li>
+						<li class="tab_favr" data-applicant_new_yn="N"><a href="javascript:void(0);">관심 지원자</a></li>
+					</ul>
+					<div class="applicantList applicant_new">
+						<ul>
+						{{if .ApplicantList}}
+							{{range .ApplicantList}}
+							<li>
+								<a href="javascript:void(0);" class="link" id="applicant_detail" data-recrut_sn="{{.MnaRecrutSn}}" data-pp_mem_no="{{.MnaPpMemNo}}">
+									<span class="img"><img src="{{.MnaPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="46" height="46" alt=""></span>
+									<span class="name">{{.MnaNm}}</span>
+									<!--<span class="info">{{.MnaSex}}・{{.MnaAge}}세</span>-->
+									<span class="info">{{.MnaSex}}・{{if eq 0 .MnaAge}}O세{{else}}{{.MnaAge}}세{{end}}</span>
+									<span class="date">지원일시 {{.MnaRegDt}}</span>
+								</a>
+								<span class='ico_like {{if eq "1" .MnaFavrAplyPpYn}}active{{end}}' id="favr_set" data-recrut_sn="{{.MnaRecrutSn}}" data-pp_mem_no="{{.MnaPpMemNo}}"><a href="javascript:void(0);"></a></span>
+							</li>
+							{{end}}
+							<li class="more">
+								<a href="/applicant/list" class="link">
+									<span class="text">전체 지원자 보러 가기</span>
+								</a>
+							</li>
+						{{else}}
+							<li class="noData">신규 지원자가 없습니다.</li>
+							<li class="more">
+								<a href="/applicant/list" class="link">
+									<span class="text">전체 지원자 보러 가기</span>
+								</a>
+							</li>
+						{{end}}
+						</ul>
+					</div>
+					<div class="applicantList applicant_favr" style="display:none">
+						<ul>
+
+						</ul>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 토스트박스 -->
+	<div class="toastBox noti">
+		<p class="message">관심 표시되었습니다.</p>
+		<a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+	</div>
+	<div class="toastBox alert">
+		<p class="message">관심 해제되었습니다.</p>
+		<a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+	</div>		
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//console.log("cookie : "+getCookie("notToday"));
+			if(getCookie("notToday") != "Y"){
+				$(".bannerImg").show();
+			} 
+			if(getCookie("notTodayInfo")=="Y"){
+				$(".img").hide();
+			} 
+
+			$("#old_live_list").hide();
+			$("#new_live_list").show();			
+			// $("#new_live_list_ex").hide();		
+			
+			//if(getCookie("adsToday") != "Y"){
+			//	adsPopup();	
+			//} else {
+			//	console.log("================== ADS : " + getCookie("adsToday"))
+			//} 					
+
+			
+			// OneWayQACntEntp = {"E2020082001961":6, "E2020121504242":10}
+
+			// OneWayQACntRecruit = {"2020082001961":5}
+			
+			//console.log(`${JSON.parse(TblConfig.OneWayQACntEntp)}`);
+			
+			// console.log(`=========[JSON] ${TblConfig.OneWayQACntEntp["E2020082001961"]}`);	
+			// console.log(`=========[JSON] ${TblConfig.OneWayQACntEntp["E2020121504242"]}`);	
+			// console.log(`=========[JSON] ${TblConfig.OneWayQACntEntp["E2020121504255"]}`);	
+
+			// console.log(`=========[JSON] ${jsonToValue(TblConfig.OneWayQACntEntp, "E2020082001961")}`);	
+			// console.log(`=========[JSON] ${jsonToValue(TblConfig.OneWayQACntEntp, "E2020121504242")}`);	
+			// console.log(`=========[JSON] ${jsonToValue(TblConfig.OneWayQACntEntp, "E2020121504255")}`);	
+
+			console.log(`=========[JSON] ${getOneWayQACnt("E2020082001961")}`);	
+			console.log(`=========[JSON] ${getOneWayQACnt("E2020121504242")}`);	
+			console.log(`=========[JSON] ${getOneWayQACnt("E2020121504255")}`);			
+		});	
+
+		window.onload = function() {			
+
+			if(getCookie("adsToday") != "Y"){
+				adsPopup();	
+			} 
+			console.log("================== ADS : " + getCookie("adsToday"))			
+		}
+		
+		// 지원자 상세 팝업
+		$(document).off("click", "#applicant_detail").on("click","#applicant_detail",function(e) {
+			var popW = 1320
+			var popH = 1000
+			var popX = (screen.width / 2) - (popW/2)
+			var popY = (screen.height / 2) - (popH/2)
+			var recrut_sn = $(this).data("recrut_sn");
+			var pp_mem_no = $(this).data("pp_mem_no");
+			window.open("/applicant/detail/popup?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no,"_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+		});
+
+		// 지원자 상세 팝업
+		$(document).off("click", "#live_detail").on("click","#live_detail",function(e) {
+			var recrut_sn = $(this).data("recrut_sn");
+			var pp_mem_no = $(this).data("pp_mem_no");
+			window.location.href="/live/detail?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+		});
+
+        // 상단 배너 닫기
+        $(document).off("click", "#top_banner_close").on("click", "#top_banner_close", function(e){
+			setCookie('notToday','Y', 1);
+			$(this).parent().hide("fade");			
+        });
+				
+        // 기업정보 입력 요청 배너 닫기
+        $(document).off("click", "#btn_entp_info_close").on("click", "#btn_entp_info_close", function(e){
+			setCookie('notTodayInfo','Y', 1);
+			$(this).parent().hide();
+        });
+
+        // 지원자 리스트 TAB 신규지원자
+        $(document).off("click", ".tab_new").on("click", ".tab_new", function(e){
+            $(".applicant_favr").css("display","none");
+            $(".applicant_new").css("display","");
+			$("#applicant_new_yn").val("Y");
+			//console.log("new_yn : "+$("#applicant_new_yn").val());
+            $(this).addClass("active");
+            $(".tab_favr").removeClass("active");
+            ajaxApplicantList();
+        });
+
+        // 지원자 리스트 TAB 관심지원자
+        $(document).off("click", ".tab_favr").on("click", ".tab_favr", function(e){
+            $(".applicant_favr").css("display","");
+            $(".applicant_new").css("display","none");
+            $("#applicant_new_yn").val("N");
+			//console.log("new_yn : "+$("#applicant_new_yn").val());
+            $(this).addClass("active");
+            $(".tab_new").removeClass("active");
+            ajaxApplicantList();
+		});
+		
+
+	// 지원자(신규/관심)리스트 AJAX
+	var ajaxApplicantList = function(v) {
+		var gbn_cd = $("#applicant_new_yn").val();
+		console.log("gbn_cd : "+gbn_cd);
+
+		$.ajax({
+			type: "POST",
+			url: "/main/applicant/list",
+			data:{
+				gbn_cd : gbn_cd,
+			},
+			dataType: "json",
+			error : function() {
+			},
+			success : function(rep) {
+				if(rep.RtnApplicantListData.length > 0){
+					if (gbn_cd == "Y") {
+						$(".applicant_new").find("ul").children().remove();
+					} else {
+						$(".applicant_favr").find("ul").children().remove();
+					}
+					$.each(rep.RtnApplicantListData,function(e) {
+						var html = "";
+
+						html += "<li>";
+						html += "	<a href=\"javascript:void(0);\" id=\"applicant_detail\" class=\"link\" data-recrut_sn=\""+rep.RtnApplicantListData[e].MnaRecrutSn+"\" data-pp_mem_no=\""+rep.RtnApplicantListData[e].MnaPpMemNo+"\">";
+						html += "		<span class=\"img\"><img src=\""+rep.RtnApplicantListData[e].MnaPtoPath+"\" onerror=\"this.src='/static/images/ic-home-people-empty.png'\" width=\"46\" height=\"46\" alt=\"\"></span>";
+						html += "		<span class=\"name\">"+rep.RtnApplicantListData[e].MnaNm+"</span>";
+						html += "		<span class=\"info\">"+rep.RtnApplicantListData[e].MnaSex+"・";
+						if (rep.RtnApplicantListData[e].MnaAge == 0) {
+							html += "O"+"세</span>";
+						} else {	
+							html += rep.RtnApplicantListData[e].MnaAge+"세</span>";
+						}
+						html += "		<span class=\"date\">지원일시 "+rep.RtnApplicantListData[e].MnaRegDt+"</span>";
+						html += "	</a>";
+						if (rep.RtnApplicantListData[e].MnaFavrAplyPpYn == "1") {
+							html += "	<span class=\"ico_like active\" id=\"favr_set\" data-recrut_sn=\""+rep.RtnApplicantListData[e].MnaRecrutSn+"\" data-pp_mem_no=\""+rep.RtnApplicantListData[e].MnaPpMemNo+"\"><a href=\"javascript:void(0);\"></a></span>";
+						} else {
+							html += "	<span class=\"ico_like\" id=\"favr_set\" data-recrut_sn=\""+rep.RtnApplicantListData[e].MnaRecrutSn+"\" data-pp_mem_no=\""+rep.RtnApplicantListData[e].MnaPpMemNo+"\"><a href=\"javascript:void(0);\"></a></span>";
+						}
+						if (gbn_cd == "Y") {
+							$(".applicant_new").find("ul").append(html);
+						} else {
+							$(".applicant_favr").find("ul").append(html);
+						}
+					})
+					var html2 = "";
+					html2 += "</li>";
+					html2 += "<li class=\"more\">";
+					html2 += "	<a href=\"/applicant/list\" class=\"link\">";
+					html2 += "		<span class=\"text\">전체 지원자 보러 가기</span>";
+					html2 += "	</a>";
+					html2 += "</li>";
+					if (gbn_cd == "Y") {
+							$(".applicant_new").find("ul").append(html2);
+					} else {
+						$(".applicant_favr").find("ul").append(html2);
+					}
+
+					// 관심아이콘 클릭이벤트
+					$('.ico_like a').on('click', function(){
+						if($(this).parent().hasClass('active')){
+							$(this).parent().removeClass('active')
+							var rs = $(this).parent().data("recrut_sn");
+							var pp = $(this).parent().data("pp_mem_no");
+							var yn = "N";
+							ajaxMemberSet(rs, pp, yn);
+						} else {
+							$(this).parent().addClass('active')
+							var rs = $(this).parent().data("recrut_sn");
+							var pp = $(this).parent().data("pp_mem_no");
+							var yn = "Y";
+							ajaxMemberSet(rs, pp, yn);
+						}
+					})						
+				}else{
+					if (gbn_cd == "Y") {
+						$(".applicant_new").find("ul").children().remove();
+					} else {
+						$(".applicant_favr").find("ul").children().remove();
+					}
+					var html = "";
+					if (gbn_cd == "Y") {
+						html += "<li class=\"noData\">신규 지원자가 없습니다.</li>";
+					} else {
+						html += "<li class=\"noData\">관심 지원자가 없습니다.</li>";
+					}
+					html += "<li class=\"more\">";
+					html += "	<a href=\"/applicant/list\" class=\"link\">";
+					html += "		<span class=\"text\">전체 지원자 보러 가기</span>";
+					html += "	</a>";
+					html += "</li>";
+					if (gbn_cd == "Y") {
+						$(".applicant_new").find("ul").append(html);
+					} else {
+						$(".applicant_favr").find("ul").append(html);
+					}
+				}
+			}
+		});				
+	}    		
+
+	// 관심아이콘 클릭이벤트
+	$('.ico_like a').on('click', function(){
+		if($(this).parent().hasClass('active')){
+			$(this).parent().removeClass('active')
+			var rs = $(this).parent().data("recrut_sn");
+			var pp = $(this).parent().data("pp_mem_no");
+			var yn = "N";
+			ajaxMemberSet(rs, pp, yn);
+		} else {
+			$(this).parent().addClass('active')
+			var rs = $(this).parent().data("recrut_sn");
+			var pp = $(this).parent().data("pp_mem_no");
+			var yn = "Y";
+			ajaxMemberSet(rs, pp, yn);
+		}
+	})			
+	
+    // 지원자 관심설정 처리
+    var ajaxMemberSet = function(rs, pp, yn) {
+        var recrut_sn = rs;
+        var pp_mem_no = pp;
+        var favr_set_yn = yn;
+        /*
+        console.log("recrut_sn : "+recrut_sn);
+        console.log("pp_mem_no : "+pp_mem_no);
+        console.log("favr_set_yn : "+favr_set_yn);
+        return;
+        */
+
+        $.ajax({
+            cache : false,
+            url : '/favor/member/set',
+            data:{
+                recrut_sn : recrut_sn,
+                pp_mem_no : pp_mem_no,
+                favr_set_yn : favr_set_yn,
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+
+                if(rtnCd == "1"){
+                    if (favr_set_yn == "Y") {
+                        $('.toastBox.noti').fadeIn(500)
+                        setTimeout(function() {
+                            $('.toastBox.noti').fadeOut(500);
+                        }, 1500);
+                    } else {
+                        $('.toastBox.alert').fadeIn(500)
+                        setTimeout(function() {
+                            $('.toastBox.alert').fadeOut(500);
+							$(".tab_favr").click();
+						}, 1500);
+                    }
+                } else {
+                    console.log("message : " + rtnMsg);
+                }
+            },
+            error : function(e) {
+                console.log("error + "+e);
+            }
+        });	  
+	}	
+	
+	// 지원자 상세 팝업
+	$(document).off("click", "#applicant_detail").on("click","#applicant_detail",function(e) {
+		// 팝업 내에서 체크 !!
+		// var read_end_day = $(this).data("read_end_day");                       
+		// if (read_end_day == "Y") {
+		// 	openPopup('pop_90_check');
+		// 	return;
+		// }
+		
+		var popW = 1320
+		var popH = 1000
+		var popX = (screen.width / 2) - (popW/2)
+		var popY = (screen.height / 2) - (popH/2)
+		var recrut_sn = $(this).data("recrut_sn");
+		var pp_mem_no = $(this).data("pp_mem_no");
+
+		console.log(`recrut_sn:${recrut_sn}, pp_mem_no:${pp_mem_no}`)
+
+		window.open("/applicant/detail/popup?recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no,"_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+	});	
+
+	$(document).off("click", "#live_nvn_detail").on("click","#live_nvn_detail",function(e) {
+		var recrut_sn = $(this).data("recrut_sn");
+		var live_sn = $(this).data("live_sn");		
+		
+		window.location.href="/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;
+	});
+	
+	/*
+	<div class="liveInterView">	
+		<p class="tit">예정된 라이브 인터뷰</p>
+		<a href="/live/list" class="moreView">전체 보기 &gt;</a>
+		<div class="interViewList">
+		{{if .MainLiveList}}	
+			<ul>
+				{{range .MainLiveList}}					
+				<li><a href="javascript:void(0);" id="live_detail" data-recrut_sn="{{.MnlRecrutSn}}" data-pp_mem_no="{{.MnlPpMemNo}}">
+					<span class="date">{{.MnlLiveItvSd}}<br>{{.MnlLiveItvSt}}</span>
+					<span class="img"><img src="{{.MnlPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="56" height="56" alt=""></span>
+					<span class="name">{{.MnlNm}}</span>
+					<!--<span class="info">{{.MnlSex}}・{{.MnlAge}}세</span>-->
+					<span class="info">{{.MnlSex}}・{{if eq 0 .MnlAge}}O세{{else}}{{.MnlAge}}세{{end}}</span>
+
+					<!---->								
+					<!--<span class="info" style="text-overflow:ellipsis;width:125px;white-space: nowrap; overflow: hidden"><img src="{{.MnlPtoPath}}" onerror="this.src='/static/images/ic-home-people-empty.png'" width="26" height="26" alt=""><strong>&nbsp;&nbsp;{{.MnlNm}}</strong>({{.MnlSex}}・{{if eq 0 .MnlAge}}O세{{else}}{{.MnlAge}}세{{end}})</span>-->			
+					<span class="info" style="text-overflow:ellipsis;width:125px;white-space: nowrap; overflow: hidden">
+						<a href="javascript:void(0);" id="applicant_detail" data-recrut_sn="{{.MnlRecrutSn}}" data-pp_mem_no="{{.MnlPpMemNo}}" style="text-decoration:underline"><strong>{{.MnlNm}}</strong>({{.MnlSex}}・{{if eq 0 .MnlAge}}O세{{else}}{{.MnlAge}}세{{end}})</a>
+					</span>
+					<!--<span class="info" style="text-overflow:ellipsis;width:125px;white-space: nowrap; overflow: hidden"><strong>&nbsp;&nbsp;{{.MnlNm}}</strong>({{.MnlSex}}・{{if eq 0 .MnlAge}}O세{{else}}{{.MnlAge}}세{{end}})</span>-->
+					<!---->
+
+				</a></li>
+				{{end}}
+			</ul>
+		{{else}}
+			<p class="noData">예정된 라이브 인터뷰가 없습니다.</p>
+		{{end}}
+		</div>
+	</div>
+	*/	
+
+	var adsPopup = function() {		
+		
+		var popW = 508
+		var popH = 510
+		var popX = 0;	//(screen.width / 2) - (popW/2)
+		var popY = 150;	//(screen.height / 2) - (popH/2)		
+		
+		var result = window.open("/ads/popup","_blank","width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY);		
+	};	
+
+	</script>
+{{end}} 

@@ -1,0 +1,94 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+	<div class="btnSet">		
+		<a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_reload_template">Reload Template 확인</a>
+	</div>
+	<div class="btnSet">		
+		<a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_reload_config">Reload Config 확인</a>
+	</div>
+
+	<script type="text/javascript">
+	
+	$(document).off("click", "#btn_reload_template").on("click", "#btn_reload_template", function (e) {
+		
+    	reload_template();
+	});
+
+	$(document).off("click", "#btn_reload_config").on("click", "#btn_reload_config", function (e) {
+		
+    	reload_config();
+	});
+	
+	var reload_template = function () {
+
+		var formData = new FormData();
+				
+		$.ajax({
+			cache: false,
+			url: '/reload/template',
+			data: formData,
+			type: 'POST',
+			processData: false,
+			contentType: false,
+			dataType: "json",
+			error: function (e) {
+				console.log("error" + e);
+			},
+			success: function (rep) {
+				var rtnCd = rep.RtnCd
+				var rtnMsg = rep.RtnMsg
+
+				console.log("rtnCd : " + rtnCd);
+				console.log("rtnMsg : " + rtnMsg);
+
+				if (rtnCd == "99") {
+					console.log("[AJAX(/reload/config')]: Login");
+					window.location.href = "/login";
+				}
+			},
+			error: function (e) {
+				console.log("error + " + e);
+			}
+		});
+	}	
+
+	var reload_config = function () {
+
+		var formData = new FormData();	
+			
+		$.ajax({
+			cache: false,
+			url: '/reload/config',
+			data: formData,
+			type: 'POST',
+			processData: false,
+			contentType: false,
+			dataType: "json",
+			error: function (e) {
+				console.log("error" + e);
+			},
+			success: function (rep) {
+				var rtnCd = rep.RtnCd
+				var rtnMsg = rep.RtnMsg
+
+				console.log("rtnCd : " + rtnCd);
+				console.log("rtnMsg : " + rtnMsg);
+
+				if (rtnCd == "99") {
+					console.log("[AJAX(/reload/config')]: Login");
+					window.location.href = "/login";
+				}
+			},
+			error: function (e) {
+				console.log("error + " + e);
+			}
+		});
+	}	
+	</script>
+{{end}} 

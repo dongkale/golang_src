@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">    
+	<link rel="shortcut icon" href="#">
+    <title>Simple Call</title>       
+</head>
+
+<body">
+
+<div>
+<input type="text" id="channelName" name="channelName"><br><br>
+<a id="channelBtn" href="#" class="btn"> CONNECT </a>            
+</div>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
+
+<video id="remoteVideo" autoplay></video>
+<video id="localVideo" autoplay muted></video>
+
+<script>
+    const channelBtnEl = document.querySelector('#channelBtn');	
+	
+	let inputChannel = document.getElementById("channelName");	
+	
+	//let myChannelId = 'simpleRemon123'; 
+	let defaultChannelId = 'remon123'; 
+    let isConnected = false;
+    let remon;
+	let roomName = '';
+	
+    // please register your own service key from remotemonster site.
+    const config = {
+        credential: {
+            key: 'c33f68fb0162c5ddca7c53199943dabfbbb1d23a15a49d17',
+            serviceId: 'hsjeong@qrate.co.kr'
+        },
+        view: {
+            remote: '#remoteVideo',
+            local: '#localVideo'
+        },
+		dev:{
+			logLevel: 'INFO'
+		}
+    };
+
+    const listener = {
+		onInit(token) {
+            console.log(`================ onInit: ${token}`);
+        },
+        onConnect(chid) {
+            console.log(`================ onConnect: ${chid}`);
+        },
+        onComplete() {
+            console.log(`================ onComplete`);
+            channelBtnEl.innerHTML = 'CLOSE';
+        },
+        onDisconnectChannel() {
+			// is called when other peer hang up.
+			console.log(`================ onDisconnectChannel`);            
+            remon.close();
+            isConnected = false;
+            channelBtnEl.innerHTML = 'CONNECT';
+        },
+        onClose() {
+            // is called when remon.close() method is called.            
+			console.log(`================ onClose`);
+            remon.close();
+            isConnected = false;
+            channelBtnEl.innerHTML = 'CONNECT';
+        },
+        onError(error) {            
+			console.log(`================ onError: ${error}`);
+        },
+        onStat(result) {            
+			console.log(`================ onStat: ${result}`);
+        }
+    };
+
+    function start() {
+        if (isConnected) {			
+            isConnected = false;
+            channelBtnEl.innerHTML = 'CONNECT';
+            remon.close();
+			console.log(`================ remon.close()`);
+        } else {
+			roomName = inputChannel.value ? inputChannel.value : defaultChannelId;
+		
+			console.log(`================ SelectChannel: (${roomName})`);		
+            isConnected = true;
+            channelBtnEl.innerHTML = 'WAIT';
+            remon = new Remon({config, listener});
+            remon.connectCall(roomName);
+			console.log(`================ remon.connectCall(${roomName})`);
+        }
+    }	
+	
+    channelBtnEl.addEventListener('click', (evt) => {
+        start();
+        evt.preventDefault();
+    }, false);	
+</script>
+
+</body>
+
+</html>

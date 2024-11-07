@@ -1,0 +1,709 @@
+{{template "include/popup_base.html" .}}
+
+<style type="text/css">
+.applicant .secR .topArea .stateSec {font-size:20px}
+
+em.state {line-height:22px;text-align:center;margin-right:7px;display:inline-block;padding:0 8px;font-size:12px}
+em.state.ing {background:#4c80f1;color:#fff;font-size:15px;vertical-align: bottom;}
+em.state.end {background:#878d91;color:#dedede;font-size:15px;vertical-align: bottom;}
+em.state.wait {background:#f24147;color:#fff;font-size:25px;vertical-align: bottom;}
+</style>
+
+{{define "body"}}
+
+    <body style="overflow-x:hidden;overflow-y:scroll">
+    <input type="hidden" id="pp_chrg_cmt_sn">
+    <input type="hidden" id="select_cnt" name="select_cnt" value="0">
+    <input type="hidden" id="msg_gbn_cd">
+    <input type="hidden" id="arr_pp_chrg_sn">
+    <input type="hidden" id="arr_pp_chrg_sn">
+    <input type="hidden" id="live_itv_sdt">
+    <input type="hidden" id="qst_sn" value="1">
+    <input type="hidden" id="max_qst_sn" value="{{.AnsTotCnt}}">
+    <div class="applicant">
+        <div class="secL">
+            <div class="profile">
+                <!-- <span class='ico_like {{if eq "1" .FavrAplyPpYn}}active{{end}}' id="favr_set"
+                      data-recrut_sn="{{.RecrutSn}}" data-pp_mem_no="{{.PpMemNo}}"><a
+                            href="javascript:void(0);"></a></span> -->
+                <span class="img"><img src="{{.PtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'"
+                                       width="90" height="90" alt=""></span>
+                <span class="name">{{.Nm}}</span>
+                <!-- <span class="state">{{.Sex}}・{{.Age}}세</span> -->
+                <span class="state">{{.Sex}}・{{if eq 0 .Age}}O세{{else}}{{.Age}}세{{end}}</span>                
+                <span class="mail"><em></em>{{.Email}}</span>
+                <span class="phone"><em></em>{{.MoNo}}</span>                
+            </div>           
+        </div>
+        <div class="secR">
+            <div class="topArea">
+                <p class="stateSec">
+                    <!-- ing : 채용중 / wait : 대기 / end : 마감 -->
+                    {{if eq "ING" .PrgsStatCd}}
+                        <em class="state ing">채용중</em>
+                    {{end}}
+                    {{if eq "WAIT" .PrgsStatCd}}
+                        <em class="state wait">대기</em>
+                    {{end}}
+                    {{if eq "END" .PrgsStatCd}}
+                        <em class="state end">마감</em>
+                    {{end}}
+                    {{.UpJobGrp}} &gt; {{.JobGrp}}
+                    <!--
+                    <em class="state wait">채용대기</em> 비지니스 (경영・사무) &lt; 사업・전략 기획
+                    -->
+                </p>
+                <!-- <p class="tit" id="go_recrut" style="cursor:pointer;">{{.RecrutTitle}}</p> -->
+                <!-- <p class="date">접수기간 {{.Sdy}} ~ {{.Edy}}</p> -->
+                <!-- <p class="date" style="padding-top: 10px;">지원절차
+                    {{if eq "1" .Recrut_proc_cd}}
+                        서류전형
+                    {{else if eq "2" .Recrut_proc_cd}}
+                        원웨이전형
+                    {{else if eq "3" .Recrut_proc_cd}}
+                        서류 -> 원웨이
+                    {{else if eq "4" .Recrut_proc_cd}}
+                        라이브전형
+                    {{else if eq "5" .Recrut_proc_cd}}
+                        서류 -> 라이브
+                    {{else if eq "6" .Recrut_proc_cd}}
+                        원웨이 -> 라이브
+                    {{else if eq "7" .Recrut_proc_cd}}
+                        서류 -> 원웨이 -> 라이브
+                    {{end}}</p>
+                <p class="msg">파일과 영상을 포함한 지원자의 모든 지원 정보는 공고 마감일로 부터 90일까지 열람이 가능합니다 (90일 후에는 해당 페이지가 열람이 불가능합니다.)</p> -->
+            </div>
+            <div class="movieReply">
+                {{if or (eq "1" .Recrut_proc_cd) (eq "3" .Recrut_proc_cd) (eq "5" .Recrut_proc_cd) (eq "7" .Recrut_proc_cd)}}
+                    {{if ne "99" .Dcmnt_file_name}} <!-- LDK 2020/09/24 :블라인드 처리 기업 -->
+                    <div class="titArea">
+                        <p class="tit">서류 전형</p>
+                        <div style="padding-bottom: 10px;">{{if eq "" .Dcmnt_file_name}}<br/>{{else}}<a
+                                    href="{{.Dcmnt_file_path}}" target="_blank" download>{{.Dcmnt_file_name}}</a></div>{{end}}
+                    </div>
+                    {{end}}
+                {{end}}
+                {{if or (eq "2" .Recrut_proc_cd) (eq "3" .Recrut_proc_cd) (eq "6" .Recrut_proc_cd) (eq "7" .Recrut_proc_cd)}}
+                <div class="movieReply">
+                    <div class="titArea">
+                        <p class="tit">영상 지원 답변</p>
+                        <p class="date">지원일시: {{.ApplyDt}},&nbsp;&nbsp; 소요시간: {{.CompTm}},&nbsp;&nbsp; 영상등록: {{.ShootCnt}}회</p>
+                        <p class="date">시작일시: {{.CompDT1}},&nbsp;&nbsp; 완료일시: {{.CompDT2}}</p>
+                    </div>
+                    <div class="movieSec">
+                        <div class="movieArea">
+                            <a href="javascript:void(0);" class="btnPrev 0" id="btn_prev">이전</a>
+                            <div class="movie ans_vd">
+                                <!--<img src="/static/images/img-movielist-sample.png" width="222" height="394" alt="">-->
+
+                            </div>
+                            <a href="javascript:void(0);" class="btnNext 2" id="btn_next">다음</a>
+                        </div>
+                        <div class="movieList">
+                            <ul>
+                                {{range .RecruitApplyMemberAnswerList}}
+                                    <!--<li class="selected">-->
+                                    <li class="{{.AnsQstSn}}">
+                                        <a href="javascript:void(0);" id="qst_select" data-qst_sn="{{.AnsQstSn}}"
+                                           data-vd_path="{{.AnsVdFilePath}}">
+                                            <span class="tit">질문 {{.AnsQstSn}}</span>
+                                            <span class="text">{{.AnsVdTitle}}</span>
+                                        </a>
+                                    </li>
+                                {{end}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+                {{if ne "99" .CarrGbn}}     <!-- LDK 2020/09/24 :블라인드 처리 기업 -->
+                <div class="profileDetail">
+                    <p class="tit">상세 프로필 <span id="profile_error_msg"></span></p>
+                    <table>
+                        <colgroup>
+                            <col width="170px">
+                            <col>
+                        </colgroup>
+                        <tr>
+                            <th>최종 학력</th>
+                            <!-- <td id="school">{{.LstEdu}}</td> -->
+                            <td id="school">{{.LstEduGbnCd1}}({{.LstEduGbnCd2}}), {{.LstEdu}}</td>
+                        </tr>
+                        <tr>
+                            <th>경력</th>
+                            <!-- <td id="career">{{if eq "0" .CarrGbn }}(신입) {{ else if eq "1" .CarrGbn }}(경력) {{ else }}{{ end }}{{.CarrDesc}}</td> -->
+                            <!-- <td id="career">{{if eq "0" .CarrGbn }}(신입) {{ else if eq "1" .CarrGbn }}(경력) {{ else }}{{ end }}{{.CarrYear}}, {{.CarrDesc}}</td> -->
+                            <td id="career">
+                                {{if eq "0" .CarrGbn}}(신입) 
+                                {{else if eq "1" .CarrGbn}}(경력)                                
+                                {{else if eq "-" .CarrGbn}}-
+                                {{else}}O
+                                {{end}}
+                                {{.CarrYear}},                                
+                                {{.CarrDesc}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>보유 기술・자격증</th>
+                            <td id="license">{{str2html .TechQlftKnd}}</td>
+                        </tr>
+                        <tr>
+                            <th>외국어 능력</th>
+                            <!-- <td id="lang">{{.FrgnLangAbltDesc}}</td> -->
+                            <td id="lang">{{.FrgnLangAbltCd1}}({{.FrgnLangAbltCd2}}), {{.FrgnLangAbltDesc}}</td> 
+                        </tr>
+                        <!-- 
+                        <tr>
+                            <th>외국어 능력2</th>
+                            <td id="lang">{{.FrgnLangAbltDesc}}</td>
+                        </tr>                        
+                        -->
+                        <tr>
+                            <th>첨부자료 링크</th>
+                            <td>{{if .AtchDataPath}}<a href="{{.AtchDataPath}}" target="_blank"
+                                                       class="link">{{.AtchDataPath}}</a>{{end}}</td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일</th>
+                            <td>{{if .AtchFilePath}}<a href="{{.AtchFilePath}}" target="_blank" download><i
+                                            class='fa fa-paperclip fa-flip-horizontal fa-flip-vertical'></i>첨부파일</a>{{else}}-{{end}}
+                            </td>
+                        </tr>
+                        {{if eq "01" .EntpGroupCode}}
+                            <tr>
+                                <th id="pdf_name">이력서</th>
+                                <td>{{if .AtchDataPath}}<a id="pdf" href="{{.AtchDataPath}}" target="_blank"
+                                                           class="link">{{.AtchDataPath}}</a>{{end}}</td>
+                            </tr>
+                            <tr>
+                                <th id="apply_status_name">서류지원합격여부</th>
+                                <td><a id="apply_status">-</a></td>
+                            </tr>
+                        {{end}}
+                    </table>
+                </div>
+                {{end}}
+                <div class="profileMovie">
+                    <p class="tit">영상 자기소개서</p>
+                    {{if .MemberVideoProfileList}}
+                        <ul>
+                            {{range .MemberVideoProfileList}}
+                                <li class="free">
+                                    <div class="textArea">
+                                        <p class="listTit">[{{.MvThmNm}}]</p>
+                                        <p class="text">{{.MvQstDesc}}</p>
+                                    </div>
+                                    <div class="movie">
+                                        <video controls width="200" height="355" controlsList="nodownload">
+                                            <source src="{{.MvVdFilePath}}" type="video/mp4">
+                                        </video>
+                                    </div>
+                                </li>
+                            {{end}}
+                        </ul>
+                    {{else}}
+                        <p class="noData">영상 프로필을 등록하지 않은 지원자입니다.</p>
+                    {{end}}
+                </div>
+                <div class="stateArea">
+                    <div class="state wait">
+                        <p class="text">
+                            대기<br>
+                            <span class="date">지원 일시 {{.ApplyDt}}</span>                            
+                        </p>
+                        <p class="text">
+                            {{if (eq "03" .Dcmnt_evl_stat_cd) }}
+                                <span class="date" style="background-color: #f8fafb;font-weight: bold;">서류 합격 {{.DcmntEvlStatDtFmt}}</span>
+                            {{else if (eq "04" .Dcmnt_evl_stat_cd)}}
+                                <span class="date" style="background-color: #f8fafb;font-weight: bold;">서류 불합격 {{.DcmntEvlStatDtFmt}}</span>
+                            {{ end }}                            
+                        </p>
+                    </div>  
+                    <!-- 대기일 경우 -->                                      
+                    <!-- 합격일 경우 -->
+                    {{if eq "03" .EvlPrgsStatCd}}
+                        <div class="state pass">
+                            <p class="text">
+                                합격<br>
+                                <span class="date">처리일시 {{.EvlStatDt}}</span>
+                            </p>
+                        </div>                        
+                    {{end}}                                      
+                    <!-- 불합격일 경우 -->
+                    {{if eq "04" .EvlPrgsStatCd}}                        
+                        <div class="state unPass">
+                            <p class="text">
+                                불합격<br>
+                                <span class="date">처리일시 {{.EvlStatDt}}</span>
+                            </p>
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+            <!-- 토스트박스 -->
+            <!-- <div class="toastBox noti">
+                <p class="message">관심 표시되었습니다.</p>
+                <a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+            </div>
+            <div class="toastBox alert">
+                <p class="message">관심 해제되었습니다.</p>
+                <a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+            </div>                         -->
+            <!-- 공통 알럿 팝업창 -->
+            <div class="popupWrap common_alert" id="pop_common_alert">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text alert" id="alert_text"></p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn btn_full" id="pop_close_btn">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- 공통 알럿 팝업창 -->
+            <!-- 공통 컨펌 팝업창 -->
+            <div class="popupWrap common_confirm" id="pop_common_confirm">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text alert">라이브 인터뷰 요청이 완료되지 않았습니다.<br>정말 나가시겠어요?</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" id="btn_confirm_pop_close">취소</a>
+                        <a href="javascript:void(0);" class="btn type_red" id="btn_confirm_pop_ok">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- 공통 컨펌 팝업창 -->
+        </div>
+    </div>
+    </body>
+
+<script type="text/javascript">    
+    
+    $(document).ready(function () {            
+        $('input.custom').customInput();
+        $(".movieList").find("li a").first().click();
+
+        $(".selectMember .admin").children().click();
+
+        // $.datepicker.setDefaults({
+        //     dateFormat: 'yy-mm-dd',
+        //     prevText: '이전 달',
+        //     nextText: '다음 달',
+        //     monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        //     monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        //     dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        //     dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        //     dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        //     showMonthAfterYear: true,
+        //     yearSuffix: '년'
+        // });
+    });        
+
+    // 질문 선택
+    $(document).off("click", "#qst_select").on("click", "#qst_select", function (e) {
+        $(".movieList").find("li").removeClass("selected");
+        if ($(this).parent().hasClass("selected")) {
+            $(this).parent().removeClass("selected");
+        } else {
+            var max_qst_sn = $("#max_qst_sn").val();
+            var qst_sn = $(this).data("qst_sn");
+            var vd_path = $(this).data("vd_path");
+            $("#qst_sn").val(qst_sn);
+            $(".movie.ans_vd").children().remove();
+            var vd_html = "";
+            vd_html += "<video controls width=\"222\" height=\"394\" id=\"video_" + qst_sn + "\" controlsList=\"nodownload\">";
+            vd_html += "<source src=\"" + vd_path + "\" type=\"video/mp4\">";
+            vd_html += "</video>";
+            $(".movie.ans_vd").append(vd_html);
+            document.getElementById("video_" + qst_sn).pause();
+            $(this).parent().addClass("selected");
+            var prev_curr_cnt = $("#btn_prev").attr('class').split(" ")[1];
+            //console.log("prev_curr_cnt : "+prev_curr_cnt);
+            var next_curr_cnt = $("#btn_next").attr('class').split(" ")[1];
+
+            if (parseInt(qst_sn) == 1) {
+                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                $("#btn_next").addClass("2");
+                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                $("#btn_prev").addClass("0");
+                $("#btn_next").removeClass("disabled");
+                $("#btn_prev").addClass("disabled");
+            } else if (parseInt(qst_sn) == 2) {
+                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                $("#btn_next").addClass("3");
+                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                $("#btn_prev").addClass("1");
+                $("#btn_next").addClass("disabled");
+                $("#btn_prev").removeClass("disabled");
+            } else if (parseInt(qst_sn) == 3) {
+                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                $("#btn_next").addClass("4");
+                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                $("#btn_prev").addClass("2");
+                $("#btn_next").removeClass("disabled");
+                $("#btn_prev").removeClass("disabled");
+            } else if (parseInt(qst_sn) == 4) {
+                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                $("#btn_next").addClass("5");
+                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                $("#btn_prev").addClass("3");
+                $("#btn_next").removeClass("disabled");
+                $("#btn_prev").removeClass("disabled");
+            } else {
+                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                $("#btn_next").addClass("6");
+                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                $("#btn_prev").addClass("4");
+                $("#btn_next").addClass("disabled");
+                $("#btn_prev").removeClass("disabled");
+            }
+            /*
+                        } else {
+                            if (parseInt(max_qst_sn) > parseInt(qst_sn)) {
+                                console.log("111");
+                                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                                $("#btn_next").addClass((parseInt(next_curr_cnt)+1).toString());
+                                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                                $("#btn_prev").addClass((parseInt(prev_curr_cnt)+1).toString());
+                            } else {
+                                console.log("222");
+                                $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                                $("#btn_next").addClass((parseInt(next_curr_cnt)-1).toString());
+                                $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                                $("#btn_prev").addClass((parseInt(prev_curr_cnt)-1).toString());
+                            }
+                        }*/
+        }
+    });
+
+    // 영상 다음
+    $(document).off("click", "#btn_next").on("click", "#btn_next", function (e) {
+        var max_qst_sn = $("#max_qst_sn").val();
+        var curr_cnt = $(this).attr('class').split(" ")[1];
+        var next_curr_cnt = $("#btn_next").attr('class').split(" ")[1];
+        if (parseInt(max_qst_sn) >= parseInt(curr_cnt)) {
+            $("." + curr_cnt).find("a").click();
+        } else {
+            console.log("last video");
+        }
+    });
+
+    // 영상 이전
+    $(document).off("click", "#btn_prev").on("click", "#btn_prev", function (e) {
+        var max_qst_sn = $("#max_qst_sn").val();
+        var curr_cnt = $(this).attr('class').split(" ")[1];
+        var prev_curr_cnt = $("#btn_prev").attr('class').split(" ")[1];
+        if (parseInt(curr_cnt) == 0) {
+            console.log("first video");
+        } else {
+            $("." + curr_cnt).find("a").click();
+        }
+    });
+        
+    // $(function () {
+    //     $("#live_itv_sd").datepicker({});
+    //     $('#live_itv_st').timepicker({
+    //         timeFormat: 'H:mm',
+    //         interval: 5,        // LDK 2020/08/05 -->
+    //         minTime: '05',
+    //         maxTime: '11:00pm',
+    //         startTime: '05:00',
+    //         dynamic: false,
+    //         dropdown: true,
+    //         scrollbar: true     // <--
+    //     });
+    //     $(".ui-datepicker").addClass('full_size');
+    // });
+    
+    // $(document).off("click", "#pass_msg_cont").on("click", "#pass_msg_cont", function (e) {
+    //     $(".validationAlert").text("");
+    //     $("#pass_msg_cont").removeClass("validationAlert");
+    // });
+    // $(document).off("click", "#unpass_msg_cont").on("click", "#unpass_msg_cont", function (e) {
+    //     $(".validationAlert").text("");
+    //     $("#unpass_msg_cont").removeClass("validationAlert");
+    // });
+    // $(document).off("click", "#member_applicant_del").on("click", "#member_applicant_del", function (e) {
+    //     $('body, html').animate({scrollTop: 0}, 1);
+    //     openPopup("pop_apply_del");
+    // });
+
+    // // 채용정보 상세이동
+    // $(document).off("click", "#go_recrut").on("click", "#go_recrut", function (e) {
+    //     var recrut_sn = "{{.RecrutSn}}";
+    //     window.close();
+    //     opener.window.location.href = "/recruit/post/detail?recrut_sn=" + recrut_sn;
+    // });    
+
+    // // 메시지 페이지 이동
+    // $(document).off("click", "#go_msg").on("click", "#go_msg", function (e) {
+    //     opener.window.location.href = "/message?target={{.PpMemNo}}&sn={{.RecrutSn}}&end_yn={{.MsgEndYn}}";
+    //     window.close();
+    // });
+
+    // // 메시지 보내기
+    // $(document).off("click", "#send_msg").on("click", "#send_msg", function (e) {
+    //     $("#live_itv_sdt").val("");
+    //     $("#arr_pp_chrg_sn").val("");
+    //     $("#msg_gbn_cd").val("01");
+    //     message_send();
+    // });    
+    
+    // // 공통 알럿 팝업 닫기
+    // $(document).off("click", "#pop_close_btn").on("click", "#pop_close_btn", function (e) {
+    //     if ("{{.SAuthCd}}" == "01") {
+    //         $(".common_alert").hide();
+    //         $("#pop_live").show();
+    //     } else {
+    //         closePopup();
+    //     }
+    // });
+
+    // // 공통 컨펌 팝업 열기
+    // $(document).off("click", "#btn_live_pop_close").on("click", "#btn_live_pop_close", function (e) {
+    //     $("#pop_live").hide();
+    //     openPopup("pop_common_confirm");
+    // });
+
+    // // 공통 컨펌 팝업 닫기
+    // $(document).off("click", "#btn_confirm_pop_close").on("click", "#btn_confirm_pop_close", function (e) {
+    //     $("#pop_common_confirm").hide();
+    //     $("#pop_live").show();
+    // });    
+    
+    // // 코멘트 등록
+    // $(document).off("click", "#btn_comment_reg").on("click", "#btn_comment_reg", function (e) {
+    //     if ($("#pp_chrg_cmt").val().length > 0) {
+    //         ajaxCommentReg();
+    //     }
+    // });
+
+    // // 코멘트 등록 처리
+    // var ajaxCommentReg = function () {
+    //     var recrut_sn = "{{.RecrutSn}}";
+    //     var pp_mem_no = "{{.PpMemNo}}";
+    //     var pp_chrg_cmt = filteringXSS($("#pp_chrg_cmt").val()).replace(/'/gi, "`");
+    //     var pp_chrg_sn = "{{.SMemSn}}";
+    //     /*
+    //     console.log("recrut_sn : "+recrut_sn);
+    //     console.log("pp_mem_no : "+pp_mem_no);
+    //     console.log("pp_chrg_cmt : "+pp_chrg_cmt);
+    //     console.log("pp_chrg_sn : "+pp_chrg_sn);
+    //     return;
+    //     */
+
+    //     $.ajax({
+    //         cache: false,
+    //         url: '/team/comment/insert',
+    //         data: {
+    //             recrut_sn: recrut_sn,
+    //             pp_mem_no: pp_mem_no,
+    //             pp_chrg_cmt: pp_chrg_cmt,
+    //             pp_chrg_sn: pp_chrg_sn,
+    //         },
+    //         type: 'POST',
+    //         dataType: "json",
+    //         error: function (e) {
+    //             console.log("error" + e);
+    //         },
+    //         success: function (rep) {
+    //             var rtnCd = rep.RtnCd
+    //             var rtnMsg = rep.RtnMsg
+
+    //             if (rtnCd == "1") {
+    //                 $("#pp_chrg_cmt").val("");
+    //                 ajaxCommentList();
+    //                 $("#commet_div").animate({scrollTop: $("#commet_div").prop("scrollHeight")}, 300);
+    //             } else {
+    //                 console.log("message : " + rtnMsg);
+    //             }
+    //         },
+    //         error: function (e) {
+    //             console.log("error + " + e);
+    //         }
+    //     });
+    // }
+
+    // // 코멘트 리스트 페이지 AJAX
+    // var ajaxCommentList = function (v) {
+    //     var recrut_sn = "{{.RecrutSn}}";
+    //     var pp_mem_no = "{{.PpMemNo}}";
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/team/comment/list",
+    //         data: {
+    //             recrut_sn: recrut_sn,
+    //             pp_mem_no: pp_mem_no,
+    //         },
+    //         dataType: "json",
+    //         error: function () {
+    //         },
+    //         success: function (rep) {
+    //             if (rep.RtnRecruitApplyCommentListData.length > 0) {
+    //                 $(".messageArea").find("ul").children().remove();
+    //                 $.each(rep.RtnRecruitApplyCommentListData, function (e) {
+    //                     var html = "";
+    //                     html += "<div class=\"box";
+    //                     if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}") {
+    //                         html += " mine";
+    //                     }
+    //                     if (rep.RtnRecruitApplyCommentListData[e].CmtPpChrgGbnCd == "01") {
+    //                         html += " admin";
+    //                     }
+    //                     if (rep.RtnRecruitApplyCommentListData[e].CmtNewYn == "Y") {
+    //                         html += " new";
+    //                     }
+    //                     html += "\">";
+    //                     html += "	<p class=\"name\">[" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgBpNm + " " + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgNm + "]</p>";
+    //                     html += "	<p class=\"date\">" + rep.RtnRecruitApplyCommentListData[e].CmtRegDt + "</p>";
+    //                     if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}" || "{{.SAuthCd}}" == "01") {
+    //                         html += "	<a href=\"javascript:void(0);\" class=\"btn type_red btnDelete\" id=\"btn_comment_del\" data-pp_chrg_cmt_sn=\"" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmtSn + "\">삭제</a>";
+    //                     }
+    //                     html += "	<p class=\"text\">" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmt + "</p>";
+    //                     html += "</div>";
+
+    //                     $(".messageArea").find("ul").append(html);
+    //                 })
+    //                 $("#comment_cnt").text(rep.RtnRecruitApplyCommentListData[0].CmtTotCnt);
+    //             } else {
+    //                 $(".messageArea").find("ul").children().remove();
+    //                 var html = "";
+    //                 html += "<p class=\"noData\">지원자에 대한 코멘트가 없습니다.<br>코멘트를 통해 팀 멤버와 논의해보세요!</p>";
+    //                 $(".messageArea").find("ul").append(html);
+    //                 $("#comment_cnt").text(0);
+    //             }
+    //         }
+    //     });
+    // }
+
+    // // 코멘트 삭제(팝업)
+    // $(document).off("click", "#btn_comment_del").on("click", "#btn_comment_del", function (e) {
+    //     $('body, html').animate({scrollTop: 0}, 1);
+    //     $("#pp_chrg_cmt_sn").val($(this).data("pp_chrg_cmt_sn"));
+    //     openPopup("comment_del_pop");
+    // });
+
+    // // 코멘트 팝업내 삭제
+    // $(document).off("click", "#btn_pop_comment_del").on("click", "#btn_pop_comment_del", function (e) {
+    //     closePopup("comment_del_pop");
+    //     ajaxCommentDel();
+    // });
+
+    // // 코멘트 삭제 처리
+    // var ajaxCommentDel = function () {
+    //     var recrut_sn = "{{.RecrutSn}}";
+    //     var pp_mem_no = "{{.PpMemNo}}";
+    //     var pp_chrg_sn = "{{.SMemSn}}";
+    //     var pp_chrg_cmt_sn = $("#pp_chrg_cmt_sn").val();
+    //     /*
+    //     console.log("recrut_sn : "+recrut_sn);
+    //     console.log("pp_mem_no : "+pp_mem_no);
+    //     console.log("pp_chrg_sn : "+pp_chrg_sn);
+    //     console.log("pp_chrg_cmt_sn : "+pp_chrg_cmt_sn);
+    //     return;
+    //     */
+
+    //     $.ajax({
+    //         cache: false,
+    //         url: '/team/comment/delete',
+    //         data: {
+    //             recrut_sn: recrut_sn,
+    //             pp_mem_no: pp_mem_no,
+    //             pp_chrg_sn: pp_chrg_sn,
+    //             pp_chrg_cmt_sn: pp_chrg_cmt_sn,
+    //         },
+    //         type: 'POST',
+    //         dataType: "json",
+    //         error: function (e) {
+    //             console.log("error" + e);
+    //         },
+    //         success: function (rep) {
+    //             var rtnCd = rep.RtnCd
+    //             var rtnMsg = rep.RtnMsg
+
+    //             if (rtnCd == "1") {
+    //                 ajaxCommentList();
+    //             } else {
+    //                 console.log("message : " + rtnMsg);
+    //             }
+    //         },
+    //         error: function (e) {
+    //             console.log("error + " + e);
+    //         }
+    //     });
+    // }
+
+    // // 관심아이콘 클릭이벤트
+    // $('.ico_like a').on('click', function () {
+    //     if ($(this).parent().hasClass('active')) {
+    //         $(this).parent().removeClass('active')
+    //         var rs = $(this).parent().data("recrut_sn");
+    //         var pp = $(this).parent().data("pp_mem_no");
+    //         var yn = "N";
+    //         ajaxMemberSet(rs, pp, yn);
+    //     } else {
+    //         $(this).parent().addClass('active')
+    //         var rs = $(this).parent().data("recrut_sn");
+    //         var pp = $(this).parent().data("pp_mem_no");
+    //         var yn = "Y";
+    //         ajaxMemberSet(rs, pp, yn);
+    //     }
+    // })
+
+    // // 지원자 관심설정 처리
+    // var ajaxMemberSet = function (rs, pp, yn) {
+    //     var recrut_sn = rs;
+    //     var pp_mem_no = pp;
+    //     var favr_set_yn = yn;
+    //     /*
+    //     console.log("recrut_sn : "+recrut_sn);
+    //     console.log("pp_mem_no : "+pp_mem_no);
+    //     console.log("favr_set_yn : "+favr_set_yn);
+    //     */
+
+    //     $.ajax({
+    //         cache: false,
+    //         url: '/favor/member/set',
+    //         data: {
+    //             recrut_sn: recrut_sn,
+    //             pp_mem_no: pp_mem_no,
+    //             favr_set_yn: favr_set_yn,
+    //         },
+    //         type: 'POST',
+    //         dataType: "json",
+    //         error: function (e) {
+    //             console.log("error" + e);
+    //         },
+    //         success: function (rep) {
+    //             var rtnCd = rep.RtnCd
+    //             var rtnMsg = rep.RtnMsg
+
+    //             if (rtnCd == "1") {
+    //                 if (favr_set_yn == "Y") {
+    //                     $('.toastBox.noti').fadeIn(1000)
+    //                     setTimeout(function () {
+    //                         $('.toastBox.noti').fadeOut(1000);
+    //                     }, 3000);
+    //                 } else {
+    //                     $('.toastBox.alert').fadeIn(1000)
+    //                     setTimeout(function () {
+    //                         $('.toastBox.alert').fadeOut(1000);
+    //                     }, 3000);
+    //                 }
+    //             } else {
+    //                 console.log("message : " + rtnMsg);
+    //             }
+    //         },
+    //         error: function (e) {
+    //             console.log("error + " + e);
+    //         }
+    //     });
+    // }   
+    
+</script>
+
+{{end}} 

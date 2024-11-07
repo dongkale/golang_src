@@ -1,0 +1,104 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+		<h2>기업 회원 탈퇴</h2>
+		<ul class="titInfoList nbdr">
+			<li>회원 탈퇴 즉시 모든 기업 정보가 모두 삭제되며 재가입 시에도 복구되지 않습니다.</li>
+			<li>탈퇴한 아이디와 이메일로는 재가입이 불가능합니다.</li>
+			<li>다음 내용을 확인 후 동의해주시면 탈퇴가 완료됩니다.</li>
+		</ul>
+		<div class="dropOut">
+			<h3>탈퇴를 요청하신 기업</h3>
+			<div class="gridWrap">
+				<table>
+					<tr>
+						<th>회사명</th>
+						<th>사업자등록번호</th>
+						<th>대표자명</th>
+					</tr>
+					<tr>
+						<td>{{.BsEntpKoNm}}</td>
+						<td>{{.BsBizRegNo}}</td>
+						<td>{{.BsRepNm}}</td>
+					</tr>
+				</table>
+			</div>
+			<h3>삭제되는 정보</h3>
+			<p class="deleteInfo">기업 정보, 기업 영상, 채용 공고 내역, 지원자 내역, 라이브 인터뷰 내역, 채팅 내역, 팀 멤버 내역, 문의 내역 등</p>
+			<div class="agree">
+				<input type="checkbox" name="agree" class="custom" id="agree"><label for="agree">위 안내문을 모두 확인하였으며, 이에 동의합니다.</label>
+			</div>
+		</div>
+		<div class="btnSet">
+			<a href="javascript:history.go(-1);" class="btn">취소</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_withdraw">탈퇴</a>
+		</div>
+	</div>
+    <div class="popupWrap" id="common_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">기업 탈퇴 알림</p>
+				<p class="text alert" id="alert_text"></p>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>	
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('input.custom').customInput();
+	});		
+
+	// 탈퇴 처리
+	$(document).off("click", "#btn_withdraw").on("click", "#btn_withdraw", function(e) {
+		if($('input:checkbox[id="agree"]').is(":checked") == false){
+			$("#alert_text").text("");
+			openPopup('common_alert');
+			$("#alert_text").html("탈퇴시 삭제되는 정보를 확인하시고<br>탈퇴 안내에 대한 동의를해주세요.");
+			return;
+		}
+		var pp_chrg_sn = "{{.SMemSn}}";
+        $.ajax({
+            cache : false,
+            url : '/setting/withdraw/update',
+            data:{
+                pp_chrg_sn : pp_chrg_sn,
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+
+                if(rtnCd == "1"){
+					window.location.href="/login";
+				} else if(rtnCd == "9"){
+					console.log("정상적인 접근이 아닙니다.");
+					$("#alert_text").text("");
+					openPopup('common_alert');
+					$("#alert_text").html("비정상적인 접근이 발생하였습니다.");
+					return;
+				} else {
+                    console.log("message : " + rtnMsg);
+                }
+            },
+            error : function(e) {
+                console.log("error + "+e);
+            }
+        });	 		
+	}); 	
+
+	</script>
+{{end}} 

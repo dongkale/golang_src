@@ -1,0 +1,117 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 아이디,비밀번호찾기 영역 -->
+    <div class="joinWrap">
+        <div class="memberFind">
+            <ul class="tabMenu">
+                <li class="active"><a href="javascript:void(0);">아이디 찾기</a></li>
+                <li><a href="/common/pwd/find">비밀번호 찾기</a></li>
+            </ul>
+            <div class="fieldList">
+                <dl>
+                    <dt>담당자 이름</dt>
+                    <dd><input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" class="it" placeholder="아이디 생성시 사용한 이름을 입력해주세요."></dd>
+                </dl>
+                <dl>
+                    <dt>사업자등록번호</dt>
+                    <dd><input type="text" name="biz_reg_no" id="biz_reg_no" maxlength="15" class="it" numberOnly placeholder="사업자등록번호를 숫자만 입력해주세요."></dd>
+                </dl>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" id="btn_find_id" class="btn type_blue st02">아이디 찾기</a>
+            </div>
+            <div class="alertMessage" style="display:none"><!--입력하신 정보와 일치하는 아이디가 없습니다.<br>다시 한 번 확인해주세요.--></div>
+        </div>
+    </div>
+    <!-- // 아이디,비밀번호찾기 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    
+    <script type="text/javascript">
+    //숫자만 입력가능
+    $("input:text[numberOnly]").on("focus", function() {
+        var x = $(this).val();
+    }).on("focusout", function() {
+        var x = $(this).val();
+        if(x && x.length > 0) {
+            if(!$.isNumeric(x)) {
+                x = x.replace(/[^0-9]/g,"");
+            }
+            $(this).val(x);
+        }
+    }).on("keyup", function() {
+        $(this).val($(this).val().replace(/[^0-9]/g,""));
+    });    
+
+    $(document).off("click", "#pp_chrg_nm").on("click", "#pp_chrg_nm", function(){
+        $(".alertMessage").hide();
+        $(".alertMessage").text("");
+    });
+
+    $(document).off("click", "#biz_reg_no").on("click", "#biz_reg_no", function(){
+        $(".alertMessage").hide();
+        $(".alertMessage").text("");
+    });
+
+    // 아이디 찾기
+    $(document).off("click", "#btn_find_id").on("click", "#btn_find_id", function(){
+        var rtn = "";
+        var pp_chrg_nm = $("#pp_chrg_nm").val();
+        var biz_reg_no = $("#biz_reg_no").val();
+
+        if($("#pp_chrg_nm").val().length == 0){
+            $(".alertMessage").show();
+            $(".alertMessage").text("담당자 이름을 입력해주세요.");
+            $("#pp_chrg_nm").focus();
+            return;
+        }
+
+        if($("#biz_reg_no").val().length == 0){
+            $(".alertMessage").show();
+            $(".alertMessage").text("사업자 등록번호를 입력해주세요.");
+            $("#biz_reg_no").focus();
+            return;
+        }
+
+        $.ajax({
+            cache : false,
+            url : '/common/id/find',
+            data : {
+            pp_chrg_nm : pp_chrg_nm,
+            biz_reg_no : biz_reg_no,
+            },
+            type : 'POST',
+            async : false,
+            dataType : "json",
+            success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+            var rtnData = rep.RtnData;
+
+            if (rtnCd == 1){
+                window.location.href="/common/id/find/result?pp_chrg_nm="+pp_chrg_nm+"&biz_reg_no="+biz_reg_no;
+            } else {
+                $(".alertMessage").show();
+                $(".alertMessage").html("입력하신 정보와 일치하는 아이디가 없습니다.<br>다시 한 번 확인해주세요.");
+                rtn = false;
+            }
+            },
+            error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            //window.location.replace("/");
+            rtn = false;
+            },
+        });
+        return rtn;
+    });
+
+    </script>
+    
+{{end}} 

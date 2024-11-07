@@ -1,0 +1,157 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 아이디,비밀번호찾기 영역 -->
+    <div class="joinWrap">
+    <form id="resetForm" name="resetForm" method="post">
+        <div class="memberFind">
+            <div class="memberTop"><h2>비밀번호 재설정</h2></div>
+            <div class="idFindText">
+                <p>새롭게 사용하실 비밀번호를 입력해주세요.</p>
+                <p>변경된 비밀번호는 직감 App과 동일하게 적용됩니다.</p>
+            </div>
+            <div class="fieldList">
+                <dl>
+                    <dt class="hide">비밀번호</dt>
+                    <dd><input type="password" name="pwd" id="pwd" maxlength="16" class="it" placeholder="영문과 숫자, 특수문자 사용 가능합니다. (6~16자)"></dd>
+                </dl>
+                <dl>
+                    <dt class="hide">비밀번호재입력</dt>
+                    <dd><input type="password" name="repwd" id="repwd" maxlength="16" class="it" placeholder="비밀번호를 다시 한번 입력해주세요."></dd>
+                </dl>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_change">확인</a>
+            </div>
+            <div class="alertMessage" style="display:none"><!--변경하실 비밀번호를 다시 한번 입력해주세요.--></div>
+        </div>
+    </form>
+    </div>
+    <!--// 비정상접근 팝업-->
+    <div class="popupWrap" id="alert">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">비정상적인 접근입니다</p>
+                <p class="text t1">이전 페이지로 돌아갑니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_close">확인</a>
+                <!--<a href="#" class="btn type_blue st02" onclick="closePopup()">확인</a>-->
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>    
+    <div class="toastBox reset_complete">
+        <p class="message">비밀번호 재설정이 완료되었습니다..</p>
+        <a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+    <!-- // 아이디,비밀번호찾기 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    
+    <script type='text/javascript'>
+
+        $(document).ready(function() {
+            //$("#resetForm").validate(validOption);
+        });
+
+        // 비밀번호 변경
+        $(document).off("click", "#btn_change").on("click", "#btn_change", function(){
+
+            if($("#pwd").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호를 입력해주세요.");
+                $("#pwd").focus();
+                return;
+            }            
+
+            if($("#pwd").val().length < 6){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호는 최소 6자 이상입니다.");
+                $("#pwd").focus();
+                return;
+            }         
+
+            if($("#pwd").val().length > 16){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호는 최대 16자 이하입니다.");
+                $("#pwd").focus();
+                return;
+            }                  
+
+            if($("#repwd").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호를 다시 입력해주세요.");
+                $("#repwd").focus();
+                return;
+            }            
+
+            if($("#repwd").val().length < 6){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호는 최소 6자 이상입니다.");
+                $("#repwd").focus();
+                return;
+            }         
+
+            if($("#repwd").val().length > 16){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호는 최대 16자 이하입니다.");
+                $("#repwd").focus();
+                return;
+            }   
+
+            if($("#pwd").val() != $("#repwd").val()){
+                $(".alertMessage").show();
+                $(".alertMessage").text("비밀번호 일치하지 않습니다.");
+                $("#repwd").focus();
+                return;
+            }   
+
+            $(".alertMessage").hide();
+            $(".alertMessage").text("");
+
+            var change_pwd = $("#pwd").val(); //password
+
+            $.ajax({
+                url : '/common/pwd/reset',
+                data : {
+                    pwd : change_pwd
+                },
+                type : 'POST',
+                dataType : "json",
+                error : function(e) {
+                    //console.log("error" + JSON.stringify(e));
+                    //console.log("error : "+e);
+                    openPopup("alert");
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+                    console.log("rtnCd : "+rtnCd);
+                    if(rtnCd == 1){
+                        //console.log("비밀번호 변경 완료");
+						$('.toastBox.reset_complete').fadeIn(1000);
+						setTimeout(function() {
+							window.location.href="/login";
+						}, 2000);
+                    } else {
+                        console.log("비밀번호 변경 실패 : "+rtnMsg);
+                    }
+                }
+            });	
+        });
+
+        // 비정상접근 팝업창 닫기
+        $(document).off("click", "#btn_close").on("click", "#btn_close",function(e) {
+            closePopup()
+            window.location.href="/common/pwd/find";
+        });
+
+    </script>          
+{{end}} 

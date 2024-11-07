@@ -1,0 +1,32 @@
+<!-- head start -->
+{{template "include/head.html" .}}
+<!-- head end -->
+
+	<!-- body start -->
+	{{template "body" .}}
+	<!-- body end -->
+
+	<script type="text/javascript">	
+		const MemId = "{{.SMemId}}";
+		const MemNo = "{{.SMemNo}}";
+		const MemSn = "{{.SMemSn}}";
+		const AuthCd = "{{.SAuthCd}}"
+
+		const BsPpChrgNm = "{{.BsPpChrgNm}}";
+		const BsPpChrgBpNm = "{{.BsPpChrgBpNm}}";
+		const BsRepNm = "{{.BsRepNm}}";
+
+		const TblConfig = {{.TblConfig}};
+
+		console.log(`[popup_base.html] SMemId:${MemId}, SMemNo:${MemNo}, SMemSn:${MemSn}, SAuthCd:${AuthCd}`)	
+		console.log(`[popup_base.html] BsPpChrgNm:${BsPpChrgNm}, BsPpChrgBpNm:${BsPpChrgBpNm}, BsRepNm:${BsRepNm}`)
+		console.log(`[popup_base.html] TableConfig:${TblConfig}`)	
+		
+		// const jsonTblConfig = {{.TblConfig}};
+		console.log(`[popup_base.html] TblConfig: ${JSON.stringify(TblConfig)}`);
+		
+		const SuperAdmin = "{{.SuperAdmin}}";	
+		console.log(`[popup_base.html] SuperAdmin: ${SuperAdmin}`);		
+	</script>
+
+</html>

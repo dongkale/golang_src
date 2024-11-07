@@ -1,0 +1,125 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+	<input type="hidden" id="page_no" value="{{.PageNo}}">
+		<h2>공지사항</h2>
+		<div class="setting">
+			<div class="gridWrap notice">
+				<table>
+					<colgroup>
+						<col width="130px">
+						<col width="425px">
+						<col>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>구분</th>
+						<th>제목</th>
+						<th>날짜</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{if .NoticeList}}
+						{{range .NoticeList}}
+					<tr>
+						<td>{{.GbnNm}}</td>
+						<td class='text {{if eq "Y" .NewYn}}new{{end}}'>
+							<a href="javascript:void(0);" id="notice_detail" data-sn="{{.Sn}}">{{.Title}}</a>
+						</td>
+						<td>{{.RegDt}}</td>
+					</tr>
+						{{end}}
+					{{else}}
+					<tr style="height:200px">
+						<td colspan="3">등록된 공지사항이 없습니다.</td>
+					</tr>
+					{{end}}
+					</tbody>
+				</table>
+			</div>
+			<div class="paging">
+				{{str2html .Pagination}}
+			</div>
+		</div>
+	</div>
+
+    <script type="text/javascript">
+		// 페이징처리
+		$(document).off("click", ".goPage").on("click",".goPage",function(e) {
+		  var pn = $(this).data("page");
+		  paging(pn);
+		});
+		$(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+		  var pn = $(this).data("page");
+		  paging(pn);
+		});
+		$(document).off("click", ".goPage").on("click",".goPage",function(e) {
+		  var pn = $(this).data("page");
+		  paging(pn);
+		});
+	  
+		var paging = function(pageno) {
+			$("#page_no").val(pageno);
+			ajaxNoticeList();
+		}	
+	  
+		// 공지사항 상세 페이지 이동
+			$(document).off("click", "#notice_detail").on("click", "#notice_detail", function(){
+			var sn = $(this).data("sn");
+			var page_no = $("#page_no").val();
+			console.log("page_no : "+page_no);
+			window.location.href="/setting/notice/detail?sn="+sn+"&pn="+page_no;
+		});
+		
+		// 리스트 페이지 AJAX
+		var ajaxNoticeList = function(v) {
+			var page_no = $("#page_no").val();
+			$.ajax({
+				type: "POST",
+				url: "/setting/notice/list",
+				data:{
+					pn : page_no,
+				},
+				dataType: "json",
+				error : function() {
+				},
+				success : function(rep) {
+					if(rep.RtnNoticeListData.length > 0){
+						$(".notice").find("tbody").children().remove();
+						$.each(rep.RtnNoticeListData,function(e) {
+							var html = "";
+							html += "<tr>";
+							html += "	<td>"+rep.RtnNoticeListData[e].GbnNm+"</td>";
+							if (rep.RtnNoticeListData[e].NewYn == "Y") {
+								html += "	<td class='text new'>";	
+							} else {
+								html += "	<td class='text'>";	
+							}
+							html += "		<a href=\"javascript:void(0);\" id=\"notice_detail\" data-sn=\""+rep.RtnNoticeListData[e].Sn+"\">"+rep.RtnNoticeListData[e].Title+"</a>";
+							html += "	</td>";
+							html += "	<td>"+rep.RtnNoticeListData[e].RegDt+"</td>";
+							html += "</tr>";
+							$(".notice").find("tbody").append(html);
+						})
+						$(".paging").children().remove();
+						$(".paging").append(rep.RtnNoticeListData[0].Pagination);
+					}else{
+						$(".notice").find("tbody").children().remove();
+						var html = "";
+						html += "<tr style=\"height: 200px;\">";
+						html += "<td colspan=\"3\">등록된 공지사항이 없습니다.</td>";
+						html += "</tr>";
+						$(".notice").find("tbody").append(html);
+						$(".paging").children().remove();
+					}
+				}
+			});				
+		}  
+	  </script>    	
+{{end}} 

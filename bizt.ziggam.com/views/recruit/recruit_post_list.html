@@ -1,0 +1,685 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<input type="hidden" id="page_no" value="1">
+	<input type="hidden" id="gbn_cd" value="{{.GbnCd}}">
+	<input type="hidden" id="sort_gbn" value="03">  
+	<input type="hidden" id="arr_recrut" value="">  
+
+	<!--// 파라미터 정의 -->
+	<input type="hidden" id="p_keyword" value="{{.pKeyword}}">  
+	<input type="hidden" id="p_job_grp_cd" value="{{.pJobGrpCd}}">  
+	<input type="hidden" id="p_sort_gbn" value="{{.pSortGbn}}">  
+	<input type="hidden" id="p_gbn_cd" value="{{.pGbnCd}}">  
+	<input type="hidden" id="p_page_no" value="{{.pPageNo}}">  
+
+	<div class="content">
+		<h2>채용 중인 공고 <span class="count" id="main_tot_cnt">{{.TotCnt}}</span></h2>
+		<div class="recruitTop">
+			<ul>
+				{{if .RecruitPostList}}
+					{{range .RecruitPostList}}
+					<li><a href="javascript:void(0);" id="go_detail" data-recrut_sn="{{.RecrutSn}}">
+						<span class="category">{{.UpJobGrp}} &gt; {{.JobGrp}}</span>
+						<span class="tit">{{.RecrutTitle}}</span>
+						<span class="date">접수기간 {{.RecrutDy}}</span>
+						<span class="recruitCount">
+							<span class="total">
+								<em class="txt">총 지원자 수</em>
+								<em class="count">{{.ApplyCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">대기</em>
+								<em class="count">{{.IngCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">합격</em>
+								<em class="count">{{.PassCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">불합격</em>
+								<em class="count">{{.FailCnt}}</em>
+							</span>
+						</span>
+					</a></li>
+					{{end}}
+				{{else}}
+				<li class="noData">
+					<p>채용 중인 공고가 없습니다.<br>직감을 통해 직감적인<br>인재를 찾아보세요!</p>
+					<a href="/recruit/write"><span>채용공고 등록</span></a>
+				</li>
+				{{end}}
+			</ul>
+		</div>
+		<ul class="tabMenu">
+			{{if eq "A" .GbnCd}}
+			<li id="gbn_a" class="active"><a href="/recruit/post/list?gbn_cd=A">전체 <span>{{.RecrutTotCnt}}</span></a></li>
+			{{else}}
+			<li id="gbn_a"><a href="/recruit/post/list">전체 <span>{{.RecrutTotCnt}}</span></a></li>
+			{{end}}
+			{{if eq "I" .GbnCd}}
+			<li id="gbn_i" class="active"><a href="/recruit/post/list?gbn_cd=I">채용 중 <span>{{.RecrutIngCnt}}</span></a></li>
+			{{else}}
+			<li id="gbn_i"><a href="/recruit/post/list?gbn_cd=I">채용 중 <span>{{.RecrutIngCnt}}</span></a></li>
+			{{end}}
+			{{if eq "W" .GbnCd}}
+			<li id="gbn_w" class="active"><a href="/recruit/post/list?gbn_cd=W">대기 <span>{{.RecrutWaitCnt}}</span></a></li>
+			{{else}}
+			<li id="gbn_w"><a href="/recruit/post/list?gbn_cd=W">대기 <span>{{.RecrutWaitCnt}}</span></a></li>
+			{{end}}
+			{{if eq "E" .GbnCd}}
+			<li id="gbn_e" class="active"><a href="/recruit/post/list?gbn_cd=E">마감 <span>{{.RecrutEndCnt}}</span></a></li>
+			{{else}}
+			<li id="gbn_e"><a href="/recruit/post/list?gbn_cd=E">마감 <span>{{.RecrutEndCnt}}</span></a></li>
+			{{end}}
+		</ul>
+		<div class="searchForm">
+			<select name="job_grp_cd" id="job_grp_cd" required>
+				<option value="">직무를 선택하세요</option>
+				{{range .RecruitMainJobGrpList}}
+				<option value="{{.RJobGrpCd}}">{{.RJobGrpNm}}</option>
+				{{end}}
+			</select>
+			<div class="dateArea">
+				<div class="section">
+					<input type="text" name="sday" id="sday" class="it datePicker" readonly placeholder="등록일 선택">
+					<a href="javascript:void(0);" class="btnClear" id="sday_clear"><img src="/static/images/ic-close-callout.png" alt="삭제"></a>
+				</div>
+				<span class="dash">-</span>
+				<div class="section">
+					<input type="text" name="eday" id="eday" class="it datePicker" readonly placeholder="등록일 선택">
+					<a href="javascript:void(0);" class="btnClear" id="eday_clear"><img src="/static/images/ic-close-callout.png" alt="삭제"></a>
+				</div>
+			</div>
+			<div class="search">
+				<input type="text" name="keyword" id="keyword" maxlength="30" class="it" placeholder="공고 제목을 입력해주세요.">
+				<a href="javascript:void(0);" id="btn_search" class="btn type_blue st02">검색</a>
+			</div>
+		</div>
+		<div class="recruitList">
+			<div class="tit">
+				<p class="total">
+					총 <strong><span id="tcnt">{{.STotCnt}}</span></strong>개
+					{{if eq "01" .SAuthCd}}
+					<a href="javascript:void(0);" class="btn type_red" id="pop_recrut_del">삭제</a>
+					{{else}}
+					<a href="javascript:void(0);" class="btn type_red" onclick="$('body, html').animate({scrollTop:0}, 1); openPopup('pop02')">삭제</a>
+					{{end}}
+				</p>
+				<ul class="sortList">
+					<li class="active"><a href="javascript:void(0);" id="orderby_03">최신 순</a></li>
+					<li><a href="javascript:void(0);" id="orderby_01">등록일 순</a></li>
+					<li><a href="javascript:void(0);" id="orderby_02">마감임박 순</a></li>
+				</ul>
+			</div>
+			<ul class="list">
+				<!--
+					<li> 일반
+					<li class="check"> 선택
+					<li class="error"> 채용대기
+				-->
+				{{if .RecruitSubList}}
+					{{range .RecruitSubList}}
+					{{if eq "WAIT" .SPrgsStat}}
+					<li class="error">
+					{{else}}
+					<li>
+					{{end}}
+						<a href="/recruit/post/detail?recrut_sn={{.SRecrutSn}}">
+						{{if eq "WAIT" .SPrgsStat}}
+						<span class="errorMessage"><i class="fa fa-exclamation-circle"></i>게시가 대기중입니다. 아직 공고 시작일자가 아닙니다.</span>
+						{{end}}
+						<span class="input"><input type="checkbox" name="check_recruit" data-recrut_sn="{{.SRecrutSn}}" data-progs_stat_str="{{.SPrgsStat}}" id="chk_{{.SRecrutSn}}" class="custom check_recruit"><label for="chk_{{.SRecrutSn}}">선택</label></span>
+						<span class="textList">
+							<span class="textTop">
+							{{if eq "WAIT" .SPrgsStat}}
+							<em class="state wait">채용대기</em>
+							{{end}}
+							{{if eq "ING" .SPrgsStat}}
+							<em class="state ing">채용중</em>
+							{{end}}
+							{{if or (eq "PED" .SPrgsStat) (eq "END" .SPrgsStat)}}
+							<em class="state end">마감</em>
+							{{end}}
+							{{.SUpJobGrp}} &gt; {{.SJobGrp}}
+							</span>
+							<span class="title">{{.SRecrutTitle}}</span>
+							<span class="date01"><em class="tit">접수기간</em> {{.SRecrutDy}} {{if ne "" .SRecrutEdt}} ({{.SRecrutEdt}} 마감) {{end}}</span>	<!-- LDK 2020/11/24 : 마감 처리 -->
+							<span class="date02"><em class="tit">등록일시</em> {{.SRegDt}} <em class="user">{{.SPpChrgBpNm}} {{.SPpChrgNm}}</em></span>
+						</span>
+						<span class="recruitCount">
+							<span class="total">
+								<em class="txt">총 지원자 수</em>
+								<em class="count">{{.SApplyCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">대기</em>
+								<em class="count">{{.SIngCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">합격</em>
+								<em class="count">{{.SPassCnt}}</em>
+							</span>
+							<span class="data">
+								<em class="txt">불합격</em>
+								<em class="count">{{.SFailCnt}}</em>
+							</span>
+						</span>
+					</a></li>
+					{{end}}
+				{{else}}
+				<li class="noData">공고 내역이 없습니다.</li>
+				{{end}}
+			</ul>
+		</div>
+		<div class="paging">
+			{{str2html .Pagination}}
+		</div>
+	</div>
+
+	<!--//삭제팝업-->
+	<div class="popupWrap" id="pop_delete">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="tit">정말 삭제하시겠어요?</p>
+				<p class="text">채용 공고 삭제 후에는 지원자 정보를 포함한<br>모든 내용이 삭제되며, 다시 확인하실 수 없습니다.</p>
+			</div>
+			<div class="btnSet">
+				<a href="#" class="btn" onclick="closePopup()">취소</a>
+				<a href="#" class="btn type_red" id="btn_delete">삭제하기</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>
+	<!--//계정삭제팝업-->
+	<div class="popupWrap" id="pop02">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text">Member 계정은 채용 공고 삭제가 불가능합니다.<br>Admin 권한 계정에게 문의해주세요.</p>
+			</div>
+			<div class="btnSet">
+				<a href="#" class="btn oneBtn" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>
+	<!-- 알림 공통 팝업 -->
+	<div class="popupWrap" id="pop_common_alert">
+		<div class="popLayer">
+			<div class="popCont">
+				<p class="text" id="alert_text"></p>
+			</div>
+			<div class="btnSet">
+				<a href="#" class="btn btn_full" onclick="closePopup()">확인</a>
+			</div>
+		</div>
+		<span class="cover"></span>
+	</div>	
+	<!-- 알림 공통 팝업 -->		
+
+	<!--
+	<div class="popupWrap" id="pop_delete_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">진행중인 공고는 삭제하실 수 없습니다. 제외하고 진행하시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_delete_check_confirm">계속하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+	</div>
+	-->
+
+    <script type="text/javascript">
+		$(document).ready(function() {
+			$('input.custom').customInput();
+		});
+		
+		// 채용공고 삭제팝업
+		$(document).off("click", "#pop_recrut_del").on("click", "#pop_recrut_del", function(e) {
+			$('body, html').animate({scrollTop:0}, 1);
+			if ($("input:checkbox[name='check_recruit']:checked").length == 0) {
+				$("#alert_text").text("삭제할 채용공고를 선택해주세요.");
+				openPopup("pop_common_alert");
+				return;
+			}			
+
+			//openPopup("pop_delete");
+
+			// LDK 2020/11/24 : 삭제 처리 -->                
+			var invalid_cnt = 0;
+            var valid_cnt = 0;
+            $("input:checkbox[name='check_recruit']").each(function (i) {
+               if ($(this).prop("checked")) {
+					recrut_sn = $(this).data("recrut_sn");
+                    progs_stat_str = $(this).data("progs_stat_str");
+					
+					if (progs_stat_str == "WAIT" || progs_stat_str == "END" || progs_stat_str == "PED") {
+                        valid_cnt++;
+                    } else {
+                        invalid_cnt++;                    
+                    }
+                        
+                    console.log(`[delete_confirm][check] recrut_sn: ${recrut_sn}, progs_stat_str:${progs_stat_str}`);                        
+			   }
+			});
+
+			console.log(`[delete_confirm][check] invalid_cnt: ${invalid_cnt}, valid_cnt:${valid_cnt}`);                        
+
+			if (valid_cnt > 0) {
+                if (invalid_cnt > 0) {
+                    //openPopup("pop_delete_check");
+					//진행중인 공고가 포함되어 있습니다. 진행 중인 공고는 삭제하실 수 없습니다. 공고를 마감하신 후 삭제해주세요.
+					$("#alert_text").text("진행중인 공고가 포함되어 있습니다. 진행 중인 공고는 삭제하실 수 없습니다. 공고를 마감하신 후 삭제해주세요.");
+					openPopup("pop_common_alert");
+                } else {
+                    openPopup('pop_delete');    
+                }                
+            } else {
+				if (invalid_cnt > 0) {
+					$("#alert_text").text("진행 중인 공고는 삭제하실 수 없습니다. 공고를 마감하신 후 삭제해주세요.");
+					openPopup("pop_common_alert");
+				} else {
+					$("#alert_text").text("삭제하실 채용 공고를 선택해주세요.");
+					openPopup("pop_common_alert");                    
+				}
+            }
+			// <--
+			
+		});
+		
+		// LDK 2020-11-24 : 삭제 처리 -->                
+        // $(document).off("click", "#pop_delete_check_confirm").on("click", "#pop_delete_check_confirm", function (e) {
+        //     // $('body, html').animate({scrollTop: 0}, 1);
+        //     // if ("{{.SAuthCd}}" == "01") {
+        //     closePopup();
+        //     openPopup('pop_delete');    
+        //     //}
+        // });
+		// <--
+
+		// 채용공고(팝업) 삭제
+		$(document).off("click", "#btn_delete").on("click", "#btn_delete", function(e) {
+			var arr_recrut = [];
+			$("input:checkbox[name='check_recruit']").each(function(i) {
+				//console.log($(this).prop("checked"));
+				if($(this).prop("checked")){
+					arr_recrut.push($(this).data("recrut_sn"));
+					
+					// LDK 2020-11-24 : 삭제 처리 -->     
+					// recrut_sn = $(this).data("recrut_sn");
+                    // progs_stat_str = $(this).data("progs_stat_str");   
+
+					// if (progs_stat_str == "WAIT" || progs_stat_str == "END"|| progs_stat_str == "PED") {                    
+					// 	arr_recrut.push(recrut_sn);
+					// 	console.log(`[pass_confirm][check] recrut_sn: ${recrut_sn}, progs_stat_str:${progs_stat_str}`); 
+                    // }			
+					// <--
+				}
+			});
+
+			$("#arr_recrut").val(arr_recrut);
+			//console.log("arr_recrut : "+arr_recrut);
+			ajaxRecrutDel();			
+		});
+		
+		// 삭제 처리
+		var ajaxRecrutDel = function() {
+			var arr_recrut = $("#arr_recrut").val();
+			/*
+			console.log("arr_recrut : "+arr_recrut);
+			return;
+			*/
+			$.ajax({
+				cache : false,
+				url : '/recruit/delete',
+				data:{
+					arr_recrut_sn : arr_recrut,
+				},
+				type : 'POST',
+				dataType : "json",
+				error : function(e) {
+					console.log("error" + e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+
+					if(rtnCd == "1"){
+						closePopup("pop_delete");
+						ajaxRecruitList();
+						ajaxMainRecruitList();
+					} else {
+						console.log("message : " + rtnMsg);
+					}
+				},
+				error : function(e) {
+					console.log("error + "+e);
+				}
+			});	  
+		}		
+
+		// 상단 공고 리스트 페이지 AJAX
+		var ajaxMainRecruitList = function(v) {
+
+			$.ajax({
+					type: "POST",
+					url: "/recruit/main/list",
+					data:{
+						temp_val : '', 
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnRecruitPostListData.length > 0){
+							$(".recruitTop").find("ul").children().remove();
+							$.each(rep.RtnRecruitPostListData,function(e) {
+								var html = "";
+								html += "<li><a href=\"javascript:void(0);\" id=\"go_detail\" data-recrut_sn=\""+rep.RtnRecruitPostListData[e].RecrutSn+"\">";
+								html += "	<span class=\"category\">"+rep.RtnRecruitPostListData[e].UpJobGrp+" &gt; "+rep.RtnRecruitPostListData[e].JobGrp+"</span>";
+								html += "	<span class=\"tit\">"+rep.RtnRecruitPostListData[e].RecrutTitle+"</span>";
+								html += "	<span class=\"date\">접수기간 "+rep.RtnRecruitPostListData[e].RecrutDy+"</span>";
+								html += "	<span class=\"recruitCount\">";
+								html += "		<span class=\"total\">";
+								html += "			<em class=\"txt\">총 지원자 수</em>";
+								html += "			<em class=\"count\">"+rep.RtnRecruitPostListData[e].ApplyCnt+"</em>";
+								html += "		</span>";
+								html += "		<span class=\"data\">";
+								html += "			<em class=\"txt\">대기</em>";
+								html += "			<em class=\"count\">"+rep.RtnRecruitPostListData[e].IngCnt+"</em>";
+								html += "		</span>";
+								html += "		<span class=\"data\">";
+								html += "			<em class=\"txt\">합격</em>";
+								html += "			<em class=\"count\">"+rep.RtnRecruitPostListData[e].PassCnt+"</em>";
+								html += "		</span>";
+								html += "		<span class=\"data\">";
+								html += "			<em class=\"txt\">불합격</em>";
+								html += "			<em class=\"count\">"+rep.RtnRecruitPostListData[e].FailCnt+"</em>";
+								html += "		</span>";
+								html += "	</span>";
+								html += "</a></li>";							
+								$(".recruitTop").find("ul").append(html);
+							})
+							$("#main_tot_cnt").text(rep.RtnRecruitPostListData[0].TotCnt);
+					}else{
+							$(".recruitTop").find("ul").children().remove();
+							var html = "";
+							html += "<li class=\"noData\">";
+							html += "	<p>채용 중인 공고가 없습니다.<br>직감을 통해 직감적인<br>인재를 찾아보세요!</p>";
+							html += "	<a href=\"/recruit/write\"><span>채용공고 등록</span></a>";
+							html += "</li>";
+							$(".recruitTop").find("ul").append(html);
+							$("#main_tot_cnt").text(0);
+					}
+				}
+			});				
+		}     
+
+		// 상단공고 상세이동
+		$(document).off("click", "#go_detail").on("click", "#go_detail", function(e) {
+			var r_sn = $(this).data("recrut_sn");
+			/*
+			var keyword = $("#keyword").val();
+			var empl_typ = $("#empl_typ_cd").val();
+			var job_grp_cd = $("#job_grp_cd").val();
+			var sort_gbn = $("#sort_gbn").val();
+			var gbn_cd = $("#gbn_cd").val();
+			var page_no = $("#page_no").val();
+			var param = "entp_mem_no="+e_mem_no+"&recrut_sn="+r_sn+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+			*/
+			var param = "recrut_sn="+r_sn;
+
+			window.location.href="/recruit/post/detail?"+param;
+		});		
+
+		// 정렬순서(최신순)
+		$(document).off("click", "#orderby_03").on("click", "#orderby_03", function(e) {
+			$("#orderby_01").parent().removeClass("active");
+			$("#orderby_02").parent().removeClass("active");
+			$(this).parent().addClass("active");
+			$("#sort_gbn").val("03");
+			ajaxRecruitList();
+		});
+		
+		// 정렬순서(등록일순)
+		$(document).off("click", "#orderby_01").on("click", "#orderby_01", function(e) {
+			$("#orderby_02").parent().removeClass("active");
+			$("#orderby_03").parent().removeClass("active");
+			$(this).parent().addClass("active");
+			$("#sort_gbn").val("01");
+			ajaxRecruitList();
+		});
+
+		// 정렬순서(마감임박순)
+		$(document).off("click", "#orderby_02").on("click", "#orderby_02", function(e) {
+			$("#orderby_01").parent().removeClass("active");
+			$("#orderby_03").parent().removeClass("active");
+			$(this).parent().addClass("active");
+			$("#sort_gbn").val("02");
+			ajaxRecruitList();
+		});
+		
+		// 시작일자 선택
+		$(document).off("change", "#sday").on("change", "#sday", function(e) {
+			if ($("#sday").val().length > 0) {
+				ajaxRecruitList();
+			}
+		});
+
+		// 종료일자 선택
+		$(document).off("change", "#eday").on("change", "#eday", function(e) {
+			if ($("#eday").val().length > 0) {
+				ajaxRecruitList();
+			}
+		});
+
+		// 시작일자 지우기
+		$(document).off("click", "#sday_clear").on("click", "#sday_clear", function(e) {
+			if ($("#sday").val().length > 0) {
+				$("#sday").val("");
+				ajaxRecruitList();
+			}
+		});
+
+		// 종료일자 지우기
+		$(document).off("click", "#eday_clear").on("click", "#eday_clear", function(e) {
+			if ($("#eday").val().length > 0) {
+				$("#eday").val("");
+				ajaxRecruitList();
+			}
+		});
+
+		// 직무 선택
+		$(document).off("change", "#job_grp_cd").on("change", "#job_grp_cd", function(e) {
+			ajaxRecruitList();
+		});
+
+		// 공고명검색(Enter Key)
+		$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+			if (event.keyCode == 13) {
+				ajaxRecruitList();
+			}
+		});
+
+		// 공고명검색 (클릭)
+		$(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+			ajaxRecruitList();
+		});    		
+
+		// 채용공고 체크처리
+		$(document).off("click", ".check_recruit").on("click", ".check_recruit", function(e) {
+			if($(this).is(":checked") == true){ // 표시
+				$(this).parent().parent().parent().parent().addClass("check");
+				//var recrut_sn = $(this).data("recrut_sn");
+				//console.log("recrut_sn : "+recrut_sn);
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("check");
+				//console.log("recrut_sn : N");
+			}
+		});  
+
+		// LDK 2020/11/12 : 채용 공고 리스트 페이지 처리 오류(invite_send_list.html,applicant_list.html 참고) -->
+		// 페이징처리
+		// $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+		// 	var pn = $(this).data("page");
+		// 	paging(pn);
+		// });
+		// $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+		// 	var pn = $(this).data("page");
+		// 	paging(pn);
+		// });
+		// $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+		// 	var pn = $(this).data("page");
+		// 	paging(pn);
+		// });			
+		$(document).off("click", ".prev.goPage").on("click", ".prev.goPage", function (e) {
+			var pn = $(this).data("page");
+			paging(pn);
+		});
+
+		$(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+			var pn = $(this).data("page");
+			paging(pn);
+		});
+
+		$(document).off("click", ".next.goPage").on("click", ".next.goPage", function (e) {
+			var pn = $(this).data("page");
+			paging(pn);
+		});
+		// <--
+		
+		var paging = function(pageno) {
+			//console.log("pageno : "+pageno);
+			$("#page_no").val(pageno);
+			ajaxRecruitList();
+		}	
+
+		// 리스트 페이지 AJAX
+		var ajaxRecruitList = function(v) {
+			var keyword = $("#keyword").val();
+			var job_grp_cd = $("#job_grp_cd").val();
+			var sort_gbn = $("#sort_gbn").val();
+			var gbn_cd = $("#gbn_cd").val();
+			var page_no = $("#page_no").val();
+			var sday = $("#sday").val().replace(/\-/g,'');
+			var eday = $("#eday").val().replace(/\-/g,'');
+
+			$.ajax({
+					type: "POST",
+					url: "/recruit/post/list",
+					data:{
+						keyword : keyword,
+						job_grp_cd : job_grp_cd,
+						sort_gbn : sort_gbn,
+						gbn_cd : gbn_cd,
+						pn : page_no,
+						sday : sday,
+						eday : eday,
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnRecruitSubListData.length > 0){
+							$(".recruitList .list").children().remove();
+							$.each(rep.RtnRecruitSubListData,function(e) {
+								var html = "";
+								if (rep.RtnRecruitSubListData[e].SPrgsStat == "WAIT") {
+									html += "<li class=\"error\">";
+								} else {
+									html += "<li>";
+								}
+								html += "<a href=\"/recruit/post/detail?recrut_sn="+rep.RtnRecruitSubListData[e].SRecrutSn+"\">";
+								if (rep.RtnRecruitSubListData[e].SPrgsStat == "WAIT") {
+									html += "<span class=\"errorMessage\"><i class=\"fa fa-exclamation-circle\"></i>게시가 대기중입니다. 아직 공고 시작일자가 아닙니다.</span>";
+								}								
+
+								html += "<span class=\"input\"><input type=\"checkbox\" name=\"check_recruit\" data-recrut_sn=\""+rep.RtnRecruitSubListData[e].SRecrutSn+"\" data-progs_stat_str=\"" + rep.RtnRecruitSubListData[e].SPrgsStat + "\" id=\"chk_"+rep.RtnRecruitSubListData[e].SRecrutSn+"\" class=\"custom check_recruit\"><label for=\"chk_"+rep.RtnRecruitSubListData[e].SRecrutSn+"\">선택</label></span>"; // LDK 2020/11/24 : 삭제 처리 <-->
+								html += "<span class=\"textList\">";
+								html += "<span class=\"textTop\">";
+								if (rep.RtnRecruitSubListData[e].SPrgsStat == "WAIT") {
+									html += "<em class=\"state wait\">채용대기</em>";
+								} else if (rep.RtnRecruitSubListData[e].SPrgsStat == "ING") {
+									html += "<em class=\"state ing\">채용중</em>";
+								} else { //END(종료,기간마감 통합)
+									html += "<em class=\"state end\">마감</em>";
+								}
+								html += " "+rep.RtnRecruitSubListData[e].SUpJobGrp+" &gt; "+rep.RtnRecruitSubListData[e].SJobGrp+"";
+								html += "</span>";
+								html += "<span class=\"title\">"+rep.RtnRecruitSubListData[e].SRecrutTitle+"</span>";
+								html += "<span class=\"date01\"><em class=\"tit\">접수기간</em> "+rep.RtnRecruitSubListData[e].SRecrutDy;
+								if (rep.RtnRecruitSubListData[e].SRecrutEdt != "")	// LDK 2020/11/24 : 마감 처리 <-->
+									html += " (" +rep.RtnRecruitSubListData[e].SRecrutEdt + " 마감)" + "</span>";
+								else 	
+									html += "</span>";
+								html += "<span class=\"date02\"><em class=\"tit\">등록일시</em> "+rep.RtnRecruitSubListData[e].SRegDt+" <em class=\"user\">"+rep.RtnRecruitSubListData[e].SPpChrgBpNm+" "+rep.RtnRecruitSubListData[e].SPpChrgNm+"</em></span>";
+								html += "</span>";
+								html += "<span class=\"recruitCount\">";
+								html += "<span class=\"total\">";
+								html += "<em class=\"txt\">총 지원자 수</em>";
+								html += "<em class=\"count\">"+rep.RtnRecruitSubListData[e].SApplyCnt+"</em>";
+								html += "</span>";
+								html += "<span class=\"data\">";
+								html += "<em class=\"txt\">대기</em>";
+								html += "<em class=\"count\">"+rep.RtnRecruitSubListData[e].SIngCnt+"</em>";
+								html += "</span>";
+								html += "<span class=\"data\">";
+								html += "<em class=\"txt\">합격</em>";
+								html += "<em class=\"count\">"+rep.RtnRecruitSubListData[e].SPassCnt+"</em>";
+								html += "</span>";
+								html += "<span class=\"data\">";
+								html += "<em class=\"txt\">불합격</em>";
+								html += "<em class=\"count\">"+rep.RtnRecruitSubListData[e].SFailCnt+"</em>";
+								html += "</span>";
+								html += "</span>";
+								html += "</a></li>";
+								$(".recruitList .list").append(html);
+							})
+							$(".paging").children().remove();
+							$(".paging").append(rep.RtnRecruitSubListData[0].Pagination);
+							$("#tcnt").text(rep.RtnRecruitSubListData[0].STotCnt);
+							$('input.custom').customInput();
+					}else{
+							$(".recruitList .list").children().remove();
+							var html = "";
+							html += "<li class=\"noData\">공고 내역이 없습니다.</li>";
+							$(".recruitList .list").append(html);
+							$(".paging").children().remove();
+							$("#tcnt").text(0);
+							$("#page_no").val("1");
+					}
+				}
+			});				
+		}     
+
+		$(function(){
+			$('#sday').datetimepicker({
+			format:'Y-m-d',
+			onShow:function( ct ){
+				this.setOptions({
+					maxDate:$('#eday').val()?$('#eday').val():false
+				})
+			},
+			timepicker:false,
+			scrollMonth : false,
+			scrollInput : false,
+		});
+		$('#eday').datetimepicker({
+			format:'Y-m-d',
+			onShow:function( ct ){
+				this.setOptions({
+					minDate:$('#sday').val()?$('#sday').val():false
+				})
+			},
+			timepicker:false,
+			scrollMonth : false,
+			scrollInput : false,
+			});
+		});     		
+
+	</script>
+{{end}} 

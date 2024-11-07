@@ -1,0 +1,1091 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- Header start -->
+    {{template "include/header.html" .}}
+    <!-- Header end -->
+    <div class="content">
+        <form id="uptForm" name="uptForm" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="sms_recv_yn" value="{{.SmsRecvYn}}">
+            <input type="hidden" id="email_recv_yn" value="{{.EmailRecvYn}}">
+            <input type="hidden" name="biz_reg_yn" id="biz_reg_yn" value="N">
+            <input type="hidden" name="img_yn" id="img_yn" value="N">
+{{/*            <input type="hidden" name="info_eq_yn" id="info_eq_yn" value="{{.InfoEqYn}}">*/}}
+            <input type="hidden" id="ori_biz_file" value="{{.OriBizFile}}">
+            <input type="hidden" id="ori_logo_file" value="{{.OriLogoFile}}">
+
+            <input type="hidden" id="entp_mem_no" value="{{.EntpMemNo}}">
+
+            <input type="hidden" id="img_result">
+            <div class="business">
+                <div class="businessMessage ing" style="display:none">
+                    <p>요청하신 기업 정보 수정 사항을 검토중입니다.</p>
+                    <p>최대 3일까지 소요 될 수 있으니 조금만 기다려주세요.</p>
+                    <p>검토가 완료되면 알림을 통해 알려드릴게요!</p>
+                </div>
+                <div class="businessMessage error" style="display:none">
+                    <dl>
+                        <dt>기업 정보 수정 요청이 승인되지 않았습니다.</dt>
+                        <dd>안녕하세요. 직감 고객센터입니다.<br>
+                            수정 요청하신 내용이 가이드 라인과 일치하지 않아 업데이트가 되지 않았습니다.<br>
+                            아래 가이드 라인을 참고 부탁드리며, 추가 문의 사항은 ‘문의하기’를 이용해주세요.
+                        </dd>
+                        <dd class="btn">
+                            <a href="#" class="btn guideBtn">가이드 라인 보기</a>
+                            <a href="#" class="btn type_blue" onclick="$('.businessMessage.error').hide()">확인</a>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="businessMessage complete" style="display:none">
+                    <dl>
+                        <dt>기업 정보 수정 요청이 승인되었습니다.</dt>
+                        <dd>안녕하세요. 직감 고객센터입니다.<br>
+                            수정하신 내용이 승인되어 기업 정보 업데이트가 완료되었습니다.
+                        </dd>
+                        <dd class="btn">
+                            <a href="#" class="btn type_blue" onclick="$('.businessMessage.complete').hide()">확인</a>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="infoBox">
+                    <div class="businessImg">
+                        <!-- 이미지 등록이되지않은경우엔 이미지만 삭제시 default 이미지 노출됩니다. -->
+                        {{if .LogoPtoPath}}
+                            <span class="img">
+						<a href="javascript:void(0);" onclick="openPopup('pop01')">
+						<img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/img-profile-company.png'"
+                             class="entp_logo_loaded" width="140" height="140" alt="">
+						</a>
+					</span>
+                            <span class="imgUpload clear_btn"><a href="javascript:void(0);"
+                                                                                    id="logo_del" class="imgDelete"><img
+                                            src="/static/images/ic-delete-small-white.png" alt=""></a></span>
+                        {{else}}
+                            <!-- 이미지 등록되지 않은경우-->
+                            <span class="img"><img src="/static/images/img-profile-company.png" class="entp_logo_loaded"
+                                                   width="140" height="140" alt=""></span>
+                            <span class="imgUpload"><a href="javascript:void(0);" onclick="openPopup('pop01')"><img
+                                            src="/static/images/ic-camera-small-white.png" alt=""></a></span>
+                        {{end}}
+                    </div>
+                    <dl class="businessInfo">
+                        <dt>{{.EntpKoNm}}</dt>
+                        <dd>{{.BizRegNo}}(사업자등록번호)</dd>
+                    </dl>
+                    <div class="fileUpload">
+                        <div class="uploadFile">
+						<span>
+							<i class="fa fa-paperclip fa-flip-horizontal fa-flip-vertical"></i> <em id="reg_file_nm"><a
+                                        href="{{.BizRegFilePath}}" target="_blank"
+                                        download="사업자등록증">{{.EntpKoNm}}_{{.BizRegNo}}_사업자등록증</a></em>
+						</span>
+                            <a href="javascript:void(0);" id="regno_del" class="btn_del">삭제</a>
+                        </div>
+                        <div class="btnSet">
+                            <a href="javascript:void(0);" id="regno_upload" class="btn type_blue st02 biz_reg"><em
+                                        class="ic_plus_white">+</em> 사업자등록증 추가</a>
+                            <input type="file" name="entp_regno" id="entp_regno"
+                                   accept="image/gif, image/jpeg, image/png, application/pdf" class="visual_img"
+                                   style="display:none">
+                        </div>
+                        <br>
+                        <dd class="validationAlert regno_upload_message"></dd>
+                    </div>
+                </div>
+                <div class="fieldList first">
+                    <h3>대표자 정보</h3>
+{{/*                    <input type="checkbox" class="custom" name="info_eq_yn" id="info_eq_yn" {{ if eq "1" .InfoEqYn}} checked{{end}}><label for="info_eq_yn">관리자 정보도 동일</label>*/}}
+                    <p class="require"><span>*</span> 필수 입력 항목</p>
+                    <dl>
+                        <dt>대표자명<span>*</span></dt>
+                        <dd><input type="text" name="rep_nm" id="rep_nm" maxlength="20" class="it" value="{{.RepNm}}"
+                                   placeholder="대표 이름을 입력해주세요."></dd>
+                        <dd class="validationAlert rep_nm_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>대표 번호<span>*</span></dt>
+                        <dd><input type="text" name="tel_no" id="tel_no" maxlength="15" class="it" value="{{.TelNo}}"
+                                   placeholder="대표 내선번호 혹은 휴대폰 번호를 입력해주세요."></dd>
+                        <dd class="agree"><input type="checkbox" class="custom" name="sms_recv" id="sms_recv"
+                                                 {{if eq "1" .SmsRecvYn}}checked{{end}}><label for="sms_recv">수신
+                                동의</label></dd>
+                        <dd class="validationAlert tel_no_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>대표 이메일<span>*</span></dt>
+                        <dd><input type="text" name="email" id="email" maxlength="50" class="it" value="{{.Email}}"
+                                   placeholder="대표 이메일을 입력해주세요."></dd>
+                        <dd class="agree"><input type="checkbox" class="custom" name="email_recv" id="email_recv"
+                                                 {{if eq "1" .EmailRecvYn}}checked{{end}}><label for="email_recv">수신
+                                동의</label></dd>
+                        <dd class="validationAlert email_message"></dd>
+                    </dl>
+                </div>
+                <div class="fieldList">
+                    <h3>기업 추가 정보</h3>
+                    <p class="require"><span>*</span> 필수 입력 항목</p>
+                    <div>
+                        <dl>
+                            <dt>회사주소<span>*</span></dt>
+                            <input type="hidden" name="zip" id="zip" value="{{.Zip}}" readonly>
+                            <dd class="address">
+                                <input type="text" name="addr" id="addr" class="it address" value="{{.Addr}}" readonly
+                                       placeholder="오른쪽 주소 검색버튼을 눌러 주소를 선택해주세요.">
+                                <a href="javascript:void(0);" id="addr_search" onclick="Postcode()"
+                                   class="btn type_blue st02">주소 검색</a>
+                            </dd>
+                            <dd><input type="text" name="dtl_addr" maxlength="100" id="dtl_addr" class="it"
+                                       value="{{.DtlAddr}}" placeholder="나머지 주소를 입력해주세요."></dd>
+                            <dd><input type="text" name="ref_addr" id="ref_addr" class="it" readonly
+                                       value="{{.RefAddr}}" placeholder="자동으로 입력됩니다."></dd>
+                            <dd class="validationAlert dtl_addr_message zip_message"></dd>
+                        </dl>
+                        <dl class="tForm">
+                            <dt>업종 ･ 업태<span>*</span></dt>
+                            <table>
+                                <colgroup>
+                                    <col width="380px">
+                                    <col>
+                                </colgroup>
+                                <tr>                    
+                                    <td class="selectForm">
+                                        <select name="biz_tpy_cd" id="biz_tpy_cd" required>
+                                            <option value="" disabled selected>업종을 선택해주세요.</option>                                                                                
+                                            {{range $key, $value := .MapBizTpyCd}}
+                                                {{if ne $key "00"}}
+                                                    <option value="{{$key}}">{{$value}}</option>
+                                                {{end}} 
+                                            {{end}}                                 
+                                        </select>                                                          
+                                    </td>
+                                    <th>
+                                        <input type="text" name="biz_cond" id="biz_cond" maxlength="30" class="it half" 
+                                               value="{{.BizCond}}" placeholder="업태">        
+                                    </th>
+                                </tr>
+                            </table>                         
+                            <!--
+                            <dd class="multi">
+                                <input type="text" name="biz_tpy" id="biz_tpy" maxlength="30" class="it half"
+                                       value="{{.BizTpy}}" placeholder="업종">
+                                <input type="text" name="biz_cond" id="biz_cond" maxlength="30" class="it half"
+                                       value="{{.BizCond}}" placeholder="업태">
+                            </dd>
+                            <dd class="validationAlert biz_tpy_message biz_cond_message"></dd>
+                            -->
+                        </dl>
+                    </div>
+                    <dl>
+                        <dt>기업 슬로건<span>*</span></dt>
+                        <dd>
+                            <ul class="textGuide">
+                                <li>직감 App 메인에서 기업을 소개하는 대표 문구입니다.</li>
+                                <li>회사의 사명이나 슬로건, 혹은 간략한 소개글을 입력해주세요</li>
+                            </ul>
+                        </dd>
+                        <dd class="count">
+                            <input type="text" name="entp_intr" id="entp_intr" maxlength="30" class="it"
+                                   value="{{.EntpIntr}}" placeholder="최대 30자까지 입력 가능합니다.">
+                            <span class="text"><span><em id="areaEntpIntr">30</em>/30</span></span>
+                        </dd>
+                        <dd class="validationAlert entp_intr_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>기업 태그</dt>
+                        <dd>
+                            <ul class="textGuide">
+                                <li>기업을 잘 나타내는 단어 혹은 관련된 키워드,장점 등을 3가지 입력해주세요.</li>
+                                <li>ex) 스타트업, 인공지능, 연봉업계평균이상</li>
+                            </ul>
+                        </dd>
+                        <dd class="multi">
+                            <input type="text" name="entp_htag1" id="entp_htag1" maxlength="10" class="it third"
+                                   value="{{.EntpHtag1}}" placeholder="최대 10자">
+                            <input type="text" name="entp_htag2" id="entp_htag2" maxlength="10" class="it third"
+                                   value="{{.EntpHtag2}}" placeholder="최대 10자">
+                            <input type="text" name="entp_htag3" id="entp_htag3" maxlength="10" class="it third"
+                                   value="{{.EntpHtag3}}" placeholder="최대 10자">
+                        </dd>
+                        <dd class="validationAlert entp_htag1_message entp_htag2_message entp_htag3_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>홈페이지 주소</dt>
+                        <dd><input type="text" name="home_pg" id="home_pg" maxlength="100" class="it"
+                                   value="{{.HomePg}}" placeholder="http:// 혹은 https://를 포함하여 입력해주세요."></dd>
+                        <dd class="validationAlert home_pg_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>임직원 수</dt>
+                        <dd>
+                            <input type="text" name="emp_cnt" id="emp_cnt" maxlength="6" class="it half" numberOnly
+                                   value="{{.EmpCnt}}" placeholder="숫자만 입력">
+                            <span class="text">명</span>
+                        </dd>
+                        <dd class="validationAlert emp_cnt_message"></dd>
+                    </dl>
+                    <dl>
+                        <dt>설립일</dt>
+                        <dd>
+                            <input type="text" name="est_dy" id="est_dy" maxlength="8" class="it half" numberOnly
+                                   value="{{.EstDy}}" placeholder="yyyymmdd">
+                        <dd class="validationAlert est_dy_message"></dd>
+                        </dd>
+                    </dl>
+                    <!-- LDK 2020/08/24: 기업 정보 코드화 -->
+                    <dl class="tForm countWrap">                        
+                        <table>                            
+                            <tr>
+                                <dt>회사소개</dt><dt></dt>                                
+                                <td>
+                                    <!-- <div class="countWrap"> -->
+                                    <textarea name="entp_profile" id="entp_profile" cols="30" rows="10" maxlength="1000"
+                                              class="textarea st02"
+                                              placeholder="간략한 회사 소개를 입력해주세요.">{{str2html .EntpProfile}}</textarea>
+                                    <span class="count"><strong><em id="byteEntpProfile">1000</em></strong>/1000자</span>
+                                    <!-- </div> -->                                        
+                                </td>                            
+                            </tr>                                
+                        </table>
+                        <br>
+                        <table>
+                        <tr>                                
+                            <dt>사업 소개</dt><dt></dt>
+                            <td>
+                                <textarea name="biz_intro" id="biz_intro" cols="30" rows="10" maxlength="1000"
+                                          class="textarea st02"
+                                          placeholder="간략한 사업 소개를 입력해주세요.">{{str2html .BizIntro}}</textarea>
+                                <span class="count"><strong><em id="byteBizIntro">1000</em></strong>/1000자</span>                                    
+                            </td>                            
+                        </tr>
+                        </table>     
+                    </dl>
+                    <dl>
+                        <dt>자본금(단위:백만원)</dt>
+                        <dd>                            
+                            <input type="text" name="entp_capital" id="entp_capital" maxlength="10" class="it half" value={{.EntpCapital}}>                     
+                            <span class="text"><span><em id="byteEntpCapital">10</em>/10</span></span>
+                        </dd>                       
+                    </dl>
+                    <dl>
+                        <dt>매출액(단위:백만원)</dt>
+                        <dd>                            
+                            <input type="text" name="entp_total_sales" id="entp_total_sales" maxlength="10" class="it half" value={{.EntpTotalSales}}>                     
+                            <span class="text"><span><em id="byteEntpTotalSales">10</em>/10</span></span>
+                        </dd>                        
+                    </dl>
+                    <dl class="tForm">                             
+                        <dt>기업 형태</dt>
+                        <table>                            
+                            <tr>                    
+                                <td class="selectForm">
+                                    <select name="entp_type_cd" id="entp_type_cd">
+                                        <option value="00" disabled selected>기업 형태 선택해주세요.</option>                                                                                
+                                        <!-- <option value="01"> 대기업 </option> -->
+                                        <!-- <option value="02"> 중견기업 </option> -->
+                                        <!-- <option value="03"> 중소기업 </option> -->
+                                        <!-- <option value="04"> 공사/공기업 </option> -->
+                                        <!-- <option value="05"> 외국계기업 </option> -->
+                                        <!-- <option value="99"> 기타 </option> -->
+                                        {{range $key, $value := .MapEntpTypeCd}}
+                                            {{if ne $key "00"}}
+                                               <option value="{{$key}}">{{$value}}</option>
+                                            {{end}} 
+                                        {{end}}                                       
+                                    </select>                                                          
+                                </td>                                
+                            </tr>
+                        </table>                        
+                    </dl>
+                    <dl>
+                        <dt>소재지</dt>
+                        <dd>
+                            <input type="text" name="location" id="location" class="it half" value={{str2html .Location}}>                     
+                            <span class="text"><span><em id="byteLocation">20</em>/20</span></span>
+                        </dd>                        
+                    </dl>
+                    <dl class="tForm_Jobfair">                             
+                        <dt>등록된 박람회</dt>
+                        <table>                            
+                            <!-- <tr> -->
+                                <td class="selectForm">
+                                    <select class="select" name="jobfair_list" multiple>                                        
+                                        {{range .JobFailrList}}
+                                            <option value="{{.MngCd}}">{{.Title}}</option>
+                                        {{end}}                                    
+                                    </select>                                                          
+                                </td>
+                            <!-- </tr> -->
+                        </table>                        
+                    </dl>
+                    <!-- LDK 2020/08/24: 기업 정보 코드화 -->
+                    <div class="boxInfo" style="display:none">
+                        <dl>
+                            <dt><i class="fa fa-exclamation-circle"></i>직감은 구인과 구직의 안전을 위해 기업 정보 검수를 하고 있어요.</dt>
+                            <dd>변경 사항 검토에는 1일에서 최대 3일까지 소요될 수 있습니다.</dd>
+                            <dd>승인이 완료되면 변경 사항이 즉시 적용됩니다.</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="btnSet">
+                    <!--<a href="#" class="btn type_blue st02" onclick="$('.toastBox').show()">수정 요청</a>-->
+                    <a href="javascript:void(0);" class="btn type_blue st02" id="btn_update">수정</a>
+                    <!-- 비활성 버튼
+                    <a href="#" class="btn type_blue st02 disabled">수정 요청</a>
+                        -->
+                </div>
+            </div>
+		</form>
+    </div>
+    <div class="popupWrap" id="pop01">
+        <div class="popLayer">
+            <div class="popCont business">
+                <p class="tit">기업 CI 등록하기</p>
+                <ul class="message">
+                    <li>직감 App 메인에 사용되는 이미지입니다.</li>
+                    <li>PNG/JPEG 파일만 등록 가능합니다.</li>
+                    <li>1:1 비율의 이미지 사용을 권장합니다.</li>
+                </ul>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" id="logo_upload" class="btn btn_full type_blue st02"><em
+                            class="ic_plus_white">+</em> CI 등록하기</a>
+                <a href="javascript:void(0);" class="st02" onclick="closePopup()"
+                   style="position:absolute; top:5px; right:5px;">
+                    <img src="/static/images/ic-delete-small-white.png" alt="">
+                </a>
+                <input type="file" name="entp_logo" id="entp_logo" accept="image/*" class="visual_img"
+                       style="display:none">
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    </form>
+    <div class="toastBox upt_complete">
+        <p class="message">기업 정보 수정 완료되었습니다.</p>
+        <a href="#" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+    <!-- //로고등록 알림 팝업 -->
+    <div class="popupWrap" id="pop_logo">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit"></p>
+                <p class="text t1"></p>
+                <p class="text t2"></p>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn type_blue st02" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('input.custom').customInput();
+            // Form Validation Check
+            $("#uptForm").validate(validOption);
+
+            $("#entp_intr").keyup();
+
+            $("#entp_profile").keyup();
+            $("#biz_intro").keyup();
+
+            $("#entp_capital").keyup();
+
+            $("#entp_total_sales").keyup();
+
+            $("#location").keyup();
+
+            var img_chk = "{{.LogoPtoPath}}";
+            if (!img_chk) {
+                $("#img_yn").val("N");
+            } else {
+                $("#img_yn").val("M");
+            }
+
+            $('.fileUpload .btnSet .biz_reg').hide()
+            $('.uploadFile').show()
+
+            //$("#reg_area").show();
+            //$("j.fileUpload .btnSet").hide();            
+            
+            // LDK 2020/08/24: 기업 정보 코드화 -->
+            var biz_tpy_cd = "{{.BizTpyCd}}";
+            $("#biz_tpy_cd").val(biz_tpy_cd);
+
+            var entp_type_cd = "{{.EntpTypeCd}}";
+            $("#entp_type_cd").val(entp_type_cd);
+            
+            console.log("BizTpyCd " + "{{.BizTpyCd}}" );
+            console.log("EntpProfile " + "{{.EntpProfile}}" );
+            console.log("BizIntro " + "{{.BizIntro}}" );
+            console.log("EntpCapital " + "{{.EntpCapital}}" );
+            console.log("EntpTotalSales " + "{{.EntpTotalSales}}" );
+            console.log("EntpTypeCd " + "{{.EntpTypeCd}}" );
+            console.log("Location " + "{{.Location}}" );
+            // <--
+        });
+
+        // 사업자 등록증 업로드
+        $(document).off("click", "#regno_upload").on("click", "#regno_upload", function (e) {
+            e.preventDefault();
+            $("#entp_regno").trigger('click');
+        });
+
+        // 사업자 등록증 업로드 취소
+        $(document).off("click", "#regno_del").on("click", "#regno_del", function (e) {
+            $("#biz_reg_yn").val("N");
+            $("#entp_regno").val("");
+            $('.uploadFile').hide();
+            $('.fileUpload .btnSet .biz_reg').show();
+            return false;
+        });
+
+        // 사업자등록증 체크
+        $(document).off("change", "#entp_regno").on("change", "#entp_regno", function (e) {
+            readURL(this);
+        });
+
+        // 사업자 등록증
+        var readURL = function (input) {
+            var ext = $('#entp_regno').val().split('.').pop().toLowerCase();
+            //console.log("ext : "+ext);
+
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg', 'pdf']) == -1) {
+                openPopup("pop_regno");
+                $(".popCont .tit").text("사업자등록증 추가 오류 알림");
+                $(".popCont .text.t1").text("PNG/JPEG/PDF로 된");
+                $(".popCont .text.t2").text("사업자등록증을 업로드해주세요.");
+                $("#entp_regno").val("");
+                $("#biz_reg_yn").val("N");
+                return false;
+            }
+
+            var iSize = 0;
+            var maxSize = 1024 * 1024 * 3; //3Mbyte
+
+            var browser = navigator.appName;
+            if (browser == "Microsoft Internet Explorer") {
+                var objFSO = new ActiveXObject("Scripting.FileSystemObject");
+                var sPath = $("#entp_regno")[0].value;
+                var objFile = objFSO.getFile(sPath);
+                var iSize = objFile.size;
+            } else {
+                iSize = ($("#entp_regno")[0].files[0].size);
+            }
+
+            if (iSize > maxSize) {
+                openPopup("pop_regno");
+                $(".popCont .tit").text("사업자등록증 추가 오류 알림");
+                $(".popCont .text.t1").text("업로드 하려는 사업자등록증이");
+                $(".popCont .text.t2").text("3Mbyte이내로 업로드 해주세요.");
+                $("#entp_regno").val("");
+                $("#biz_reg_yn").val("N");
+                return false;
+            }
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    //$(".entp_logo_loaded").attr('src', e.target.result);
+                    //$(".entp_logo_loaded").css('opacity','1');
+                    //$(".t01").text("");
+                    //$(".t02").text("");
+                }
+                reader.readAsDataURL(input.files[0]);
+
+                var fileValue = $("#entp_regno").val().split("\\");
+                var fileName = fileValue[fileValue.length - 1]; // 파일명
+                var fileExt = $("#entp_regno").val().split('.').pop().toLowerCase(); //파일확장자
+                $("#biz_reg_yn").val("Y");
+
+                $('.fileUpload .btnSet .biz_reg').hide()
+                $('.uploadFile').show()
+                $("#reg_file_nm").text(fileName);
+                $(".validationAlert.entp_regno_message").text("");
+            }
+        }
+
+        // 기업슬로건
+        $(document).on("keyup", "#entp_intr", function () {
+            textLenCheck(this, 30, "#areaEntpIntr");
+        });
+
+        // 로고 업로드
+        $(document).off("click", "#logo_upload").on("click", "#logo_upload", function (e) {
+            e.preventDefault();
+            closePopup();
+            $("#entp_logo").trigger('click');
+        });
+
+        // 로고 체크
+        $(document).off("change", "#entp_logo").on("change", "#entp_logo", function (e) {
+            readURL2(this);
+        });
+
+        // 로고 삭제
+        $(document).off("click", "#logo_del").on("click", "#logo_del", function (e) {
+            $("#img_yn").val("D");
+            $(".entp_logo_loaded").attr('src', '');
+            $(".clear_btn").css("display", "none");
+        });
+
+        // LDK 2020/08/27 -->
+        // 회사 소개 글자수 체크
+        $(document).on("keyup", "#entp_profile", function () {
+            textLenCheck(this, 1000, "#byteEntpProfile");
+        });
+
+        // 사업 글자수 체크
+        $(document).on("keyup", "#biz_intro", function () {
+            textLenCheck(this, 1000, "#byteBizIntro");
+        });
+
+        // 자본금 글자수 체크
+        $(document).on("keyup", "#entp_capital", function () {
+            textLenCheck(this, 10, "#byteEntpCapital");
+        });
+
+        // 매출액 글자수 체크
+        $(document).on("keyup", "#entp_total_sales", function () {
+            textLenCheck(this, 10, "#byteEntpTotalSales");
+        });
+
+        // 소재지 글자수 체크
+        $(document).on("keyup", "#location", function () {
+            textLenCheck(this, 20, "#byteLocation");
+        });
+        // <--
+
+        // 로고 등록
+        var readURL2 = function (input) {
+            var ext = $('#entp_logo').val().split('.').pop().toLowerCase();
+            //console.log("ext : "+ext);
+
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg', 'gif']) == -1) {
+                openPopup("pop_logo");
+                $(".popCont .tit").text("CI등록 오류 알림");
+                $(".popCont .text.t1").text("PNG/JPEG/GIF로 된");
+                $(".popCont .text.t2").text("CI 이미지로 업로드해주세요.");
+                $("#entp_logo").val("");
+                return false;
+            }
+            /*
+            var iSize = 0;
+            var maxSize = 1024 * 1024 * 5; //5Mbyte
+
+            var browser=navigator.appName;
+            if (browser=="Microsoft Internet Explorer"){
+                    var objFSO = new ActiveXObject("Scripting.FileSystemObject");
+                    var sPath = $("#mquest_img")[0].value;
+                    var objFile = objFSO.getFile(sPath);
+                    var iSize = objFile.size;
+                }else {
+                    iSize = ($("#mquest_img")[0].files[0].size);
+            }
+
+            if(iSize > maxSize) {
+                showMessagePopup("이미지 등록 알림","5MB이하 이미지로 등록해주세요.");
+                $("#mquest_img").val(""); //업로드 이미지 초기화
+                return false;
+            }
+            $("#quest_img_size").val(iSize);
+            */
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(".entp_logo_loaded").attr('src', e.target.result);
+                    $("#img_result").val(e.target.result);
+                    //console.log("e.target.result : "+e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+
+                var fileValue = $("#entp_logo").val().split("\\");
+                var fileName = fileValue[fileValue.length - 1]; // 파일명
+                var fileExt = $("#entp_logo").val().split('.').pop().toLowerCase(); //파일확장자
+                $("#img_yn").val("Y");
+                $(".clear_btn").css("display", "");
+            }
+        }
+
+        //숫자만 입력가능
+        $("input:text[numberOnly]").on("focus", function () {
+            var x = $(this).val();
+        }).on("focusout", function () {
+            var x = $(this).val();
+            if (x && x.length > 0) {
+                if (!$.isNumeric(x)) {
+                    x = x.replace(/[^0-9]/g, "");
+                }
+                $(this).val(x);
+            }
+        }).on("keyup", function () {
+            $(this).val($(this).val().replace(/[^0-9]/g, ""));
+        });
+
+        // 대표번호 수신여부
+        $(document).off("click", "#sms_recv").on("click", "#sms_recv", function (e) {
+            if ($('input:checkbox[id="sms_recv"]').is(":checked") == false) {
+                $("#sms_recv_yn").val("0");
+            } else {
+                $("#sms_recv_yn").val("1");
+            }
+        });
+
+        // 대표 이메일 수신여부
+        $(document).off("click", "#email_recv").on("click", "#email_recv", function (e) {
+            if ($('input:checkbox[id="email_recv"]').is(":checked") == false) {
+                $("#email_recv_yn").val("0");
+            } else {
+                $("#email_recv_yn").val("1");
+            }
+        });
+
+        // 기업수정3 Validation
+        var validOption = {
+            onkeyup: false
+            , onclick: false
+            , onfocusout: function (element) {		// 포커스 아웃 시 동작
+                if ($(element).valid()) {				// 체크 통과
+                    var id = $(element).attr("id");
+                    $("." + id + "_message").text("");	// message box clear
+                }
+            }
+            , onfocusin: function (element) {			// 포커스 인 시 동작
+                var id = $(element).attr("id");
+                //console.log("input id : "+id);
+                $("#" + id).removeClass("validationAlert");
+                resetInput(id);
+            }
+            , rules: {
+                rep_nm: {
+                    required: true,
+                },
+                tel_no: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    remote: {
+                        url: "/common/dup_chk"
+                        , type: "post"
+                        , data: {
+                            gbn_cd: '002'
+                            , item_val: function () {
+                                return $("#email").val();
+                            }
+                            , entp_mem_no: '{{.SMemNo}}'
+                        }
+                    }
+                },
+                dtl_addr: {
+                    required: true,
+                },
+                biz_tpy: {
+                    required: true,
+                },
+                biz_cond: {
+                    required: true,
+                },
+                entp_intr: {
+                    required: true,
+                },            
+                biz_tpy_cd:{
+                    required: true,
+                },
+                // entp_type_cd:{
+                //     required: true,
+                // },
+            }
+            , errorPlacement: function (error, element) {
+                var id = element.attr("id");
+                //console.log("err_id :"+id);
+                $("." + id + "_message").text(error.text());
+                $("#" + id).addClass("validationAlert");
+            }
+            , messages: {
+                rep_nm: {
+                    required: "대표자명을 입력해주세요."
+                },
+                tel_no: {
+                    required: "대표번호를 입력해주세요."
+                },
+                email: {
+                    required: "이메일을 입력해주세요",
+                    email: "올바른 이메일형식이 아닙니다.",
+                    remote: "이미 존재하는 이메일입니다"
+                },
+                dtl_addr: {
+                    required: "상세주소를 입력해주세요."
+                },
+                biz_tpy: {
+                    required: "업종을 입력해주세요."
+                },
+                biz_cond: {
+                    required: "업태를 입력해주세요."
+                },
+                entp_intr: {
+                    required: "기업슬로건을 입력해주세요."
+                },               
+                biz_tpy_cd:{
+                    required:"업종을 선택해주세요"
+                },            
+                // entp_type_cd:{
+                //     required: "기업 형태를 선택해주세요"
+                // },
+            }
+            , success: function (element) {
+                var str = $(element).attr("id");
+                var id = str.substring(0, str.length - 6);
+                $("#" + id).removeClass("validationAlert");
+            }
+        }
+
+        // input box reset
+        var resetInput = function (id) {
+            //console.log("id : "+id);
+            $("." + id + "_message").text(""); // message box clear
+        }
+
+        function isDate(txtDate) {            
+           var currVal = txtDate;
+            if (currVal == '')
+                return false;
+        
+            var rxDatePattern = /^(\d{4})(\d{1,2})(\d{1,2})$/; //Declare Regex                  
+            var dtArray = currVal.match(rxDatePattern); // is format OK?
+        
+            if (dtArray == null)
+                return false;
+        
+            //Checks for yyyymmdd format.
+            dtYear = dtArray[1];
+            dtMonth = dtArray[2];
+            dtDay = dtArray[3];        
+        
+            if (dtMonth < 1 || dtMonth > 12)
+                return false;
+            else if (dtDay < 1 || dtDay > 31)
+                return false;
+            else if ((dtMonth == 4 || dtMonth == 6 || dtMonth == 9 || dtMonth == 11) && dtDay == 31)
+                return false;
+            else if (dtMonth == 2) {
+                var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
+                if (dtDay > 29 || (dtDay == 29 && !isleap))
+                    return false;
+            }
+
+            return true;
+        }
+
+        // 등록완료
+        $(document).off("click", "#btn_update").on("click", "#btn_update", function (e) {
+
+            if ($("#uptForm").valid()) {
+
+                if ($("#zip").val() == "") {
+                    $(".validationAlert.zip_message").text("주소검색을 통해 주소를 입력해주세요.");
+                    $('body, html').animate({scrollTop: 400}, 1);
+                    return false;
+                }
+
+                // if ($("#biz_reg_yn").val() == "N") {
+                //     $(".validationAlert.regno_upload_message").text("사업자등록증 사본을 업로드해주세요.");
+                //     $('body, html').animate({scrollTop: 0}, 1);
+                //     return false;
+                // }
+                /*
+                if($("#img_yn").val() == "N") {
+                    $(".validationAlert.entp_logo_message").text("CI를 추가해주세요.");
+                    return false;
+                }
+                */
+
+                var entp_logo = $("#entp_logo")[0].files[0]; //이미지
+                if (entp_logo == undefined) {
+                    entp_logo = "";
+                }
+                var entp_regno = $("#entp_regno")[0].files[0]; //이미지
+                if (entp_regno == undefined) {
+                    entp_regno = "";
+                }
+                var rep_nm = $("#rep_nm").val().replace(/'/gi, "`"); //대표자명
+                var tel_no = $("#tel_no").val(); //대표번호
+                var email = $("#email").val(); //대표이메일
+                var sms_recv_yn = $("#sms_recv_yn").val(); //대표SMS수신여부
+                var email_recv_yn = $("#email_recv_yn").val(); //대표이메일수신여부
+                var zip = $("#zip").val(); //우편번호
+                var addr = $("#addr").val(); //기본주소
+                var dtl_addr = $("#dtl_addr").val().replace(/'/gi, "`"); //상세주소
+                var ref_addr = $("#ref_addr").val(); //참고주소
+                //var biz_tpy = $("#biz_tpy").val().replace(/'/gi, "`"); //업종 // LDK 2020/08/24: 기업 코드화 -> 주석 <--> 
+                var biz_cond = $("#biz_cond").val().replace(/'/gi, "`"); //업태
+                var entp_intr = $("#entp_intr").val().replace(/'/gi, "`"); //기업슬로건
+                var entp_htag1 = $("#entp_htag1").val().replace(/'/gi, "`"); //기업태그1
+                var entp_htag2 = $("#entp_htag2").val().replace(/'/gi, "`"); //기업태그2
+                var entp_htag3 = $("#entp_htag3").val().replace(/'/gi, "`"); //기업태그3
+                var home_pg = $("#home_pg").val().replace(/'/gi, "`"); //홈페이지주소
+                var emp_cnt = $("#emp_cnt").val(); //사원수
+                if (!emp_cnt) {
+                    emp_cnt = 0;
+                }
+                var est_dy = $("#est_dy").val(); //설립일
+
+                if (est_dy.length > 0 && est_dy.length < 8) {
+                    $(".validationAlert.est_dy_message").text("설립일을 YYYYMMDD 형식으로 정확히 입력해주세요.");
+                    return false;
+                }
+                
+                if (!isDate(est_dy)) {
+                    $(".validationAlert.est_dy_message").text("설립일을 YYYYMMDD 형식으로 정확히 입력해주세요.");
+                    return false;
+                }                
+
+                var info_eq_yn = 0 //$("#info_eq_yn")[0].checked == true ? 1 : 0; //대표자정보동일여부
+
+                var biz_reg_yn = $("#biz_reg_yn").val(); //사업자등록증여부
+                var img_yn = $("#img_yn").val(); //기업로고여부
+                if (biz_reg_yn == "Y") {
+                    var entp_regno_ext = $("#entp_regno").val().split('.').pop().toLowerCase();
+                } else {
+                    var entp_regno_ext = "";
+                }
+                if (!$("#ori_biz_file").val()) {
+                    var ori_biz_file = ""; //기존사업자등록증파일경로
+                    var ori_biz_file_ext = ""; //원본파일확장자
+                } else {
+                    var ori_biz_file = $("#ori_biz_file").val(); //기존사업자등록증파일경로
+                    var ori_biz_file_ext = $("#ori_biz_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+                }
+                if (img_yn == "Y") {
+                    var entp_logo_ext = $("#entp_logo").val().split('.').pop().toLowerCase();
+                } else {
+                    var entp_logo_ext = "";
+                }
+                if (!$("#ori_logo_file").val()) {
+                    var ori_logo_file = ""; //기존로고파일경로
+                    var ori_logo_file_ext = ""; //원본파일확장자
+                } else {
+                    var ori_logo_file = $("#ori_logo_file").val(); //기존로고파일경로
+                    var ori_logo_file_ext = $("#ori_logo_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+                }
+
+                var entp_mem_no = $("#entp_mem_no").val();
+
+                if (entp_mem_no == null || entp_mem_no == undefined || entp_mem_no == "") {
+                    console.log("EntpMemNo is emtpy !! ");
+                    return false;
+                }
+
+                // LDK 2020/08/24: 기업 코드화 -> 주석 <--> 
+                var biz_tpy_cd = $("select[id=biz_tpy_cd] option:selected").val();  // 업종 코드
+                var biz_tpy = $("#biz_tpy_cd option:checked").text();               // 업종 이름
+
+                var entp_profile= $("#entp_profile").val().replace(/'/gi,"`");  // 기업 소개
+                var biz_intro= $("#biz_intro").val().replace(/'/gi,"`");        // 사업 소개
+
+                var entp_capital= $("#entp_capital").val().replace(/'/gi,"`");          // 자본금
+                var entp_total_sales= $("#entp_total_sales").val().replace(/'/gi,"`");  // 매출액
+
+                var entp_type_cd = $("select[id=entp_type_cd] option:selected").val();  // 기업 형태 코드
+                var entp_type = $("#entp_type_cd option:checked").text();               // 기업 형태
+                var location = $("#location").val().replace(/'/gi,"`");                 // 소재지
+                // <--
+
+                console.log("biz_tpy_cd : "+biz_tpy_cd);
+                console.log("biz_tpy : "+biz_tpy);
+                console.log("biz_cond : "+biz_cond);
+
+                console.log("entp_profile : "+entp_profile);
+                console.log("biz_intro : "+biz_intro);
+                console.log("entp_capital : "+entp_capital);
+                console.log("entp_total_sales : "+entp_total_sales);
+
+                console.log("entp_type_cd : "+entp_type_cd);
+                console.log("entp_type : "+entp_type);
+
+                console.log("location : "+location);
+
+
+                /*
+                console.log("********** UPDATE **********");
+                console.log("biz_reg_yn : "+biz_reg_yn);
+                console.log("img_yn : "+img_yn);
+                console.log("entp_regno_ext : "+entp_regno_ext);
+                console.log("entp_logo_ext : "+entp_logo_ext);
+                console.log("rep_nm : "+rep_nm);
+                console.log("tel_no : "+tel_no);
+                console.log("sms_recv_yn : "+sms_recv_yn);
+                console.log("email : "+email);
+                console.log("email_recv_yn : "+email_recv_yn);
+                console.log("zip : "+zip);
+                console.log("addr : "+addr);
+                console.log("dtl_addr : "+dtl_addr);
+                console.log("ref_addr : "+ref_addr);
+                console.log("biz_tpy : "+biz_tpy);
+                console.log("biz_cond : "+biz_cond);
+                console.log("entp_intr : "+entp_intr);
+                console.log("entp_htag1 : "+entp_htag1);
+                console.log("entp_htag2 : "+entp_htag2);
+                console.log("entp_htag3 : "+entp_htag3);
+                console.log("home_pg : "+home_pg);
+                console.log("emp_cnt : "+emp_cnt);
+                console.log("est_dy : "+est_dy);
+                console.log("info_eq_yn : "+info_eq_yn);
+                console.log("entp_logo : "+entp_logo);
+                console.log("entp_logo_ext : "+entp_logo_ext);
+                console.log("ori_logo_file : "+ori_logo_file);
+                console.log("ori_logo_file_ext : "+ori_logo_file_ext);
+                */
+
+                //return;
+
+                var formData = new FormData();
+                formData.append("img_yn", img_yn);
+                formData.append("biz_reg_yn", biz_reg_yn);
+                formData.append("entp_regno_ext", entp_regno_ext);
+                formData.append("entp_logo_ext", entp_logo_ext);
+                formData.append("entp_logo", entp_logo);
+                formData.append("entp_regno", entp_regno);
+                //formData.append("entp_regno", entp_regno);
+                //formData.append("entp_ko_nm", entp_ko_nm);
+                //formData.append("biz_reg_no", biz_reg_no);
+                formData.append("rep_nm", rep_nm);
+                formData.append("tel_no", tel_no);
+                formData.append("sms_recv_yn", sms_recv_yn);
+                formData.append("email", email);
+                formData.append("email_recv_yn", email_recv_yn);
+                formData.append("zip", zip);
+                formData.append("addr", addr);
+                formData.append("dtl_addr", dtl_addr);
+                formData.append("ref_addr", ref_addr);
+                formData.append("biz_tpy", biz_tpy);
+                formData.append("biz_cond", biz_cond);
+                formData.append("entp_htag1", entp_htag1);
+                formData.append("entp_htag2", entp_htag2);
+                formData.append("entp_htag3", entp_htag3);
+                formData.append("entp_intr", entp_intr);
+                formData.append("home_pg", home_pg);
+                formData.append("emp_cnt", emp_cnt);
+                formData.append("est_dy", est_dy);
+                formData.append("info_eq_yn", info_eq_yn);
+                formData.append("ori_biz_file", ori_biz_file);
+                formData.append("ori_biz_file_ext", ori_biz_file_ext);
+                formData.append("ori_logo_file", ori_logo_file);
+                formData.append("ori_logo_file_ext", ori_logo_file_ext);
+
+                formData.append("entp_mem_no", entp_mem_no);
+
+                // LDk 2020/08/24: 기업 정보 코드화 -->    
+                formData.append("biz_tpy_cd", biz_tpy_cd);            
+                formData.append("entp_profile", entp_profile);
+                formData.append("biz_intro", biz_intro);
+                formData.append("entp_capital", entp_capital);
+                formData.append("entp_total_sales", entp_total_sales);
+                formData.append("entp_type_cd", entp_type_cd);
+                formData.append("entp_type", entp_type);
+                formData.append("location", location);                
+                // <-- 
+
+                $(".loading").attr("style", "display:''");
+
+                $.ajax({
+                    cache: false,
+                    url: '/entp/info/update',
+                    data: formData,
+                    type: 'POST',
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    error: function (e) {
+                        //console.log("error" + JSON.stringify(e));
+                        console.log("error : " + e);
+                        $(".loading").attr("style", "display:none");
+                    },
+                    success: function (rep) {
+                        var rtnCd = rep.RtnCd
+                        var rtnMsg = rep.RtnMsg
+                        if (rtnCd == 1) {
+                            $('body, html').animate({scrollTop: 0}, 1);
+                            window.location.reload();
+                            $(".loading").attr("style", "display:none");
+                            //console.log("수정 완료");
+                            /*
+                            if (img_yn == "Y") {
+                                $(".entp_logo_left_loaded").attr('src', $("#img_result").val());
+                            } else if (img_yn == "D") {
+                                $(".entp_logo_loaded").attr('src', '');
+                                $(".entp_logo_left_loaded").attr('src', '');
+                            }
+                            $('body, html').animate({scrollTop:0}, 1);
+                            $('.toastBox.upt_complete').fadeIn(1000);
+                            setTimeout(function() {
+                                $('.toastBox.upt_complete').fadeOut(1000);
+                        }, 3000);
+                        */
+                        } else {
+                            console.log("수정 실패 : " + rtnMsg);
+                        }
+                    }
+                });
+            }
+        });
+
+        function Postcode() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                    if (data.userSelectedType === 'R') {
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if (extraAddr !== '') {
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        // 조합된 참고항목을 해당 필드에 넣는다.
+                        document.getElementById("ref_addr").value = extraAddr;
+
+                    } else {
+                        document.getElementById("ref_addr").value = '';
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById("zip").value = data.zonecode;
+                    document.getElementById("addr").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("dtl_addr").focus();
+
+                    // LDK 2020/08/27 : 기업 정보 코드화 <-->
+                    document.getElementById("location").value = addr.split(' ')[0] + ' ' + addr.split(' ')[1];    
+                }
+            }).open();
+        }
+
+    </script>
+{{end}} 

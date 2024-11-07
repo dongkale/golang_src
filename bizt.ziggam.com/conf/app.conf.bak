@@ -1,0 +1,3 @@
+appname = bizt.ziggam.com
+httpport = 8080
+runmode = dev

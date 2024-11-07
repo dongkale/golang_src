@@ -1,0 +1,518 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<style>
+	.innerPopup {
+	   z-index: 2222;
+	}
+	</style>
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+		<a href="/message?recrut_sn=2019070481">메시지 보내기</a>
+		<!-- 컨텐츠 내용 영역
+		<h2>채용 정보를 입력해주세요</h2>
+		<ul class="topTextInfo">
+			<li>채용에 필요한 기본 정보들을 모두 입력해주세요.</li>
+			<li>부적절한 내용이 포함되어 있을 경우 사전 경고 없이 변경 혹은 삭제될 수 있습니다.</li>
+		</ul>
+		-->
+
+		<div class="tForm">
+			<table>
+				<colgroup>
+					<col width="180px">
+					<col>
+				</colgroup>		
+				<tr>
+					<td class="radioForm">
+						<div class="jui" id="invite_area" style="display:1;width: 650px;">
+							<div class="input-group">
+								<input type="text" id="name_add_value" class="it form-control" maxlength="50"
+									class="it" placeholder="이름" aria-label="name_add_value"
+									aria-describedby="basic-addon1" style="margin-left:0px; width:8%; height: 28px;">
+								<input type="text" id="phone_add_value" class="it form-control" maxlength="50"
+									class="it" placeholder="핸드폰 번호" aria-label="phone_add_value"
+									aria-describedby="basic-addon1" style="margin-left:0px; width:10%; height: 28px;">
+								<input type="text" id="email_add_value" class="it form-control" maxlength="50"
+									class="it" placeholder="메일" aria-label="email_add_value"
+									aria-describedby="basic-addon1" style="margin-left:0px; width:20%; height: 28px;">
+								<div class="form-control">
+									<a href="javascript:void(0);" id="add_invite" class="form-control" style="width: 100%">
+										<span class="btn normal" style="width: 70%">추가</span>
+									</a>
+								</div>
+							</div>
+							<table id="table_invite" class="table classic" style="border: 1px;width: 703px">
+								<thead>
+								<tr style="display: 1">
+									<th style="padding:0px;line-height:30px;font-size:12px;width:5%">선택</th>
+									<th style="padding:0px;line-height:30px;font-size:12px;width:5%">번호</th>
+									<th style="padding:0px;line-height:30px;font-size:12px;width:18%">이름</th>
+									<th style="padding:0px;line-height:30px;font-size:12px;width:18%">핸드폰번호</th>
+									<th style="padding:0px;line-height:30px;font-size:12px;width:40%">이메일</th>
+									<th style="padding:0px;line-height:30px;font-size:12px;width:14%">수정/삭제</th>									
+								</tr>
+								</thead>
+								<tbody></tbody>
+								<tfoot>
+								<tr>
+									<td colspan="4"> 									
+										<a href="javascript:void(0);" class="btn mini" style="width: 50px" id="invite_select_all">전체선택</a>
+										<a href="javascript:void(0);" class="btn mini" style="width: 50px" id="invite_select_delete">선택삭제</a>									
+									</td>
+								</tr>								
+								</tfoot>
+							</table>							
+							<table>
+								<tr>
+									<td colspan="4">
+										<input type='file' id='file' /></a>
+									</td>
+								</tr>
+							</table>							
+							<table>
+								<tr>
+									<td colspan="4">
+										<a href="javascript:void(0);" class="btn mini" style="width: 50px" id="invite_select_list">리스트</a>
+									</td>
+								</tr>
+							</table>
+							
+							<script id="tpl_table" type="application/json">
+								<tr>
+									<td width="20px">
+										<input type="checkbox" value="<!= row.index !>">
+									</td>
+									<td width="20px">
+										<! var invite_index = Number(row.index) + 1; !>
+										<!= invite_index !>
+									</td>
+									<td><!= name_val !></td>
+									<td><!= phone_val !></td>
+									<td><!= email_val !></td>
+									<td width="80px">
+										<div class="input-group">
+										<a href="javascript:void(0);" class="btn small" style="min-width: 0px" id="invite_edit_<!= row.index !>" onclick="table_invite.showEditRow(<!= row.index !>)"><i class="fas fa-edit"></i></a>
+										<a href="javascript:void(0);" class="btn small invite_del" style="min-width: 0px" id="invite_del_<!= row.index !>" onclick="table_invite.remove(<!= row.index !>)"><i class="fas fa-trash-alt"></i></a>
+										<a href="javascript:void(0);" class="btn small" style="min-width: 0px; display:none;" id="invite_update_<!= row.index !>" onclick="table_invite.updateRow(<!= row.index !>)"><i class="fas fa-check"></i></a>
+										<div>
+									</td>
+								</tr>
+							</script>
+							
+							<script data-jui="#table_invite" data-tpl="none" type="application/json">
+								<tr>
+								<td colspan="4" class="none" align="center">등록된 질문이 없습니다.</td>
+								</tr>
+							</script>
+						</div>
+					</td>
+				</tr>
+			</table>	
+		</div>
+	</div>
+
+	<div class="notice">
+		<p class="tit">공지사항===============================</p>				
+		<span class="text">{{.MnnTitle | TEST}}</span>		
+	</div>	
+
+	<div style="padding-top:50px;">
+		<a href="javascript:void(0);" id="popup_open">추가</a>
+	</div>		
+	
+	<div id="dialog-message" style="display:none;background:white;color:black;font-weight:normal">
+	
+		<!-------------------------------------------------------->
+		<div class="content">			
+			<div>
+				<h2 class="h2 pt1">지원자 초대내역</h2>   
+			</div>
+			<div class="fieldList">   
+				<dl class="tForm">  
+					<table>
+						<colgroup>
+							<col width="380px">
+							<col>
+						</colgroup>
+						<br><br>
+						<tr>                    
+							<td class="selectForm" id="recuit_select">
+								<select class="select wid100" name="recuit_select_cd" id="recuit_select_cd" required>
+									<option value="00" selected>전체</option>                                        
+									<option value="01">대기중</option>
+									<option value="02">채용중</option>
+									<option value="03">마감</option>
+								</select>
+								<span>
+								<select class="select wid580" name="recuit_select_list" id="recuit_select_list" required>
+									<option value="" disabled selected>채용 선택해 등록해 주세요</option>                                
+									<option value="">전체</option>									
+									<option value="00">AAAAAAAAAAAAAAAA</option>									
+									<option value="01">BBBBBBBBBBBBBBBB</option>									
+									<option value="02">CCCCCCCCCCCCCCCC</option>									
+								</select>
+								</span>                            
+							</td>                                
+						</tr>
+					</table>    
+				</dl> 
+			</div>  
+		</div>
+		<!-------------------------------------------------------->
+
+	</div>
+
+	<div id='somediv'></div>
+
+	<!--https://www.google.co.kr/search?newwindow=1&sxsrf=ALeKk03j6cA4ZDP4d3-o1ft4JDDggxYDKw%3A1605002980463&ei=5GaqX8foG4T6wAOVzLuACw&q=jquery+popup+scrollbar&oq=jquery+popup+scroll&gs_lcp=CgZwc3ktYWIQAxgBMgUIABDLATICCAAyBAgAEB4yBAgAEB4yBggAEAgQHjIGCAAQCBAeMgYIABAIEB4yBggAEAgQHjIGCAAQCBAeMgYIABAIEB46BAgjECc6BAgAEENQ7MUGWN_SBmCw6gZoAHAAeACAAX6IAYQHkgEDMC44mAEAoAEBqgEHZ3dzLXdpesABAQ&sclient=psy-ab-->
+
+
+	<script src="/static/js/excel.min.js"></script>
+
+	<script>
+	// 질문추가
+    $(document).off("click", "#add_invite").on("click", "#add_invite", function () {
+		var name_add_value = $("#name_add_value").val();
+		var phone_add_value = $("#phone_add_value").val();
+		var email_add_value = $("#email_add_value").val();
+		
+        name_add_value = name_add_value.replace(/,/gi, "，").replace(/'/gi, "`");
+        if (name_add_value.length == 0 || name_add_value.length > 50) {  // LDK 2020/10/12: 질문 길이 설정, name_add_value 찾아서 maxlength 변경                
+            alert(invite_length_check_msg);
+
+            $("#name_add_value").val(name_add_value.slice(0, 50));  // LDK 2020/10/12: 질문 길이 설정, name_add_value 찾아서 maxlength 변경
+            return false;
+        }
+
+        var rows = [];        
+        rows.push({name_val: name_add_value, phone_val: phone_add_value,email_val: email_add_value});
+		table_invite.append(rows);
+		
+		console.log(rows)
+
+        // $("#invite_title" + trCnt + 1).val(name_add_value);
+		$("#name_add_value").val('');
+		$("#phone_add_value").val('');
+		$("#email_add_value").val('');
+
+        check_invite_list();
+	});
+
+	// 질문 전체 선택
+	$(document).off("click", "#invite_select_all").on("click", "#invite_select_all", function () {
+        var table = $(this).closest('table');
+        var checkbox_list = $(table).find('input:checkbox');
+
+        var checked = $(table).find('input:checkbox').length == $(table).find('input:checkbox:checked').length ? false : true;
+
+        // 전체선택되어있음 전체해제 아님 전체선택
+		$(checkbox_list).prop('checked', checked);		
+
+        checked == true ? false : true;
+    });
+
+    // 질문 선택 삭제
+    $(document).off("click", "#invite_select_delete").on("click", "#invite_select_delete", function () {
+        var tr_list = $("#table_invite").find('tr');
+
+        if (tr_list.length > 0) {
+            for (var i = tr_list.length - 1; i >= 1; i--) {
+                var tr = tr_list[i];
+
+                var checkbox = $(tr).find('input:checkbox')[0];
+
+                if (checkbox != null && checkbox != undefined && checkbox.checked == true) {
+                    $(tr).find('.invite_del')[0].click();
+                }
+            }
+        }
+
+        check_invite_list();
+
+        return;
+	});	
+
+    $(document).off("click", ".invite_del").on("click", ".invite_del", function () {
+        check_invite_list();
+
+        return;
+	});
+	
+	// 
+	$(document).off("click", "#invite_select_list").on("click", "#invite_select_list", function () {
+        
+		var invite_list_arr = "";
+
+		var invite_list = table_invite.listAll();
+	    
+	    console.log("[invite_select_list] Length: " + invite_list.length)
+
+        for (var i = 0; i < invite_list.length; i++) {			
+			invite_list_arr += invite_list[i].data.name_val + "," + invite_list[i].data.phone_val + "," + invite_list[i].data.email_val + ",";
+
+			console.log(`[invite_select_list] name_val:${invite_list[i].data.name_val}, phone_val:${invite_list[i].data.phone_val}, email_val:${invite_list[i].data.email_val}` )			
+		}
+		
+		invite_list_arr = invite_list_arr.slice(0, invite_list_arr.length - 1);	// 끝의 ',' 삭제하기 위해
+
+		//qst_title_arr = qst_title_arr.slice(0, qst_title_arr.length - 1);
+					
+		console.log("[invite_select_list] " + invite_list_arr)
+    });
+	
+	function check_invite_list() {
+        var trCnt = $("#table_invite").find('tr').length;
+        $("#tr_cnt").val(trCnt);
+        
+        var trCntCheck = $("#table_invite").find('input:checkbox').length; // --> 질문 실제 갯수
+        
+        // LDK 2020/10/07: 채용 질문 갯수 조정
+        var destCnt = 500;        
+        
+        if (trCntCheck >= destCnt) {
+            $("#add_invite").hide();
+        } else
+            $("#add_invite").show();
+    }
+
+	function setInviteArea() {
+		var invite_length_check_msg = "질문은 0자이상, 50자 이하여야 합니다.";
+		//var org_invite_list = {{.RecruitQuestionList}};
+		var data_list = [];
+
+		// for (var i = 0; i < org_invite_list.length; i++) {
+
+		// 	var vdTitle = org_invite_list[i].VdTitle;
+		// 	var item = {invite: vdTitle};
+
+		// 	data_list.push(item);
+		// }
+
+		data_list.push({name_val: '1-1', phone_val: '1-2', email_val: '1-3'});
+		data_list.push({name_val: '2-1', phone_val: '2-2', email_val: '2-3'});
+
+		jui.ready(["grid.table"], function (table) {
+			table_invite = table("#table_invite", {
+				fields: [null, null, "name_val", "phone_val","email_val", null],
+				data: data_list,
+				moveRow: false,	
+				sort: true,
+        		resize: true,			
+				scroll: true,
+        		scrollHeight: 350,
+				editRow: ["name_val","phone_val","email_val"],
+				event: {
+					editstart: function (row) {
+						console.log("[editstart] " + row.data.name_val);
+						console.log("[editstart] " + row.data.phone_val);
+						console.log("[editstart] " + row.data.email_val);
+
+						var input_element = row.list[2].children;
+						$(input_element).attr("maxlength", 50);    // LDK 2020/10/12: 질문 길이 설정, name_add_value 찾아서 maxlength 변경
+
+						$("#invite_edit_" + row.index).hide();
+						$("#invite_del_" + row.index).hide();
+						$("#invite_update_" + row.index).show();
+					},
+					editend: function (row) {
+						console.log("[editend] " + row.data.name_val);
+						console.log("[editend] " + row.data.phone_val);						
+						console.log("[editend] " + row.data.email_val);
+
+						row.data.name_val = row.data.name_val.replace(/,/gi, "，").replace(/'/gi, "`");
+						if (row.data.name_val.length == 0 || row.data.name_val.length > 50) {     // LDK 2020/10/12: 질문 길이 설정, name_add_value 찾아서 maxlength 변경
+							alert(invite_length_check_msg);
+
+							row.data.name_val = row.data.name_val.slice(0, 50);      // LDK 2020/10/12: 질문 길이 설정, name_add_value 찾아서 maxlength 변경
+							return false;
+						}
+
+						$("#invite_update_" + row.index).hide();
+						$("#invite_edit_" + row.index).show();
+						$("#invite_del_" + row.index).show();
+					},
+				},
+				tpl: {
+					row: $("#tpl_table").html()
+				},
+			});
+
+			check_invite_list();
+
+			table_invite.updateRow = function (index) {
+				//var invite_val = $("#table_invite").find('input.edit').val();
+
+				// $("#table_invite").find('input.edit').each( function (index) {
+				// 	console.log("8888888" + $(this).val() );	
+				// } );
+
+				var val1 = $("#table_invite").find('input.edit').eq(0).val();
+				var val2 = $("#table_invite").find('input.edit').eq(1).val();
+				var val3 = $("#table_invite").find('input.edit').eq(2).val();
+
+				// var val1__ = $("#table_invite").find('input.edit').index(0).val();
+				// var val2__ = $("#table_invite").find('input.edit').index(1).val();
+				// var val3__ = $("#table_invite").find('input.edit').index(2).val();
+					
+				table_invite.update(index, {name_val: val1, phone_val: val2, email_val: val3 });			
+
+				//console.log(`[table_invite.updateRow] index:${index}, invite_val:${invite_val}, invite_val2:${invite_val2}`)
+				//console.log(`[table_invite.updateRow] inputValue1:${inputValue1}, inputValue2:${inputValue2}., selectValuse1:${selectValuse1}, selectValuse2:${selectValuse2}`)
+				//console.log(`[table_invite.updateRow] val1__:${val1__}, val2__:${val2__}, val3__:${val3__}`)
+			}
+		});
+	}
+
+	$('#file').change(function () {
+		//$( '#table_invite').empty();
+
+		const selectedFile = $(this)[0].files[0];
+		loadExcelToGrid(selectedFile, $('#grid'))
+	});
+
+	function loadExcelToGrid(file, target) {
+		var reader = new FileReader();
+
+		reader.onload = function (evt) {
+			if (evt.target.readyState == FileReader.DONE) {
+				var data = evt.target.result; //해당 데이터, 웹 서버에서 ajax같은거로 가져온 blob 형태의 데이터를 넣어주어도 동작 한다.
+				data = new Uint8Array(data);
+				var workbook = XLSX.read(data, {
+					type: 'array'
+				});				
+				
+				workbook.SheetNames.forEach(function (item, index, array) {
+					EXCEL_JSON = XLSX.utils.sheet_to_json(workbook.Sheets[item]);
+
+					//console.log("====================== " + JSON.stringify(EXCEL_JSON))
+					//console.log("====================== " + item)
+
+					// for(key in EXCEL_JSON) {
+					// 	console.log('key:' + key + ' / ' + 'value:' + EXCEL_JSON[key]);
+					// }
+
+					// EXCEL_JSON.forEach(function (obj) {
+
+					// 	//console.log(JSON.stringify(obj)); 						
+					// 	//console.log("롤링 배너: " + obj["롤링 배너"]); 
+					// 	if (obj.hasOwnProperty("이름"))
+					// 		console.log("이름: " + obj["이름"]);
+					// 	else if (obj.hasOwnProperty("이 름"))
+					// 		console.log("이 름: " + obj["이 름"]);
+					// 	else if (obj.hasOwnProperty("Name"))
+					// 		console.log("Name: " + obj["Name"]);
+
+					// 	console.log("이메일: " + obj["이메일"]);
+					// 	console.log("전화번호: " + obj["전화번호"]);
+					// 	//console.log("__EMPTY_3: " + obj["__EMPTY_3"]); 
+
+					// });
+
+					var rows = [];        
+					console.log(`[${item}]`);							
+					EXCEL_JSON.forEach(function (data, idx) {
+						
+						for (key in data) {
+							console.log(key + ': ' + data[key]);							
+						}
+
+						rows.push({name_val: data['namer'], phone_val: data['phone'],email_val: data['email']});
+
+						console.log('===================== rows: ' + JSON.stringify(rows));
+					});
+					
+					//$( '#mytable > tbody:last').empty()
+
+					table_invite.append(rows);
+					
+					console.log(rows)
+					
+				}); //end. forEach
+			
+			}
+		};
+		reader.readAsArrayBuffer(file);
+	}
+	
+	$(document).ready(function () {     
+	 	setInviteArea();
+	});	
+
+	$(document).off("click", "#popup_open").on("click", "#popup_open", function (evt) {
+
+		console.log("====================")
+        
+		// https://nowonbun.tistory.com/615
+        //$(document.body).append('<div id="dialog-message" style="font-size:15pt;">요청???</div>');
+        //$("#dialog-message").text("요청?");
+        // $('#dialog-message').dialog({
+        //     modal: true, 
+		// 	//maxHeight: window.innerHeight - 15,
+        // 	//overflow:'scroll',
+		// 	overflow:"auto",
+		// 	draggable: true,
+  		// 	//position: 'center',
+		// 	width: 920,
+        // 	height: 1024,
+        //     title: "지원자 초대내역 상세",
+		// 	time: 3000,
+		// 	//dialogClass: "innerPopup",
+		// 	//icon: "ui-icon-heart",
+		// 	// open: function (event, ui) {
+		// 	// 	$(this).dialog('open');
+		// 	// 	console.log("===============================")
+		// 	// },
+		// 	// close: function (event, ui) {
+		// 	// 	cleanup() ;
+		// 	// 	console.log("===============================")
+		// 	// },
+        //     //show:"slide", 
+        //     // 다이얼로그가 show될 때의 액션 설정 //"bounce", //"blind",
+        //     show: {effect: "slide", duration: 100},
+        //     // 다이얼로그가 hide될 때의 액션 설정
+        //     hide: {effect: "explode", duration: 100},
+        //     buttons: {
+        //     	"확인": function() { $(this).dialog('close'); },            	
+        //     }
+        // });        
+
+		$("#somediv").load("a_test.html").dialog({
+			modal: true, 
+			maxHeight: window.innerHeight - 15,
+        	overflow:'scroll',
+			//overflow:"auto",
+			draggable: true,
+  			//position: 'center',
+			width: 920,
+        	height: 1024,
+            title: "지원자 초대내역 상세",			
+			//dialogClass: "innerPopup",
+			//icon: "ui-icon-heart",
+			// open: function (event, ui) {
+			// 	$(this).dialog('open');
+			// 	console.log("===============================")
+			// },
+			// close: function (event, ui) {
+			// 	cleanup() ;
+			// 	console.log("===============================")
+			// },
+            //show:"slide", 
+            // 다이얼로그가 show될 때의 액션 설정 //"bounce", //"blind",
+            show: {effect: "slide", duration: 100},
+            // 다이얼로그가 hide될 때의 액션 설정
+            hide: {effect: "explode", duration: 100},
+            buttons: {
+            	"확인": function() { $(this).dialog('close'); },            	
+            }
+		});
+	});
+
+	</script>
+
+{{end}} 

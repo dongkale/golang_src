@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>라이브인터뷰</title>
+    <link href="/static/css/style_nvn2.css?v=1" rel="stylesheet">	
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cerulean/bootstrap.min.css" type="text/css"/>
+
+    <!-- 기본JS -->
+    <script src="https://kit.fontawesome.com/db6adb475d.js" crossorigin="anonymous"></script>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/jquery-migrate-1.2.1.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/plugin/jui-grid/jui-core.min.js"></script>
+    <script src="/static/plugin/jui-grid/jui-ui.js"></script>
+    <script src="/static/plugin/jui-grid/jui-grid.min.js"></script>
+    <script src="/static/js/common.js?v=0.0.11"></script>
+    <script src="/static/js/customInput.jquery.js"></script>
+
+    <!-- validation -->
+    <script type="text/javascript" src="/static/js/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/js/additional-methods.js"></script>
+
+    <!-- timepicker -->
+    <script type="text/javascript" src="/static/js/jquery.datetimepicker.full.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.timepicker.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Ads: 661333810 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-661333810"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-661333810');
+    </script>
+
+    <!--<script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk/remon.min.js"></script>-->
+    <script src="/static/js/remon.min.js"></script>
+    <script src="/static/js/remoteMonster.js"></script>
+  </head>
+
+    <!-- Custom styles for this template-->
+    <!-- <link href="css/sb-admin-2.min.css" rel="stylesheet" /> -->
+
+  <!-- </head> -->
+
+  <body>	
+<!--
+    <img style="position: absolute; top: 0; left: 0; border: 0; z-index: 1001;" src="/static/images/logo-admin-top-white.png" alt="직감 라이브 인터뷰">
+    <nav class="navbar navbar-default navbar-static-top">
+    </nav>
+-->
+
+    <div class="container">
+        <div class="live-nvn-wrapper">
+          <!--live-nvn-top-->
+          <div class="live-nvn-top">
+            <div class="live-nvn-top-logo">
+              <img src="/static/images/logo-admin-top-white.png">
+            </div>
+            <!-- live-timer -->
+            <div class="live-nvn-timer">
+              <div class="live-nvn-timer-left">
+                &middot; LIVE
+              </div>
+              <div class="live-nvn-timer-right">
+                <a id="elapse_time" class="elapse_time" style="color:#FFF;width:50px;height:50px;font-size:17px;">00:00:00</a> 
+              </div>
+            </div>
+            <!-- live-timer -->
+            <div class="live-nvn-top-buttons">
+              
+              <div class="live-nvn-top-button" onClick="exitWindowPop();" id="live-nvn-exit-button" style="display: none;">
+                <img src="/static/images/ic-topbar-live-close-alone.svg">나가기
+              </div>
+              <div class="live-nvn-top-button" onClick="closeWindowPop();" id="live-nvn-close-button" style="display: none;">
+                <img src="/static/images/ic-topbar-live-close-end.svg">종료하기
+              </div>
+              <div class="live-nvn-top-button" onClick="startItv();" >
+                <img src="/static/images/ic-topbar-live-close-end.svg">새로고침
+              </div>
+
+            </div>
+          </div>
+        </div>    
+    </div>  
+      <!--live-nvn-top-->
+    <p>
+
+    </p>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접자 <span class="label label-primary hide" id="publisher"></span>
+                    <div class="btn-group btn-group-xs pull-right hide">
+                      <div class="btn-group btn-group-xs">
+                        <button id="bitrateset" autocomplete="off" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Bandwidth<span class="caret"></span>
+                        </button>
+                        <ul id="bitrate" class="dropdown-menu" role="menu">
+                          <li><a href="#" id="0">No limit</a></li>
+                          <li><a href="#" id="128">Cap to 128kbit</a></li>
+                          <li><a href="#" id="256">Cap to 256kbit</a></li>
+                          <li><a href="#" id="512">Cap to 512kbit</a></li>
+                          <li><a href="#" id="1024">Cap to 1mbit</a></li>
+                          <li><a href="#" id="1500">Cap to 1.5mbit</a></li>
+                          <li><a href="#" id="2000">Cap to 2mbit</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="panel-body" id="otherVideos1"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접자 <span class="label label-info hide" id="remote1"></span></h3>
+                </div>
+                <div class="panel-body relative" id="otherVideos2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접자 <span class="label label-info hide" id="remote3"></span></h3>
+                </div>
+                <div class="panel-body relative" id="otherVideos3"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접자 <span class="label label-info hide" id="remote4"></span></h3>
+                </div>
+                <div class="panel-body relative" id="otherVideos4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접관 <span class="label label-primary hide" id="publisher"></span>
+                    <div class="btn-group btn-group-xs pull-right hide">
+                      <div class="btn-group btn-group-xs">
+                        <button id="bitrateset" autocomplete="off" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Bandwidth<span class="caret"></span>
+                        </button>
+                        <ul id="bitrate" class="dropdown-menu" role="menu">
+                          <li><a href="#" id="0">No limit</a></li>
+                          <li><a href="#" id="128">Cap to 128kbit</a></li>
+                          <li><a href="#" id="256">Cap to 256kbit</a></li>
+                          <li><a href="#" id="512">Cap to 512kbit</a></li>
+                          <li><a href="#" id="1024">Cap to 1mbit</a></li>
+                          <li><a href="#" id="1500">Cap to 1.5mbit</a></li>
+                          <li><a href="#" id="2000">Cap to 2mbit</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="panel-body" id="live-thum-stream-1"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접관 <span class="label label-primary hide" id="publisher"></span>
+                    <div class="btn-group btn-group-xs pull-right hide">
+                      <div class="btn-group btn-group-xs">
+                        <button id="bitrateset" autocomplete="off" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Bandwidth<span class="caret"></span>
+                        </button>
+                        <ul id="bitrate" class="dropdown-menu" role="menu">
+                          <li><a href="#" id="0">No limit</a></li>
+                          <li><a href="#" id="128">Cap to 128kbit</a></li>
+                          <li><a href="#" id="256">Cap to 256kbit</a></li>
+                          <li><a href="#" id="512">Cap to 512kbit</a></li>
+                          <li><a href="#" id="1024">Cap to 1mbit</a></li>
+                          <li><a href="#" id="1500">Cap to 1.5mbit</a></li>
+                          <li><a href="#" id="2000">Cap to 2mbit</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="panel-body" id="live-thum-stream-2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접관 <span class="label label-primary hide" id="publisher"></span>
+                    <div class="btn-group btn-group-xs pull-right hide">
+                      <div class="btn-group btn-group-xs">
+                        <button id="bitrateset" autocomplete="off" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Bandwidth<span class="caret"></span>
+                        </button>
+                        <ul id="bitrate" class="dropdown-menu" role="menu">
+                          <li><a href="#" id="0">No limit</a></li>
+                          <li><a href="#" id="128">Cap to 128kbit</a></li>
+                          <li><a href="#" id="256">Cap to 256kbit</a></li>
+                          <li><a href="#" id="512">Cap to 512kbit</a></li>
+                          <li><a href="#" id="1024">Cap to 1mbit</a></li>
+                          <li><a href="#" id="1500">Cap to 1.5mbit</a></li>
+                          <li><a href="#" id="2000">Cap to 2mbit</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="panel-body" id="live-thum-stream-3"></div>
+              </div>
+            </div>
+          </div>    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">면접관 <span class="label label-primary hide" id="publisher"></span>
+                    <div class="btn-group btn-group-xs pull-right hide">
+                      <div class="btn-group btn-group-xs">
+                        <button id="bitrateset" autocomplete="off" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Bandwidth<span class="caret"></span>
+                        </button>
+                        <ul id="bitrate" class="dropdown-menu" role="menu">
+                          <li><a href="#" id="0">No limit</a></li>
+                          <li><a href="#" id="128">Cap to 128kbit</a></li>
+                          <li><a href="#" id="256">Cap to 256kbit</a></li>
+                          <li><a href="#" id="512">Cap to 512kbit</a></li>
+                          <li><a href="#" id="1024">Cap to 1mbit</a></li>
+                          <li><a href="#" id="1500">Cap to 1.5mbit</a></li>
+                          <li><a href="#" id="2000">Cap to 2mbit</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="panel-body" id="live-thum-stream-4"></div>
+              </div>
+            </div>
+          </div>                    
+        </div>        
+      </div>
+    </div>
+
+
+
+
+
+
+
+    
+    
+    
+
+    
+    
+    
+    
+
+
+      <div class="row" >
+        <a href=#none id="show" onclick="if(settinghide.style.display=='none') {settinghide.style.display='';show.innerText='▲접기'} else {settinghide.style.display='none';show.innerText='▶설정'}">▶설정</a>
+        <!--Video Input-->
+        <div id="settinghide" style="display: none;" >
+          <span class="col-lg-2 mg-2">
+            <div class="small mb-1">Video Input</div>
+            <select
+              id="videoInputSelect"
+              onchange="changeVideoInputDevice()"
+              class="custom-select custom-select-sm form-control form-control-sm"
+            ></select>
+          </span>
+          <!--Audio Input-->
+          <span class="col-lg-2 mg-2">
+            <div class="small mb-1">Audio Input</div>
+            <select
+              id="audioInputSelect"
+              onchange="changeAudioInputDevice()"
+              class="custom-select custom-select-sm form-control form-control-sm"
+            ></select>
+          </span>
+
+          <!--Video Codec-->
+          <span class="col-lg-2 mg-2">
+            <div class="small mb-1">Video Codec</div>
+            <select
+              id="videoCodecSelect"
+              onchange="changeVideoCodec()"
+              class="custom-select custom-select-sm form-control form-control-sm"
+            >
+              <option value="h264">H.264</option>
+              <option value="vp8" selected>VP8</option>
+              <option value="vp9">VP9</option>
+            </select>
+          </span>
+
+          <!--Video FPS-->
+          <span class="col-lg-2 mg-2">
+            <div class="small mb-1">Video FPS</div>
+            <input
+              id="videoFPSInput"
+              onchange="changeVideoFPS()"
+              class="form-control-sm form-control text-center mb-4"
+              type="text"
+              value="25"
+            />
+          </span>
+
+          <!--Video FPS-->
+          <span class="col-lg-2 mg-2">
+            <div class="small mb-1">Resolution</div>
+            <select
+              id="resolutionSelect"
+              onchange="changeResolution()"
+              class="custom-select custom-select-sm form-control form-control-sm"
+            >
+              <option value="480">640-480</option>
+              <option value="720">1280-720</option>
+            </select>
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 나가기 팝업 -->
+    <div class="popupWrap" id="live_exit_pop">
+      <div class="popLayer">
+        <div class="popCont">
+          <p class="tit">정말 나가시겠습니까?</p>			
+        </div>
+        <div class="btnSet">
+          <a href="javascript:void(0);" class="btn" style="font-size:14px;" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="btn type_red" id="btn_live_exit" style="font-size:14px;">나가기</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- 나가기 팝업 -->
+    
+    <!-- 종료 팝업 -->
+    <div class="popupWrap" id="live_close_pop">
+      <div class="popLayer">
+        <div class="popCont">
+          <p class="tit">정말 종료하시겠습니까?</p>			
+        </div>
+        <div class="btnSet">
+          <a href="javascript:void(0);" class="btn" style="font-size:14px;" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="btn type_red" id="btn_live_close" style="font-size:14px;">종료</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- 종료 팝업 -->
+
+
+    <!-- 오디오 선택 -->
+    <div class="popupWrap" id="live_audio_video" >
+      <div class="popLayer" style="width: 565px;">
+        <div class="popCont">
+          <p>오디오를 선택하세요</p>	
+          <label for="audioSource"></label><select id="audioSource"></select>		
+          <p>비디오를 선택하세요</p>	
+          <label for="videoSource"></label><select id="videoSource"></select>	
+        </div>
+        <div class="btnSet">
+          <a href="javascript:void(0);" class="btn" id="btn_live_audio_video_cancel" style="font-size:14px;">취소</a>
+          <a href="javascript:void(0);" class="btn type_red" id="btn_live_audio_video_ok" style="font-size:14px;">다음</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- 오디오 선택 -->
+    <!-- 오디오, 비디오 선택 -->
+    <script src="https://www.webrtc-experiment.com/getStats.js"></script>
+    <script>
+      var videoElement = null;
+      var audioSelect = null;
+      var videoSelect =  null;
+      // var videoElement = document.querySelector('video');
+      // var audioSelect = document.querySelector('select#audioSource');
+      // var videoSelect = document.querySelector('select#videoSource');
+
+      // audioSelect.onchange = getStream;
+      // videoSelect.onchange = getStream;
+      
+      // getStream().then(getDevices).then(gotDevices);
+      
+      function getDevices() {
+          // AFAICT in Safari this only gets default devices until gUM is called :/
+          return navigator.mediaDevices.enumerateDevices();
+      }
+      
+      function gotDevices(deviceInfos) {
+          window.deviceInfos = deviceInfos; // make available to console
+          console.log('Available input and output devices:', deviceInfos);
+        
+          for (const deviceInfo of deviceInfos) {
+          const option = document.createElement('option');
+          option.value = deviceInfo.deviceId;
+          if (deviceInfo.kind === 'audioinput') {
+              option.text = deviceInfo.label || `Microphone ${audioSelect.length + 1}`;
+              audioSelect.appendChild(option);
+          } else if (deviceInfo.kind === 'videoinput') {
+              option.text = deviceInfo.label || `Camera ${videoSelect.length + 1}`;
+              videoSelect.appendChild(option);
+          }
+          }
+
+
+          for (let i = 0; i < deviceInfos.length; i++) {
+                let device = deviceInfos[i];
+                if (device.kind === "videoinput") {
+                  cameraList.push({ text: device.label, id: device.deviceId });
+                } else if (device.kind === "audioinput") {
+                  micList.push({ text: device.label, id: device.deviceId });
+                }
+                // else if (device.kind === 'audiooutput') {
+                //     speakerList.push({ text: device.label, id: device.deviceId })
+                // }
+              }
+              for (let i = 0; i < cameraList.length; i++) {
+                const videoInputOption = document.createElement("option");
+                videoInputOption.value = cameraList[i].id;
+                videoInputOption.text = cameraList[i].text;
+                videoInputSelect.appendChild(videoInputOption);
+              }
+              for (let i = 0; i < micList.length; i++) {
+                const audioInputOption = document.createElement("option");
+                audioInputOption.value = micList[i].id;
+                audioInputOption.text = micList[i].text;
+                audioInputSelect.appendChild(audioInputOption);
+              }
+      }
+
+      function getStream() {
+          if (window.stream) {
+          window.stream.getTracks().forEach(track => {track.stop();});
+        }
+
+        const audioSource = audioSelect.value;
+        const videoSource = videoSelect.value;
+
+        const constraints = {
+          audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
+          video: {deviceId: videoSource ? {exact: videoSource} : undefined}
+        };
+
+        console.log("========================" + audioSource);
+        console.log("========================" + videoSource);
+
+          return navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+      }
+
+      function gotStream(stream) {
+        window.stream = stream; // make stream available to console
+      
+          audioSelect.selectedIndex = [...audioSelect.options].
+          findIndex(option => option.text === stream.getAudioTracks()[0].label);
+
+          videoSelect.selectedIndex = [...videoSelect.options].
+          findIndex(option => option.text === stream.getVideoTracks()[0].label);
+
+          videoElement.srcObject = stream;
+      }
+
+      function handleError(error) {
+        console.log('Error: ', error);
+      }		  
+      
+    </script> 
+    <!-- 오디오, 비디오 선택 -->
+    <script>
+            var entp_mem_no = {{.EntpMemNo}};
+            var entp_mem_sn = {{.SMemSn}};
+            var entp_admin = {{.EntpAdmin}};
+            var pp_mem_no = {{.PpMemNo}};		
+            var pp_mem_nm = {{.PpMemNm}};		
+            var recrut_sn = {{.RecrutSn}};
+            var live_sn = {{.pLiveSn}};
+            var entp_gbn = {{.EntpGbn}};
+            var member_list = {{.LiveMemList}};	
+            var member_list_cnt =  member_list === null?0:member_list.length;
+            // var remon_list_cnt =  member_list_cnt + 1;	// 구직자 + 맴버 인원수
+
+            // var pto_path = {{.PtoPath}};
+            
+            // // var videoElement = document.querySelector('video');
+            // var audioSelect = document.querySelector('select#audioSource');
+            // var videoSelect = document.querySelector('select#videoSource');
+            
+            
+            let cameraList = [];
+            let micList = [];
+            var session_key_list = [];
+            var entp_mem_pos = [];
+
+            //const enterBtn = document.querySelector("#enterBtn");
+            const checkBtn = document.querySelector("#checkBtn");
+            const otherVideos= document.getElementById('otherVideos');
+            let liveThumStream=[];
+            liveThumStream[0] = document.querySelector('#live-thum-stream-1');
+            liveThumStream[1] = document.querySelector('#live-thum-stream-2');
+            liveThumStream[2] = document.querySelector('#live-thum-stream-3');
+            liveThumStream[3] = document.querySelector('#live-thum-stream-4');
+
+            let otherVideo=[];
+            otherVideo[0] = document.querySelector('#otherVideos1');
+            otherVideo[1] = document.querySelector('#otherVideos2');
+            otherVideo[2] = document.querySelector('#otherVideos3');
+            otherVideo[3] = document.querySelector('#otherVideos4');
+
+            if (entp_admin == '01') {
+              var close_button = document.querySelector('#live-nvn-close-button');
+              var exit_button = document.querySelector('#live-nvn-exit-button');
+              close_button.removeAttribute("style");
+              exit_button.removeAttribute("style");
+            }
+            else if (entp_gbn == 'E') {
+              // var close_button = document.querySelector('#live-nvn-close-button');
+              var exit_button = document.querySelector('#live-nvn-exit-button');
+              exit_button.removeAttribute("style");
+            }
+
+
+            const selectedRoom = document.getElementById(
+              "selectedRoom"
+            );
+            let isConnected = false;
+            let remon;
+            let dummyRemon;
+            let roomName = entp_mem_no+"_"+recrut_sn+"_"+live_sn;
+            let currentRoom=[];
+            const rooms = [];
+            const key = "859ee8d60826e81cef04403c88a6c5cf91dd2929fe9f4ff4180bcdbe9ca4f815";
+            const serviceId = "51612ee3-a43c-41d0-9801-4a7e06a8eaf3";
+
+            // 새로 고침이나 종료시에 리모트 몬스터 객체를 close 한다.
+            window.onbeforeunload = function(e){
+                // 프로그램 종료 or F5키 눌렀을때
+                remon.close()
+
+                var returnValue = {
+                    stat : "Force_Exit",
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    live_sn: live_sn
+                };
+                        
+                if (window.opener) {
+                    if (window.opener.getLiveItvResult) {
+                    window.opener.getLiveItvResult(JSON.stringify(returnValue)); 		
+                    } else {    
+                        sessionStorage.removeItem(`LiveItv_${live_sn}`);    
+                    }
+                } else {     
+                    sessionStorage.removeItem(`LiveItv_${live_sn}`);    
+                }    
+            }
+  
+            document.onkeydown = function(e){
+                /* F5, Ctrl+r, Ctrl+F5 */
+                if(e.keyCode == 116 || e.ctrlKey == true && (e.keyCode == 82)){
+                    e.cancelBubble = true; 
+                    e.returnValue = false; 
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 1000);
+                    return false;
+                }
+            }
+
+            function exitWindowPop() {
+
+              $('html').scrollTop(0);
+              openPopup("live_exit_pop");		
+            }
+
+            function closeWindowPop() {
+              $('html').scrollTop(0);
+              openPopup("live_close_pop");
+            }
+
+
+            var ajax_remom_save_key = function(token, memNo, gbnCd) {
+
+              // var formData = new FormData();
+              //   formData.append("room_id", roomName);
+              //   formData.append("channel_id", token);
+              //   formData.append("my_mem_no", "E2019011900001");
+              //   formData.append("gbn_cd", "002");
+                
+              $.ajax({
+                cache: false,
+                  url: "/live/conference/register/channelId",
+                  data: {
+                    "room_id": roomName,
+                    "channel_id": token,
+                    "my_mem_no":memNo,
+                    "gbn_cd": gbnCd
+                  },
+                  type: "POST",
+                  dataType: "json",
+                  error : function(e) {
+                    console.log("error" + e);
+                  },
+                  success : function(rep) {
+                   
+                 }
+              });		
+              
+              console.log(`================================= ajax_remom_save_key`);
+            }  
+
+            var ajax_remom_get_key = function(token,retry) {
+
+              $.ajax({
+                  cache: false,
+                  url: "/live/conference/get/channelId",
+                  data: {
+                    "room_id": roomName,
+                    "channel_id": token,
+                  },
+                  type: "POST",
+                  dataType: "json",
+                  error : function(e) {
+                    console.log("error : " + JSON.stringify(e));
+                    // alert("error : " + JSON.stringify(e));
+                    if(retry <= 1) {  // 2번까지 찾는다.
+                      setTimeout( () => {
+                        ajax_remom_get_key(token,retry + 1)
+                        console.log("[" +token + "] ajax_remom_get_key retry count:" + retry);
+                      }, 1000); 
+                    }
+                      
+                  },
+                  success : function(rep) {
+                    console.log(`================================= rep:`,rep);
+                    session_key_list[roomName + "-" + rep.ChnnelId] = rep.EntpGbn 
+                    let newVideo = document.createElement('video') 
+                    thumPos = 0;
+                    if(entp_mem_pos[rep.PpChrgSn] != null)
+                    {
+                      thumPos = entp_mem_pos[rep.PpChrgSn];
+                    }
+                    config = settingVideoView(rep.EntpGbn == "1"?"E":"P","remote",newVideo,roomName + "-" + rep.ChnnelId,thumPos,rep.Nm)
+                    newVideo.remon = new Remon({ config })
+                    newVideo.remon.joinCast(roomName + ":" + rep.ChnnelId)
+                    // let newVideo = document.createElement('video')
+                    // videoAttrs.id = roomName + "-" + rep.ChnnelId;
+                    // Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
+                    // config.view.remote = `#${newVideo.id}`
+                    // newVideo.remon = new Remon({ config })
+                    // otherVideos.appendChild(newVideo)
+                    // newVideo.remon.joinCast(roomName + ":" + rep.ChnnelId)
+                }
+            });		
+
+              console.log(`================================= ajax_remom_get_key`);
+              }  
+
+            // function getConnectedDevices(type, callback) {
+            //         navigator.mediaDevices.enumerateDevices()
+            //         .then(devices => {
+            //             const filtered = devices.filter(device => device.kind === type);
+            //             callback(filtered);
+            //         });
+            // }
+
+            // getConnectedDevices('videoinput', cameras => console.log('Cameras found', cameras));
+
+            // please register your own service key from remotemonster site.
+            let config = {
+              credential: {
+                key: key,
+                serviceId: serviceId,
+                wsurl : "wss://signal.remotemonster.com/ws",
+                resturl : "https://signal.remotemonster.com/rest",
+              },
+              view: {
+                remote: "#otherVideos",
+                local: "#localVideo"
+              },
+              media: {
+                  video: {
+                      width: { min: 320, max: 640 },
+                      height: { min: 240, max: 480 },
+                      frameRate: { min: 8, max: 25 },
+                      maxBandwidth: 450,
+                      codec: 'vp8',
+                      // facingMode: 'user' 모바일은 전면이다.
+                  },
+                  audio: true
+              },
+            };
+
+            const videoAttrs = {
+                            class : "remote-video center w-320 h-240",
+                            autoplay : true,
+                            muted : true,
+                            controls: true,
+                            style :"z-index:1;background: rgba(0, 0, 0, 0.5); width: 640px;"
+                          }
+
+            const videoAttrs_local = {
+                            // class : "local-video center w-205 h-155",
+                            // autoplay : true,
+                            // controls: true,
+                            // style :"z-index:1;background: rgba(0, 0, 0, 0.5); width: 205;"
+                          }
+
+
+                          
+                          
+            const listener = {
+              onInit(token) {
+                console.log(`================================= remon.listener.onInit ${token} at listener`);
+                 ajax_remom_save_key(token,pp_mem_no,entp_mem_sn);
+                // console.log(`================================= end111111111 remon.listener.onInit ${token} at listener`);
+                
+
+              },
+              onConnect(chid) {
+                console.log(`================================= remon.listener.onConnect ${chid} at listener`);
+              },
+              onComplete() {
+                console.log(`================================= remon.listener.onComplete: ${remon.getChannelId()} `);
+                currentRoom[remon.getChannelId()] = true;
+
+                if (entp_gbn == "E") {
+                   videoElement = document.querySelector('video#localVideo');
+                }
+                else {
+                  videoElement = document.querySelector('video#box_localVideo');
+                }
+                // videoElement = document.querySelector('video');
+                audioSelect = document.querySelector('select#audioSource');
+                videoSelect = document.querySelector('select#videoSource');
+
+                audioSelect.onchange = getStream;
+                videoSelect.onchange = getStream;
+                
+                getStream().then(getDevices).then(gotDevices);
+
+              },
+              onDisconnectChannel() {
+                // is called when other peer hang up.
+                remon.close();
+                isConnected = false;
+              },
+              onClose() {
+                // is called when remon.close() method is called.
+                console.log(`================================= remon.listener.onClose: ${remon.getChannelId()}`);
+              },
+              onError(error) {
+                console.log(`================================= remon.listener.onError: ${remon.getChannelId()} ${error}`);
+                if (error == 4181 || error == 4182) {
+                  alert("error : " + "카메라 또는 마이크를 이용할 수 없음("+ error +")");
+                }
+                else {
+                  alert("error : " + error);
+                }
+                
+
+                // 4181, 4182 카메라 또는 마이크를 이용할 수 없음 - 처리 필요
+              },
+              onStat(result) {
+                const stat = `State: l.cand: ${result.localCandidate} /r.cand: ${result.remoteCandidate} /l.res: ${result.localFrameWidth} x ${result.localFrameHeight} /r.res: ${result.remoteFrameWidth} ${result.remoteFrameHeight} /l.rate: ${result.localFrameRate} /r.rate: ${result.remoteFrameRate} / Health: ${result.rating}`
+                console.log(stat)
+              },
+              onRoomEvent(result){
+                //join
+                console.log(`================================= onRoomEvent: ${result}`);
+                  switch (result.event) {
+                    case 'join':
+                        if(!currentRoom[result.channel.id]){
+                          currentRoom[result.channel.id] = true;
+            
+                            ajax_remom_get_key(result.channel.id.split(":")[1],0);
+
+                        }
+                      break;
+                    case 'leave':
+                        if(currentRoom[result.channel.id] && result.channel.id !== remon.getChannelId()){
+                          
+                          let video = document.getElementById(result.channel.id.replace(":","-"));
+                          if(session_key_list[result.channel.id.replace(":","-")] == "1") { // 기업
+                            for(var i=0;i < otherVideo.length; i++) {
+                              if (otherVideo[i].contains(video) == true)
+                                otherVideo[i].removeChild(video);
+                            }
+
+                            for(var i=0;i < liveThumStream.length; i++) {
+                              if (liveThumStream[i].contains(video) == true)
+                                liveThumStream[i].removeChild(video);
+                            }
+
+                              
+                          }
+                          else {
+                            for(var i=0;i < otherVideo.length; i++) {
+                              if (otherVideo[i].contains(video) == true)
+                                otherVideo[i].removeChild(video);
+                            }
+
+                            for(var i=0;i < liveThumStream.length; i++) {
+                              if (liveThumStream[i].contains(video) == true)
+                                liveThumStream[i].removeChild(video);
+                            }
+                          }
+                          
+                          delete currentRoom[result.channel.id]
+                        }
+                      break;
+                  }
+                console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
+                console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
+              },
+              onMessage(msg) {
+                console.log(`EVENT FIRED: onMessage:` + msg)
+              }
+            };
+
+            // async function getDevices() {
+            //   var devices = await navigator.mediaDevices.enumerateDevices();
+            //   for (let i = 0; i < devices.length; i++) {
+            //     let device = devices[i];
+            //     if (device.kind === "videoinput") {
+            //       cameraList.push({ text: device.label, id: device.deviceId });
+            //     } else if (device.kind === "audioinput") {
+            //       micList.push({ text: device.label, id: device.deviceId });
+            //     }
+            //     // else if (device.kind === 'audiooutput') {
+            //     //     speakerList.push({ text: device.label, id: device.deviceId })
+            //     // }
+            //   }
+            //   for (let i = 0; i < cameraList.length; i++) {
+            //     const videoInputOption = document.createElement("option");
+            //     videoInputOption.value = cameraList[i].id;
+            //     videoInputOption.text = cameraList[i].text;
+            //     videoInputSelect.appendChild(videoInputOption);
+            //   }
+            //   for (let i = 0; i < micList.length; i++) {
+            //     const audioInputOption = document.createElement("option");
+            //     audioInputOption.value = micList[i].id;
+            //     audioInputOption.text = micList[i].text;
+            //     audioInputSelect.appendChild(audioInputOption);
+            //   }
+            // }
+            function changeVideoInputDevice() {
+              remon.setVideoDevice(
+                videoInputSelect.options[videoInputSelect.selectedIndex].value
+              );
+            }
+            function changeAudioInputDevice() {
+              remon.setAudioDevice(
+                audioInputSelect.options[audioInputSelect.selectedIndex].value
+              );
+            }
+            function changeVideoCodec() {
+              Object.assign(config.media.video, {
+                codec:
+                  videoCodecSelect.options[videoCodecSelect.selectedIndex].value
+              });
+            }
+            function changeVideoFPS() {
+              Object.assign(config.media.video, {
+                frameRate: {
+                  max: parseInt(videoFPSInput.value, 10),
+                  min: parseInt(videoFPSInput.value, 10)
+                }
+              });
+            }
+            function changeResolution() {
+              resolution = resolutionSelect.options[
+                resolutionSelect.selectedIndex
+              ].text.split("-");
+              config.media.video.width = resolution[0];
+              config.media.video.height = resolution[1];
+            }
+            // getDevices();
+
+            initHtml()
+            
+
+            function settingVideoView(entp_gbn,view_port,newVideo,videoId,thumPos,ppNm) {
+              //let newVideo = document.createElement('video');
+              if (entp_gbn == "E") {
+                if (view_port == "local") {
+                  videoAttrs_local.id = "localVideo";
+                } 
+                else {
+                  videoAttrs_local.id = videoId;
+                }
+
+                videoAttrs_local.class = "local-video center w-205 h-155"
+                videoAttrs_local.style = "z-index:1;background: rgba(0, 0, 0, 0.5); width: 205px; height: 155px"
+                Object.keys(videoAttrs_local).forEach(key => newVideo.setAttribute(key, videoAttrs_local[key]))
+
+                
+                liveThumStream[thumPos].appendChild(newVideo)
+                if (view_port == "local") {
+                  config.view.local =  `#${newVideo.id}`;
+                  //newVideo.setAttribute("muted",true)
+                  newVideo.muted = true;
+                  newVideo.autoplay = true;
+                } 
+                else {
+                  config.view.remote =  `#${newVideo.id}`;
+                  newVideo.autoplay = true;
+                  newVideo.controls = true;
+                }
+                config.media.video.width.min = 205;
+                config.media.video.width.max = 205;
+                config.media.video.height.min = 155;
+                config.media.video.height.max = 155;
+                return config;
+              }
+              else {
+                let box_div = document.createElement('div');
+                box_div.className = "live-nvn-face-box";
+                box_div.innerHTML = "<div class=\"live-nvn-face-top\"><img src=\"{{.PtoPath}}\" onerror=\"this.src='/static/images/img-profile-empty-02.svg'\" class=\"live-nvn-face-profile-pic\"><div class=\"live-nvn-face-profile-name\" id=\"live-nvn-face-profile-name\">"+ppNm+"</div></div>"
+
+                if (view_port == "local") {
+                  videoAttrs_local.id = "box_localVideo";
+                  box_div.id = "localVideo";
+                  //newVideo.setAttribute("muted",true)
+                  newVideo.muted = true;
+                  newVideo.autoplay = true;
+                } 
+                else {
+                  videoAttrs_local.id = "box_" + videoId;
+                  box_div.id = videoId
+                  newVideo.autoplay = true;
+                  newVideo.controls = true;
+                }
+
+                //videoAttrs_local.class = "local-video center w-480 h-640"
+                //videoAttrs_local.style = "z-index:1;background: rgba(0, 0, 0, 0.5); width: 480px;"
+                videoAttrs_local.class = "local-video center w-360 h-480"
+                videoAttrs_local.style = "z-index:1;background: rgba(0, 0, 0, 0.5); width: 360px;"
+
+                Object.keys(videoAttrs_local).forEach(key => newVideo.setAttribute(key, videoAttrs_local[key]))
+                
+                box_div.appendChild(newVideo)
+
+
+                if($('div#otherVideos1').find('div.live-nvn-face-box').length == 0) {
+                  otherVideo[0].appendChild(box_div);
+
+                }
+                else if($('div#otherVideos2').find('div.live-nvn-face-box').length == 0) {
+                  otherVideo[1].appendChild(box_div);
+
+                }
+                else if($('div#otherVideos3').find('div.live-nvn-face-box').length == 0) {
+                  otherVideo[2].appendChild(box_div);
+
+                }
+                else if($('div#otherVideos4').find('div.live-nvn-face-box').length == 0) {
+                  otherVideo[3].appendChild(box_div);
+
+                }
+
+
+                if (view_port == "local") {
+                  config.view.local =  `#${newVideo.id}`;
+                } 
+                else {
+                  config.view.remote =  `#${newVideo.id}`;
+                }
+                config.media.video.width.min = 240;
+                config.media.video.width.max = 480;
+                config.media.video.height.min = 320;
+                config.media.video.height.max = 640;
+                return config;
+              }
+
+              
+            }
+
+            function initHtml() {		
+              
+              // 면접관(기업)
+              var num = 1;
+              var my_num;
+              for (var i = 0; i < member_list.length; i++) {
+                
+                
+                if ('E' == member_list[i].LmEntpGbn) {	// 면접관
+                  //$(`#live-thum-stream-${num}`).append(`<video class=\"live-thum-stream\" id=\"remoteVideo${num}\" autoplay controls></video>`);
+                  entp_mem_pos[member_list[i].LmPpChrgSn] = num - 1;
+                  $(`#live-thum-stream-${num}-tit1`).append(`${member_list[i].LmPpChrgBpNm}`);
+
+                  $(`#live-thum-stream-${num}-tit2`).append(`${member_list[i].LmPpChrgNm}`);
+
+                  $(`#live-thum-mute-${num}`).attr("id",`remoteMute${num}`);
+                }
+                
+                num++;		
+                
+                //console.log(`====== member: ${member_list[i].LmPpChrgGbnCd}, ${member_list[i].LmPpChrgNm}, ${member_list[i].LmPpChrgBpNm}, ${member_list[i].LmPpChrgSn}`);		
+                //console.log(`====== (${member_list[i].LmPpChrgNm}): ${vd_html}`);		
+              }		
+            }
+
+    
+            
+            createDummyRemonForSearchLoop();
+            startItv();
+            //start();
+
+            async function start_check() {
+              remon.sendMessage("ajsfljsadflkjaslfjlasjkf ");
+              // setInterval(async function () {
+              //     if (!isConnected) {
+              //         dummyRemon.config.credential.serviceId = serviceId;
+              //         dummyRemon.config.credential.key = key;
+              //         var searchResult = await dummyRemon.fetchCasts();
+              //         // while (channelList.firstChild) {
+              //         //     channelList.removeChild(channelList.firstChild);
+              //         // }
+              //         // searchResult.forEach((ch, i) => {
+              //         //     if (ch.status === 'COMPLETE' && ch.id !== myChannelId && !isCaster) {
+              //         //         var btn = document.createElement("input");
+              //         //         btn.type = "button";
+              //         //         btn.name = ch.id;
+              //         //         btn.value = ch.name;
+              //         //         btn.className = "btn btn-primary btn-user btn-block text-center";
+              //         //         btn.addEventListener('click', (evt) => {
+              //         //             channelNameInput.value = ch.id;
+              //         //             start(true);
+              //         //             evt.preventDefault();
+              //         //         }, false);
+
+              //         //         channelList.appendChild(btn);
+              //         //     }
+              //         // });
+              //     }
+              // }, 3000);
+            }
+
+
+            async function startItv() {
+              if (isConnected) {
+                isConnected = false;
+                // document.querySelector('#enterBtn').innerHTML = "Enter";
+                Object.keys(currentRoom).forEach(function(id){
+                  if( id !== remon.getChannelId()){
+                    let video = document.getElementById(id.replace(":","-"));
+                    if(session_key_list[id.replace(":","-")] == "1") { // 기업
+                      for(var i=0;i < otherVideo.length; i++) {
+                        if (otherVideo[i].contains(video) == true)
+                          otherVideo[i].removeChild(video);
+                      }
+
+                      for(var i=0;i < liveThumStream.length; i++) {
+                        if (liveThumStream[i].contains(video) == true)
+                          liveThumStream[i].removeChild(video);
+                      }
+                    }
+                    else {
+                      for(var i=0;i < otherVideo.length; i++) {
+                        if (otherVideo[i].contains(video) == true)
+                          otherVideo[i].removeChild(video);
+                      }
+
+                      for(var i=0;i < liveThumStream.length; i++) {
+                        if (liveThumStream[i].contains(video) == true)
+                          liveThumStream[i].removeChild(video);
+                      }
+                    }
+                  }
+                  delete currentRoom[id];
+                })
+                remon.close()
+              } 
+              // else {
+                isConnected = true;
+                // document.querySelector('#enterBtn').innerHTML = "leave";
+
+                let ch_id = await remon.createRoom(roomName);
+               
+                // let ch_id = remon.getChannelId();                
+               // console.log("============================= ch_id: ", remon.getChannelId());
+
+                let participants = await remon.fetchRooms(roomName);
+
+
+                participants.forEach(async function(participant){
+                  if(!currentRoom[participant.id]){
+                          currentRoom[participant.id] = true;
+                          ajax_remom_get_key(participant.id.split(":")[1],0);
+                            // let newVideo = document.createElement('video');
+                            // videoAttrs.id =  participant.id.replace(":","-");
+                            // Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
+                            // config.view.remote = `#${newVideo.id}`
+                            // newVideo.remon = new Remon({ config })
+                            // otherVideos.appendChild(newVideo)
+                            // await newVideo.remon.joinCast(newVideo.id.replace("-",":"));
+                        }
+                });
+              //}
+            }
+
+
+
+            function createDummyRemonForSearchLoop() {
+              if (remon) remon.close();
+
+              let newVideo = document.createElement('video')
+
+              thumPos = 0;
+              if(entp_mem_pos[entp_mem_sn] != null)
+              {
+                thumPos = entp_mem_pos[entp_mem_sn];
+              }
+
+              config = settingVideoView(entp_gbn,"local",newVideo,"",thumPos,pp_mem_nm)
+              
+
+              
+              remon = new Remon({ config, listener });
+            }
+
+            function disConnectRemoteMonster() {
+              if (remon) remon.close();
+              isConnected = false;
+            }
+
+            function ajaxExitProc(exit_stat) {			
+
+              var in_url = (exit_stat == "Exit" ? '/live/nvn/exit' : '/live/nvn/close');
+
+              $.ajax({
+                cache: false,
+                url: in_url,
+                data: {
+                    entp_mem_no: entp_mem_no,	
+                    entp_mem_sn: entp_mem_sn,	
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    pp_mem_nm: pp_mem_nm,
+                    live_sn: live_sn
+                  },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                  console.log("error" + e);
+                },
+                success: function (rep) {
+                    if (rep.LirEntpMemNo) {
+                  		var entp_mem_no = rep.LirEntpMemNo;	// 기업 회원 번호
+                  		var recrut_sn = rep.LirRecrutSn;
+                  		var pp_mem_no = rep.LirPpMemNo;
+                  		var pp_mem_nm = rep.LirPpMemNm;
+                  		var live_sn = rep.LirLiveSn;
+                  		var entp_nm = rep.LirEntpNm;
+                  		var name = rep.LirNm;
+                  		var live_itv_sday = rep.LirLiveItvSday;
+                  		var live_itv_stime = rep.LirLiveItvSTime;
+                  		var live_itv_eday = rep.LirLiveItvEday;
+                  		var live_itv_etime = rep.LirLiveItvETime;
+                  		var live_itv_jt = rep.LirLiveItvJt;
+                  		var sdt_tstmp = rep.LirSdtTstmp;
+
+                  		closePopup();			
+
+	                  	var returnValue = {
+		                    stat : exit_stat,
+		                    recrut_sn: recrut_sn,
+		                    pp_mem_no: pp_mem_no,
+		                    pp_mem_nm: pp_mem_nm,
+		                    entp_nm: entp_nm,
+		                    live_sn: live_sn,
+		                    live_itv_sday: live_itv_sday,
+		                    live_itv_stime: live_itv_stime,
+		                    live_itv_eday: live_itv_eday,
+		                    live_itv_etime: live_itv_etime,
+		                    live_itv_jt: live_itv_jt,
+		                    sdt_tstmp: sdt_tstmp
+	                    };
+                    
+                  		if (window.opener) {
+                     		if (window.opener.getLiveItvResult) {
+                  				window.opener.getLiveItvResult(JSON.stringify(returnValue));
+                     		} else {   
+                        		sessionStorage.removeItem(`LiveItv_${live_sn}`); 
+                  	 		}
+                  		} else {
+                     		sessionStorage.removeItem(`LiveItv_${live_sn}`); 
+                  		}
+                            
+                  		window.open(location, '_self').close();						
+                    } else {                    
+                        var returnValue = {
+                            stat : "Force_Exit",
+                            recrut_sn: recrut_sn,
+                            pp_mem_no: pp_mem_no,
+                            live_sn: live_sn
+                        };
+                                
+                        if (window.opener) {
+                            if (window.opener.getLiveItvResult)
+                                window.opener.getLiveItvResult(JSON.stringify(returnValue)); 		
+                            else {    
+                                sessionStorage.removeItem(`LiveItv_${live_sn}`);
+                            }
+                        } else {
+                            sessionStorage.removeItem(`LiveItv_${live_sn}`); 
+                        }
+
+	                  window.open(location, '_self').close();						
+                        window.opener.location.href = "/login";
+                    }
+                }
+              });
+            }
+
+            // enterBtn.addEventListener("click",
+            //   evt => {
+            //     startItv();
+            //     evt.preventDefault();
+            //   },
+            //   false
+            // );
+
+            // checkBtn.addEventListener("click",
+            //   evt => {
+            //     start_check();
+            //     evt.preventDefault();
+            //   },
+            //   false
+            // );
+
+            	$(document).ready(function() {
+
+                openPopup("live_audio_video");		
+
+                //initHtml(); 
+              });		
+            
+            $(document).off("click", "#btn_live_audio_video_ok").on("click", "#btn_live_audio_video_ok", function (e) {
+              closePopup("live_audio_video");	
+              
+              $(".live-wrapper").show();
+              
+              //startItv();
+            });	
+
+                      
+            $(document).off("click", "#btn_live_audio_video_cancel").on("click", "#btn_live_audio_video_cancel", function (e) {
+              closePopup("live_audio_video");	
+              
+              var returnValue = {
+                stat : "Force_Exit",
+                recrut_sn: recrut_sn,
+                pp_mem_no: pp_mem_no,
+                live_sn: live_sn
+              };
+                      
+              if (window.opener) {
+              	  if (window.opener.getLiveItvResult) {
+                	  window.opener.getLiveItvResult(JSON.stringify(returnValue)); 
+                  } else {    
+                      sessionStorage.removeItem(`LiveItv_${live_sn}`);
+                  }
+              } else {    
+                  sessionStorage.removeItem(`LiveItv_${live_sn}`);              
+              }
+
+              window.close();
+            });
+
+            $(document).off("click", "#btn_live_exit").on("click", "#btn_live_exit", function (e) {
+              e.preventDefault();
+              disConnectRemoteMonster();
+              ajaxExitProc("Exit");		
+            });
+
+            $(document).off("click", "#btn_live_close").on("click", "#btn_live_close", function (e) {
+              e.preventDefault();
+              disConnectRemoteMonster();
+              ajaxExitProc("Close");
+            });	
+
+          </script>
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+        </footer>
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+    <!-- Bootstrap core JavaScript-->
+    <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
+    <!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
+    <!-- Core plugin JavaScript-->
+    <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
+
+    <!-- Custom scripts for all pages-->
+    <!-- <script src="js/sb-admin-2.min.js"></script> -->
+
+    <script>
+      // $(document).ready(function() {
+      //   //$("#accordionSidebar").load("nav.html");
+      // });
+    </script>
+  </body>
+</html>

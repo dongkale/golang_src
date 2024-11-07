@@ -1,0 +1,138 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+	<input type="hidden" id="page_no" value="{{.PageNo}}">
+		<h2>고객센터</h2>
+		<div class="customer">
+			<div class="gridTop">
+				<h3>나의 문의 내역</h3>
+				<div class="optionBtn">
+					<a href="/setting/inquiry/write" class="btn icoPlus"><em></em> 신규 문의하기</a>
+				</div>
+			</div>
+			<div class="gridWrap inquiry">
+				<table>
+					<colgroup>
+						<col width="140px">
+						<col width="124px">
+						<col>
+						<col width="100px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>문의 날짜</th>
+						<th>종류</th>
+						<th>제목</th>
+						<th>상태</th>
+					</tr>
+					</thead>
+					<tbody>
+					<!--<td class="reply complete">답변 완료</td>-->
+					{{if .InquiryList}}
+						{{range .InquiryList}}
+						<tr>
+							<td>{{.RegDy}}</td>
+							<td>{{.InqGbnNm}}</td>
+							<td class="text"><a href="javascript:void(0);" id="inquiry_detail" data-sn="{{.InqSn}}">{{.InqTitle}}</a></td>
+							{{if eq "1" .AnsYn}}
+							<td class="reply complete">답변 완료</td>
+							{{else}}
+							<td class="reply">답변 대기</td>
+							{{end}}
+						</tr>
+						{{end}}
+					{{else}}
+					<tr style="height:200px">
+						<td colspan="4">
+							문의 내역이 없습니다.
+						</td>
+					</tr>
+					{{end}}
+					</tbody>
+				</table>
+			</div>
+			<div class="paging">
+				{{str2html .Pagination}}
+			</div>
+		</div>
+	</div>
+
+    <script type="text/javascript">
+	// 페이징처리
+	$(document).off("click", ".goPage").on("click",".goPage",function(e) {
+		var pn = $(this).data("page");
+		paging(pn);
+	});
+	$(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+		var pn = $(this).data("page");
+		paging(pn);
+	});
+	$(document).off("click", ".goPage").on("click",".goPage",function(e) {
+		var pn = $(this).data("page");
+		paging(pn);
+	});
+	
+	var paging = function(pageno) {
+		$("#page_no").val(pageno);
+		ajaxInquiryList();
+	}	
+	
+	// 문의 상세 페이지 이동
+		$(document).off("click", "#inquiry_detail").on("click", "#inquiry_detail", function(){
+		var sn = $(this).data("sn");
+		var page_no = $("#page_no").val();
+		window.location.href="/setting/inquiry/detail?sn="+sn+"&pn="+page_no;
+	});
+	
+	// 리스트 페이지 AJAX
+	var ajaxInquiryList = function(v) {
+		var page_no = $("#page_no").val();
+		$.ajax({
+			type: "POST",
+			url: "/setting/inquiry/list",
+			data:{
+				pn : page_no,
+			},
+			dataType: "json",
+			error : function() {
+			},
+			success : function(rep) {
+				if(rep.RtnInquiryListData.length > 0){
+					$(".inquiry").find("tbody").children().remove();
+					$.each(rep.RtnInquiryListData,function(e) {
+						var html = "";
+						html += "<tr>";
+						html += "<td>"+rep.RtnInquiryListData[e].RegDy+"</td>";
+						html += "<td>"+rep.RtnInquiryListData[e].InqGbnNm+"</td>";
+						html += "<td class=\"text\"><a href=\"javascript:void(0);\" id=\"inquiry_detail\" data-sn=\""+rep.RtnInquiryListData[e].InqSn+"\">"+rep.RtnInquiryListData[e].InqTitle+"</a></td>";
+						if (rep.RtnInquiryListData[e].AnsYn == "1") {
+							html += "<td class=\"reply\">답변 완료</td>";
+						} else {
+							html += "<td class=\"reply complete\">답변 대기</td>";	
+						}
+						html += "</tr>";
+						$(".inquiry").find("tbody").append(html);
+					})
+					$(".paging").children().remove();
+					$(".paging").append(rep.RtnInquiryListData[0].Pagination);
+				}else{
+					$(".inquiry").find("tbody").children().remove();
+					var html = "";
+					html += "<tr style=\"height: 200px;\">";
+					html += "<td colspan=\"3\">등록된 문의내역이 없습니다.</td>";
+					html += "</tr>";
+					$(".inquiry").find("tbody").append(html);
+					$(".paging").children().remove();
+				}
+			}
+		});				
+	}  
+	</script>    		
+
+{{end}} 

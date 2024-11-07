@@ -1,0 +1,1839 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- Header start -->
+    {{template "include/header.html" .}}
+    <!-- Header end -->
+    <input type="hidden" id="sort_gbn" value="">
+    <input type="hidden" id="vp_yn" value="9">
+    <input type="hidden" id="favr_aply_pp" value="9">
+    <input type="hidden" id="live_req_stat_cd" value="A">
+    <input type="hidden" id="view_type" value="L">
+    <input type="hidden" id="page_no" value="1">
+    <input type="hidden" id="arr_applicant" value="">
+    <input type="hidden" id="arr_recrut_sn" value="">
+    <input type="hidden" id="check_all_list" value="0">
+    <input type="hidden" id="evl_prgs_stat" value="{{.EvlPrgsStat}}">
+
+    <input type="hidden" id="msg_gbn_cd">
+
+    <input type="hidden" id="apply_sort_cd" value={{.ApplySortCd}}>
+    <input type="hidden" id="apply_sort_way" value="{{.ApplySortWay}}">
+
+    <div class="content">
+        <ul class="tabMenu tabGbn">
+            <li class='{{if eq "00" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                    href="/applicant/list?evl_prgs_stat=00">
+                    전체 <span>{{.ApplyCnt}}</span>
+                </a></li>
+            <li class='{{if eq "02" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px;padding: 0px 20px;"
+                                                                    href="/applicant/list?evl_prgs_stat=02">
+                    대기 <span>{{.IngCnt}}</span>
+                </a></li>
+            <li class='{{if eq "05" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                    href="/applicant/list?recrut_sn={{.RecrutSn}}&evl_prgs_stat=05">
+                    서류 합격 <span>{{.DcmntPassCnt}}</span>
+                </a></li>
+            <li class='{{if eq "06" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                    href="/applicant/list?recrut_sn={{.RecrutSn}}&evl_prgs_stat=06">
+                    서류 불합격 <span>{{.DcmntFailCnt}}</span>
+                </a></li>
+            <li class='{{if eq "03" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                    href="/applicant/list?evl_prgs_stat=03">
+                    합격 <span>{{.PassCnt}}</span>
+                </a></li>
+            <li class='{{if eq "04" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 20px;"
+                                                                    href="/applicant/list?&evl_prgs_stat=04">
+                    불합격 <span>{{.FailCnt}}</span>
+                </a></li>
+            
+            <!--<li class='{{if eq "07" .EvlPrgsStat}}active{{end}}'><a style="font-size: 12px; padding: 0px 15px;"
+                                                                    href="/applicant/list?&evl_prgs_stat=05">
+                    90일 <span>000</span>
+                </a></li>-->     
+        </ul>
+        <div class="searchForm recruit">
+            {{/*			<select name="job_grp_cd" id="job_grp_cd" required class="st04" style="text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;width:150px;overflow:hidden;">*/}}
+            <select name="job_grp_cd" id="job_grp_cd" required class="st04">
+                <option value="" disabled selected>직무</option>
+                <option value="A">직무</option>
+                {{if .ApJobGrpList}}
+                    {{range .ApJobGrpList}}
+                        <option value="{{.ApJobGrpCd}}">{{.ApJobGrpNm}}</option>
+                    {{end}}
+                {{end}}
+            </select>
+            <select name="sex" id="sex" required class="st03">
+                <option value="" disabled selected>성별</option>
+                <option value="A">성별</option>
+                <option value="M">남자</option>
+                <option value="F">여자</option>
+            </select>
+            <select name="age" id="age" required class="st02">
+                <option value="" disabled selected>연령</option>
+                <option value="00">연령</option>
+                <option value="01">19세 이하</option>
+                <option value="02">20~29세</option>
+                <option value="03">30~39세</option>
+                <option value="04">40~49세</option>
+                <option value="05">50~59세</option>
+                <option value="06">60세 이상</option>
+            </select>
+            <div class="search st02">
+                <input type="text" name="keyword" id="keyword" maxlength="30" placeholder="검색 키워드를 입력해주세요." class="it">
+                <a href="javascript:void(0);" id="btn_search" class="btn type_blue st02">검색</a>
+            </div>
+            <div class="checkOption">
+                <input type="checkbox" name="checkbox" class="custom" id="chk_vp">
+                <label style="font-size: 12px;" for="chk_vp">영상프로필 보유자</label>
+                <input type="checkbox" name="checkbox" class="custom" id="chk_favr_aply_pp">
+                <label style="font-size: 12px;" for="chk_favr_aply_pp">관심지원자</label>
+                <input type="checkbox" name="checkbox" class="custom" id="chk_live_stat">
+                <label style="font-size: 12px;" for="chk_live_stat">라이브 인터뷰 요청 상태</label>
+                <input type="checkbox" name="checkbox" class="custom" id="chk_live_req_stat">
+                <label style="font-size: 12px;" for="chk_live_req_stat">라이브 인터뷰 예정자 상태</label>
+            </div>
+        </div>
+        <div class="recruitList recrut_info">
+            <div class="tit">
+                <p class="total">
+                    총 <strong><span id="tcnt">{{.RslTotCnt}}</span></strong>명
+                    {{if lt 0 .RslTotCnt}}
+                        <a href="javascript:void(0);" id="down_excel" class="btn btnExcel"><span></span>엑셀로 저장</a>
+                        {{if eq "01" .SAuthCd}}
+                            <a href="javascript:void(0);" id="btn_eval_pass" class="btn" disabled>합격</a>
+                            <a href="javascript:void(0);" id="btn_eval_unpass" class="btn" disabled>불합격</a>
+                            <!--<a href="javascript:void(0);" id="btn_live_itv_nvn_req" class="btn" disabled>라이브 인터뷰</a>-->
+                            <a href="javascript:void(0);" id="member_del" class="btn type_red" disabled>삭제</a>
+                        {{end}}
+                    {{end}}
+                </p>
+                <ul class="viewOption">
+                    <li class="active type_list"><a href="javascript:void(0);" id="btn_list" class="viewList">리스트형식으로
+                            보기</a></li>
+                    <li class="type_grid"><a href="javascript:void(0);" id="btn_grid" class="viewGrid">그리드형식으로 보기</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="boxWrap">
+                <ul>
+                </ul>
+            </div>
+            <div class="gridWrap applicant_list">
+                <table>
+                    <colgroup>
+                        <col width="48px"/>     <!--48--><!--38-->
+                        <col width="159px"/>    <!--159--><!--140-->
+                        <col width="103px"/>     <!--103--><!--90-->
+                        <col width="66px"/>     <!--66--><!--66-->
+                        <col width="65px"/>     <!--65--><!--65-->
+                        <col width="94px"/>     <!--94--><!--95-->                       
+                        	                             <!--160-->                        
+                        <col width=""/>
+                    </colgroup>
+                    <thead>
+                    <tr id="cond_list">
+                        <th class="checkbox">
+                            <input type="checkbox" name="tbl_check_all" id="tbl_check_all" class="custom">
+                            <label name="tbl_check_all" for="tbl_check_all"></label>
+                        </th>
+                        <th><a class="sort" id="cond_apply_dt" data-sort-code="01"
+                               data-sort-way="{{if and (eq "01" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                               href="javascript:void(0);"
+                               style="background: none">지원일시 <i
+                                        class="fas {{if and (eq "01" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "01" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                        </th>
+                        <th><a class="sort" id="cond_name" data-sort-code="02"
+                               data-sort-way="{{if and (eq "02" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                               href="javascript:void(0);"
+                               style="background: none">이름 <i
+                                        class="fas {{if and (eq "02" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "02" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                        </th>
+                        <th style="cursor: default">성별</th>
+                        <th><a class="sort" id="cond_age" data-sort-code="03"
+                               data-sort-way="{{if and (eq "03" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                               href="javascript:void(0);"
+                               style="background: none">나이 <i
+                                        class="fas {{if and (eq "03" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "03" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                        </th>
+                        <th style="cursor: default">상태</th>
+                        <th><a class="sort" id="cond_proc_dt" data-sort-code="04"
+                               data-sort-way="{{if and (eq "04" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                               href="javascript:void(0);"
+                               style="background: none">처리일시 <i
+                                        class="fas {{if and (eq "04" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "41" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                        </th>
+                        <!--<th>90일</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{if .RecruitStatList}}
+                        {{range .RecruitStatList}}
+                            <!-- row클릭이벤트는 개발쪽에서 걸으셔야 할것 같습니다 -->
+                            <!-- 신규인경우에 calss="new" 추가 -->
+                            <!-- 체크시 class="check" 추가-->
+                            <tr class='{{if eq "0" .RslEntpCfrmYn}}new{{end}}'>
+                                <!-- LDK 2020-11-16 : 합격/불합격 처리 오류 -->
+                                <td class="checkbox">
+                                    <input type="checkbox" name="tbl_check" id="tbl_check_{{.RslRowNo}}"
+                                           data-pp_mem_no="{{.RslPpMemNo}}" data-recrut_sn="{{.RslRecrutSn}}"
+                                           data-evl_prgs_stat_cd="{{.RslEvlPrgsStatCd}}"    
+                                           data-dcmnt_evl_stat_cd="{{.DcmntEvlStatCd}}"
+                                           data-read_end_day="{{.ReadEndDay}}"
+                                           data-live_req_stat_cd="{{.RslLiveReqStatCd}}"
+                                           data-name="{{.RslNm}}"
+                                           data-sex="{{.RslSex}}"
+                                           data-age="{{.RslAge}}"
+                                           class="custom check_member"/>
+                                    <label name="tbl_check" for="tbl_check_{{.RslRowNo}}"></label>
+                                </td>
+                                <td>{{.RslApplyDt}}</td>
+                                <td>
+                                    <span class='ico_like {{if eq "1" .RslFavrAplyPpYn}}active{{end}}' id="favr_set"
+                                          data-recrut_sn="{{.RslRecrutSn}}" data-pp_mem_no="{{.RslPpMemNo}}"><a
+                                                href="javascript:void(0);"></a></span>
+                                    <span class="name"><a href="javascript:void(0);" id="applicant_detail"
+                                                          data-recrut_sn="{{.RslRecrutSn}}"
+                                                          data-pp_mem_no="{{.RslPpMemNo}}"                                                           
+                                                          data-read_end_day="{{.ReadEndDay}}">{{.RslNm}}</a></span>
+                                </td>
+                                <td>{{.RslSex}}</td>                                
+                                <!--<td>{{.RslAge}}</td>-->
+                                <td>{{if eq "0" .RslAge}}O{{else}}{{.RslAge}}{{end}}</td>
+                                <!--<td>합격 <span class="interView wait">라이브 인터뷰 예정</span></td>-->
+                                <!--<td>합격 <span class="interView ing">라이브 인터뷰 요청</span></td>-->
+                                <td>
+                                    <!-- DcmntEvlStatCd : todo code 서류 합격/불합격 표시 !!!!!!!! -->                                    
+                                    {{if eq "01" .RslEvlPrgsStatCd}}대기{{end}}
+                                    {{if eq "02" .RslEvlPrgsStatCd}}
+                                        {{if eq "03" .DcmntEvlStatCd}}서류 합격
+                                        {{else if eq "04" .DcmntEvlStatCd}}서류 불합격 
+                                        {{else}}대기
+                                        {{end}}                                        
+                                    {{end}}
+                                    <!-- DcmntEvlStatCd -->
+                                    <!-- {{if or (eq "01" .RslEvlPrgsStatCd) (eq "02" .RslEvlPrgsStatCd)}}대기{{end}} -->
+                                    {{if eq "03" .RslEvlPrgsStatCd}}합격{{end}}
+                                    {{if eq "04" .RslEvlPrgsStatCd}}불합격{{end}}
+
+                                    {{if eq "02" .RslLiveReqStatCd}}<span class="interView ing">라이브 인터뷰 요청</span>{{end}}
+                                    {{if eq "03" .RslLiveReqStatCd}}<span class="interView wait">라이브 인터뷰 예정</span>{{end}}
+                                    
+                                </td>
+                                <td>{{.RslEvlStatDt}}</td>
+                                <!--<td>{{if eq "1" .ReadEndDay}}O{{else}}X{{end}}</td>-->
+                            </tr>
+                        {{end}}
+                    {{else}}
+                        <tr style="height: 200px;">
+                            <td colspan="7" style="text-align:center; color: #878d91;">지원자가 없습니다.</td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="paging">
+                {{str2html .Pagination}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 지원자 합격 팝업 -->
+    <div class="popupWrap" id="pop_applicant_apply_pass">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">지원자들을 <span style="color:blue; font-size: 22px;">합격</span>처리하시겠습니까?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_red btn_apply_result" data-apply-result="03"
+                   id="btn_pop_apply_pass">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- //지원자 합격 팝업 -->
+
+    <!-- 지원자 불합격 팝업 -->
+    <div class="popupWrap" id="pop_applicant_apply_non_pass">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">지원자들을 <span style="color:red; font-size: 22px;">불합격</span>처리하시겠습니까?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_red btn_apply_result" data-apply-result="04"
+                   id="btn_pop_apply_non_pass">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- //지원자 불합격 팝업 -->
+    <!-- 지원자 삭제 팝업 -->
+    <div class="popupWrap" id="pop_applicant_del">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">정말 삭제하시겠어요?</p>
+                <p class="text">삭제 후에는 지원자의 모든 정보가 삭제되며,<br>다시 확인하실 수 없습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_red" id="btn_pop_delete">삭제하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- //지원자 삭제 팝업 -->
+    <!-- 알림 공통 팝업 -->
+    <div class="popupWrap" id="pop_common_alert">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text" id="alert_text"></p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 알림 공통 팝업 -->
+    <!-- 엑셀다운 팝업 -->
+    <div class="popupWrap" id="pop_excel_download">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">엑셀 파일로 저장하시겠습니까?</p>
+                <p class="imp">(마감일로부터 90일이 지난 채용 공고의 지원자 상세 정보는 제외됩니다.)</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_btn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 엑셀다운 팝업 -->
+    <!-- 토스트박스 -->
+    <div class="toastBox noti">
+        <p class="message">관심 표시되었습니다.</p>
+        <a href="#" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+    <div class="toastBox alert">
+        <p class="message">관심 해제되었습니다.</p>
+        <a href="#" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+    </div>
+
+    <!-- 지원자 합격처리확인 -->
+    <div class="popupWrap" id="pop_pass">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">합격 메시지 보내기</p>
+                <ul class="message">
+                    <li>지원자가 합격 처리 되며 다음과 같은 메시지가 발송됩니다.</li>
+                    <li>발송 메시지는 최대 2,000자까지 자유롭게 작성 하실 수 있습니다.</li>
+                    <li>발송 후에는 취소가 불가능합니다.</li>
+                </ul>
+                <div class="field">
+                    <div class="tArea">
+                                <textarea name="pass_msg_cont" id="pass_msg_cont" cols="30" maxlength="2000" class="it"
+                                          rows="10"></textarea>
+                        <!-- 글자수가 추가되면 class="count" 추가 -->
+                        <span class="text"><em class="count" id="bytePassMsg">2000</em>/2000자</span>
+                    </div>
+                    <p class="validationAlert pass_msg_cont_message"></p>
+                </div>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" id="btn_pop_pass_close">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_pass_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <div class="popupWrap" id="message_no" >
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">마감일로 부터 90일이 지난 채용 공고의</p>
+                <p class="text">지원자 정보는 제공되지 않습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- //지원자 합격처리확인 -->
+    <!-- 지원자 불합격처리확인 -->
+    <div class="popupWrap" id="pop_unpass">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="tit">불합격 메시지 보내기</p>
+                <ul class="message">
+                    <li>지원자가 불합격 처리 되며 다음과 같은 메시지가 발송됩니다.</li>
+                    <li>발송 메시지는 최대 2,000자까지 자유롭게 작성 하실 수 있습니다.</li>
+                    <li>발송 후에는 취소가 불가능합니다.</li>
+                </ul>
+                <div class="field">
+                    <div class="tArea">
+                                <textarea name="unpass_msg_cont" id="unpass_msg_cont" maxlength="2000" class="it"
+                                          cols="30" rows="10"></textarea>
+                        <!-- 글자수가 추가되면 class="count" 추가 -->
+                        <span class="text"><em class="count" id="byteUnPassMsg">2000</em>/2000자</span>
+                    </div>
+                    <p class="validationAlert unpass_msg_cont_message"></p>
+                </div>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" id="btn_pop_unpass_close">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_unpass_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- //지원자 불합격처리확인 -->
+
+    <!-- 합격/불합격 처리 오류 지원자 합격/불합격 처리 확인 -->
+    <div class="popupWrap" id="pop_pass_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">이미 처리된 지원자가 포함되어 있습니다. 제외하고 진행하시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_pass_check_confirm">계속하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <div class="popupWrap" id="pop_unpass_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">이미 처리된 지원자가 포함되어 있습니다. 제외하고 진행하시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_unpass_check_confirm">계속하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 합격/불합격 처리 오류 지원자 합격/불합격 처리 확인 -->
+    <div class="popupWrap" id="pop_admin_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">권한이 없습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="#" class="btn" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 라이브 인터뷰 체크 -->
+    <div class="popupWrap" id="pop_live_nvn_req_check">
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">이미 라이뷰 인터뷰를 진행중인 지원자가 포함되어 있습니다. 제외하고 진행하시겠어요?</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="btn type_blue st02" id="pop_live_nvn_req_check_confirm">계속하기</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('input.custom').customInput();
+        });
+
+        // 엑셀 팝업 확인
+        $(document).off("click", "#pop_btn_confirm").on("click", "#pop_btn_confirm", function (e) {
+            $(".loading").attr("style", "display:''");
+            //var recrut_sn = $("#recrut_sn").val();
+            var evl_prgs_stat = $("#evl_prgs_stat").val();
+            var sex = $("#sex").val();
+            var age = $("#age").val();
+            var vp_yn = $("#vp_yn").val();
+            var favr_aply_pp = $("#favr_aply_pp").val();
+            var sort_gbn = $("#sort_gbn").val();
+            var keyword = $("#keyword").val();
+            var job_grp_cd = $("#job_grp_cd").val();
+            var live_req_stat_cd = $("#live_req_stat_cd").val();
+            var page_no = $("#page_no").val();
+            var view_type = $("#view_type").val();
+
+            /*
+            console.log("keyword : "+keyword);
+            console.log("job_grp_cd : "+job_grp_cd);
+            console.log("evl_prgs_stat : "+evl_prgs_stat);
+            console.log("sex : "+sex);
+            console.log("age : "+age);
+            console.log("vp_yn : "+vp_yn);
+            console.log("favr_aply_pp : "+favr_aply_pp);
+            console.log("live_req_stat_cd : "+live_req_stat_cd);
+            console.log("sort_gbn : "+sort_gbn);
+            return;
+            */
+
+            $.ajax({
+                type: "POST",
+                url: "/applicant/list/excel",
+                data: {
+                    job_grp_cd: job_grp_cd,
+                    evl_prgs_stat: evl_prgs_stat,
+                    sex: sex,
+                    age: age,
+                    vp_yn: vp_yn,
+                    favr_aply_pp: favr_aply_pp,
+                    live_req_stat_cd: live_req_stat_cd,
+                    keyword: keyword,
+                    sort_gbn: sort_gbn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var downFile = rep.RtnApplicantListExcelData[0].DownloadPath;
+                    console.log("downFile : " + downFile);
+                    window.location.replace(downFile);
+                    closePopup("pop_excel_download");
+                    $(".loading").attr("style", "display:none");
+                },
+                error: function (e) {
+                    closePopup("pop_excel_download");
+                    console.log("error + " + e);
+                    $(".loading").attr("style", "display:none");
+                }
+            });
+        });
+
+        // 엑셀 저장
+        $(document).off("click", "#down_excel").on("click", "#down_excel", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            openPopup("pop_excel_download");
+        });
+
+        // 지원자 합격
+        $(document).off("click", "#member_apply_pass").on("click", "#member_apply_pass", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+            openPopup("pop_applicant_apply_pass");
+        });
+
+        // 지원자 불합격
+        $(document).off("click", "#member_apply_non_pass").on("click", "#member_apply_non_pass", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+            openPopup("pop_applicant_apply_non_pass");
+        });
+
+        // 지원자(팝업) 삭제 - 미사용
+        $(document).off("click", "#btn_pop_delete1").on("click", "#btn_pop_delete1", function (e) {
+            var arr_applicant = [];
+            var arr_recrut_sn = [];
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                //console.log($(this).prop("checked"));
+                if ($(this).prop("checked")) {
+                    arr_applicant.push($(this).data("pp_mem_no"));
+                }
+            });
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                //console.log($(this).prop("checked"));
+                if ($(this).prop("checked")) {
+                    arr_recrut_sn.push($(this).data("recrut_sn"));
+                }
+            });
+            $("#arr_applicant").val(arr_applicant);
+            $("#arr_recrut_sn").val(arr_recrut_sn);
+            ajaxApplicantDel();
+        });
+
+        // 지원자 채용 결과 API
+        $(document).off("click", ".btn_apply_result").on("click", ".btn_apply_result", function (e) {
+            var apply_result = $(this).data("apply-result");
+
+            var set_cnt = parseInt($("input:checkbox[name='tbl_check']:checked").length);
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                //console.log($(this).prop("checked"));
+                if ($(this).prop("checked")) {
+                    var pp_mem_no = $(this).data("pp_mem_no");
+                    var recrut_sn = $(this).data("recrut_sn");
+                    /*
+                    console.log("=====================");
+                    console.log("cnt : "+cnt);
+                    console.log("del_cnt : "+del_cnt);
+                    console.log("pp_mem_no : "+pp_mem_no);
+                    console.log("recrut_sn : "+recrut_sn);
+                    return;
+                    */
+                    $.ajax({
+                        cache: false,
+                        url: '/api/apply/result',
+                        data: {
+                            pp_mem_no: pp_mem_no,
+                            recrut_sn: recrut_sn,
+                            apply_result: apply_result,
+                        },
+                        type: 'POST',
+                        dataType: "json",
+                        error: function (e) {
+                            console.log("error" + e);
+                        },
+                        success: function (rep) {
+                            var rtnCd = rep.RtnCd
+                            var rtnMsg = rep.RtnMsg
+
+                            if (rtnCd == "1") {
+                                closePopup("pop_applicant_apply");
+                                ajaxApplicantList();
+                            } else {
+                                closePopup("pop_applicant_apply");
+                                console.log("message : " + rtnMsg);
+                            }
+                        },
+                        error: function (e) {
+                            closePopup("pop_applicant_apply");
+                            console.log("error + " + e);
+                        }
+                    });
+                }
+            });
+
+            location.reload(true);
+        });
+
+        // 지원자(팝업) 삭제
+        $(document).off("click", "#btn_pop_delete").on("click", "#btn_pop_delete", function (e) {
+            var del_cnt = parseInt($("input:checkbox[name='tbl_check']:checked").length);
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                //console.log($(this).prop("checked"));
+                if ($(this).prop("checked")) {
+                    var pp_mem_no = $(this).data("pp_mem_no");
+                    var recrut_sn = $(this).data("recrut_sn");
+                    /*
+                    console.log("=====================");
+                    console.log("cnt : "+cnt);
+                    console.log("del_cnt : "+del_cnt);
+                    console.log("pp_mem_no : "+pp_mem_no);
+                    console.log("recrut_sn : "+recrut_sn);
+                    return;
+                    */
+                    $.ajax({
+                        cache: false,
+                        url: '/applicant/each/delete',
+                        data: {
+                            pp_mem_no: pp_mem_no,
+                            recrut_sn: recrut_sn,
+                        },
+                        type: 'POST',
+                        dataType: "json",
+                        error: function (e) {
+                            console.log("error" + e);
+                        },
+                        success: function (rep) {
+                            var rtnCd = rep.RtnCd
+                            var rtnMsg = rep.RtnMsg
+
+                            if (rtnCd == "1") {
+                                closePopup("pop_applicant_del");
+                                ajaxApplicantList();
+                            } else {
+                                closePopup("pop_applicant_del");
+                                console.log("message : " + rtnMsg);
+                            }
+                        },
+                        error: function (e) {
+                            closePopup("pop_applicant_del");
+                            console.log("error + " + e);
+                        }
+                    });
+                }
+            });
+        });
+
+        // 삭제 처리
+        var ajaxApplicantDel = function () {
+            var arr_applicant = $("#arr_applicant").val();
+            var arr_recrut_sn = $("#arr_recrut_sn").val();
+
+            /*
+            console.log("arr_applicant : "+arr_applicant);
+            console.log("arr_recrut_sn : "+arr_recrut_sn);
+            return;
+            */
+            $.ajax({
+                cache: false,
+                url: '/applicant/delete',
+                data: {
+                    arr_pp_mem_no: arr_applicant,
+                    arr_recrut_sn: arr_recrut_sn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        closePopup("pop_applicant_del");
+                        ajaxApplicantList();
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 상단 탭처리
+        $(document).off("click", "#top_tab").on("click", "#top_tab", function (e) {
+            $(".tabMenu.tabGbn").find("li").removeClass("active");
+            if ($(this).parent().hasClass("active")) {
+                $(this).parent().removeClass("active");
+            } else {
+                $(this).parent().addClass("active");
+                var tab_gbn = $(this).data("val");
+                $("#evl_prgs_stat").val(tab_gbn);
+                //ajaxApplicantList();
+            }
+        });
+
+        $(document).off("change", "input[name='tbl_check']").on("change", "input[name='tbl_check']", function () {
+            if ($("input:checkbox[name='tbl_check']:checked").length != $("input:checkbox[name='tbl_check']").length) {
+                $("#tbl_check_all").prop("checked", false);
+                $("label[name='tbl_check_all']").removeClass("checked");
+            } else {
+                $("#tbl_check_all").prop("checked", true);
+                $("label[name='tbl_check_all']").addClass("checked");
+            }
+        });
+
+        // 전체선택/해제
+        $(document).off("click", "#tbl_check_all").on("click", "#tbl_check_all", function (e) {
+            if ($(this).is(":checked") == true) { // 표시
+                $("check_all_list").val("1");
+                allCheck("1");
+            } else {
+                $("check_all_list").val("0");
+                allCheck("0");
+            }
+        });
+
+        var allCheck = function (check_value) {
+            console.log(check_value);
+            if (check_value == "1") {
+                console.log("checked");
+                $("#check_all_list").val("1");
+                $('input:checkbox[name="tbl_check"]').parent().parent().parent().addClass("check");
+                $('label[name="tbl_check"]').addClass("checked");
+                $('input:checkbox[name="tbl_check"]').prop("checked", true);
+            } else {
+                console.log("unchecked");
+                $("#check_all_list").val("0");
+                $('input:checkbox[name="tbl_check"]').parent().parent().parent().removeClass("check");
+                $('label[name="tbl_check"]').removeClass("checked");
+                $('input:checkbox[name="tbl_check"]').prop("checked", false);
+            }
+        }
+
+        // 지원자 체크처리
+        $(document).off("click", ".check_member").on("click", ".check_member", function (e) {
+            if ($(this).is(":checked") == true) { // 표시
+                $(this).parent().parent().parent().addClass("check");
+                //var recrut_sn = $(this).data("recrut_sn");
+                //console.log("recrut_sn : "+recrut_sn);
+            } else {
+                $(this).parent().parent().parent().removeClass("check");
+                //console.log("recrut_sn : N");
+            }
+        });
+
+        // 지원자 상세 팝업
+        $(document).off("click", "#applicant_detail").on("click", "#applicant_detail", function (e) {                        
+            var read_end_day = $(this).data("read_end_day");                       
+            if (read_end_day == "Y") {
+                openPopup('message_no');
+                return;
+            }
+
+            var popW = 1320
+            var popH = 1000
+            var popX = (screen.width / 2) - (popW / 2)
+            var popY = (screen.height / 2) - (popH / 2)
+            var recrut_sn = $(this).data("recrut_sn");
+            var pp_mem_no = $(this).data("pp_mem_no");
+            if ($("#view_type").val() == "L") {
+                $(this).parent().parent().parent().removeClass("new");
+            } else {
+                $(this).parent().parent().removeClass("new");
+            }
+            window.open("/applicant/detail/popup?recrut_sn=" + recrut_sn + "&pp_mem_no=" + pp_mem_no, "_blank", "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+        });
+
+        var message_send = function () {
+            var pp_mem_no = "";
+            var recrut_sn = "";
+            var msg_gbn_cd = "";
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                if ($(this).prop("checked")) {
+                    pp_mem_no = $(this).data("pp_mem_no");
+                    recrut_sn = $(this).data("recrut_sn");
+                    msg_gbn_cd = $("#msg_gbn_cd").val();
+                    if (msg_gbn_cd == "06") { //라이브 인터뷰 요청 메시지
+                        var msg_cont = $("#live_req_msg_cont").val().replace(/'/gi, "`");
+                    } else if (msg_gbn_cd == "04") { // 합격 메시지
+                        var msg_cont = $("#pass_msg_cont").val().replace(/'/gi, "`");
+                    } else if (msg_gbn_cd == "05") { // 불합격 메시지
+                        //var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+                        var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi, "`");
+                    } else { // 그외 메시지는 없음
+                        var msg_cont = "";
+                    }
+                    var live_itv_sdt = $("#live_itv_sdt").val();
+                    if (live_itv_sdt == undefined) {
+                        live_itv_sdt = "";
+                    }
+                    var arr_pp_chrg_sn = $("#arr_pp_chrg_sn").val();
+                    if (arr_pp_chrg_sn == undefined) {
+                        arr_pp_chrg_sn = "";
+                    }
+                    var live_sn = $("#live_sn").val();
+                    if (live_sn == undefined) {
+                        live_sn = ""
+                    }
+                    ///*
+                    console.log("recrut_sn : "+recrut_sn);
+                    console.log("pp_mem_no : "+pp_mem_no);
+                    console.log("msg_gbn_cd : "+msg_gbn_cd);
+                    console.log("msg_cont : "+msg_cont);
+                    console.log("live_itv_sdt : "+live_itv_sdt);
+                    console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+                    console.log("live_sn : "+live_sn);
+                    //return;
+                    //*/
+                    var formData = new FormData();
+                    formData.append("recrut_sn", recrut_sn);
+                    formData.append("pp_mem_no", pp_mem_no);
+                    formData.append("msg_gbn_cd", msg_gbn_cd);
+                    formData.append("msg_cont", msg_cont);
+                    formData.append("live_itv_sdt", live_itv_sdt);
+                    formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+                    formData.append("live_sn", live_sn);
+
+                    // 메시지 등록처리
+                    $.ajax({
+                        cache: false,
+                        url: '/message/send',
+                        data: formData,
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        error: function (e) {
+                            console.log("error" + e);
+                        },
+                        success: function (rep) {
+                            var rtnCd = rep.RtnCd
+                            var rtnMsg = rep.RtnMsg
+
+                            if (rtnCd == "1") {
+                                if (msg_gbn_cd == "05") { //불합격
+                                    //window.opener.$("#btn_search").trigger('click');
+                                    closePopup("pop_unpass");
+                                    //location.reload(true);
+                                } else { //라이브인터뷰 요청, 합격
+                                    //location.reload(true);
+                                }
+                            } else {
+                                console.log("message : " + rtnMsg);
+                                // console.log("[AJAX(/message/send)]: Login");
+                                // window.location.href = "/login";
+                            }
+                        },
+                        error: function (e) {
+                            console.log("error + " + e);
+                        }
+                    });
+                }
+                if (msg_gbn_cd != "05")
+                    window.location.href = "/message?target=" + pp_mem_no + "&sn=" + recrut_sn + "&end_yn=0";
+            })
+        }
+
+        // 합격처리하기 팝업
+        $(document).off("click", "#btn_eval_pass").on("click", "#btn_eval_pass", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                //openPopup('pop_pass');
+
+                // LDK 2020-11-16 : 합격/불합격 처리 오류 -->                
+                var invalid_cnt = 0;
+                var valid_cnt = 0;
+                $("input:checkbox[name='tbl_check']").each(function (i) {
+                    if ($(this).prop("checked")) {
+                        pp_mem_no = $(this).data("pp_mem_no");
+                        recrut_sn = $(this).data("recrut_sn");
+                        evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                        dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                        read_end_day = $(this).data("read_end_day");                       
+
+                        /*
+                        if (evl_prgs_stat_cd == "01") {
+                            // 대기        
+                        }
+                        else if (evl_prgs_stat_cd == "02") {                            
+                            if (dcmnt_evl_stat_cd == "03" ) {
+                                // 서류 합격
+                            } else if (dcmnt_evl_stat_cd == "04" ) {                            
+                                // 서류 불합격                                         
+                            } else {
+                                // 대기
+                            }
+                        }    
+                        else if (evl_prgs_stat_cd == "03") {
+                            // 합격                            
+                        }
+                        else {
+                            // 불합격
+                        } 
+                        */    
+
+                        if (read_end_day == "Y") {
+                            invalid_cnt++;                            
+                        } else {
+                            if (evl_prgs_stat_cd == "01" || evl_prgs_stat_cd == "02") {
+                                valid_cnt++;
+                            } else {
+                                invalid_cnt++;
+                            }
+                            //check_cnt += (evl_prgs_stat_cd == "01" || evl_prgs_stat_cd == "02") ? 0 : 1;
+                        }
+                        
+                        console.log(`[pass_confirm][check] recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}`);                        
+                    }
+                });
+
+                if (valid_cnt > 0) {
+                    if (invalid_cnt > 0) {
+                        openPopup("pop_pass_check");
+                    } else {
+                        openPopup('pop_pass');    
+                    }                
+                } else {
+                    $("#alert_text").text("모두 처리된 지원자입니다.");
+                    openPopup("pop_common_alert");                    
+                }
+                // <--                
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 합격 처리가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // LDK 2020-11-16 : 합격/불합격 처리 오류 -->
+        $(document).off("click", "#pop_pass_check_confirm").on("click", "#pop_pass_check_confirm", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                closePopup();
+                openPopup('pop_pass');    
+            }
+        });
+
+        $(document).off("click", "#pop_unpass_check_confirm").on("click", "#pop_unpass_check_confirm", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                closePopup();
+                openPopup('pop_unpass');    
+            }
+        });
+        // <--
+
+        // 합격처리 확인(팝업)
+        $(document).off("click", "#btn_pop_pass_confirm").on("click", "#btn_pop_pass_confirm", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+
+            if ($("#pass_msg_cont").val().trim().length == 0) {
+                $(".validationAlert.pass_msg_cont_message").text("합격 메시지를 작성해주세요.");
+                $("#pass_msg_cont").addClass("validationAlert");
+                return;
+            }
+
+            // LDK 2020-11-16 : 합격/불합격 처리 오류 -->            
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                if ($(this).prop("checked")) {
+                    pp_mem_no = $(this).data("pp_mem_no");
+                    recrut_sn = $(this).data("recrut_sn");
+                    evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                    dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                    read_end_day = $(this).data("read_end_day");
+
+                    var is_check = false;
+                    if (read_end_day == "Y") {
+                        is_check = true;                            
+                    } else {
+                        is_check = (evl_prgs_stat_cd == "01" || evl_prgs_stat_cd == "02") ? false : true;
+                    }
+
+                    if (is_check == true) {   // 합격/불합격 처리 허용되지 않는 지원자 체크 풀기
+                        $(this).prop("checked", false);
+                        console.log(`[pass_confirm][unchecked] recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}`);                        
+                    }
+                };
+            });
+            // <--
+
+            $("#msg_gbn_cd").val("04");
+            message_send();
+        });
+
+        // 합격처리 취소(팝업)
+        $(document).off("click", "#btn_pop_pass_close").on("click", "#btn_pop_pass_close", function (e) {
+            $("#pass_msg_cont").val("");
+            $("#msg_gbn_cd").val("");
+            closePopup();
+        });
+
+        // 불합격처리하기
+        $(document).off("click", "#btn_eval_unpass").on("click", "#btn_eval_unpass", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                //openPopup('pop_unpass');
+                
+                // LDK 2020-11-16 : 합격/불합격 처리 오류 -->                
+                var invalid_cnt = 0;
+                var valid_cnt = 0;
+                $("input:checkbox[name='tbl_check']").each(function (i) {
+                    if ($(this).prop("checked")) {
+                        pp_mem_no = $(this).data("pp_mem_no");
+                        recrut_sn = $(this).data("recrut_sn");
+                        evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                        dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                        read_end_day = $(this).data("read_end_day");    // 90이하 "1" 90일 이상 "0"
+                        
+                        if (read_end_day == "Y") {
+                            invalid_cnt++;                            
+                        } else {
+                            if (evl_prgs_stat_cd == "01" || evl_prgs_stat_cd == "02") {
+                                valid_cnt++;
+                            } else {
+                                invalid_cnt++;
+                            }                            
+                        }
+                        
+                        console.log(`[unpass_confirm][check] recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}`);                        
+                    }
+                });
+
+                if (valid_cnt > 0) {
+                    if (invalid_cnt > 0) {
+                        openPopup("pop_unpass_check");
+                    } else {
+                        openPopup('pop_unpass');    
+                    }                
+                } else {
+                    $("#alert_text").text("모두 처리된 지원자입니다.");
+                    openPopup("pop_common_alert");                    
+                }
+                // <--              
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 불합격 처리가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // 불합격처리 확인(팝업)
+        $(document).off("click", "#btn_pop_unpass_confirm").on("click", "#btn_pop_unpass_confirm", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+
+            if ($("#unpass_msg_cont").val().trim().length == 0) {
+                $(".validationAlert.unpass_msg_cont_message").text("불합격 메시지를 작성해주세요.");
+                $("#unpass_msg_cont").addClass("validationAlert");
+                return;
+            }
+
+            // LDK 2020-11-16 : 합격/불합격 처리 오류 -->            
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                if ($(this).prop("checked")) {
+                    pp_mem_no = $(this).data("pp_mem_no");
+                    recrut_sn = $(this).data("recrut_sn");
+                    evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                    dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                    read_end_day = $(this).data("read_end_day");
+
+                    var is_check = false;
+                    if (read_end_day == "Y") {
+                        is_check = true;                            
+                    } else {
+                        is_check = (evl_prgs_stat_cd == "01" || evl_prgs_stat_cd == "02") ? false : true;
+                    }
+
+                    if (is_check == true) {   
+                        $(this).prop("checked", false);
+                        console.log(`[unpass_confirm][unchecked] recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}`);                        
+                    }
+                };
+            });
+            // <--
+
+            $("#msg_gbn_cd").val("05");
+            message_send();
+        });
+
+        // 불합격처리 취소(팝업)
+        $(document).off("click", "#btn_pop_unpass_close").on("click", "#btn_pop_unpass_close", function (e) {
+            $("#unpass_msg_cont").val("");
+            $("#msg_gbn_cd").val("");
+            closePopup();
+        });
+
+        // 페이징처리
+        $(document).off("click", ".prev.goPage").on("click", ".prev.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+        $(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+        $(document).off("click", ".next.goPage").on("click", ".next.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+        var paging = function (pageno) {
+            $("#page_no").val(pageno);
+            ajaxApplicantList();
+        }
+
+        // 리스트보기 선택
+        $(document).off("click", "#btn_list").on("click", "#btn_list", function (e) {
+            $(".type_grid").removeClass("active");
+            $(".type_list").addClass("active");
+            $("#view_type").val("L");
+            ajaxApplicantList();
+        });
+
+        // 그리드보기 선택
+        $(document).off("click", "#btn_grid").on("click", "#btn_grid", function (e) {
+            $(".type_grid").addClass("active");
+            $(".type_list").removeClass("active");
+            $("#view_type").val("G");
+            ajaxApplicantList();
+        });
+
+        // 직무 선택
+        $(document).off("change", "#job_grp_cd").on("change", "#job_grp_cd", function (e) {
+            ajaxApplicantList();
+        });
+
+        // 성별 선택
+        $(document).off("change", "#sex").on("change", "#sex", function (e) {
+            ajaxApplicantList();
+        });
+
+        // 연령 선택
+        $(document).off("change", "#age").on("change", "#age", function (e) {
+            ajaxApplicantList();
+        });
+
+        // 영상프로필 선택
+        $(document).off("click", "#chk_vp").on("click", "#chk_vp", function (e) {
+            if ($(this).is(":checked") == true) {
+                $("#vp_yn").val("1");
+            } else {
+                $("#vp_yn").val("9");
+            }
+            ajaxApplicantList();
+        });
+
+        // 관심지원자 선택
+        $(document).off("click", "#chk_favr_aply_pp").on("click", "#chk_favr_aply_pp", function (e) {
+            if ($(this).is(":checked") == true) {
+                $("#favr_aply_pp").val("1");
+            } else {
+                $("#favr_aply_pp").val("9");
+            }
+            ajaxApplicantList();
+        });
+
+        // 라이브인터뷰 요청자 선택
+        $(document).off("click", "#chk_live_stat").on("click", "#chk_live_stat", function (e) {
+            if ($(this).is(":checked") == true && $("#chk_live_req_stat").is(":checked") == true) {
+                $("#live_req_stat_cd").val("11");
+            } else if ($(this).is(":checked") == true) {
+                $("#live_req_stat_cd").val("02");
+            } else if ($("#chk_live_req_stat").is(":checked") == true) {
+                $("#live_req_stat_cd").val("03");
+            } else {
+                $("#live_req_stat_cd").val("A");
+            }
+            ajaxApplicantList();
+        });
+
+        // 라이브인터뷰 예정자 선택
+        $(document).off("click", "#chk_live_req_stat").on("click", "#chk_live_req_stat", function (e) {
+            if ($(this).is(":checked") == true && $("#chk_live_stat").is(":checked") == true) {
+                $("#live_req_stat_cd").val("11");
+            } else if ($(this).is(":checked") == true) {
+                $("#live_req_stat_cd").val("03");
+            } else if ($("#chk_live_stat").is(":checked") == true) {
+                $("#live_req_stat_cd").val("02");
+            } else {
+                $("#live_req_stat_cd").val("A");
+            }
+            ajaxApplicantList();
+        });
+
+        // 지원자 검색(Enter Key)
+        $(document).off("keydown", "#keyword").on("keydown", "#keyword", function (e) {
+            if (event.keyCode == 13) {
+                ajaxApplicantList();
+            }
+        });
+
+        // 지원자 검색 (클릭)
+        $(document).off("click", "#btn_search").on("click", "#btn_search", function (e) {
+            ajaxApplicantList();
+        });
+
+        // 정렬 선택
+        $(document).off("change", "#sort_gbn").on("change", "#sort_gbn", function (e) {
+            ajaxApplicantList();
+        });
+
+        $(document).off("click", "#member_del").on("click", "#member_del", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                    $("#alert_text").text("삭제할 지원자를 선택해주세요.");
+                    openPopup("pop_common_alert");
+                    return;
+                }
+                openPopup("pop_applicant_del");
+            } else {
+                openPopup("pop02");
+            }
+        });
+
+        // 리스트 페이지 AJAX
+        var ajaxApplicantList = function (v) {
+            var keyword = $("#keyword").val();
+            //var recrut_sn = $("#recrut_sn").val();
+            var job_grp_cd = $("#job_grp_cd").val();
+            var evl_prgs_stat = $("#evl_prgs_stat").val();
+            var sex = $("#sex").val();
+            var age = $("#age").val();
+            var vp_yn = $("#vp_yn").val();
+            var favr_aply_pp = $("#favr_aply_pp").val();
+            var sort_gbn = $("#sort_gbn").val();
+            var live_req_stat_cd = $("#live_req_stat_cd").val();
+            var page_no = $("#page_no").val();
+            var view_type = $("#view_type").val();
+            var apply_sort_cd = $("#apply_sort_cd").val();
+            var apply_sort_way = $("#apply_sort_way").val();
+
+            /*
+            console.log("keyword : "+keyword);
+            console.log("job_grp_cd : "+job_grp_cd);
+            console.log("evl_prgs_stat : "+evl_prgs_stat);
+            console.log("sex : "+sex);
+            console.log("age : "+age);
+            console.log("vp_yn : "+vp_yn);
+            console.log("favr_aply_pp : "+favr_aply_pp);
+            console.log("live_req_stat_cd : "+live_req_stat_cd);
+            console.log("sort_gbn : "+sort_gbn);
+            console.log("page_no : "+page_no);
+            console.log("view_type : "+view_type);
+            return;
+            */
+
+            $.ajax({
+                type: "POST",
+                url: "/applicant/list",
+                data: {
+                    job_grp_cd: job_grp_cd,
+                    evl_prgs_stat: evl_prgs_stat,
+                    sex: sex,
+                    age: age,
+                    vp_yn: vp_yn,
+                    favr_aply_pp: favr_aply_pp,
+                    live_req_stat_cd: live_req_stat_cd,
+                    keyword: keyword,
+                    apply_sort_cd: apply_sort_cd,
+                    apply_sort_way: apply_sort_way,
+                    sort_gbn: sort_gbn,
+                    pn: page_no,
+                    view_type: view_type,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    if (rep.RtnRecruitStatListData.length > 0) {
+                        if (view_type == "L") {
+                            $(".gridWrap.applicant_list").show();
+                            $(".boxWrap").find("ul").children().remove();
+                            $(".gridWrap.applicant_list").find("tbody").children().remove();
+
+                            $.each(rep.RtnRecruitStatListData, function (e) {
+                                var html = "";
+
+                                if (rep.RtnRecruitStatListData[e].RslEntpCfrmYn == "0") {
+                                    html += "<tr class=\"new\">";
+                                } else {
+                                    html += "<tr>";
+                                }
+
+                                // LDK 2020-11-16 : 합격/불합격 처리 오류 -->
+                                html += "	<td class=\"checkbox\">";
+                                //html += "		<input type=\"checkbox\" name=\"tbl_check\" id=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" class=\"custom check_member\"><label name=\"tbl_check\" for=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\"></label>";
+                                html += "		<input type=\"checkbox\" name=\"tbl_check\" id=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\"";
+                                html += "              data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"";
+                                html += "              data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\"";
+                                html += "              data-evl_prgs_stat_cd=\"" + rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd + "\"";
+                                html += "              data-dcmnt_evl_stat_cd=\"" + rep.RtnRecruitStatListData[e].DcmntEvlStatCd + "\"";
+                                html += "              data-read_end_day=\"" + rep.RtnRecruitStatListData[e].ReadEndDay + "\"";                                
+                                html += "              data-live_req_stat_cd=\"" + rep.RtnRecruitStatListData[e].RslLiveReqStatCd + "\"";
+                                html += "              data-name=\"" + rep.RtnRecruitStatListData[e].RslNm + "\"";       
+                                html += "              data-sex=\"" + rep.RtnRecruitStatListData[e].RslSex + "\"";       
+                                html += "              data-age=\"" + rep.RtnRecruitStatListData[e].RslAge + "\"";       
+                                html += "              class=\"custom check_member\"><label name=\"tbl_check\" for=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\"></label>";
+                                // <--
+
+                                html += "	</td>";
+                                html += "	<td>" + rep.RtnRecruitStatListData[e].RslApplyDt + "</td>";
+                                html += "	<td>";
+                                if (rep.RtnRecruitStatListData[e].RslFavrAplyPpYn == "1") {
+                                    html += "		<span class=\"ico_like active\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"><a href=\"javascript:void(0);\"></a></span>";
+                                } else {
+                                    html += "		<span class=\"ico_like\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"><a href=\"javascript:void(0);\"></a></span>";
+                                }
+                                //html += "		<span class=\"name\"><a href=\"javascript:void(0);\" id=\"applicant_detail\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\">" + rep.RtnRecruitStatListData[e].RslNm + "</a></span>";
+                                html += "		<span class=\"name\"><a href=\"javascript:void(0);\" id=\"applicant_detail\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\" + data-read_end_day=\"" + rep.RtnRecruitStatListData[e].ReadEndDay + "\">" + rep.RtnRecruitStatListData[e].RslNm + "</a></span>";
+                                html += "	</td>";
+                                html += "	<td>" + rep.RtnRecruitStatListData[e].RslSex + "</td>";
+                                if (rep.RtnRecruitStatListData[e].RslAge == 0) {
+                                    html += "	<td>" + 'O' + "</td>";
+                                } else {
+                                    html += "	<td>" + rep.RtnRecruitStatListData[e].RslAge + "</td>";                                }
+                                html += "	<td>";
+                                // if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "01" || rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "02") {
+                                //     html += "대기";
+                                // } else if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "03") {
+                                //     html += "합격";
+                                // } else {
+                                //     html += "불합격";
+                                // }
+
+                                if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "01" ) { 
+                                    html += "대기";
+                                } else if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "02") {
+                                    if (rep.RtnRecruitStatListData[e].DcmntEvlStatCd == "03") {
+                                        html += "서류 합격 ";         
+                                    } else if (rep.RtnRecruitStatListData[e].DcmntEvlStatCd == "04") {
+                                        html += "서류 불합격 ";    
+                                    } else {
+                                        html += "대기";
+                                    }
+                                } else if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "03") {
+                                    html += "합격";
+                                } else {
+                                    html += "불합격";
+                                }
+                                
+                                if (rep.RtnRecruitStatListData[e].RslLiveReqStatCd == "02") {
+                                    html += "	<span class=\"interView ing\">라이브 인터뷰 요청</span>";
+                                }
+                                if (rep.RtnRecruitStatListData[e].RslLiveReqStatCd == "03") {
+                                    html += "	<span class=\"interView wait\">라이브 인터뷰 예정</span>";
+                                }
+                                
+                                html += "	</td>";
+                                html += "	<td>" + rep.RtnRecruitStatListData[e].RslEvlStatDt + "</td>";
+                                // LDK 2020-11-16 : 합격/불합격 처리 오류 -->
+                                /*
+                                if (rep.RtnRecruitStatListData[e].ReadEndDay == "N")
+                                    html += "	<td>" + "O" + "</td>";                                    
+                                else
+                                    html += "	<td>" + "X" + "</td>";    
+                                */    
+                                // <--
+                                html += "</tr>";
+                                $(".gridWrap.applicant_list").find("tbody").append(html);
+                            })
+                        } else { // 그리드형식
+                            $(".gridWrap.applicant_list").hide();
+                            $(".gridWrap.applicant_list").find("tbody").children().remove();
+                            $(".boxWrap").find("ul").children().remove();
+                            $.each(rep.RtnRecruitStatListData, function (e) {
+
+                                html = "";
+                                if (rep.RtnRecruitStatListData[e].RslEntpCfrmYn == "0") {
+                                    html += "<li class=\"new\">";
+                                } else {
+                                    html += "<li>";
+                                }
+                                html += "	<p class=\"img\">";
+                                if (rep.RtnRecruitStatListData[e].RslPtoPath != "") {
+                                    html += "		<img src=\"" + rep.RtnRecruitStatListData[e].RslPtoPath + "\" width=\"100\" height=\"140\" alt=\"\">";
+                                }
+                                if (rep.RtnRecruitStatListData[e].RslFavrAplyPpYn == "1") {
+                                    html += "		<span class=\"ico_like active\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"><a href=\"javascript:void(0);\"></a></span>";
+                                } else {
+                                    html += "		<span class=\"ico_like\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"><a href=\"javascript:void(0);\"></a></span>";
+                                }
+                                if (rep.RtnRecruitStatListData[e].RslLiveReqStatCd == "03") {
+                                    html += "		<span class=\"interView wait\">라이브 인터뷰 예정</span>";
+                                } else if (rep.RtnRecruitStatListData[e].RslLiveReqStatCd == "02") {
+                                    html += "		<span class=\"interView ing\">라이브 인터뷰 요청</span>";
+                                }
+                                html += "	</p>";
+
+                                // LDK 2020-11-16 : 합격/불합격 처리 오류 -->
+                                //html += "	<input type=\"checkbox\" name=\"tbl_check\" id=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\" class=\"custom check_member\"><label for=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\">체크5</label>";
+                                html += "	<input type=\"checkbox\" name=\"tbl_check\" id=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\"";
+                                html += "          data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\"";
+                                html += "          data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\"";
+                                html += "          data-evl_prgs_stat_cd=\"" + rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd + "\"";
+                                html += "          data-dcmnt_evl_stat_cd=\"" + rep.RtnRecruitStatListData[e].DcmntEvlStatCd + "\"";
+                                html += "          data-read_end_day=\"" + rep.RtnRecruitStatListData[e].ReadEndDay + "\"";                                
+                                html += "          data-live_req_stat_cd=\"" + rep.RtnRecruitStatListData[e].RslLiveReqStatCd + "\"";
+                                html += "          data-name=\"" + rep.RtnRecruitStatListData[e].RslNm + "\"";       
+                                html += "          data-sex=\"" + rep.RtnRecruitStatListData[e].RslSex + "\"";       
+                                html += "          data-age=\"" + rep.RtnRecruitStatListData[e].RslAge + "\"";                                       
+                                html += "          class=\"custom check_member\"><label name=\"tbl_check\" for=\"tbl_check_" + rep.RtnRecruitStatListData[e].RslRowNo + "\"></label>";
+                                // <--
+
+                                //html += "	<p class=\"userName\"><a href=\"javascript:void(0);\" id=\"applicant_detail\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\">" + rep.RtnRecruitStatListData[e].RslNm + "</a></p>";
+                                html += "	<p class=\"userName\"><a href=\"javascript:void(0);\" id=\"applicant_detail\" data-recrut_sn=\"" + rep.RtnRecruitStatListData[e].RslRecrutSn + "\" data-pp_mem_no=\"" + rep.RtnRecruitStatListData[e].RslPpMemNo + "\" + data-read_end_day=\"" + rep.RtnRecruitStatListData[e].ReadEndDay + "\">" + rep.RtnRecruitStatListData[e].RslNm + "</a></p>";
+                                
+                                
+                                html += "	<p class=\"userInfo\">" + rep.RtnRecruitStatListData[e].RslSex + "・";                                
+                                if (rep.RtnRecruitStatListData[e].RslAge == 0) {
+                                    html += "O세</p>";
+                                } else {
+                                    html += rep.RtnRecruitStatListData[e].RslAge + "세</p>";
+                                }                                
+                                html += "	<p class=\"reqDate\">지원 일시 " + rep.RtnRecruitStatListData[e].RslApplyDt + "</p>";
+
+                                // LDK 2020-11-22 : 합격/불합격 처리 오류 -->
+                                //html += "	<p class=\"endDay\">90일</p>";                                    
+                                // <--
+                                if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "01") {
+                                    html += "	<p class=\"state\">대기</p>";
+                                } else if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "02") { 
+                                    if (rep.RtnRecruitStatListData[e].DcmntEvlStatCd == "03") {
+                                        html += "	<p class=\"state pass\">서류합격(" + rep.RtnRecruitStatListData[e].RslEvlStatDt + ")</span>";
+                                    } else if (rep.RtnRecruitStatListData[e].DcmntEvlStatCd == "04") {
+                                        html += "	<p class=\"state unPass\">서류불합격(" + rep.RtnRecruitStatListData[e].RslEvlStatDt + ")</span>";
+                                    } else {
+                                        html += "	<p class=\"state\">대기</p>";    
+                                    }                    
+                                } else if (rep.RtnRecruitStatListData[e].RslEvlPrgsStatCd == "03") {
+                                    html += "	<p class=\"state pass\">합격(" + rep.RtnRecruitStatListData[e].RslEvlStatDt + ")</span>";
+                                } else {
+                                    html += "	<p class=\"state unPass\">불합격(" + rep.RtnRecruitStatListData[e].RslEvlStatDt + ")</span>";
+                                }
+                                                                html += "</li>";
+                                $(".boxWrap").find("ul").append(html);
+                            })
+                        }
+                        $(".paging").children().remove();
+                        $(".paging").append(rep.RtnRecruitStatListData[0].Pagination);
+                        $("#tcnt").text(rep.RtnRecruitStatListData[0].RslTotCnt);
+                        $("#down_excel").show();
+                        $("#member_del").show();
+                    } else {
+                        if (view_type == "L") {
+                            $("colgroup").show();
+                            $("thead").show();
+                            $(".gridWrap.applicant_list").find("tbody").children().remove();
+                            $(".boxWrap").find("ul").children().remove();
+
+                            var html = "";
+                            html += "<tr style=\"height: 200px;\">";
+                            html += "<td colspan=\"7\" style=\"text-align:center; color: #878d91;\">지원자가 없습니다.</td>";
+                            html += "</tr>";
+                            $(".gridWrap.applicant_list").find("tbody").append(html);
+                        } else {
+                            $("colgroup").hide();
+                            $("thead").hide();
+                            $(".gridWrap.applicant_list").find("tbody").children().remove();
+                            $(".boxWrap").find("ul").children().remove();
+                            $(".gridWrap.applicant_list").show();
+                            var html = "";
+                            //html += "<table>";
+                            html += "<tr style=\"height: 200px;\">";
+                            html += "<td colspan=\"7\" style=\"text-align:center; color: #878d91;\">지원자가 없습니다.</td>";
+                            html += "</tr>";
+                            //html += "</table>";
+                            $(".gridWrap.applicant_list").find("tbody").append(html);
+                        }
+                        $(".paging").children().remove();
+                        $("#tcnt").text(0);
+                        $("#page_no").val("1");
+                        $("#down_excel").hide();
+                        $("#member_del").hide();
+                    }
+                    $('input.check_member').customInput();
+                    $('.ico_like a').on('click', function () {
+                        if ($(this).parent().hasClass('active')) {
+                            $(this).parent().removeClass('active')
+                            var rs = $(this).parent().data("recrut_sn");
+                            var pp = $(this).parent().data("pp_mem_no");
+                            var yn = "N";
+                            $('.toastBox.alert').fadeIn('fast')
+                            ajaxMemberSet(rs, pp, yn);
+                        } else {
+                            $(this).parent().addClass('active')
+                            var rs = $(this).parent().data("recrut_sn");
+                            var pp = $(this).parent().data("pp_mem_no");
+                            var yn = "Y";
+                            $('.toastBox.noti').fadeIn('fast')
+                            ajaxMemberSet(rs, pp, yn);
+                        }
+                    })
+
+                    allCheck($("#check_all_list").val());
+                }
+            });
+        }
+
+        // 지원자 관심설정 처리
+        var ajaxMemberSet = function (rs, pp, yn) {
+            var recrut_sn = rs;
+            var pp_mem_no = pp;
+            var favr_set_yn = yn;
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("favr_set_yn : "+favr_set_yn);
+            return;
+            */
+
+            $.ajax({
+                cache: false,
+                url: '/favor/member/set',
+                data: {
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    favr_set_yn: favr_set_yn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        if (favr_set_yn == "Y") {
+                            $('.toastBox.noti').fadeIn(1000)
+                            setTimeout(function () {
+                                $('.toastBox.noti').fadeOut(1000);
+                            }, 3000);
+                        } else {
+                            $('.toastBox.alert').fadeIn(1000)
+                            setTimeout(function () {
+                                $('.toastBox.alert').fadeOut(1000);
+                            }, 3000);
+                        }
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 엑셀 저장
+        $(document).off("click", "#excel_download").on("click", "#excel_download", function (e) {
+            openPopup("excel_pop");
+        });
+
+        // 엑셀 저장 확인
+        $(document).off("click", "#btn_excel_confirm").on("click", "#btn_excel_confirm", function (e) {
+            var entp_mem_no = $("#entp_mem_no").val();
+            var evl_prgs_stat_cd = $("#evl_prgs_stat").val();
+            var recrut_sn = $("#p_recrut_sn").val();
+            excelDownload(entp_mem_no, evl_prgs_stat_cd, recrut_sn);
+        });
+
+        $(document).off("click", ".sort").on("click", ".sort", function (e) {
+            var apply_sort_cd = $(this).attr("data-sort-code");
+            var apply_sort_way = $(this).attr("data-sort-way");
+
+            // LDK 2021/02/01 : ajaxApplicantList() 사용하기 위해, 기존꺼 disable -->
+            // var nodes = $("#cond_list").children();
+            // nodes.each( function() { 
+            //     $(this).find("i:first").attr("class", "fas fa-align-justify");                
+            // });
+            
+            // if ($("#tbl_check_all").is(":checked") == true) {
+            //     $("#tbl_check_all").prop("checked", false);
+            //     $("label[name='tbl_check_all']").removeClass("checked");                
+            //     allCheck("0");
+            // } 
+            
+            // $("#apply_sort_cd").val(apply_sort_cd);
+            // apply_sort_way == "ASC" ? $(this).attr("data-sort-way", "DESC") : $(this).attr("data-sort-way", "ASC");
+            // <--
+            
+            apply_sort_way == "ASC" ? $(this).find("i:first").attr("class", "fas fa-arrow-up") : $(this).find("i:first").attr("class", "fas fa-arrow-down");
+            apply_sort_way == "ASC" ? $("#apply_sort_way").val("DESC") : $("#apply_sort_way").val("ASC");
+            apply_sort_way = $("#apply_sort_way").val();
+            
+            // LDK 2021/02/01 : ajaxApplicantList() 사용하기 위해 -->
+            window.location.href = "/applicant/list?recrut_sn={{.RecrutSn}}&apply_sort_cd=" + apply_sort_cd + "&apply_sort_way=" + apply_sort_way;
+            //ajaxApplicantList();
+            // <--
+        });
+
+        var excelDownload = function (entp, evl, recru) {
+            $.ajax({
+                cache: false,
+                url: '/recruit/apply/member/excel',
+                data: {
+                    entp_mem_no: entp,
+                    evl_prgs_stat_cd: evl,
+                    recrut_sn: recru,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                    closePopup();
+                },
+                success: function (rep) {
+                    var downFile = rep.RtnRecruitApplyMemberExcelData[0].DownloadPath;
+                    window.location.replace(downFile);
+                    closePopup();
+                },
+            });
+        }
+
+
+        // 관심아이콘 클릭이벤트
+        $('.ico_like a').on('click', function () {
+            if ($(this).parent().hasClass('active')) {
+                $(this).parent().removeClass('active')
+                var rs = $(this).parent().data("recrut_sn");
+                var pp = $(this).parent().data("pp_mem_no");
+                var yn = "N";
+                $('.toastBox.alert').fadeIn('fast')
+                ajaxMemberSet(rs, pp, yn);
+            } else {
+                $(this).parent().addClass('active')
+                var rs = $(this).parent().data("recrut_sn");
+                var pp = $(this).parent().data("pp_mem_no");
+                var yn = "Y";
+                $('.toastBox.noti').fadeIn('fast')
+                ajaxMemberSet(rs, pp, yn);
+            }
+        })
+
+        // 라이브(다대다) 인터뷰 요청
+        $(document).off("click", "#btn_live_itv_nvn_req").on("click", "#btn_live_itv_nvn_req", function (e) {
+            if ($("input:checkbox[name='tbl_check']:checked").length == 0) {
+                $("#alert_text").text("지원자를 선택해주세요.");
+                openPopup("pop_common_alert");
+                return;
+            }
+
+            //var param = [];
+            //var select_recrut_sn = 0;
+            var check_recrut_sn = 0;
+            var is_diff_recrut_sn = false;      
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                var invalid_cnt = 0;
+                var valid_cnt = 0;
+                $("input:checkbox[name='tbl_check']").each(function (i) {
+                    if ($(this).prop("checked")) {
+                        pp_mem_no = $(this).data("pp_mem_no");
+                        recrut_sn = $(this).data("recrut_sn");
+                        evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                        dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                        read_end_day = $(this).data("read_end_day");
+                        live_req_stat_cd = $(this).data("live_req_stat_cd");
+                        name = $(this).data("name");
+                        sex = $(this).data("sex");
+                        age = $(this).data("age");
+                        //select_recrut_sn = recrut_sn;
+
+                        if (check_recrut_sn == 0)
+                            check_recrut_sn = recrut_sn;
+                        
+                        if (read_end_day == "Y") {
+                            invalid_cnt++;                            
+                        } else {
+                            if (live_req_stat_cd == "01") {
+                                valid_cnt++;
+                                //param.push({pp_mem_no:pp_mem_no, name:name, sex:sex, age:age});
+                            } else {
+                                invalid_cnt++;
+                            }                            
+                        }
+
+                        if (check_recrut_sn != recrut_sn) {
+                            is_diff_recrut_sn = true;     
+                        }
+
+                        //param.push({pp_mem_no:pp_mem_no, name:name, sex:sex, age:age});
+                        
+                        console.log(`[live_itv_nvn_req][check] name:${name}, sex:${sex}, age:${age}, recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}, live_req_stat_cd:${live_req_stat_cd}`);
+                    }
+                });
+
+                if (is_diff_recrut_sn == true) {
+                    $("#alert_text").text(`같은 채용공고 지원자들만 가최대 ${LIVE_NVN_APPLY_MAX_CNT}명까지가능합니다.`);
+                    openPopup("pop_common_alert");  
+                    return;
+                }   
+
+                if ((valid_cnt + invalid_cnt) > LIVE_NVN_APPLY_MAX_CNT) {
+                    $("#alert_text").text(`최대 ${LIVE_NVN_APPLY_MAX_CNT}명까지가능합니다.`);
+                    openPopup("pop_common_alert");  
+                    return;
+                }   
+
+                if (valid_cnt > 0) {
+                    if (invalid_cnt > 0) {
+                        openPopup("pop_live_nvn_req_check");
+                    } else {
+                        liveNvnReq()
+                    }                
+                } else {
+                    $("#alert_text").text("모두 라이브 인터뷰를 진행중입니다.");
+                    openPopup("pop_common_alert");                   
+                }
+                // <--                
+            } else {
+                openPopup("pop_admin_check");  
+            }
+
+            /*
+            console.log(param);
+            
+            var popW = 800;
+            var popH = 1024;
+            var popX = (screen.width / 2) - (popW/2);
+            var popY = (screen.height / 2) - (popH/2);
+
+            //select_recrut_sn
+            // var recrut_sn = $(this).data("recrut_sn");
+            // var send_dt = $(this).data("send_dt");
+
+            var uri = `/live/nvn/req/popup?recrut_sn=${select_recrut_sn}&apply_mem_list=${JSON.stringify(param)}`;            
+            var encodedUri = encodeURI(uri);
+
+            //var result = window.open("/invite/send/list/detail/popup?recrut_sn="+recrut_sn+"&send_dt="+send_dt,                                    
+            var result = window.open(encodedUri,                                    
+                                    "_blank",
+                                    "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+		    result.focus();			
+
+		    result.onbeforeunload = function(){ 	
+            }
+            */
+        });
+
+        var liveNvnReq = function () {
+            var param = [];
+            var select_recrut_sn = 0;
+
+            var invalid_cnt = 0;
+            var valid_cnt = 0;
+
+            $("input:checkbox[name='tbl_check']").each(function (i) {
+                if ($(this).prop("checked")) {
+                    pp_mem_no = $(this).data("pp_mem_no");
+                    recrut_sn = $(this).data("recrut_sn");
+                    evl_prgs_stat_cd = $(this).data("evl_prgs_stat_cd");
+                    dcmnt_evl_stat_cd = $(this).data("dcmnt_evl_stat_cd");
+                    read_end_day = $(this).data("read_end_day");
+                    live_req_stat_cd = $(this).data("live_req_stat_cd");
+                    name = $(this).data("name");
+                    sex = $(this).data("sex");
+                    age = $(this).data("age");
+                    select_recrut_sn = recrut_sn;
+
+                    if (read_end_day == "Y") {
+                        invalid_cnt++;                            
+                    } else {
+                        if (live_req_stat_cd == "01") {
+                            valid_cnt++;
+                            param.push({pp_mem_no:pp_mem_no, name:name, sex:sex, age:age});
+                        } else {
+                            invalid_cnt++;
+                        }                            
+                    }
+
+                    console.log(`[live_itv_nvn_req][confirm] name:${name}, sex:${sex}, age:${age}, recrut_sn: ${recrut_sn}, pp_mem_no:${pp_mem_no}, evl_prgs_stat_cd:${evl_prgs_stat_cd}, read_end_day:${read_end_day}, live_req_stat_cd:${live_req_stat_cd}`);
+                }
+            });
+
+            var popW = 800;
+            var popH = 1024;
+            var popX = (screen.width / 2) - (popW/2);
+            var popY = (screen.height / 2) - (popH/2);
+
+            //select_recrut_sn
+            // var recrut_sn = $(this).data("recrut_sn");
+            // var send_dt = $(this).data("send_dt");
+
+            var uri = `/live/nvn/req/popup?recrut_sn=${select_recrut_sn}&apply_mem_list=${JSON.stringify(param)}`;            
+            var encodedUri = encodeURI(uri);
+
+            //var result = window.open("/invite/send/list/detail/popup?recrut_sn="+recrut_sn+"&send_dt="+send_dt,                                    
+            var result = window.open(encodedUri,                                    
+                                    "_blank",
+                                    "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0")            
+		    result.focus();			
+
+		    result.onbeforeunload = function(){ 	
+            }
+        };
+
+    </script>
+
+{{end}} 

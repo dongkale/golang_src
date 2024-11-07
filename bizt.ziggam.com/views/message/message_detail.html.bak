@@ -1,0 +1,416 @@
+<div class="messageProfile">
+    <span class='ico_like {{if eq "Y" .FavrAplyPpYn}}active{{end}}' id="favr_set"><a href="javascript:void(0);"></a></span>
+    <span class="profileImg"><img src="{{.PtoPath}}" onerror="this.src='/static/images/img-profile-empty-02@3x.png'" width="120" height="120" alt="프로필이미지"></span>
+    <div class="userInfo live_stat">
+        <p class="tit">
+            <!-- <span class="state">대기</span> -->
+            {{if eq "02" .EvlPrgsStatCd}}
+            <span class="state">{{.EvlPrgsStatNm}}</span>
+            {{end}}
+            {{if eq "03" .EvlPrgsStatCd}}
+            <span class="state pass">{{.EvlPrgsStatNm}}</span>
+            {{end}}
+            {{if eq "04" .EvlPrgsStatCd}}
+            <span class="state unPass">{{.EvlPrgsStatNm}}</span>
+            {{end}}
+            <!-- <span class="state unPass">불합격</span> -->
+            <span class="name"><a href="javascript:void(0);" id="applicant_detail">{{.Nm}}</a></span>
+            <!--<span class="more"><a href="javascript:void(0);" id="applicant_detail">{{.Sex}}・{{.Age}}세</a></span>-->
+            <span class="more"><a href="javascript:void(0);" id="applicant_detail">{{.Sex}}・{{if eq 0 .Age}}O세{{else}}{{.Age}}세{{end}}</a></span>
+            
+        </p>
+        <dl class="infoText">
+            <dt>지원 직군</dt>
+            <dd>{{.UpJobGrp}} > {{.JobGrp}}</dd>
+        </dl>
+        <dl class="infoText">
+            <dt>지원 공고</dt>
+            <dd><a href="/recruit/post/detail?recrut_sn={{.RecrutSn}}">{{.RecrutTitle}}</a></dd>
+        </dl>
+        <dl class="infoDate">
+            <dt>지원 일시</dt>
+            <dd>{{.RegDt}}</dd>
+        </dl>
+        <ul3>                   
+        {{if or (eq "4" .RecrutProcCd) (eq "5" .RecrutProcCd) (eq "6" .RecrutProcCd) (eq "7" .RecrutProcCd) }}
+            {{if eq "01" .LiveReqStatCd}}
+                <a href="javascript:void(0);" id="live_send_req" class="sendLive sendReq"><span>라이브 인터뷰 요청하기</span></a>
+            {{end}}
+            {{if eq "02" .LiveReqStatCd}}
+                <a href="javascript:void(0);" id="live_req_ing" class="sendLive reqIng">라이브 인터뷰 요청 상태</a>
+            {{end}}
+            {{if eq "03" .LiveReqStatCd}}
+                <a href="javascript:void(0);" id="live_schedule" class="sendLive interview">라이브 인터뷰 예정</a>
+            {{end}}            
+        {{end}}
+        </ul3>
+    </div>
+</div>
+<div class="messageBox msgList" id="mydiv">
+<ul2>
+{{if .MessageList}}
+    {{range .MessageList}}
+
+    {{if eq "Y" .MlLdYn}}
+    <!--//라인여부-->
+    <p class="date"><span>{{.MlLdDt}}</span></p>
+    {{end}}
+    
+        {{if eq "01" .MlMsgGbnCd}}
+        <!--//기업 시작 메시지 01-->
+        <div class="adminView">
+            <p class="tit">기업에게만 보이는 메시지입니다.</p>
+            <dl>
+                <dt>대화가 시작되었습니다!</dt>
+                <dd>안녕하세요. <strong>{{.MlEntpNm}}</strong> 님! 직감의 채용 프로세스를 이용해주셔서 감사합니다.</dd>
+                <dd>지금부터 지원자 <strong>{{.MlMemNm}}</strong> 님과 메시지를 통해 채용 프로세스를 진행하실 수 있습니다.</dd>
+                <dd>직감 메시지를 통해 <strong>채용을 편하게, 영상을 면접으로</strong>진행해보세요!</dd>
+            </dl>
+        </div>
+        {{end}}
+    
+        {{if eq "04" .MlMsgGbnCd}}
+        <!--//합격 축하 메시지 04-->
+        <div class="messageAdmin">
+            <div class="mWrap">
+                <div class="box pass">
+                    <p class="tit">축하합니다!</p>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>    
+        {{end}}
+
+        {{if eq "06" .MlMsgGbnCd}}
+        <!--//인터뷰 요청 메시지 06-->
+        <div class="messageAdmin">
+            <div class="mWrap">
+                <div class="box live">
+                    <p class="tit">라이브 인터뷰 요청 메시지</p>
+                    <div class="reqLiveTime">
+                        <p class="text"><span>라이브 인터뷰 요청시간</span></p>
+                        <p class="date">{{.MlLiveItvSday}}</p>
+                        <p class="time">{{.MlLiveItvStime}}</p>
+                    </div>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                    <div class="btnSet">
+                        {{if eq "Y" .MlLiveNvnYn}}
+                            <a href="javascript:void(0);" class="btn type_red" id="btn_live_nvn_detail_go" data-recrut_sn="{{.MlRecrutSn}}" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">상세 보기</a>                                
+                        {{else}}    
+                            <a href="javascript:void(0);" class="btn type_red" id="btn_live_req_cancel" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">요청 취소하기</a>
+                        {{end}}
+                    </div>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "11" .MlMsgGbnCd}}
+        <!--//라이브 인터뷰 요청 취소 메시지-->
+        <div class="messageAdmin">
+            <div class="mWrap">
+                <div class="box live">
+                    <p class="tit">라이브 인터뷰 요청 취소 메시지</p>
+                    <div class="reqLiveTime cancel">
+                        <p class="text"><span>라이브 인터뷰 요청시간</span></p>
+                        <p class="date">{{.MlLiveItvSday}}</p>
+                        <p class="time">{{.MlLiveItvStime}}</p>
+                    </div>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                    {{if eq "Y" .MlLiveNvnYn}}
+                    <div class="btnSet">                        
+                        <a href="javascript:void(0);" class="btn type_red" id="btn_live_nvn_detail_go" data-recrut_sn="{{.MlRecrutSn}}" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">상세 보기</a>                        
+                    </div>
+                    {{end}}
+                    <span class="date">{{.MlLdDt2}}</span>
+                </div>
+            </div>
+        </div>
+        {{end}}
+
+        {{if and (eq "99" .MlMsgGbnCd) (eq "E" .MlMemGbn)}}
+        <!--//기업 일반 메시지 99-->
+        <div class="messageAdmin">
+            <div class="mWrap">
+                <div class="box">
+                    <p class="text">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </p>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>
+        {{end}}
+
+        {{if and (eq "99" .MlMsgGbnCd) (eq "P" .MlMemGbn)}}
+        <!--//개인 일반 메시지 99-->
+        <div class="messageUser">
+            <span class="userImg"><img src="{{.MlPtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="52" height="52" alt=""></span>
+            <div class="mWrap">
+                <div class="box">
+                    <p class="text"><pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre></p>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "07" .MlMsgGbnCd}}
+        <!--//라이브 인터뷰 수락 메시지 07-->
+        <div class="messageUser">
+            <span class="userImg"><img src="{{.MlPtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="52" height="52" alt=""></span>
+            <div class="mWrap">
+                <div class="box">
+                    <p class="text">요청하신 라이브 인터뷰를 수락합니다.</p>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+            </div>
+        <!--//라이브 인터뷰 확정 메시지 07-->
+        <div class="liveView">
+            <p class="tit">라이브 인터뷰 진행이 확정되었습니다!</p>
+            <div class="reqLiveTime">
+                <p class="text"><span>라이브 인터뷰 요청시간</span></p>
+                <p class="date">{{.MlLiveItvSday}}</p>
+                <p class="time">{{.MlLiveItvStime}}</p>
+            </div>
+            <ul class="liveInfo">
+                <li><span>진행이 확정된 라이브 인터뷰는 <strong>[라이브 인터뷰]메뉴</strong>에서 확인이 가능합니다.</span></li>
+                <li><span>'라이브 인터뷰'메뉴 혹은 아래 <strong>[시작하기] 버튼</strong>을 통해 라이브 인터뷰를 확인하실 수 있습니다.</span></li>
+            </ul>
+            <div class="btnSet">
+                {{if eq "Y" .MlLiveNvnYn}}
+                    <a href="javascript:void(0);" class="btn type_red" id="btn_live_nvn_detail_go" data-recrut_sn="{{.MlRecrutSn}}" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">상세 보기</a>    
+                {{else}}
+                    <a href="javascript:void(0);" id="btn_ing_live_req_cancel" class="btn type_red" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">취소하기</a>
+                    <a href="javascript:void(0);" class="btn start" id="btn_live_stat" data-recrut_sn="{{.MlRecrutSn}}" data-pp_mem_no="{{.MlPpMemNo}}"  data-live_nvn_yn="{{.MlLiveNvnYn}}"><span>시작하기</span></a>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "08" .MlMsgGbnCd}}
+        <!--//라이브 인터뷰 거절 메시지 08-->
+        <div class="messageUser">
+            <span class="userImg"><img src="{{.MlPtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="52" height="52" alt=""></span>
+            <div class="mWrap">
+                <div class="box live">
+                    <p class="tit">라이브 인터뷰 거절 메시지</p>
+                    <div class="reqLiveTime">
+                        <p class="text"><span>라이브 인터뷰 요청시간</span></p>
+                        <p class="date">{{.MlLiveItvSday}}</p>
+                        <p class="time">{{.MlLiveItvStime}}</p>
+                    </div>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>
+        {{end}}
+
+        {{if and (eq "09" .MlMsgGbnCd) (eq "E" .MlMemGbn)}}
+        <!--//라이브 인터뷰 기업 취소 메시지 09-->
+        <div class="messageAdmin">
+            <div class="mWrap">
+                <div class="box live">
+                    <p class="tit">라이브 인터뷰 취소 메시지</p>
+                    <div class="reqLiveTime cancel">
+                        <p class="text"><span>라이브 인터뷰 예정</span></p>
+                        <p class="date">{{.MlLiveItvSday}}</p>
+                        <p class="time">{{.MlLiveItvStime}}</p>
+                    </div>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                    <span class="date">{{.MlLdDt2}}</span>
+                </div>
+            </div>
+        </div>
+        {{end}}
+
+        {{if and (eq "09" .MlMsgGbnCd) (eq "P" .MlMemGbn)}}
+        <!--//라이브 인터뷰 개인 취소 메시지 09-->
+        <div class="messageUser">
+            <span class="userImg"><img src="{{.MlPtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'" width="52" height="52" alt=""></span>
+            <div class="mWrap">
+                <div class="box live">
+                    <p class="tit">라이브 인터뷰 취소 메시지</p>
+                    <div class="reqLiveTime cancel">
+                        <p class="text"><span>라이브 인터뷰 예정</span></p>
+                        <p class="date">{{.MlLiveItvSday}}</p>
+                        <p class="time">{{.MlLiveItvStime}}</p>
+                    </div>
+                    <div class="message">
+                        <pre style="white-space:pre-wrap">{{str2html .MlMsgCont}}</pre>
+                    </div>
+                </div>
+                <span class="date">{{.MlLdDt2}}</span>
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "10" .MlMsgGbnCd}}
+        <!--//라이브 인터뷰 종료 메시지 10-->
+        <div class="liveView end">
+            <p class="tit">라이브 인터뷰가 종료되었습니다.</p>
+            <table>
+                <colgroup>
+                    <col width="170px"/><col />
+                </colgroup>
+                <tr>
+                    <th>날짜</th>
+                    <td>{{.MlLiveItvSday}}</td>
+                </tr>
+                <tr>
+                    <th>시작</th>
+                    <td>{{.MlLiveItvStime}}</td>
+                </tr>
+                <tr>
+                    <th>종료</th>
+                    <td>{{.MlLiveItvEtime}}</td>
+                </tr>
+                <tr>
+                    <th class="totalTime">총 면접 시간</th>
+                    <td>{{.MlLiveItvJt}}</td>
+                </tr>
+            </table>
+            <div class="btnSet">
+                {{if eq "Y" .MlLiveNvnYn}}
+                    <a href="javascript:void(0);" class="btn type_red" id="btn_live_nvn_detail_go" data-recrut_sn="{{.MlRecrutSn}}" data-live_sn="{{.MlLiveSn}}" data-live_nvn_yn="{{.MlLiveNvnYn}}">상세 보기</a>
+                {{else}}
+                    <a href="javascript:void(0);" id="applicant_detail" class="btn type_blue st02 st331">지원자 상세 보기</a>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "02" .MlMsgGbnCd}}
+        <!--//대화 종료 메시지 02-->
+        <div class="adminView">
+            <p class="tit">기업에게만 보이는 메시지입니다.</p>
+            <dl>
+                <dt>대화가 종료되었습니다!</dt>
+                <dd>직감 채용 프로세스를 이용해주셔서 감사합니다.</dd>
+                <dd>지원자 <strong>{{.MlMemNm}}</strong>님과의 대화가 종료되어 더이상 메시지 수신 및 발신이 불가능합니다.</dd>
+                <dd>종료된 대화는 오른쪽 메시지 리스트의 [종료]탭을 클릭하여 확인해주세요.</dd>
+            </dl>
+            <div class="btnSet">
+                <a href="javascript:void(0);" id="btn_msg_restart" class="btn type_blue st02">다시 대화하기</a>
+            </div>
+        </div>
+        {{end}}
+
+        {{if eq "03" .MlMsgGbnCd}}
+        <!--//대화 다시시작 메시지 03-->
+        <div class="adminView">
+            <p class="tit">기업에게만 보이는 메시지입니다.</p>
+            <dl>
+                <dt>다시 대화가 시작되었습니다!</dt>
+                <dd>지원자 <strong>{{.MlMemNm}}</strong>님과의 다시 메시지를 주고 받으실 수 있습니다.</dd>
+                <dd>직감 메시지를 통해 더욱 편하게 채용 프로세스를 진행해보세요!</dd>
+            </dl>
+        </div>
+        {{end}}
+    {{end}}
+{{end}}
+</ul2>
+</div>
+    <!-- <div class="inputMessage">
+        <input type="text" class="it" placeholder="메시지를 입력하세요.">
+        <button class="btn type_blue st02">전송</button>
+        <button class="btn end">대화 종료하기</button>
+    </div> -->
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        if (!"{{.Session}}") {
+            window.location.href="/";
+        }
+        //가장 최근메시지 보여줌
+        $("#mydiv").animate({ scrollTop: $('#mydiv').prop("scrollHeight")}, 0);
+    });  
+
+    // 관심지원자
+    $(document).off("click", "#favr_set").on("click", "#favr_set", function(e) {
+        if($(this).hasClass('active')){
+          $(this).removeClass('active')
+          $("#favr_set_yn").val("N");
+          ajaxMemberSet();
+        } else {
+          $(this).addClass('active')
+          $("#favr_set_yn").val("Y");
+          ajaxMemberSet();
+        }
+    });    
+    
+    // 대화종료하기 버튼마우스오버시 이벤트
+    $('.inputMessage .btn.end').on('mouseenter',function(){
+        $('.inputMessage .tooltip').show()
+    })
+    $('.inputMessage .btn.end').on('mouseleave',function(){
+        $('.inputMessage .tooltip').hide()
+    })
+
+    // 지원자 관심설정 처리
+    var ajaxMemberSet = function(v) {
+        var recrut_sn = "{{.RecrutSn}}";
+        var pp_mem_no = "{{.PpMemNo}}";
+        var favr_set_yn = $("#favr_set_yn").val();
+        /*
+        console.log("recrut_sn : "+recrut_sn);
+        console.log("pp_mem_no : "+pp_mem_no);
+        console.log("favr_set_yn : "+favr_set_yn);
+        return;
+        */
+
+        $.ajax({
+            cache : false,
+            url : '/favor/member/set',
+            data:{
+                recrut_sn : recrut_sn,
+                pp_mem_no : pp_mem_no,
+                favr_set_yn : favr_set_yn,
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+
+                if(rtnCd == "1"){
+                    if (favr_set_yn == "Y") {
+                        $('.toastBox.noti').fadeIn(1000)
+                        setTimeout(function() {
+                            $('.toastBox.noti').fadeOut(1000);
+                        }, 3000);
+                    } else {
+                        $('.toastBox.alert').fadeIn(1000)
+                        setTimeout(function() {
+                            $('.toastBox.alert').fadeOut(1000);
+                        }, 3000);
+                    }
+                } else {
+                    console.log("message : " + rtnMsg);
+                }
+            },
+            error : function(e) {
+                console.log("error + "+e);
+            }
+        });	  
+    }
+
+</script>

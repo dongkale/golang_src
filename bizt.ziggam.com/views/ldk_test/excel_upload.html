@@ -1,0 +1,112 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+<!-- Header start -->
+{{template "include/header.html" .}}
+<!-- Header end -->
+
+<script src="/static/js/excel.min.js"></script>
+
+<input type='file' id='file' />
+<div id='grid' width='300px'></div>
+
+<script>
+	var test1 = null,
+		test2 = null;
+
+	function gridExcelToWeb(file, target) {
+		var reader = new FileReader();
+
+		reader.onload = function (evt) {
+			if (evt.target.readyState == FileReader.DONE) {
+				var data = evt.target.result; //해당 데이터, 웹 서버에서 ajax같은거로 가져온 blob 형태의 데이터를 넣어주어도 동작 한다.
+				data = new Uint8Array(data);
+				var workbook = XLSX.read(data, {
+					type: 'array'
+				});
+				// var sheetName = '';
+				// workbook.SheetNames.forEach(function (data, idx) { //시트 여러개라면 이 안에서 반복문을 통해 돌리면 된다.
+				// 	if (idx == 0) {
+				// 		sheetName = data;
+				// 	}
+
+				// });
+				// test1 = workbook;
+				
+				workbook.SheetNames.forEach(function (item, index, array) {
+					EXCEL_JSON = XLSX.utils.sheet_to_json(workbook.Sheets[item]);
+
+					//console.log("====================== " + JSON.stringify(EXCEL_JSON))
+
+					//console.log("====================== " + item)
+
+					// for(key in EXCEL_JSON) {
+					// 	console.log('key:' + key + ' / ' + 'value:' + EXCEL_JSON[key]);
+					// }
+
+					// EXCEL_JSON.forEach(function (obj) {
+
+					// 	//console.log(JSON.stringify(obj)); 						
+					// 	//console.log("롤링 배너: " + obj["롤링 배너"]); 
+					// 	if (obj.hasOwnProperty("이름"))
+					// 		console.log("이름: " + obj["이름"]);
+					// 	else if (obj.hasOwnProperty("이 름"))
+					// 		console.log("이 름: " + obj["이 름"]);
+					// 	else if (obj.hasOwnProperty("Name"))
+					// 		console.log("Name: " + obj["Name"]);
+
+					// 	console.log("이메일: " + obj["이메일"]);
+					// 	console.log("전화번호: " + obj["전화번호"]);
+					// 	//console.log("__EMPTY_3: " + obj["__EMPTY_3"]); 
+
+					// });
+
+					console.log(`[${item}]`);							
+					EXCEL_JSON.forEach(function (data, idx) {
+						for (key in data) {
+							console.log(key + ': ' + data[key]);							
+						}
+						console.log('=====================');
+					});
+
+					// Object.keys(EXCEL_JSON).forEach(function (k) {
+					// 	console.log('키값 : ' + k + ', 데이터값 : ' + EXCEL_JSON[k]);
+					// });					
+
+					//JSON.stringify(EXCEL_JSON[sheetName])
+				}); //end. forEach
+
+				/*
+				var toHtml = XLSX.utils.sheet_to_html(workbook.Sheets[sheetName], {
+					header: ''
+				});
+
+				target.html(toHtml);
+				target.find('table').attr({
+					class: 'table table-bordered',
+					id: 'excelResult'
+				}); //id나 class같은거를 줄 수 있다.
+				test2 = toHtml;
+				$('#excelResult').find('tr').each(function (idx) {
+					if (idx <= 1) {
+						$(this).css({
+							'background-color': '#969da5a3'
+						});
+						$(this).css('width', '200px');
+					}
+
+					//console.log("=== " + $(this).val() )
+				});
+				*/
+			}
+		};
+		reader.readAsArrayBuffer(file);
+	}
+
+	$('#file').change(function () {
+		const selectedFile = $(this)[0].files[0];
+		gridExcelToWeb(selectedFile, $('#grid'))
+	});
+</script>
+{{end}}

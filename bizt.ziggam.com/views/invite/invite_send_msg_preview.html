@@ -1,0 +1,105 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+<!--
+<div id="contents_old" style="letter-spacing:1px;word-spacing:1px;line-height:18px">
+    {지원자명}님, 안녕하세요.<br>
+    {{.EntpKoNm}}의 인사담당자 {{.PpChrgName}}입니다.<br>
+    직감을 통한 영상 지원을 요청하셨습니다.<br><br>
+    ※ 하단 링크를 통해 앱 설치 후 자세한 채용공고 내용을 확인하실 수 있습니다.<br>
+    ※ 채용공고 마감일 이후에는 지원이 불가하니 유의해주세요.<br><br>
+    ▶ 기업명: {{.EntpKoNm}}<br>
+    ▶ 채용공고: {{.RecruitTitle}}<br>
+    ▶ 직무: {{.UpJobGrp}} > {{.JobGrp}}<br>
+    ▶ 바로가기: {URL}<br><br>
+    * 직감이란? 직감은 영상 기반의 채용 서비스를 제공하는 플랫폼입니다. 모바일 어플리케이션을 다운로드하여 진행하실 수 있습니다.<br>
+    직감 영상 인터뷰 가이드 바로가기<br>
+    * 수신자 정보는 30일 후 자동 삭제됩니다. 즉시 삭제를 원하실 경우 [바로가기] 링크를 통해 삭제 요청을 하실 수 있습니다.<br><br>
+    * 영상 인터뷰 관련 문의 : support@ziggam.com   
+</div>
+<br><br><br><br><br>
+-->
+<!--
+<div id="cont" style="letter-spacing:1px;word-spacing:1px;line-height:18px">
+    {지원자명}님, 안녕하세요.<br>
+    {기업명}의 인사담당자 {담당자}입니다.<br>
+    직감을 통한 영상 지원을 요청하셨습니다.<br><br>
+    ※ 하단 링크를 통해 앱 설치 후 자세한 채용공고 내용을 확인하실 수 있습니다.<br>
+    ※ 채용공고 마감일 이후에는 지원이 불가하니 유의해주세요.<br><br>
+    ▶ 기업명: {기업명}<br>
+    ▶ 채용공고: {공고제목}<br>
+    ▶ 직무: {1차 직군} > {2차 직군}<br>
+    ▶ 바로가기: {URL}<br><br>
+    * 직감이란? 직감은 영상 기반의 채용 서비스를 제공하는 플랫폼입니다. 모바일 어플리케이션을 다운로드하여 진행하실 수 있습니다.<br>
+    직감 영상 인터뷰 가이드 바로가기<br>
+    * 수신자 정보는 30일 후 자동 삭제됩니다. 즉시 삭제를 원하실 경우 [바로가기] 링크를 통해 삭제 요청을 하실 수 있습니다.<br><br>
+    * 영상 인터뷰 관련 문의 : support@ziggam.com   
+</div>
+-->
+<div id="contents" style="margin:10px;letter-spacing:1px;word-spacing:1px;line-height:18px">
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var entp_ko_nm = "{{.EntpKoNm}}";
+        var pp_chrg_nm = "{{.PpChrgName}}";
+
+        var recruit_title = "{{.RecruitTitle}}";
+
+        var up_job_grp = "{{.UpJobGrp}}";
+        var job_grp = "{{.JobGrp}}";
+
+        var invite_title = "{{.InviteTitle}}";        
+        var invite_msg = "{{.InviteMsg}}";        
+
+        console.log(`entp_ko_nm:${entp_ko_nm}, pp_chrg_nm:${pp_chrg_nm}, recruit_title:${recruit_title}, up_job_grp:${up_job_grp}, job_grp:${job_grp}, invite_title:${invite_title}, invite_msg:${invite_msg}`);
+
+        invite_msg = invite_msg.replaceAll('\n', '<br>');
+        $('#contents').html(invite_msg);
+
+        // output_html = output_html.replaceAll('{기업명}', entp_ko_nm);
+        // output_html = output_html.replaceAll('{공고제목}', recruit_title);
+        // output_html = output_html.replaceAll('{담당자}', pp_chrg_nm);
+        // output_html = output_html.replaceAll('{채용공고 제목}', recruit_title);
+        // output_html = output_html.replaceAll('{1차 직군}', up_job_grp)
+        // output_html = output_html.replaceAll('{2차 직군}', job_grp);
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{기업명}', entp_ko_nm);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{담당자}', pp_chrg_nm);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{채용공고 제목}', recruit_title);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{채용 공고 제목}', recruit_title);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{공고 제목}', recruit_title);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{1차직군}', up_job_grp);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{1차 직군}', up_job_grp);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{2차직군}', job_grp);
+        });
+
+        $('#contents').html(function(index,html){             
+            return html.replaceAll('{2차 직군}', job_grp);
+        });
+    });
+</script>
+{{end}} 

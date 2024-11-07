@@ -1,0 +1,66 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+
+	<div class="content">
+		<h2>고객센터</h2>
+		<div class="customer">
+			<div class="gridTop">
+				<h3>문의 내역 상세</h3>
+				<p class="detailInfo">{{.RegDt}} <span>{{.PpChrgBpNm}} {{.PpChrgNm}}</span></p>
+			</div>
+			<div class="viewGrid">
+				<table>
+					<colgroup>
+						<col width="170px">
+						<col>
+					</colgroup>
+					<tr>
+						<th>구분</th>
+						<td>{{.InqGbnNm}}</td>
+					</tr>
+					<tr>
+						<th>제목</th>
+						<td>{{.InqTitle}}</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td>{{str2html .InqCont}}</td>
+					</tr>
+					<tr>
+						<th>답변 받을 이메일</th>
+						<td>{{.Email}}</td>
+					</tr>
+					{{if eq "1" .AnsYn}}
+					<tr>
+						<th>상태</th>
+						<td class="reply complete">답변 완료 [{{.AnsDt}}]</td>
+					</tr>
+					<tr>
+						<th>답변</th>
+						<td class="reply complete">{{str2html .AnsCont}}</td>
+					</tr>
+					{{else}}
+					<tr>
+						<th>상태</th>
+						<td class="reply">답변 대기</td>
+					</tr>
+					{{end}}
+				</table>
+			</div>
+			<div class="btnSet">
+				<a href="javascript:void(0);" class="btn" id="btn_list">목록으로</a>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).off("click", "#btn_list").on("click","#btn_list",function(e) {
+			var pn = "{{.PageNo}}";
+			window.location.href="/setting/inquiry/list?pn="+pn
+		});
+	</script>
+{{end}} 

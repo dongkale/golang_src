@@ -1,0 +1,531 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+<input type="hidden" id="check_all_list" value="0">
+<input type="hidden" id="page_no" value="1">
+
+<input type="hidden" id="url_backup" value="">
+
+<div class="contentInviteListPop">
+    <div class="searchForm inviteList">
+        <div class="search st04">
+            <input type="text" name="keyword" id="keyword" maxlength="130" placeholder="검색 키워드를 입력해주세요." class="it">
+            <a href="javascript:void(0);" id="btn_search" class="btn type_blue st02">검색</a>
+        </div>        
+    </div>
+    <div class="inviteList">
+        <div class="tit">
+            <p class="total">
+                총 <strong><span id="tcnt">{{.RslTotCnt}}</span></strong>건
+            </p>            
+            <a style="float:right" href="javascript:void(0);" id="btn_resend_all"
+                class="inviteList btn normal type_blue">재전송</a>
+        </div>        
+        <div class="gridWrap invite_list">
+            <table>
+                <colgroup>
+                    <col width="40px"/>
+                    <col width="30px" />
+                    <col width="70px" />
+                    <col width="130px" />
+                    <col width="100px" />
+                    <col width="170px" />
+                    <col width="80px" />
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="checkbox">
+                        <input type="checkbox" name="tbl_check_all" id="tbl_check_all" class="custom">
+                            <label name="tbl_check_all" for="tbl_check_all"></label>
+                    </th>
+                    <th style="cursor: default">No</th>
+                    <th style="cursor: default">이름</th>                        
+                    <th style="cursor: default">이메일 주소</th>
+                    <th style="cursor: default">휴대폰 번호</th>                      
+                    <th style="cursor: default">발송상태(이메일/SMS)</th>                      
+                    <th style="cursor: default">재전송</th>  
+                    <!--
+                    <th><a class="sort" id="cond_apply_dt" data-sort-code="01"
+                           data-sort-way="{{if and (eq "01" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                           href="javascript:void(0);"
+                           style="background: none">지원일시 <i
+                                    class="fas {{if and (eq "01" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "01" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                    </th>
+                    <th><a class="sort" id="cond_name" data-sort-code="02"
+                           data-sort-way="{{if and (eq "02" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                           href="javascript:void(0);"
+                           style="background: none">이름 <i
+                                    class="fas {{if and (eq "02" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "02" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                    </th>
+                    <th style="cursor: default">성별</th>
+                    <th><a class="sort" id="cond_age" data-sort-code="03"
+                           data-sort-way="{{if and (eq "03" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                           href="javascript:void(0);"
+                           style="background: none">나이 <i
+                                    class="fas {{if and (eq "03" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "03" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                    </th>
+                    <th style="cursor: default">상태</th>
+                    <th><a class="sort" id="cond_proc_dt" data-sort-code="04"
+                           data-sort-way="{{if and (eq "04" .ApplySortCd) (eq "DESC" .ApplySortWay)}}DESC{{else}}ASC{{end}}"
+                           href="javascript:void(0);"
+                           style="background: none">처리일시 <i
+                                    class="fas {{if and (eq "04" .ApplySortCd) (eq "DESC" .ApplySortWay)}}fa-arrow-up{{else if and (eq "41" .ApplySortCd) (eq "ASC" .ApplySortWay)}}fa-arrow-down{{else}}fa-align-justify{{end}}"></i></a>
+                    </th>
+                    -->
+                </tr>
+                </thead>
+                <tbody>
+                    {{if .InviteSendListDetail}}
+                        {{range .InviteSendListDetail}}
+                            {{if eq "Y" .RslListYN}}
+                                <tr>
+                                    <td class="checkbox">
+                                        <input type="checkbox" name="tbl_check" id="tbl_check_{{.RslRowNo}}"
+                                        data-row_no="{{.RslRowNo}}" 
+                                        data-name="{{.RslName}}"
+                                        data-email="{{.RslEmail}}" 
+                                        data-phone="{{.RslPhone}}"
+                                            class="custom check_member"/>
+                                    <label name="tbl_check" for="tbl_check_{{.RslRowNo}}"></label>
+                                    </td>
+                                <td>{{.RslRowNo}}</td>
+                                <td>{{.RslName}}</td>
+                                <td>{{.RslEmail}}</td>
+                                <td>{{.RslPhone}}</td>
+                                <!--<td><span>{{.RslEmailResult}}</span>/<span style="color:red">{{.RslSmsResult}}</span></td>-->
+                                <td>{{if eq "발송완료" .RslEmailResult}}<span>{{.RslEmailResult}}</span>
+                                    {{else if eq "" .RslEmailResult}}<span>발송중</span>
+                                    {{else}}<span style="color:red">{{.RslEmailResult}}</span>
+                                    {{end}}
+                                    /      
+                                    {{if eq "발송완료" .RslSmsResult}}<span>{{.RslSmsResult}}</span>
+                                    {{else}}<span style="color:red">{{.RslSmsResult}}</span>
+                                    {{end}}      
+                                </td>
+                                <td><a href="javascript:void(0);" id="btn_resend" 
+                                    data-row_no="{{.RslRowNo}}" 
+                                    data-name="{{.RslName}}"
+                                    data-email="{{.RslEmail}}" 
+                                    data-phone="{{.RslPhone}}"
+                                    style="text-decoration:underline">재전송</a></td>
+                                </tr>
+                            {{else}}    
+                                <tr style="height: 8px;">
+                                    <td class="checkbox"></td>
+                                    <td>{{.RslRowNo}}</td>
+                                    <td colspan="4" style="text-align:center; color: #fa5757;">수신자의 요청으로 삭제되었습니다.</td>
+                                </tr>
+                            {{end}}
+                        {{end}}
+                    {{else}}
+                        <tr style="height: 200px;">
+                            <td colspan="6" style="text-align:center; color: #878d91;">발송 리스트가 없습니다.</td>
+                        </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+        <div class="paging">
+            {{str2html .Pagination}}
+        </div>
+    </div>
+</div>
+
+<!-- 보내기 확인 팝업 -->
+<div class="popupWrap" id="invite_send_pop">
+    <div class="popLayer">
+        <div class="popCont">
+            <p class="tit">채용공고 초대 메시지를 재전송하시겠어요?</p>
+            <p class="text">전송 후에는 취소가 불가능합니다.</p>
+        </div>
+        <div class="btnSet">
+            <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="btn type_red" id="btn_send_confirm">보내기</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+<!-- 보내기 확인 팝업 -->
+
+<!-- 알림 공통 팝업 -->
+<div class="popupWrap" id="pop_common_alert">
+    <div class="popLayer">
+        <div class="popCont">
+            <p class="text" id="alert_text"></p>
+        </div>
+        <div class="btnSet">
+            <a href="javascript:void(0);" class="btn" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+<!-- 알림 공통 팝업 -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input.custom').customInput();
+        
+        console.log( "[CurrentUrl] " + $("#url_backup").val() );        
+        
+        // $("#url_backup").val(window.location.href);
+        // window.history.pushState(null, null, "/invite/send/list/detail/popup");
+        // //window.history.replaceState('','','/');
+
+        // console.log( "[CurrentUrl] " + $("#url_backup").val() );        
+    });
+
+    $(window).on("beforeunload", function() {
+        // console.log( "[CurretnUrl] " + $("#url_backup").val() );
+        // window.location.href = $("#url_backup").val();       
+        // console.log( "[CurretnUrl] " + $("#url_backup").val() );
+
+        //window.location.href = $("#url_backup").val();               
+    });
+
+    $(window).on("unload", function() {
+        // console.log( "[CurretnUrl] " + $("#url_backup").val() );
+        // window.location.href = $("#url_backup").val();       
+        console.log( "[unload] " + $("#url_backup").val() );        
+    });
+
+    $(document).off("change", "input[name='tbl_check']").on("change", "input[name='tbl_check']", function () {
+        if ($("input:checkbox[name='tbl_check']:checked").length != $("input:checkbox[name='tbl_check']").length) {
+            $("#tbl_check_all").prop("checked", false);
+            $("label[name='tbl_check_all']").removeClass("checked");
+        } else {
+            $("#tbl_check_all").prop("checked", true);
+            $("label[name='tbl_check_all']").addClass("checked");
+        }
+    });
+
+    // 전체선택/해제
+    $(document).off("click", "#tbl_check_all").on("click", "#tbl_check_all", function (e) {
+        if ($(this).is(":checked") == true) { // 표시
+            $("check_all_list").val("1");
+            allCheck("1");
+        } else {
+            $("check_all_list").val("0");
+            allCheck("0");
+        }
+    });
+
+    var allCheck = function (check_value) {
+        console.log(check_value);
+        if (check_value == "1") {
+            //console.log("checked");
+            $("#check_all_list").val("1");
+            $('input:checkbox[name="tbl_check"]').parent().parent().parent().addClass("check");
+            $('label[name="tbl_check"]').addClass("checked");
+            $('input:checkbox[name="tbl_check"]').prop("checked", true);
+        } else {
+            //console.log("unchecked");
+            $("#check_all_list").val("0");
+            $('input:checkbox[name="tbl_check"]').parent().parent().parent().removeClass("check");
+            $('label[name="tbl_check"]').removeClass("checked");
+            $('input:checkbox[name="tbl_check"]').prop("checked", false);
+        }
+    }
+
+    $(document).off("click", ".check_member").on("click", ".check_member", function (e) {
+        if ($(this).is(":checked") == true) { // 표시
+            $(this).parent().parent().parent().addClass("check");
+            //var recrut_sn = $(this).data("recrut_sn");
+            //console.log("recrut_sn : "+recrut_sn);
+        } else {
+            $(this).parent().parent().parent().removeClass("check");
+            //console.log("recrut_sn : N");
+        }
+    });
+
+    // 지원자 검색(Enter Key)
+    $(document).off("keydown", "#keyword").on("keydown", "#keyword", function (e) {
+        if (event.keyCode == 13) {
+            ajaxInviteListDetail();
+        }
+    });
+    
+    // 지원자 검색 (클릭)
+    $(document).off("click", "#btn_search").on("click", "#btn_search", function (e) {
+        $("#page_no").val("1");
+        ajaxInviteListDetail();
+    });
+
+    var ajaxInviteListDetail = function (v) {
+        //var keyword = $("#keyword").val();
+        var recrut_sn = "{{.RecrutSn}}"
+        var send_dt = "{{.SendDt}}"
+
+        var page_no = $("#page_no").val();
+        var keyword = $("#keyword").val();
+
+        console.log("recrut_sn : " + recrut_sn);
+        console.log("send_dt : " + send_dt);
+        console.log("page_no : " + page_no);        
+        console.log("keyword : "+keyword);
+
+        /*
+            console.log("keyword : "+keyword);
+            console.log("sort_gbn : "+sort_gbn);
+            console.log("page_no : "+page_no);            
+            
+        */
+
+        $.ajax({
+            type: "POST",
+            url: "/invite/send/list/detail/popup",
+            data: {
+                recrut_sn: recrut_sn,
+                send_dt: send_dt,
+                keyword: keyword,
+                pn: page_no,
+            },
+            dataType: "json",
+            error: function () {
+                console.log("[ajax][/invite/recurit/list] error");
+            },
+            success: function (rep) {
+                if (rep.RtnInviteSendListDetailData) {
+                    if (rep.RtnInviteSendListDetailData.length > 0) {
+                        $(".gridWrap.invite_list").show();
+                        $(".gridWrap.invite_list").find("tbody").children().remove();
+
+                        $.each(rep.RtnInviteSendListDetailData, function (e) {
+                            var html = "";
+
+                            if (rep.RtnInviteSendListDetailData[e].RslListYN == "Y" ) {
+                                html += "<tr>";
+                                html += "    <td class=\"checkbox\">";
+                                html += "        <input type=\"checkbox\" name=\"tbl_check\"";
+                                html += "               id=\"tbl_check_" + rep.RtnInviteSendListDetailData[e].RslRowNo + "\"";
+                                html += "               data-row_no=\"" + rep.RtnInviteSendListDetailData[e].RslRowNo + "\"";
+                                html += "               data-name=\"" + rep.RtnInviteSendListDetailData[e].RslName + "\"";
+                                html += "               data-email=\"" + rep.RtnInviteSendListDetailData[e].RslEmail + "\"";
+                                html += "               data-phone=\"" + rep.RtnInviteSendListDetailData[e].RslPhone + "\"";                        
+                                html += "               class=\"custom check_member\"/>";
+                                html += "        <label name=\"tbl_check\" for=\"tbl_check_" + rep.RtnInviteSendListDetailData[e].RslRowNo + "\"></label>";
+                                html += "    </td>";
+
+                                html += "	<td>" + rep.RtnInviteSendListDetailData[e].RslRowNo + "</td>";
+                                html += "	<td>" + rep.RtnInviteSendListDetailData[e].RslName + "</td>";
+                                html += "	<td>" + rep.RtnInviteSendListDetailData[e].RslEmail + "</td>";
+                                html += "	<td>" + rep.RtnInviteSendListDetailData[e].RslPhone + "</td>";
+
+                                html += "	<td>";
+                                if (rep.RtnInviteSendListDetailData[e].RslEmailResult == "발송완료") 
+                                    html += "<span>" + rep.RtnInviteSendListDetailData[e].RslEmailResult + "</span>";
+                                else if (rep.RtnInviteSendListDetailData[e].RslEmailResult == "")         
+                                    html += "<span>" + "발송중</span>";
+                                else    
+                                    html += "<span style=\"color:red\">" + rep.RtnInviteSendListDetailData[e].RslEmailResult + "</span>";                                
+                                html += "/";
+                                if (rep.RtnInviteSendListDetailData[e].RslSmsResult == "발송완료")                                 
+                                    html += "<span>" + rep.RtnInviteSendListDetailData[e].RslSmsResult + "</span>";
+                                else    
+                                    html += "<span style=\"color:red\">" + rep.RtnInviteSendListDetailData[e].RslSmsResult + "</span>";
+                                html += "   </td>";    
+
+                                html += "	<td><a href=\"javascript:void(0);\"";
+                                html += "	       id=\"btn_resend\"";
+                                html += "          data-row_no=\"" + rep.RtnInviteSendListDetailData[e].RslRowNo + "\"";
+                                html += "          data-name=\"" + rep.RtnInviteSendListDetailData[e].RslName + "\"";
+                                html += "          data-email=\"" + rep.RtnInviteSendListDetailData[e].RslEmail + "\"";
+                                html += "          data-phone=\"" + rep.RtnInviteSendListDetailData[e].RslPhone + "\"";
+                                html += "	       style=\"text-decoration:underline\">재전송</a>";
+                                html += "   </td>";
+                                html += "</tr>";
+                            } else {                            
+                                html += "<tr style=\"height: 8px;\">";
+                                html += "<td class=\"checkbox\"></td>"
+                                html += "<td>" + rep.RtnInviteSendListDetailData[e].RslRowNo + "</td>";
+                                html += "<td colspan=\"4\" style=\"text-align:center; color: #fa5757;\">수신자의 요청으로 삭제되었습니다.</td>";
+                                html += "</tr>";
+                            }
+
+                            $(".gridWrap.invite_list").find("tbody").append(html);
+
+                            console.log(html)
+                        })
+
+                        $(".paging").children().remove();
+                        $(".paging").append(rep.RtnInviteSendListDetailData[0].Pagination);
+                        $("#tcnt").text(rep.RtnInviteSendListDetailData[0].RslTotCnt);
+                    } else {
+                        $("colgroup").show();
+                        $("thead").show();
+                        $(".gridWrap.invite_list").find("tbody").children().remove();
+                        
+                        var html = "";
+                        html += "<tr style=\"height: 200px;\">";
+                        html += "<td colspan=\"6\" style=\"text-align:center; color: #878d91;\">발송 리스트가 없습니다.</td>";
+                        html += "</tr>";
+                        $(".gridWrap.invite_list").find("tbody").append(html);
+
+                        $(".paging").children().remove();
+                        $("#tcnt").text(0);
+                        $("#page_no").val("1");
+                    }
+
+                    $('input.check_member').customInput();
+                    //allCheck($("#check_all_list").val());
+                }  else {
+                    console.log(rep);
+                    window.location.href = "/login";                    
+                }
+            }
+        });
+    }
+
+    // 페이징처리
+    $(document).off("click", ".prev.goPage").on("click", ".prev.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".next.goPage").on("click", ".next.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    var paging = function (pageno) {
+        $("#page_no").val(pageno);
+        ajaxInviteListDetail();
+    }    
+
+    $(document).off("click", "#btn_resend").on("click", "#btn_resend", function (e) {
+        var recrut_sn = "{{.RecrutSn}}"
+        var send_dt = "{{.SendDt}}"        
+
+        // var recrut_sn = $(this).data("recrut_sn");
+        // var send_dt = $(this).data("send_dt");
+
+        var row_no = $(this).data("row_no");
+        var name = $(this).data("name");
+        var email = $(this).data("email");
+        var phone = $(this).data("phone");
+
+        console.log(`[Step 1] recrut_sn:${recrut_sn}, send_dt:${send_dt}, row_no:${row_no}, name:${name}, email:${email}, phone:${phone}`);        
+
+        closePopup();        
+
+        var recrut_sn = "{{.RecrutSn}}"
+        var send_dt = "{{.SendDt}}"        
+
+        var param = [];
+
+        // url 길이 줄이기 위해
+        param.push({r:row_no,n:name,e:email,p:phone});
+
+        var uri = "/invite/send?initList=" + JSON.stringify(param) + "&initRecrutSn=" + recrut_sn;
+        var encodedUri = encodeURI(uri);
+
+        window.opener.location.href=encodedUri;
+        self.close();
+
+
+    //     $("#fileForm").ajaxSubmit({
+    // dataType : "json",
+    // success : function (json) {
+    // alert('전송완료');
+    // return true;
+    // },
+
+    });
+
+    // 재전송 팝업
+    // $(document).off("click", "#btn_resend_all").on("click", "#btn_resend_all", function (e) {
+    //     $('body, html').animate({ scrollTop: 0 }, 1);
+    //     //if ("{{.SAuthCd}}" == "01") {
+    //     openPopup('invite_send_pop');
+    //     //} else {
+    //     //    openPopup('pop_common_alert');
+    //     //    $("#alert_text").html("Member 계정은 합격 처리가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+    //     //}
+    // });
+
+    // 재전송 팝업 확인(팝업)
+    $(document).off("click", "#btn_resend_all").on("click", "#btn_resend_all", function (e) {
+        
+        // if ($("#pass_msg_cont").val().trim().length == 0) {
+        //     $(".validationAlert.pass_msg_cont_message").text("합격 메시지를 작성해주세요.");
+        //     $("#pass_msg_cont").addClass("validationAlert");
+        //     return;
+        // }
+        // $("#msg_gbn_cd").val("04");
+        // message_send();
+
+        closePopup();        
+        
+        var recrut_sn = "{{.RecrutSn}}"
+        var send_dt = "{{.SendDt}}"        
+        
+        var param = [];
+
+        $("input:checkbox[name='tbl_check']").each(function (i) {
+
+            console.log(`[Step 1]`);
+
+            if ($(this).prop("checked")) {
+                //var recrut_sn = $(this).data("recrut_sn");
+                //var send_dt = $(this).data("send_dt");
+                var row_no = $(this).data("row_no");
+                var name = $(this).data("name");
+                var email = $(this).data("email");
+                var phone = $(this).data("phone");
+
+                param.push({r:row_no,n:name,e:email,p:phone});
+
+                console.log(`[Step 2] recrut_sn:${recrut_sn}, send_dt:${send_dt}, row_no:${row_no}, name:${name}, email:${email}, phone:${phone}`);
+            }
+        });
+
+        console.log(`[Step 3] recrut_sn:${recrut_sn}, send_dt:${send_dt}`);
+        console.log(param);      
+
+        if  (param.length > 0) { 
+            // const myLink = 'https:/example.com/api'
+            // const myArray = ['aaa', 'bbb', 'ccc'];
+            // let apiUrl = `${myLink}/query?`;
+
+            // param.forEach((x) => {
+            //     apiUrl += `&array=${x}`;
+            // });
+
+            // console.log(apiUrl + "?" + "parma=" + JSON.stringify(param));
+
+            //closePopup();        
+
+            //https://stackoverflow.com/questions/45347505/how-to-pass-a-json-object-as-a-parameter-with-an-url
+            var uri = "/invite/send?initList=" + JSON.stringify(param) + "&initRecrutSn=" + recrut_sn;
+            var encodedUri = encodeURI(uri);
+            //window.open(encodedUri);//.close();
+
+            //https://stackoverflow.com/questions/5049171/how-to-close-popup-window-and-redirect-the-parent-window
+            //window.opener.postMessage(encodedUri, '*');
+            //window.open(encodedUri, '_self');//.close(); 
+
+            //window.location.replace(encodedUri);
+
+            // newwindow = window.open(encodedUri, "popwin", "");
+            // if (window.focus) { 
+            //     newwindow.focus() 
+            // }
+
+            //return false;
+            //popwin.moveTo(0, 0);
+
+            //https://www.google.com/search?newwindow=1&sxsrf=ALeKk02LFRei_m07liIA69WlUScwjYN58w%3A1603888978548&ei=UmeZX679IMHemAW8qLOADw&q=javascript+popup+parent+go+url&oq=javascript+popup+parent+go+url&gs_lcp=CgZwc3ktYWIQAzIFCAAQzQI6BAgAEEM6BQgAELEDOgIIADoECCMQJzoHCAAQFBCHAjoFCAAQywE6BwgAEAoQywE6BwgjELACECc6BAgAEA06BggAEAcQHjoICAAQBxAKEB46CAgAEAgQBxAeOgoIABAIEAcQChAeOgQIABATOggIABANEB4QEzoKCAAQCBANEB4QEzoKCAAQDRAFEB4QEzoECAAQHjoGCAAQCBAeOgUIIRCgAVDEoUFYgvpCYJD_QmgBcAB4AIABhgGIAaMQkgEEMTMuOJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwiu7syGqNfsAhVBL6YKHTzUDPAQ4dUDCA0&uact=5
+            //https://stackoverflow.com/questions/5049171/how-to-close-popup-window-and-redirect-the-parent-window
+            window.opener.location.href=encodedUri;
+            self.close();
+        } else {
+            openPopup('pop_common_alert');            
+            $("#alert_text").html(`재발송자를 선택해 주세요.`);
+        }
+    });
+</script>
+{{end}} 

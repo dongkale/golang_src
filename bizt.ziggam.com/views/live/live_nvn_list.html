@@ -1,0 +1,1280 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/header.html" .}}
+	<!-- Header end -->
+	<input type="hidden" id="view_type" value="L">
+	<input type="hidden" id="recruit_select" value="">
+	<input type="hidden" id="pp_chrg_sn_select" value="">
+	<input type="hidden" id="gbn_cd1" value="01">
+	<input type="hidden" id="gbn_cd2" value="02">
+	<input type="hidden" id="gbn_cd3" value="03">
+	<input type="hidden" id="gbn_cd4" value="04">
+	<input type="hidden" id="sort_cd" value="02">
+	<input type="hidden" id="sort_way" value="DESC">
+	<input type="hidden" id="page_no" value="1">
+	<!--<div>{{.TblConfig}}</div> -->
+	<div class="content st02" id="view_table">
+		<div class="liveInterViewWrap">						
+			<h2>라이브 인터뷰 <span class="count"></span></h2>			
+			<!--<div class="bannerArea">
+				<p class="img"><img src="/static/images/img-live-top-02.png" alt="배너이미지"></p>
+				<a href="#" class="btnClose"><img src="/static/images/ic-close-top-banner.png" alt="닫기"></a>
+			</div>
+			-->
+			<div class="interNvNViewTop">
+				<div class="posL">
+					<!--<input type="text" name="keyword2" id="keyword2" class="it" placeholder="채용 공고로 검색">-->
+					<!--<div class="section sday_date">
+                        <input type="text" name="sday" id="sday" class="it datePicker" readonly placeholder="시작일 선택">
+                    </div>
+                    <span class="dash">-</span>
+                    <div class="section eday_date">
+                        <input type="text" name="eday" id="eday" class="it datePicker" readonly placeholder="종료일 선택">
+					</div>
+					-->
+					<span class="selectForm">
+                        <select class="select wid240" name="recuit_select_list" id="recuit_select_list" required>
+                            <option value="" disabled selected>채용 공고로 검색</option> 
+                            <!--<option value="">전체</option>-->
+						</select>
+						<select class="select wid160" name="entp_mem_select_list" id="entp_mem_select_list" required>
+                            <option value="" disabled selected>멤버로 검색</option> 
+                            <!--<option value="">전체</option>-->
+                        </select>
+					</span>  					
+				</div>
+				<div class="posR">
+					<input type="text" name="keyword_nm" id="keyword_nm" class="it nm_search" placeholder="지원자 이름으로 검색">
+					<a href="javascript:void(0);" class="btn type_blue st02" id="btn_search_nm">검색</a>
+				</div>				
+			</div>			
+			<div class="interNvNViewMid" style="display:none">
+				<div class="posL">
+				    <div class="section st02 sday_date">
+                        <input type="text" name="sdt_sday" id="sdt_sday" class="it datePicker" readonly placeholder="인터뷰 일시">
+                    </div>
+                    <span class="dash st02">-</span>
+                    <div class="section st02 eday_date">
+                        <input type="text" name="sdt_eday" id="sdt_eday" class="it datePicker" readonly placeholder="인터뷰 일시">
+					</div>				    										
+				</div>
+				<!--<<div class="posR">-->					
+					<!--<input type="text" name="keyword_mem_nm" id="keyword_mem_nm" class="it mem_nm_search" placeholder="멤버 이름으로 검색">-->
+					<!--
+					<span class="selectForm">
+                        <select class="select wid330" name="entp_mem_select_list" id="entp_mem_select_list" required>
+                            <option value="" disabled selected>멤버 선택</option>                      
+                        </select>
+					</span> 
+					-->
+				<!--</div>-->				
+				<div class="posR" id="ed_date" style="display: none;">
+				    <div class="section st02 sday_date">
+                        <input type="text" name="edt_sday" id="edt_sday" class="it datePicker" readonly placeholder="종료일 선택">
+                    </div>
+                    <span class="dash st02">-</span>
+                    <div class="section st02 eday_date">
+                        <input type="text" name="edt_eday" id="edt_eday" class="it datePicker" readonly placeholder="종료일 선택">
+				    </div>				    					
+				</div>		
+				<!--										
+				<div class="posR" id="cd_date" style="display: none;">
+				    <div class="section st02 sday_date">
+                        <input type="text" name="ct_sday" id="cdt_sday" class="it datePicker" readonly placeholder="취소일 선택">
+                    </div>
+                    <span class="dash st02">-</span>
+                    <div class="section st02 eday_date">
+                        <input type="text" name="ct_eday" id="cdt_eday" class="it datePicker" readonly placeholder="취소일 선택">
+				    </div>				    					
+				</div>
+				-->
+			</div>			
+			<div class="interNvNViewMid">
+				<div class="posL">
+				    <div class="section st02 sday_date">
+                        <input type="text" name="rdt_sday" id="rdt_sday" class="it datePicker" readonly placeholder="요청일 선택">
+                    </div>
+                    <span class="dash st02">-</span>
+                    <div class="section st02 eday_date">
+                        <input type="text" name="rdt_eday" id="rdt_eday" class="it datePicker" readonly placeholder="요청일 선택">
+					</div>				    										
+				</div>				
+				<div class="posR" id="search_apply_list" style="display: none;">
+					<select class="select wid335" name="apply_select_list" id="apply_select_list" required>
+						<option value="" disabled selected>면접자로 검색</option> 						
+					</select>
+				</div>				
+			</div>
+			<div class="interViewNvNTable">
+				<div class="tableTop">
+					<ul>
+						<!--
+						<li class="state request disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="01">요청 <span>{{.WaitCnt}}</span></a>
+							<img src="/static/images/img-tooltip-live-01.png" alt="지원자에게 라이브 인터뷰를 요청 후 응답을 기다리는 인터뷰입니다." class="imgTooltip">
+						</li>
+						-->
+						<li class="state schedule">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="02">예정 <span>{{.IngCnt}}</span></a>
+							<!--<img src="/static/images/img-tooltip-live-02.png" alt="지원자에게 요청한 라이브 인터뷰가 수락되어 진행이 확정된 인터뷰입니다." class="imgTooltip">-->
+						</li>
+						<li class="state end disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="03">종료 <span>{{.EndCnt}}</span></a>
+							<!--<img src="/static/images/img-tooltip-live-03.png" alt="종료된 라이브 인터뷰입니다." class="imgTooltip">-->
+						</li>
+						<li class="state cancel disabled">
+							<a href="javascript:void(0);" id="tab_menu" data-stat_cd="04">취소 <span>{{.CnclCnt}}</span></a>
+							<!--<img src="/static/images/img-tooltip-live-04.png" alt="요청이 거절되거나 확정된 후에 취소된 인터뷰입니다." class="imgTooltip">-->
+						</li>
+					</ul>
+				</div>
+				<div class="gridWrap live_list">
+					<table>
+						<colgroup>
+							<col width="50px">	<!-- 상태 -->
+							<col width="122px"> <!-- 인터뷰 일시 -->
+							<col width="120px"> <!-- 채용 공고 -->
+							<col width="134px"> <!-- 참여 지원자 --> 
+							<col width="148px"> <!-- 참여 멤버 -->  
+							<col width="122px"> <!-- 요청 시간 -->  
+							<!-- <col width="122"> -->  		
+							<!-- <col width="47"> -->  		
+						</colgroup>
+						<thead>
+						<tr>
+							<th>상태</th>
+							<th>인터뷰 일시
+								<i class="fas fa-align-justify" id="cond_sort_way1"></i>																
+							</th>
+							<th>채용 공고
+								
+							</th>
+							<th>참여 지원자</th>
+							<th>참여 멤버</th>
+							<th>요청 일시
+								<i class="fas fa-align-justify" id="cond_sort_way2"></i>								
+							</th>							
+						</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="paging" style="display: none;">            
+			</div>
+		</div>	
+	</div>
+
+	<div class="popupWrap" id="pop_90_check" >
+        <div class="popLayer">
+            <div class="popCont">
+                <p class="text">마감일로 부터 90일이 지난 채용 공고의</p>
+                <p class="text">지원자 정보는 제공되지 않습니다.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$(".interNvNViewMid").show();
+		
+		//$("#search_apply_list").show();
+
+		$(".paging").show();
+		
+		//<p>[{{/*.TblConfig.TestInt*/}}]</p>
+		//<p>[{{/*.TblConfig.TestString*/}}]</p>
+		console.log(`[live_nvn_list.html] TableConfig: ${JSON.stringify(TblConfig)}`);
+		// console.log(`[live_nvn_list.html] TableConfig.TestInt: ${TblConfig.TestInt}`);
+		// console.log(`[live_nvn_list.html] TableConfig.TestString: ${TblConfig.TestString}`);		
+		//console.log(`[live_nvn_list.html] SuperAdmin: ${"{{.SuperAdmin}}"}`);		
+		
+		// var __jj1 = JSON.parse(JSON.stringify(TblConfig))
+		// console.log(TblConfig)		
+
+		// var __jj2 = JSON.parse(TblConfig.TestString)
+		// console.log(__jj2)
+
+		// console.log(location.pathname.toString())
+		// console.log(document.location.toString())
+				
+		//$("#view_table").hide();
+		//$("#view_grid").show();
+		//console.log("cookie : "+getCookie("notToday"));
+		// if(getCookie("notToday")=="Y"){
+		// 	$(".bannerArea").hide();
+		// } 
+		
+		//$("#state_request").removeClass("state request");		
+		//$("#state_request").addClass("disabled");		
+		$(".state request").addClass("disabled");		
+		$(".state schedule").addClass("disabled");		
+		$(".state end").addClass("disabled");		
+		$(".state cancel").addClass("disabled");		
+
+		$("#gbn_cd1").val("");
+		$("#gbn_cd2").val("02");
+		$("#gbn_cd3").val("");
+		$("#gbn_cd4").val("");
+
+		$("#recruit_select").val("");
+		
+		$("#page_no").val("1");  
+
+		ajaxLiveList();
+
+		startSearchDate();
+	});
+
+    // table th filter 클릭이벤트
+    $('.gridWrap th a').on('click',function(){
+        $('.gridWrap th').removeClass('active')
+        $(this).closest('th').addClass('active')
+        return false
+    })
+    $(document).on('click',function(e){
+      if(!$(e.target).closest('th').hasClass('active')) {
+          $('.gridWrap th').removeClass('active')
+      }
+	})
+	
+	// 리스트 상세이동
+	$(document).off("click", "#live_detail").on("click", "#live_detail", function(e) {
+		var recrut_sn = $(this).data("recrut_sn");
+		var live_sn = $(this).data("live_sn");		
+		
+		// 새창으로
+		//window.location.href="/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;
+		var uri = "/live/nvn/detail?recrut_sn="+recrut_sn+"&live_sn="+live_sn;
+		var encodedUri = encodeURI(uri);
+
+		var result = window.open(encodedUri)            
+		result.focus();					
+
+		console.log(`recrut_sn:${recrut_sn}, live_sn:${live_sn}`)
+	});
+
+	// 리스트 탭메뉴 선택
+	$(document).off("click", "#tab_menu").on("click", "#tab_menu", function(e) {
+		if ($(this).parent().hasClass("disabled")) {
+			//$(this).parent().removeClass("state");
+			$(this).parent().removeClass("disabled");
+			var thisVal = $(this).data("stat_cd");
+			if (thisVal == "01") {
+				$("#gbn_cd1").val("01");
+			} else if (thisVal == "02") {
+				$("#gbn_cd2").val("02");
+			} else if (thisVal == "03") {
+				$("#gbn_cd3").val("03");
+			} else {
+				$("#gbn_cd4").val("04");
+			}
+
+			/*
+			if ($("#gbn_cd1").val() != "01" &&
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() != "03" &&
+				$("#gbn_cd4").val() == "04" ) {
+				$("#cd_date").show();
+
+				// $("#ed_date").show();
+				// $("#edt_sday").attr("placeholder", "취소일 선택").placeholder();
+				// $("#edt_eday").attr("placeholder", "취소일 선택").placeholder();
+			} else {
+				$("#cd_date").hide();
+
+				// $("#ed_date").hide();
+			}
+
+			if ($("#gbn_cd1").val() != "01" &&
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() == "03" &&
+				$("#gbn_cd4").val() != "04" ) {
+				$("#ed_date").show();
+
+				// $("#ed_date").show();
+				// $("#edt_sday").attr("placeholder", "종료일 선택").placeholder();
+				// $("#edt_eday").attr("placeholder", "종료일 선택").placeholder();
+			} else {
+				$("#ed_date").hide();				
+
+				// $("#ed_date").hide();
+			}
+			*/
+			
+			if ($("#gbn_cd1").val() != "01" &&			// 종료 단독 검색
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() == "03" &&
+				$("#gbn_cd4").val() != "04" ) {
+				// $("#ed_date").show();				
+				// $("#cd_date").hide();				
+
+				$("#ed_date").show();	
+				$("#edt_sday").attr("placeholder", "종료일 선택");
+				$("#edt_eday").attr("placeholder", "종료일 선택");					
+			} else if ($("#gbn_cd1").val() != "01" &&	// 취소 단독 검색
+					   $("#gbn_cd2").val() != "02" &&
+					   $("#gbn_cd3").val() != "03" &&
+					   $("#gbn_cd4").val() == "04" ) {
+				// $("#ed_date").hide();				
+				// $("#cd_date").show();			
+				
+				$("#ed_date").show();
+				$("#edt_sday").attr("placeholder", "취소일 선택");
+				$("#edt_eday").attr("placeholder", "취소일 선택");				
+			} else {				
+				// $("#ed_date").hide();				
+				// $("#cd_date").hide();
+
+				$("#ed_date").hide();								
+			}
+
+			$('#edt_sday').val("");	
+			$('#edt_eday').val("");	
+
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		} else {
+			$(this).parent().addClass("disabled");
+			//$(this).parent().addClass("state disabled");
+			var thisVal = $(this).data("stat_cd");
+			if (thisVal == "01") {
+				$("#gbn_cd1").val("");
+			} else if (thisVal == "02") {
+				$("#gbn_cd2").val("");
+			} else if (thisVal == "03") {
+				$("#gbn_cd3").val("");
+			} else {
+				$("#gbn_cd4").val("");
+			}
+			
+			/*
+			if ($("#gbn_cd1").val() != "01" &&
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() != "03" &&
+				$("#gbn_cd4").val() == "04" ) {
+				$("#cd_date").show();
+			} else {
+				$("#cd_date").hide();
+			}
+
+			if ($("#gbn_cd1").val() != "01" &&
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() == "03" &&
+				$("#gbn_cd4").val() != "04" ) {
+				$("#ed_date").show();
+			} else {
+				$("#ed_date").hide();
+			}
+			*/
+
+			if ($("#gbn_cd1").val() != "01" &&			// 종료 단독 검색
+				$("#gbn_cd2").val() != "02" &&
+				$("#gbn_cd3").val() == "03" &&
+				$("#gbn_cd4").val() != "04" ) {
+				// $("#ed_date").show();				
+				// $("#cd_date").hide();				
+
+				$("#ed_date").show();	
+				$("#edt_sday").attr("placeholder", "종료일 선택");
+				$("#edt_eday").attr("placeholder", "종료일 선택");						
+			} else if ($("#gbn_cd1").val() != "01" &&	// 취소 단독 검색
+					   $("#gbn_cd2").val() != "02" &&
+					   $("#gbn_cd3").val() != "03" &&
+					   $("#gbn_cd4").val() == "04" ) {
+				// $("#ed_date").hide();				
+				// $("#cd_date").show();		
+				
+				$("#ed_date").show();
+				$("#edt_sday").attr("placeholder", "취소일 선택");
+				$("#edt_eday").attr("placeholder", "취소일 선택");				
+			} else {				
+				// $("#ed_date").hide();				
+				// $("#cd_date").hide();
+
+				$("#ed_date").hide();				
+			}
+
+			$('#edt_sday').val("");	
+			$('#edt_eday').val("");	
+
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		}
+	});
+
+	// 리스트보기 선택
+	// $(document).off("click", "#btn_list").on("click", "#btn_list", function(e) {
+	// 	if(!$(this).hasClass("active")) {
+	// 		$(".gridView").removeClass("active");
+	// 		$(".tableView").addClass("active");
+	// 		$("#view_type").val("L");
+	// 		$("#view_table").show();
+	// 		$("#view_grid").hide();
+	// 		ajaxLiveList();
+	// 	}
+	// });
+
+	// 그리드보기 선택
+	// $(document).off("click", "#btn_grid").on("click", "#btn_grid", function(e) {
+	// 	if(!$(this).hasClass("active")) {
+	// 		$(".gridView").addClass("active");
+	// 		$(".tableView").removeClass("active");
+	// 		$("#view_type").val("G");
+	// 		$("#view_table").hide();
+	// 		$("#view_grid").show();
+	// 		ajaxLive01List("01");
+	// 		ajaxLive01List("02");
+	// 		ajaxLive01List("03");
+	// 	}
+	// });
+
+	// 지원자 검색(Enter Key) - 그리드
+	// $(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+	// 	if (event.keyCode == 13) {
+	// 		ajaxLive01List("01");
+	// 		ajaxLive01List("02");
+	// 		ajaxLive01List("03");
+	// 	}
+	// });
+
+	// 지원자 검색(클릭) - 그리드
+	// $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+	// 	ajaxLive01List("01");
+	// 	ajaxLive01List("02");
+	// 	ajaxLive01List("03");
+	// }); 
+
+	$(document).off("change", "#recuit_select_list").on("change", "#recuit_select_list", function (e) {
+
+		var recrut_sn = $("select[id=recuit_select_list] option:selected").val();             
+		var recrut_title = $("select[id=recuit_select_list] option:selected").data("recruit_title");        
+		
+		$("#recruit_select").val(recrut_sn);
+
+		console.log(`recrut_sn:${recrut_sn}, recrut_title:${recrut_title}`)
+
+		//$(this).val("before_change"); // 변경하기전 값으로 재셋팅
+        //$(this).data("new", new_change);    // 최종 선택값 저장
+		
+		$("#page_no").val("1");  
+
+        ajaxLiveList();
+	});
+	
+	$(document).off("change", "#entp_mem_select_list").on("change", "#entp_mem_select_list", function (e) {
+		
+		var pp_chrg_sn = $("select[id=entp_mem_select_list] option:selected").data("pp_chrg_sn");        
+		var pp_chrg_nm = $("select[id=entp_mem_select_list] option:selected").data("pp_chrg_nm");        
+
+		$("#pp_chrg_sn_select").val(pp_chrg_sn);
+
+		console.log(`pp_chrg_sn:${pp_chrg_sn}, pp_chrg_nm:${pp_chrg_nm}`)
+
+		$("#page_no").val("1");  
+
+		ajaxLiveList();
+	});
+
+	// 지원자 검색(Enter Key) - 리스트
+	$(document).off("keydown", "#keyword_nm").on("keydown", "#keyword_nm", function(e) {
+		if (event.keyCode == 13) {
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		}
+	});	
+
+	// 지원자 검색(클릭) - 리스트
+	$(document).off("click", "#btn_search_nm").on("click", "#btn_search_nm", function(e) {
+		$("#page_no").val("1");  
+
+		ajaxLiveList();
+	}); 
+
+	// 지원자 상세 팝업
+	$(document).off("click", "#applicant_detail").on("click", "#applicant_detail", function (e) {                        
+        var read_end_day = $(this).data("read_end_day");                       
+        if (read_end_day == "Y") {
+            openPopup('pop_90_check');
+            return;
+        }
+
+        var popW = 1320
+        var popH = 1000
+        var popX = (screen.width / 2) - (popW / 2)
+        var popY = (screen.height / 2) - (popH / 2)
+        var recrut_sn = $(this).data("recrut_sn");
+        var pp_mem_no = $(this).data("pp_mem_no");
+        
+        window.open("/applicant/detail/popup?recrut_sn=" + recrut_sn + "&pp_mem_no=" + pp_mem_no, "_blank", "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+    });
+
+	// // 팝업 지원자 검색(Enter Key) - 리스트
+	// $(document).off("keydown", "#pop_keyword").on("keydown", "#pop_keyword", function(e) {
+	// 	if (event.keyCode == 13) {
+	// 		ajaxLive01List("04");
+	// 	}
+	// });	
+
+	// 팝업 지원자 검색 (클릭)
+	// $(document).off("click", "#btn_pop_search").on("click", "#btn_pop_search", function(e) {
+	// 	ajaxLive01List("04");
+	// });  
+
+	// 라이브 요청 리스트(그리드 타입) AJAX
+	// var ajaxLive01List = function(v) {
+	// 	var stat_cd = v;
+	// 	if (stat_cd == "04") { //팝업내 검색일 경우
+	// 		var keyword = $("#pop_keyword").val();
+	// 	} else {
+	// 		var keyword = $("#keyword").val();
+	// 	}
+	// 	var view_type = "G";
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/live/nvn/list",
+	// 		data:{
+	// 			stat_cd : stat_cd,
+	// 			keyword : keyword,
+	// 			view_type : view_type,
+	// 		},
+	// 		dataType: "json",
+	// 		error : function() {
+	// 		},
+	// 		success : function(rep) {
+	// 			if(rep.RtnLiveList01Data.length > 0){
+	// 				if (stat_cd == "01") {
+	// 					$(".interViewGrid .request").find("ul").children().remove();
+	// 				} else if (stat_cd == "02") {
+	// 					$(".interViewGrid .schedule").find("ul").children().remove();
+	// 				} else if (stat_cd == "03") {
+	// 					$(".interViewGrid .end").find("ul").children().remove();
+	// 				} else {
+	// 					$(".cancelList").find("ul").children().remove();
+	// 				}
+					
+	// 				$.each(rep.RtnLiveList01Data,function(e) {
+	// 					var args = rep.RtnLiveList01Data[e];
+	// 					var html = "";
+
+	// 					html +="<li><a href=\"javascript:void(0);\" id=\"live_detail\" data-recrut_sn=\""+rep.RtnLiveList01Data[e].S01RecrutSn+"\" data-pp_mem_no=\""+rep.RtnLiveList01Data[e].S01PpMemNo+"\">";
+	// 					html +="	<span class=\"img\"><img src=\""+rep.RtnLiveList01Data[e].S01PtoPath+"\" onerror=\"this.src='/static/images/ic-home-people-empty.png'\" width=\"66\" height=\"66\" alt=\"\"></span>";
+	// 					html +="	<span class=\"userName\">"+rep.RtnLiveList01Data[e].S01Nm+"</span>";
+	// 					html +="	<span class=\"userInfo\">"+rep.RtnLiveList01Data[e].S01Sex+"・";
+	// 					if (rep.RtnLiveList01Data[e].S01Age == 0) {
+	// 						html += "O세</span>";
+	// 					} else {							
+	// 						html += rep.RtnLiveList01Data[e].S01Age+"세</span>";
+	// 					}
+	// 					html +="	<span class=\"date\">"+rep.RtnLiveList01Data[e].S01LiveItvSday+"<br>"+rep.RtnLiveList01Data[e].S01LiveItvStime+"</span>";
+	// 					html +="	<span class=\"member\">";
+	// 					$.each(args.S01SubList,function(e) {
+	// 						if (args.S01SubList[e].LmPpChrgGbnCd == "01") {
+	// 							html +="		<em class=\"admin\"><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</em>";
+	// 						} else {
+	// 							html +="		<em><strong>"+args.S01SubList[e].LmPpChrgNm+"</strong> "+args.S01SubList[e].LmPpChrgBpNm+"</em>";
+	// 						}
+	// 					})
+	// 					html +="	</span>";
+	// 					html +="</a></li>";
+						
+	// 					if (stat_cd == "01") {
+	// 						$("#wait_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+	// 						$(".interViewGrid .request").find("ul").append(html);
+	// 					} else if (stat_cd == "02") {
+	// 						$("#ing_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+	// 						$(".interViewGrid .schedule").find("ul").append(html);
+	// 					} else if (stat_cd == "03") {
+	// 						$("#end_cnt").text(rep.RtnLiveList01Data[0].S01TotCnt);
+	// 						$(".interViewGrid .end").find("ul").append(html);
+	// 					} else {
+	// 						$(".cancelList").find("ul").append(html);
+	// 					}
+	// 				})
+	// 			}else{
+	// 					var html ="";
+	// 				if (stat_cd == "01") {
+	// 					$(".interViewGrid .request").find("ul").children().remove();
+	// 					html +="<li class=\"noData\">요청중인 라이브 인터뷰가<br>없습니다.</li>";
+	// 					$("#wait_cnt").text(0);
+	// 					$(".interViewGrid .request").find("ul").append(html);
+	// 				} else if (stat_cd == "02") {
+	// 					$(".interViewGrid .schedule").find("ul").children().remove();
+	// 					html +="<li class=\"noData\">예정된 라이브 인터뷰가<br>없습니다.</li>";
+	// 					$("#ing_cnt").text(0);
+	// 					$(".interViewGrid .schedule").find("ul").append(html);
+	// 				} else if (stat_cd == "03") {
+	// 					$(".interViewGrid .end").find("ul").children().remove();
+	// 					html +="<li class=\"noData\">종료된 라이브 인터뷰가<br>없습니다.</li>";
+	// 					$("#end_cnt").text(0);
+	// 					$(".interViewGrid .end").find("ul").append(html);
+	// 				} else {
+	// 					$(".cancelList").find("ul").children().remove();
+	// 					html +="<li class=\"noData\">거절・취소된<br>라이브 인터뷰가<br>없습니다.</li>";
+	// 					$("#pop_keyword").val("");
+	// 					$(".cancelList").find("ul").append(html);
+	// 				}
+	// 			}
+	// 		}
+	// 	});				
+	// }    		
+
+	// 라이브 요청 리스트(리스트 타입) AJAX
+	var ajaxLiveList = function(v) {
+		var keyword = $("#keyword_nm").val();
+		var view_type = "L";
+		var gbn_cd1 = $("#gbn_cd1").val();
+		var gbn_cd2 = $("#gbn_cd2").val();
+		var gbn_cd3 = $("#gbn_cd3").val();
+		var gbn_cd4 = $("#gbn_cd4").val();
+
+		var sort_cd = $("#sort_cd").val();
+		var sort_way = $("#sort_way").val();
+
+		var sel_recruit_sn = $("#recruit_select").val();
+		var sel_pp_chrg_sn = $("#pp_chrg_sn_select").val();
+		
+		// var sdt_sday = $("#sdt_sday").val().replace(/-/gi, ""); //시작시간
+		// var sdt_eday = $("#sdt_eday").val().replace(/-/gi, ""); //종료시간		
+		var sdt_sday = $("#sdt_sday").val().replaceAll(".", ""); // 시작시간
+		var sdt_eday = $("#sdt_eday").val().replaceAll(".", ""); // 시작시간
+
+		var edt_sday = $("#edt_sday").val().replaceAll(".", ""); // 종료/취소 시간
+		var edt_eday = $("#edt_eday").val().replaceAll(".", ""); // 종료/취소 시간
+
+		var rdt_sday = $("#rdt_sday").val().replaceAll(".", ""); // 요청 시간
+		var rdt_eday = $("#rdt_eday").val().replaceAll(".", ""); // 요청 시간
+		
+		var page_no = $("#page_no").val();
+		
+		console.log(`[ajaxLiveList] gbn_cd1:${gbn_cd1}, gbn_cd2:${gbn_cd2}, gbn_cd3:${gbn_cd3}, gbn_cd4:${gbn_cd4}`)
+		
+		console.log(`[ajaxLiveList] sel_recruit_sn:${sel_recruit_sn}`)
+		console.log(`[ajaxLiveList] sel_pp_chrg_sn:${sel_pp_chrg_sn}`)
+		console.log(`[ajaxLiveList] sdt_sday:${sdt_sday}`)
+		console.log(`[ajaxLiveList] sdt_eday:${sdt_eday}`)
+		console.log(`[ajaxLiveList] edt_sday:${edt_sday}`)
+		console.log(`[ajaxLiveList] edt_eday:${edt_eday}`)
+		console.log(`[ajaxLiveList] rdt_sday:${rdt_sday}`)
+		console.log(`[ajaxLiveList] rdt_eday:${rdt_eday}`)
+		console.log(`[ajaxLiveList] page_no:${page_no}`)
+		console.log(`[ajaxLiveList] LIVE_NVN_LIST_PAGE_PER_COUNT:${LIVE_NVN_LIST_PAGE_PER_COUNT}`)
+		
+		$.ajax({
+			type: "POST",
+			url: "/live/nvn/list",
+			data:{
+				keyword : keyword,
+				view_type : view_type,
+				gbn_cd1 : gbn_cd1,
+				gbn_cd2 : gbn_cd2,
+				gbn_cd3 : gbn_cd3,
+				gbn_cd4 : gbn_cd4,
+				sort_cd : sort_cd,
+				sort_way : sort_way,
+				recrut_sn : sel_recruit_sn,
+				pp_chrg_sn : sel_pp_chrg_sn,
+				sdt_sdy: sdt_sday,
+				sdt_edy: sdt_eday,
+				edt_sdy: edt_sday,
+				edt_edy: edt_eday,
+				rdt_sdy: rdt_sday,
+				rdt_edy: rdt_eday,
+				pn: page_no,
+				size: LIVE_NVN_LIST_PAGE_PER_COUNT
+			},
+			dataType: "json",
+			error : function() {
+			},
+			success : function(rep) {
+				if (rep.RtnLiveNvNListData) {				
+					if (rep.RtnLiveNvnListRecruitData.length > 0) {                        
+						$("#recuit_select_list").children().remove();
+						
+						var html = "";
+
+						// if (rep.RtnGbnRecrutSn == "" ) {
+						// 	html += `<option value="" disabled selected>채용 공고로 검색</option>`;						
+						// } 
+
+						html += `<option value="" data-recruit_title="ALL">채용 공고 전체</option>`; 
+						$("#recuit_select_list").append(html);
+						
+						html = "";
+						$.each(rep.RtnLiveNvnListRecruitData, function (e) {
+							var __data = rep.RtnLiveNvnListRecruitData[e];        
+							
+							if (__data.RecrutSn == rep.RtnGbnRecrutSn) {
+								html += `<option value="${__data.RecrutSn}" data-recruit_title="${__data.RecrutTitle}" selected>`;									
+								html += `${__data.RecrutTitle}&nbsp;&nbsp;&nbsp;`;
+								//html += `${__data.RecrutTitle}`.substring(0,12) + `...`
+								html += `</option>`;
+							} else {
+								html += `<option value="${__data.RecrutSn}" data-recruit_title="${__data.RecrutTitle}" style="border-radius:14px;">`;								
+								html += `${__data.RecrutTitle}&nbsp;&nbsp;&nbsp;`;
+								html += `</option>`;
+							}
+						})
+						
+						$("#recuit_select_list").append(html);						
+					} else {
+						$("#recuit_select_list").children().remove();
+
+						var html = "";
+						
+						html += `<option value="">해당 채용 공고가 없습니다</option>`; 
+						$("#recuit_select_list").append(html);					
+					}
+
+					if (rep.RtnEntpTeamMemberListData && rep.RtnEntpTeamMemberListData.length > 0) {                        
+						$("#entp_mem_select_list").children().remove();
+						
+						var html = "";					
+
+						html += `<option value="" data-pp_chrg_nm="ALL"><strong style='color:red'>기업 멤버 전체</strong></option>`; 
+						$("#entp_mem_select_list").append(html);
+						
+						html = "";
+						$.each(rep.RtnEntpTeamMemberListData, function (e) {
+							var __data = rep.RtnEntpTeamMemberListData[e];  
+							
+							if (__data.EtPpChrgSn == rep.RtnGbnPpChrgSn) {
+								html += `<option value="${__data.EtPpChrgSn}" data-pp_chrg_sn="${__data.EtPpChrgSn}" data-pp_chrg_nm="${__data.EtPpChrgNm}" selected>`;
+							} else {
+								html += `<option value="${__data.EtPpChrgSn}" data-pp_chrg_sn="${__data.EtPpChrgSn}" data-pp_chrg_nm="${__data.EtPpChrgNm}">`;
+							}
+
+							// if (__data.EtPpChrgGbnCd == "01") {
+							// 	html += `<p class="admin" style="font-size: 13px;"><strong>${__data.EtPpChrgNm}</strong> ${__data.EtPpChrgBpNm}</p>`;
+							// } else {
+							// 	html += `<p><strong style="font-size: 13px;">${__data.EtPpChrgNm}</strong> ${__data.EtPpChrgBpNm}</p>`;
+							// }	
+
+							if (__data.EtPpChrgGbnCd == "01") {
+								html += `<strong style="font-size:15px;">${__data.EtPpChrgNm}</strong> ${__data.EtPpChrgBpNm}(${__data.EtPpChrgSn})&nbsp;&nbsp;&nbsp;`;
+							} else {
+								html += `<strong">${__data.EtPpChrgNm}</strong> ${__data.EtPpChrgBpNm}(${__data.EtPpChrgSn})&nbsp;&nbsp;&nbsp;`;
+							}	
+							
+							html += `</option>`;						
+							//html += `${__data.EtPpChrgNm} ${__data.EtPpChrgBpNm}</option>`;						
+						})
+						
+						$("#entp_mem_select_list").append(html);
+					} else {
+						$("#entp_mem_select_list").children().remove();
+
+						var html = "";
+						
+						html += `<option value="">기업 멤버 없습니다</option>`; 
+
+						$("#entp_mem_select_list").append(html);					
+					}
+
+					if (rep.RtnLiveNvnListApplyData && rep.RtnLiveNvnListApplyData.length > 0) {   
+						$("#apply_select_list").children().remove();						
+
+						var html = "";
+						
+						html += `<option value="" data-pp_mem_no="ALL">면접자 전체</option>`; 
+						$("#apply_select_list").append(html);
+						
+						html = "";
+						$.each(rep.RtnLiveNvnListApplyData, function (e) {
+							var __data = rep.RtnLiveNvnListApplyData[e];        
+							 
+							if (__data.LsaPpMemNo == rep.RtnGbnPpMemNo) {
+								html += `<option value="${__data.LsaPpMemNo}" selected>`;
+							} else {
+								html += `<option value="${__data.LsaPpMemNo}">`;
+							}
+
+							html += `<strong>${__data.LsaNm}</strong>`;
+							html +=	`<span> (${(__data.LsaSex == "M") ? "남" : "여"}・${__data.LsaAge}세)</span>`;
+
+							html += `</option>`;						
+						})
+						
+						$("#apply_select_list").append(html);						                    
+					} else {
+						$("#apply_select_list").children().remove();
+
+						var html = "";
+						
+						html += `<option value="">지원자가 없습니다</option>`; 
+
+						$("#apply_select_list").append(html);					
+					}
+
+					if (rep.RtnLiveNvNListData.length > 0) {
+						$(".live_list").find("tbody").children().remove();
+
+						$.each(rep.RtnLiveNvNListData, function(e) {
+							var args = rep.RtnLiveNvNListData[e];
+							var html = "";
+							html += `<tr>`;
+							if (args.LiveStatCd == "01") {
+								html += `<td class="state request">요청</td>`;
+							} else if (args.LiveStatCd == "02") {
+								html += `<td class="state schedule">예정</td>`;
+							} else if (args.LiveStatCd == "03") {
+								html += `<td class="state end">종료</td>`;
+							} else {
+								html += `<td class="state cancel">취소</td>`;
+							}
+							
+							html += `<td><a href="javascript:void(0);" id="live_detail" style="text-decoration:underline" data-recrut_sn="${args.RecrutSn}" data-live_sn="${args.LiveSn}" title="라이브 인터뷰 상세 가기">${args.LiveItvSday}<br>${args.LiveItvStime}</a></td>`;
+							html += `<td><a href="/recruit/post/detail?recrut_sn=${args.RecrutSn}" style="text-decoration:underline;" title="채용공고 가기">${args.RecrutTitle}</a></td>`
+							//`<td style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:150px;height:20px"><a href="/recruit/post/detail?recrut_sn=${args.RecrutSn}" style="text-decoration:underline;">${args.RecrutTitle}</a></td>`
+														
+							//html +="	<td class=\"name\"><a href=\"javascript:void(0);\" id=\"live_detail\" data-recrut_sn=\""+rep.RtnLiveNvNListData[e].S01RecrutSn+"\" data-pp_mem_no=\""+rep.RtnLiveNvNListData[e].S01PpMemNo+"\">"+rep.RtnLiveNvNListData[e].S01Nm+"</a></td>";						
+							//`<a href="javascript:void(0);" id="live_detail" data-recrut_sn="+rep.RtnLiveNvNListData[e].S01RecrutSn+" data-pp_mem_no="+rep.RtnLiveNvNListData[e].S01PpMemNo+">"+rep.RtnLiveNvNListData[e].S01Nm+"</a></td>"`;
+							
+							html += `<td class="member">`;
+							$.each(args.ApplyList,function(e) {		
+								//var ppMemInfo = `<strong>${args.ApplyList[e].LmNm}</strong>`
+								
+								// live_nvn_detail.html : <p class="subTit member">참여 지원자</p> 동기화
+								if (args.ApplyList[e].LmLiveStatCd != "07" ) { 
+									html += `<p>`
+									html += `<a href="javascript:void(0);" id="applicant_detail" style="text-decoration:underline"`;
+									html += `data-recrut_sn="${args.ApplyList[e].LmRecrutSn}"`; 
+									html += `data-pp_mem_no="${args.ApplyList[e].LmPpMemNo}"`; 
+									html += `data-read_end_day="${args.ApplyList[e].LmReadEndDay}" title="지원자 상세 가기">`;
+									
+									//html += "<p>";
+
+									var __style = `` 
+									if (args.ApplyList[e].LmLiveStatCd == '01') { 									
+										;
+									} else if(args.ApplyList[e].LmLiveStatCd == '04' ) {
+										__style = `style="color:#4C80F1"`;									
+									} else if(args.ApplyList[e].LmLiveStatCd == '11' ) {
+										__style = `style="color:#A9AFB3"`;									
+									} else {
+										__style = `style="color:#F24147"`;									
+									}								
+
+									html += `<strong ${__style}>${args.ApplyList[e].LmNm}</strong>`;
+									html +=	`<span ${__style}>(${(args.ApplyList[e].LmSex == "M") ? "남" : "여"}・${args.ApplyList[e].LmAge}세)</span>`;	
+
+									//html +=	"</p>";							
+
+									html += `</a>`;
+									html +=	`</p>`;
+								}
+							})
+							html += `</td>`;
+
+							html += `<td class="member">`
+							$.each(args.MemList,function(e) {
+								if (args.MemList[e].LmPpLiveStatCd == "01" ){
+									if (args.MemList[e].LmPpChrgGbnCd == "01") {
+										html += `<p class="admin"><strong>${args.MemList[e].LmPpChrgNm}</strong> ${args.MemList[e].LmPpChrgBpNm}</p>`;
+									} else {
+										html += `<p><strong>${args.MemList[e].LmPpChrgNm}</strong> ${args.MemList[e].LmPpChrgBpNm}</p>`;
+									}
+								}
+							})
+							html += `</td>`;
+
+							html += `<td>${args.LiveItvRegDay}<br>${args.LiveItvRegTime}</td>`;
+
+							html += `</tr>`;
+							$(".live_list").find("tbody").append(html);
+
+							$(".paging").children().remove();
+							$(".paging").append(rep.RtnLiveNvNListData[0].Pagination);
+							//$("#tcnt").text(rep.RtnInviteSendListData[0].RslTotCnt);
+						})
+					} else{
+							$(".live_list").find("tbody").children().remove();
+							var html ="";
+							html +="<tr>";
+							html +="	<td colspan=\"6\" class=\"noData\">";
+							html +="		<p class=\"text\">해당되는 라이브 인터뷰가 없습니다.</p>";
+							html +="	</td>";
+							html +="</tr>";
+							$(".live_list").find("tbody").append(html);
+
+							$(".paging").children().remove();
+							//$("#tcnt").text(0);
+							$("#page_no").val("1");  
+					}
+				} else {
+					console.log("[AJAX(/live/nvn/list)]: Login");
+					window.location.href = "/login";
+				}
+			}
+		});				
+	}    		
+
+    // 배너 닫기
+    // $('.bannerArea .btnClose').on('click',function(){
+	// 	setCookie('notToday','Y', 1);
+    //     $('.bannerArea').hide("fade");
+    // })
+
+    // $(document).on('click',function(e){
+    //   // 거절.취소 내역보기외에 클릭시
+    //   if(!$(e.target).closest('ul2').hasClass('cancel-reject')) {
+    //       $('.cancelList').fadeOut('fast');
+	// 	}
+	// })
+	
+	// 거절/취소 내역 보기
+	// $(document).off("click", "#btn_cancel_reject").on("click", "#btn_cancel_reject", function(e) {
+	// 	$('.cancelList').fadeIn('fast');
+	// 	ajaxLive01List("04");
+    //     return false;
+	// });
+
+    // 툴팁관련
+    // $('.tableTop li.state').on('mouseover',function(){
+    //     $(this).find('.imgTooltip').show();
+	// })
+	
+    // $('.tableTop li.state').on('mouseleave',function(){
+    //     $(this).find('.imgTooltip').hide();
+	// })
+	
+    // // 툴팁관련
+    // $('.countTit').on('mouseover',function(){
+    //     $(this).find('.imgTooltip').show();
+	// })
+	
+    // $('.countTit').on('mouseleave',function(){
+    //     $(this).find('.imgTooltip').hide();
+	// })
+	
+    // $('.btnCancel').on('mouseover',function(){
+    //     $(this).find('.imgTooltip').show();
+	// })
+	
+    // $('.btnCancel').on('mouseleave',function(){
+    //     $(this).find('.imgTooltip').hide();
+	// })	
+
+	// // 인터뷰 일시 정렬(desc)
+	// $(document).off("click", "#cond_desc").on("click", "#cond_desc", function(e) {
+
+	// 	$("#sort_way").val("DESC");
+
+	// 	console.log("========================= desc")
+
+	// 	// $('#cond_desc').unbind('click'); // to disable
+	// 	// $('#cond_asc').unbind('click'); // to disable
+
+	// 	// $('#cond_desc').hide();
+	// 	// $('#cond_asc').hide();
+
+	// 	$("#cond_desc").trigger("focusout");
+
+	// 	ajaxLiveList();
+		
+	// }); 
+
+	// // 인터뷰 일시 정렬(desc)
+	// $(document).off("click", "#cond_asc").on("click", "#cond_asc", function(e) {
+
+	// 	$("#sort_way").val("ASC");
+
+	// 	console.log("========================= asc")		
+
+
+	// 	// $('#cond_desc').unbind('click'); // to disable
+	// 	// $('#cond_asc').unbind('click'); // to disable
+
+	// 	// $('#cond_desc').hide();
+	// 	// $('#cond_asc').hide();
+
+	// 	ajaxLiveList();
+	// }); 
+
+	// 인터뷰 일시 정렬(desc)
+	$(document).off("click", "#cond_sort_way1").on("click", "#cond_sort_way1", function(e) {
+		sort_way = $("#sort_way").val();			
+		if (sort_way == "DESC") {			
+			$(this).attr("class", "fas fa-arrow-down")
+			$("#cond_sort_way2").attr("class", "fas fa-align-justify")
+
+			$("#sort_cd").val("01");		
+			$("#sort_way").val("ASC");		
+		} else {
+			$(this).attr("class", "fas fa-arrow-up")		
+			$("#cond_sort_way2").attr("class", "fas fa-align-justify")	
+
+			$("#sort_cd").val("01");		
+			$("#sort_way").val("DESC");						
+		}
+		
+		$("#page_no").val("1");  
+
+		ajaxLiveList();
+	}); 
+
+	// 요청 일시 정렬(desc)
+	$(document).off("click", "#cond_sort_way2").on("click", "#cond_sort_way2", function(e) {
+		sort_way = $("#sort_way").val();			
+		if (sort_way == "DESC") {			
+			$(this).attr("class", "fas fa-arrow-down")
+			$("#cond_sort_way1").attr("class", "fas fa-align-justify")
+
+			$("#sort_cd").val("02");		
+			$("#sort_way").val("ASC");		
+		} else {
+			$(this).attr("class", "fas fa-arrow-up")		
+			$("#cond_sort_way1").attr("class", "fas fa-align-justify")	
+
+			$("#sort_cd").val("02");		
+			$("#sort_way").val("DESC");						
+		}
+		
+		$("#page_no").val("1");  
+
+		ajaxLiveList();
+
+		// var apply_sort_cd = $(this).attr("data-sort-code");
+        // var apply_sort_way = $(this).attr("data-sort-way");
+		
+		// apply_sort_way == "ASC" ? $(this).find("i:first").attr("class", "fas fa-arrow-up") : $(this).find("i:first").attr("class", "fas fa-arrow-down");
+
+		// apply_sort_way == "ASC" ? $("#sort_way").val("DESC") : $("#sort_way").val("ASC");
+		
+		// apply_sort_way = $("#sort_way").val();
+		
+		// ajaxLiveList();
+
+	}); 
+
+	// 요청 일시 정렬(desc)
+	// $(document).off("click", ".sort").on("click", ".sort", function(e) {
+	// 	var apply_sort_cd = $(this).attr("data-sort-code");
+    //     var apply_sort_way = $(this).attr("data-sort-way");
+		
+	// 	apply_sort_way == "ASC" ? $(this).find("i:first").attr("class", "fas fa-arrow-up") : $(this).find("i:first").attr("class", "fas fa-arrow-down");
+		
+	// 	apply_sort_way == "ASC" ? $("#sort_way").val("DESC") : $("#sort_way").val("ASC");
+		
+	// 	apply_sort_way = $("#sort_way").val();
+		
+	// 	ajaxLiveList();
+	// }); 
+
+	var startSearchDate = function() {
+		var now = new Date();
+
+		// 시작일
+		$('#sdt_sday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					//minDate: ct ? now : false,
+					maxDate: $('#sdt_eday').val() ? $('#sdt_eday').val() : false
+					//maxDate:  ct ? now : false,
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+
+			// timepicker 설정
+			// timeFormat:'HH:mm:ss',
+			// controlType:'select',
+			// oneLine:true,
+		});
+
+		$('#sdt_sday').change(function () {
+
+			var sdayDate = new Date($('#sdt_sday').val());
+            var edayDate = new Date($('#sdt_eday').val());            
+                
+            console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);            
+			
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});
+		
+		$('#sdt_eday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					minDate: $('#sdt_sday').val() ? $('#sdt_sday').val() : false
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+
+			// timepicker 설정
+			// timeFormat:'HH:mm:ss',
+			// controlType:'select',
+			// oneLine:true,
+		});
+
+		$('#sdt_eday').change(function () {
+
+			var sdayDate = new Date($('#sdt_sday').val());
+            var edayDate = new Date($('#sdt_eday').val());
+
+			console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);
+
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});		
+		
+		// 종료일/취소일
+		$('#edt_sday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					//minDate: ct ? now : false,
+					maxDate: $('#edt_eday').val() ? $('#edt_eday').val() : false
+					//maxDate:  ct ? now : false,
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+		});
+
+		$('#edt_sday').change(function () {
+
+			var sdayDate = new Date($('#edt_sday').val());
+            var edayDate = new Date($('#edt_eday').val());            
+                
+            console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);            
+			
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});
+		
+		$('#edt_eday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					minDate: $('#edt_sday').val() ? $('#edt_sday').val() : false
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+		});
+
+		$('#edt_eday').change(function () {
+
+			var sdayDate = new Date($('#edt_sday').val());
+            var edayDate = new Date($('#edt_eday').val());
+
+			console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);
+
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});
+
+		// 요청일
+		$('#rdt_sday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					//minDate: ct ? now : false,
+					maxDate: $('#rdt_eday').val() ? $('#rdt_eday').val() : false
+					//maxDate:  ct ? now : false,
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+		});
+
+		$('#rdt_sday').change(function () {
+
+			var sdayDate = new Date($('#rdt_sday').val());
+            var edayDate = new Date($('#rdt_eday').val());            
+                
+            console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);            
+			
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});
+		
+		$('#rdt_eday').datetimepicker({
+			format: 'Y.m.d',
+			//dateFormat:'yy-mm-dd',
+			onShow: function (ct) {
+				this.setOptions({
+					minDate: $('#rdt_sday').val() ? $('#rdt_sday').val() : false
+				})
+			},
+			timepicker: false,
+			scrollMonth: false,
+			scrollTime: false,
+			scrollInput: false,
+		});
+
+		$('#rdt_eday').change(function () {
+
+			var sdayDate = new Date($('#rdt_sday').val());
+            var edayDate = new Date($('#rdt_eday').val());
+
+			console.log(`===[DateChange] StartDate:${sdayDate.format('yyyy-MM-dd hh:mm:ss')}, EndDate:${edayDate.format('yyyy-MM-dd hh:mm:ss')}`);
+
+			$("#page_no").val("1");  
+
+			ajaxLiveList();
+		});
+	}
+	
+	// 페이징처리
+    $(document).off("click", ".prev.goPage").on("click", ".prev.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    $(document).off("click", ".next.goPage").on("click", ".next.goPage", function (e) {
+        var pn = $(this).data("page");
+        paging(pn);
+    });
+
+    var paging = function (pageno) {
+		$("#page_no").val(pageno);
+		
+        ajaxLiveList();
+    }
+	</script>
+
+{{end}} 

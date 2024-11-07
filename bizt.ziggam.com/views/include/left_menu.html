@@ -1,0 +1,45 @@
+<div class="lnb">
+	<!-- 기업정보 영역 -->
+	<div class="comProfile">
+		<!-- 기업이미지업로드전
+		<div class="img"></div>
+		-->
+		<div class="img"><a href="/entp/info/modify"><img src="{{.BsLogoPtoPath}}" onerror="this.src='/static/images/img-corp-empty.png'" class="entp_logo_left_loaded" width="76" height="76" alt=""></a></div>
+		<p class="text"><a href="/entp/info/modify">{{.BsEntpKoNm}}</a></p>
+		<!-- <p class="btn"><a href="/recruit/write" class="btn type_blue st02"><img src="/static/images/ic-regist-solid-white.png" alt="">채용 공고 등록</a></p> -->
+		<!--<p class="btn"><a href="/invite/send" class="btn type_blue st02"><img src="/static/images/ic-regist-solid-white.png" alt="">지원자 초대</a></p>-->
+		<br><br><br>
+		<a href="/recruit/write" class="btn type_blue st02"><img src="/static/images/ic-regist-solid-white.png" alt="" style="display:inline-block; vertical-align:middle;margin-right:5px;margin-top:-2px">채용 공고 등록</a>
+		<br><br>
+		<a href="/invite/send" class="btn type_blue st02"><img src="/static/images/ic-regist-solid-white.png" alt="" style="display:inline-block; vertical-align:middle;margin-right:5px;margin-top:-2px">지원자 초대</a>
+	</div>
+	<!-- // 기업정보 영역 -->
+	<!-- 메뉴 영역 -->
+	<ul class="menu">
+		<li class='{{if eq "R00" .TMenuId}}active{{end}}'><a href="/recruit/post/list">채용공고</a> <!--//R00 ▶-->
+			<ul>
+				<li class='{{if eq "R01" .SMenuId}}active{{end}}'><a href="/recruit/post/list">・ 채용 공고 리스트</a></li> <!--//R01 └ -->
+				<li class='{{if eq "R02" .SMenuId}}active{{end}}'><a href="/applicant/list">・ 지원자 리스트</a></li> <!--//R02-->				
+				<li class='{{if eq "R03" .SMenuId}}active{{end}}'><a href="/invite/send/list">・ 지원자 초대 내역</a></li> <!--//R02-->				
+			</ul>
+		</li>		
+		<li class='{{if eq "L00" .TMenuId}}active{{end}}'><a href="/live/nvn/list">라이브 인터뷰&nbsp;<img src="/static/images/ic-menu-new.png" style="margin-bottom: 4px;"></a><!--//L00-->
+			<ul>
+				<li class='{{if eq "L01" .SMenuId}}active{{end}}'><a href="/live/nvn/list">・ 라이브 인터뷰 리스트</a></li> <!--//E01-->
+				<!--<li class='{{if eq "L02" .SMenuId}}active{{end}}'><a href="/live/list">・ (구)라이브 인터뷰</a></li>--> <!--//E02-->
+			</ul>
+		</li>	
+		<li class='{{if eq "E00" .TMenuId}}active{{end}}'><a href="/entp/info/modify">기업 관리</a> <!--//E00-->
+			<ul>
+				<li class='{{if eq "E01" .SMenuId}}active{{end}}'><a href="/entp/info/modify">・ 기업 정보 관리</a></li> <!--//E01-->
+				<li class='{{if eq "E02" .SMenuId}}active{{end}}'><a href="/entp/video">・ 기업 홍보 영상</a></li> <!--//E02-->
+			</ul>
+		</li>
+		<li class='{{if eq "T00" .TMenuId}}active{{end}}'><a href="/team/member/list">팀 멤버 관리</a></li> <!--//T00-->
+		<li class='{{if eq "A00" .TMenuId}}active{{end}}'><a href="/applicant/list/all">인재 검색</a></li> <!--//T00-->
+		<!--<li><a href="#">결제 관리 <img src="/static/images/ic-admin-copy-2.png" alt=""></a></li>--> <!--//P00-->
+		<br><br><br>
+		<div><img src="/static/images/img-bn-chrome.png" onerror="this.src='/static/images/img-corp-empty.png'" class="entp_logo_left_loaded" width="221" height="210" alt=""></a></div>
+	</ul>
+	<!-- // 메뉴 영역 -->
+</div>

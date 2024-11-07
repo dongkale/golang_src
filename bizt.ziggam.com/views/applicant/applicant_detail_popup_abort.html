@@ -1,0 +1,43 @@
+{{template "include/head.html" .}}
+  
+  <script language="JavaScript">
+    $(document).ready(function() {
+        //alert("마감일로 부터 90일이 지난 채용 공고의\n지원자 정보는 제공되지 않습니다.");
+        openPopup('message_no');
+    });
+
+    function openPopup(target) {
+        $('#' + target).show();
+        // 가운데정렬
+        $('#' + target).children('div').css({
+        // 스크롤 포함된 브라우저높이의 가운데
+        // "top": (($(window).height()-$('#'+target).children('div').outerHeight())/2+$(window).scrollTop())+"px",
+        // scrollTop 기준 가운데
+        "top": (($(window).height()-$('#'+target).children('div').outerHeight())/2)+"px",
+        "left": (($(window).width()-$('#'+target).children('div').outerWidth())/2+$(window).scrollLeft())+"px"
+        });
+        return false;
+    }
+
+    function closePopup() {
+    $('.popupWrap').hide()
+    close();
+    }
+  </script>
+ </head>
+ <body>
+
+ </body>
+ <div class="popupWrap" id="message_no" >
+    <div class="popLayer">
+        <div class="popCont">
+            <p class="text">마감일로 부터 90일이 지난 채용 공고의</p>
+            <p class="text">지원자 정보는 제공되지 않습니다.</p>
+        </div>
+        <div class="btnSet">
+            <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+</html>

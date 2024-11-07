@@ -1,0 +1,1454 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+
+    <body style="overflow-x:hidden;overflow-y:scroll">
+    <input type="hidden" id="pp_chrg_cmt_sn">
+    <input type="hidden" id="select_cnt" name="select_cnt" value="0">
+    <input type="hidden" id="msg_gbn_cd">
+    <input type="hidden" id="arr_pp_chrg_sn">
+    <input type="hidden" id="live_itv_sdt">
+    <input type="hidden" id="qst_sn" value="1">
+    <input type="hidden" id="max_qst_sn" value="{{.AnsTotCnt}}">
+    <div class="applicant">
+        <div class="secL">
+            <div class="profile">
+                <span class='ico_like {{if eq "1" .FavrAplyPpYn}}active{{end}}' id="favr_set"
+                      data-recrut_sn="{{.RecrutSn}}" data-pp_mem_no="{{.PpMemNo}}"><a
+                            href="javascript:void(0);"></a></span>
+                <span class="img"><img src="{{.PtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.png'"
+                                       width="90" height="90" alt=""></span>
+                <span class="name">{{.Nm}}</span>
+                <!-- <span class="state">{{.Sex}}・{{.Age}}세</span> -->
+                <span class="state">{{.Sex}}・{{if eq 0 .Age}}O세{{else}}{{.Age}}세{{end}}</span>                
+                <span class="mail"><em></em>{{.Email}}</span>
+                <span class="phone"><em></em>{{.MoNo}}</span>
+                {{if eq "Y" .MsgYn}} <!--//메세지가 있을 경우-->
+                <a href="javascript:void(0);" class="btn btnMessage" id="go_msg"><em></em>메시지 확인</a>
+                {{else}} <!--//메세지가 없을 경우-->
+                {{if eq "01" .SAuthCd}} <!--//ADMIN 계정일 경우 메시지 전송-->
+                <a href="javascript:void(0);" class="btn btnMessage" id="send_msg"><em></em>메시지
+                    보내기</a><!--//메시지전송(대화시작)-->
+                {{else}} <!--//ADMIN 계정일 경우 메시지 리스트-->
+                <a href="javascript:openPopup('message_no');" class="btn btnMessage"><em></em>메시지 보내기</a><!--//불가팝업-->
+                {{end}}
+                {{end}}
+                {{if eq "01" .LiveReqStatCd}}
+                    <a href="javascript:void(0);" class="btn liveInterView" id="live_send_req"><em></em>라이브 인터뷰 요청하기</a>
+                {{end}}
+                {{if eq "02" .LiveReqStatCd}}
+                    <a href="javascript:void(0);" class="btn liveInterView reqIng" id="live_req_ing">라이브 인터뷰 요청 상태</a>
+                {{end}}
+                {{if eq "03" .LiveReqStatCd}}
+                    <a href="javascript:void(0);" class="btn liveInterView interview" id="live_schedule">라이브 인터뷰 예정</a>
+                {{end}}
+                {{if eq "04" .LiveReqStatCd}}
+                    <a href="javascript:void(0);" class="btn liveInterView" id="live_send_req"><em></em>라이브 인터뷰 요청하기</a>
+                {{end}}
+            </div>
+            <div class="messageWrap" id="commet_div">
+                <div class="topArea">
+                    <p>팀 멤버 코멘트 <span id="comment_cnt">{{.CmtTotCnt}}</span></p><!--SMemId-->
+                    <a href="javascript:void(0);" class="btn" id="comment_pop"><em></em>크게보기</a>
+                </div>
+                <div class="messageArea">
+                    <ul>
+                        {{if .RecruitApplyCommentList}}
+                            {{range .RecruitApplyCommentList}}
+                                <!--<div class="box admin new">-->
+                                <div class='box {{if eq .CmtRegId .CmtSMemId}}mine{{end}} {{if eq "01" .CmtPpChrgGbnCd}}admin{{end}} {{if eq "Y" .CmtNewYn}}new{{end}}'>
+                                    <p class="name">[{{.CmtPpChrgBpNm}} {{.CmtPpChrgNm}}]</p>
+                                    <p class="date">{{.CmtRegDt}}</p>
+                                    {{if or (eq .CmtRegId .CmtSMemId) (eq "01" .CmtSAuthCd)}}
+                                        <a href="javascript:void(0);" class="btn type_red btnDelete"
+                                           id="btn_comment_del" data-pp_chrg_cmt_sn="{{.CmtPpChrgCmtSn}}">삭제</a>
+                                    {{end}}
+                                    <p class="text">{{str2html .CmtPpChrgCmt}}</p>
+                                </div>
+                            {{end}}
+                        {{else}}
+                            <p class="noData">
+                                지원자에 대한 코멘트가 없습니다.<br>
+                                코멘트를 통해 팀 멤버와 논의해보세요!
+                            </p>
+                        {{end}}
+                    </ul>
+                </div>
+                <div class="inputArea">
+                    <textarea name="pp_chrg_cmt" id="pp_chrg_cmt" maxlength="1000" placeholder="코멘트는 팀 멤버에게만 보여요!"
+                              cols="30" rows="10"></textarea>
+                    <a href="javascript:void(0);" id="btn_comment_reg" class="btn type_blue st02">등록</a>
+                </div>
+            </div>
+        </div>
+        <div class="secR">
+            <div class="topArea">
+                <p class="stateSec">
+                    <!-- ing : 채용중 / wait : 대기 / end : 마감 -->
+                    {{if eq "ING" .PrgsStatCd}}
+                        <em class="state ing">채용중</em>
+                    {{end}}
+                    {{if eq "WAIT" .PrgsStatCd}}
+                        <em class="state wait">대기</em>
+                    {{end}}
+                    {{if eq "END" .PrgsStatCd}}
+                        <em class="state end">마감</em>
+                    {{end}}
+                    {{.UpJobGrp}} &gt; {{.JobGrp}}
+                    <!--
+                    <em class="state wait">채용대기</em> 비지니스 (경영・사무) &lt; 사업・전략 기획
+                    -->
+                </p>
+                <p class="tit" id="go_recrut" style="cursor:pointer;">{{.RecrutTitle}}</p>
+                <p class="date">접수기간 {{.Sdy}} ~ {{.Edy}}</p>
+                <p class="date" style="padding-top: 10px;">지원절차
+                    {{if eq "1" .Recrut_proc_cd}}
+                        서류전형
+                    {{else if eq "2" .Recrut_proc_cd}}
+                        원웨이전형
+                    {{else if eq "3" .Recrut_proc_cd}}
+                        서류 -> 원웨이
+                    {{else if eq "4" .Recrut_proc_cd}}
+                        라이브전형
+                    {{else if eq "5" .Recrut_proc_cd}}
+                        서류 -> 라이브
+                    {{else if eq "6" .Recrut_proc_cd}}
+                        원웨이 -> 라이브
+                    {{else if eq "7" .Recrut_proc_cd}}
+                        서류 -> 원웨이 -> 라이브
+                    {{end}}</p>
+                <p class="msg">파일과 영상을 포함한 지원자의 모든 지원 정보는 공고 마감일로 부터 90일까지 열람이 가능합니다 (90일 후에는 해당 페이지가 열람이 불가능합니다.)</p>
+            </div>
+            <div class="movieReply">
+                {{if or (eq "1" .Recrut_proc_cd) (eq "3" .Recrut_proc_cd) (eq "5" .Recrut_proc_cd) (eq "7" .Recrut_proc_cd)}}
+                    {{if ne "99" .Dcmnt_file_name}} <!-- LDK 2020/09/24 :블라인드 처리 기업 -->
+                    <div class="titArea">
+                        <p class="tit">서류 전형</p>
+                        <div style="padding-bottom: 10px;">{{if eq "" .Dcmnt_file_name}}<br/>{{else}}<a
+                                    href="{{.Dcmnt_file_path}}" target="_blank" download>{{.Dcmnt_file_name}}</a></div>{{end}}
+                    </div>
+                    {{end}}
+                {{end}}
+                {{if or (eq "2" .Recrut_proc_cd) (eq "3" .Recrut_proc_cd) (eq "6" .Recrut_proc_cd) (eq "7" .Recrut_proc_cd)}}
+                <div class="movieReply">
+                    <div class="titArea">
+                        <p class="tit">영상 지원 답변</p>
+                        <p class="date">지원일시: {{.ApplyDt}},&nbsp;&nbsp; 소요시간: {{.CompTm}},&nbsp;&nbsp; 영상등록: {{.ShootCnt}}회</p>
+                        <p class="date">시작일시: {{.CompDT1}},&nbsp;&nbsp; 완료일시: {{.CompDT2}}</p>
+                    </div>
+                    <div class="movieSec">
+                        <div class="movieArea">
+                            <a href="javascript:void(0);" class="btnPrev 0" id="btn_prev">이전</a>
+                            <div class="movie ans_vd">
+                                <!--<img src="/static/images/img-movielist-sample.png" width="222" height="394" alt="">-->
+
+                            </div>
+                            <a href="javascript:void(0);" class="btnNext 2" id="btn_next">다음</a>
+                        </div>
+                        <div class="movieList">
+                            <ul>
+                                {{range .RecruitApplyMemberAnswerList}}
+                                    <!--<li class="selected">-->
+                                    <li class="{{.AnsQstSn}}">
+                                        <a href="javascript:void(0);" id="qst_select" data-qst_sn="{{.AnsQstSn}}"
+                                           data-vd_path="{{.AnsVdFilePath}}">
+                                            <span class="tit">질문 {{.AnsQstSn}}</span>
+                                            <span class="text">{{.AnsVdTitle}}</span>
+                                        </a>
+                                    </li>
+                                {{end}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+                {{if ne "99" .CarrGbn}}     <!-- LDK 2020/09/24 :블라인드 처리 기업 -->
+                <div class="profileDetail">
+                    <p class="tit">상세 프로필 <span id="profile_error_msg"></span></p>
+                    <table>
+                        <colgroup>
+                            <col width="170px">
+                            <col>
+                        </colgroup>
+                        <tr>
+                            <th>최종 학력</th>
+                            <!-- <td id="school">{{.LstEdu}}</td> -->
+                            <td id="school">{{.LstEduGbnCd1}}({{.LstEduGbnCd2}}), {{.LstEdu}}</td>
+                        </tr>
+                        <tr>
+                            <th>경력</th>
+                            <!-- <td id="career">{{if eq "0" .CarrGbn }}(신입) {{ else if eq "1" .CarrGbn }}(경력) {{ else }}{{ end }}{{.CarrDesc}}</td> -->
+                            <!-- <td id="career">{{if eq "0" .CarrGbn }}(신입) {{ else if eq "1" .CarrGbn }}(경력) {{ else }}{{ end }}{{.CarrYear}}, {{.CarrDesc}}</td> -->
+                            <td id="career">
+                                {{if eq "0" .CarrGbn}}(신입) 
+                                {{else if eq "1" .CarrGbn}}(경력)                                
+                                {{else if eq "-" .CarrGbn}}-
+                                {{else}}O
+                                {{end}}
+                                {{.CarrYear}},                                
+                                {{.CarrDesc}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>보유 기술・자격증</th>
+                            <td id="license">{{str2html .TechQlftKnd}}</td>
+                        </tr>
+                        <tr>
+                            <th>외국어 능력</th>
+                            <!-- <td id="lang">{{.FrgnLangAbltDesc}}</td> -->
+                            <td id="lang">{{.FrgnLangAbltCd1}}({{.FrgnLangAbltCd2}}), {{.FrgnLangAbltDesc}}</td> 
+                        </tr>
+                        <!-- 
+                        <tr>
+                            <th>외국어 능력2</th>
+                            <td id="lang">{{.FrgnLangAbltDesc}}</td>
+                        </tr>                        
+                        -->
+                        <tr>
+                            <th>첨부자료 링크</th>
+                            <td>{{if .AtchDataPath}}<a href="{{.AtchDataPath}}" target="_blank"
+                                                       class="link">{{.AtchDataPath}}</a>{{end}}</td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일</th>
+                            <td>{{if .AtchFilePath}}<a href="{{.AtchFilePath}}" target="_blank" download><i
+                                            class='fa fa-paperclip fa-flip-horizontal fa-flip-vertical'></i>첨부파일</a>{{else}}-{{end}}
+                            </td>
+                        </tr>
+                        {{if eq "01" .EntpGroupCode}}
+                            <tr>
+                                <th id="pdf_name">이력서</th>
+                                <td>{{if .AtchDataPath}}<a id="pdf" href="{{.AtchDataPath}}" target="_blank"
+                                                           class="link">{{.AtchDataPath}}</a>{{end}}</td>
+                            </tr>
+                            <tr>
+                                <th id="apply_status_name">서류지원합격여부</th>
+                                <td><a id="apply_status">-</a></td>
+                            </tr>
+                        {{end}}
+                    </table>
+                </div>
+                {{end}}
+                <div class="profileMovie">
+                    <p class="tit">영상 자기소개서</p>
+                    {{if .MemberVideoProfileList}}
+                        <ul>
+                            {{range .MemberVideoProfileList}}
+                                <li class="free">
+                                    <div class="textArea">
+                                        <p class="listTit">[{{.MvThmNm}}]</p>
+                                        <p class="text">{{.MvQstDesc}}</p>
+                                    </div>
+                                    <div class="movie">
+                                        <video controls width="200" height="355" controlsList="nodownload">
+                                            <source src="{{.MvVdFilePath}}" type="video/mp4">
+                                        </video>
+                                    </div>
+                                </li>
+                            {{end}}
+                        </ul>
+                    {{else}}
+                        <p class="noData">영상 프로필을 등록하지 않은 지원자입니다.</p>
+                    {{end}}
+                </div>
+                <div class="stateArea">
+                    <div class="state wait">
+                        <p class="text">
+                            대기<br>
+                            <span class="date">지원일시 {{.ApplyDt}}</span>
+                            {{if (eq "03" .Dcmnt_evl_stat_cd) }}
+                                <span class="date">서류 합격 {{.Dcmnt_evl_stat_dt}}</span>
+                            {{else if (eq "04" .Dcmnt_evl_stat_cd)}}
+                                <span class="date">서류 불합격 {{.Dcmnt_evl_stat_dt}}</span>
+                            {{ end }}
+                        </p>
+                    </div>
+                    <!-- 대기일 경우 -->
+                    {{if eq "02" .EvlPrgsStatCd}}
+                        {{if eq "04" .Dcmnt_evl_stat_cd }}
+                            <div class="state unPass">
+                                <a href="javascript:void(0);" id="btn_eval_unpass"><em></em>불합격 처리하기</a>
+                            </div>
+                        {{ else }}
+                            <!-- 대기 -->
+                            <div class="state pass">
+                                <a href="javascript:void(0);" id="btn_eval_pass"><em></em>합격 처리하기</a>
+                            </div>
+                            <div class="state unPass">
+                                <a href="javascript:void(0);" id="btn_eval_unpass"><em></em>불합격 처리하기</a>
+                            </div>
+                        {{ end }}
+                    {{end }}
+                    <!-- 합격일 경우 -->
+                    {{if eq "03" .EvlPrgsStatCd}}
+{{/*                        <div class="state wait disabled">*/}}
+{{/*                            <p class="text">*/}}
+{{/*                                대기<br>*/}}
+{{/*                                <span class="date">지원일시 {{.ApplyDt}}</span>*/}}
+{{/*                            </p>*/}}
+{{/*                        </div>*/}}
+                        <div class="state pass">
+                            <p class="text">
+                                합격<br>
+                                <span class="date">처리일시 {{.EvlStatDt}}</span>
+                            </p>
+                        </div>
+                        <div class="state unPass disabled">
+                            <a href="javascript:void(0);"><em></em>불합격 처리하기</a>
+                        </div>
+                    {{end}}
+                    <!-- 불합격일 경우 -->
+                    {{if eq "04" .EvlPrgsStatCd}}
+{{/*                        <div class="state wait disabled">*/}}
+{{/*                            <p class="text">*/}}
+{{/*                                대기<br>*/}}
+{{/*                                <span class="date">지원일시 {{.ApplyDt}}</span>*/}}
+{{/*                            </p>*/}}
+{{/*                        </div>*/}}
+                        <div class="state pass disabled">
+                            <a href="javascript:void(0);"><em></em>합격 처리하기</a>
+                        </div>
+                        <div class="state unPass">
+                            <p class="text">
+                                불합격<br>
+                                <span class="date">처리일시 {{.EvlStatDt}}</span>
+                            </p>
+                        </div>
+                    {{end}}
+                    {{if eq "01" .SAuthCd}}
+                        <a href="javascript:void(0);" class="btnDelete" id="applicant_del">삭제하기</a>
+                    {{else}}
+                        <a href="javascript:void(0);" class="btnDelete" id="member_applicant_del">삭제하기</a>
+                    {{end}}
+                </div>
+            </div>
+            <!-- 토스트박스 -->
+            <div class="toastBox noti">
+                <p class="message">관심 표시되었습니다.</p>
+                <a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+            </div>
+            <div class="toastBox alert">
+                <p class="message">관심 해제되었습니다.</p>
+                <a href="javascript:void(0);" class="btnClose" onclick="$('.toastBox').fadeOut('fast')">닫기</a>
+            </div>
+            <!-- 지원자 삭제 팝업 -->
+            <div class="popupWrap" id="applicant_del_pop">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="tit">정말 삭제하시겠어요?</p>
+                        <p class="text">삭제 후에는 지원자의 모든 정보가 삭제되며,<br>다시 확인하실 수 없습니다.</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                        <a href="javascript:void(0);" class="btn type_red" id="btn_delete">삭제하기</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //지원자 삭제 팝업 -->
+            <!-- 메시지 불가 팝업 -->
+            <div class="popupWrap" id="message_no">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text">Member 계정은 메시지 요청이<br>불가능합니다.</p>
+                        <p class="text">Admin 권한 계정에게 문의해주세요.</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //메시지 요청 불가 팝업 -->
+            <!-- 삭제 불가 팝업 -->
+            <div class="popupWrap" id="pop_apply_del">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text">Member 계정은 지원자 삭제가<br>불가능합니다.</p>
+                        <p class="text">Admin 권한 계정에게 문의해주세요.</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn btn_full" onclick="closePopup()">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //삭제 불가 팝업 -->
+            <!-- 코멘트 삭제 -->
+            <div class="popupWrap" id="comment_del_pop">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text alert">코멘트를 정말 삭제하시겠어요?</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" onclick="closePopup()">취소</a>
+                        <a href="javascript:void(0);" class="btn type_red" id="btn_pop_comment_del">삭제하기</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //코멘트 삭제 -->
+            <!-- 공통 알럿 팝업창 -->
+            <div class="popupWrap common_alert" id="pop_common_alert">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text alert" id="alert_text"></p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn btn_full" id="pop_close_btn">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- 공통 알럿 팝업창 -->
+            <!-- 공통 컨펌 팝업창 -->
+            <div class="popupWrap common_confirm" id="pop_common_confirm">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="text alert">라이브 인터뷰 요청이 완료되지 않았습니다.<br>정말 나가시겠어요?</p>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" id="btn_confirm_pop_close">취소</a>
+                        <a href="javascript:void(0);" class="btn type_red" id="btn_confirm_pop_ok">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- 공통 컨펌 팝업창 -->
+            <!-- 지원자 합격처리확인 -->
+            <div class="popupWrap" id="pop_pass">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="tit">합격 메시지 보내기</p>
+                        <ul class="message">
+                            <li>지원자가 합격 처리 되며 다음과 같은 메시지가 발송됩니다.</li>
+                            <li>발송 메시지는 최대 2,000자까지 자유롭게 작성 하실 수 있습니다.</li>
+                            <li>발송 후에는 취소가 불가능합니다.</li>
+                        </ul>
+                        <div class="field">
+                            <div class="tArea">
+                                <textarea name="pass_msg_cont" id="pass_msg_cont" cols="30" maxlength="2000" class="it"
+                                          rows="10"></textarea>
+                                <!-- 글자수가 추가되면 class="count" 추가 -->
+                                <span class="text"><em class="count" id="bytePassMsg">2000</em>/2000자</span>
+                            </div>
+                            <p class="validationAlert pass_msg_cont_message"></p>
+                        </div>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" id="btn_pop_pass_close">취소</a>
+                        <a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_pass_confirm">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //지원자 합격처리확인 -->
+            <!-- 지원자 불합격처리확인 -->
+            <div class="popupWrap" id="pop_unpass">
+                <div class="popLayer">
+                    <div class="popCont">
+                        <p class="tit">불합격 메시지 보내기</p>
+                        <ul class="message">
+                            <li>지원자가 불합격 처리 되며 다음과 같은 메시지가 발송됩니다.</li>
+                            <li>발송 메시지는 최대 2,000자까지 자유롭게 작성 하실 수 있습니다.</li>
+                            <li>발송 후에는 취소가 불가능합니다.</li>
+                        </ul>
+                        <div class="field">
+                            <div class="tArea">
+                                <textarea name="unpass_msg_cont" id="unpass_msg_cont" maxlength="2000" class="it"
+                                          cols="30" rows="10"></textarea>
+                                <!-- 글자수가 추가되면 class="count" 추가 -->
+                                <span class="text"><em class="count" id="byteUnPassMsg">2000</em>/2000자</span>
+                            </div>
+                            <p class="validationAlert unpass_msg_cont_message"></p>
+                        </div>
+                    </div>
+                    <div class="btnSet">
+                        <a href="javascript:void(0);" class="btn" id="btn_pop_unpass_close">취소</a>
+                        <a href="javascript:void(0);" class="btn type_blue st02" id="btn_pop_unpass_confirm">확인</a>
+                    </div>
+                </div>
+                <span class="cover"></span>
+            </div>
+            <!-- //지원자 불합격처리확인 -->
+            <!--//라이브 인터뷰 요청 팝업-->
+            <form id="regForm" name="regForm" method="post">
+                <div class="popupWrap" id="pop_live">
+                    <div class="popLayer size02" id="live_step1">
+                        <div class="popCont">
+                            <p class="tit">라이브 인터뷰 요청하기</p>
+                            <ul class="popTab">
+                                <li class="active"><a href="javascript:void(0);">STEP <span>01</span></a></li>
+                                <li><a href="javascript:void(0);">STEP <span>02</span></a></li>
+                            </ul>
+                            <ul class="message interView">
+                                <li>원하시는 라이브 인터뷰 날짜와 시간을 선택해주세요.</li>
+                                <li>지원자가 요청을 수락하면 라이브 인터뷰 진행이 확정됩니다.</li>
+                                <li>지원자가 요청을 거절하거나 시간 변경을 요청하실 수 있습니다.</li>
+                            </ul>
+                            <div class="field st02">
+                                <dl>
+                                    <dt>라이브 인터뷰 요청 날짜</dt>
+                                    <dd class="date"><input type="text" name="live_itv_sd" id="live_itv_sd" class="it"
+                                                            readonly placeholder="라이브 면접을 원하시는 날짜를 선택해주세요."></dd>
+                                    <dd class="validationAlert live_itv_sd_message"></dd>
+                                </dl>
+                                <dl>
+                                    <dt>라이브 인터뷰 요청 시간</dt>
+                                    <dd class="time"><input type="text" name="live_itv_st" id="live_itv_st" class="it"
+                                                            readonly placeholder="라이브 면접을 원하시는 시간을 선택해주세요."></dd>
+                                    <dd class="validationAlert live_itv_st_message"></dd>
+                                </dl>
+                                <dl>
+                                    <dt>메시지</dt>
+                                    <dd>
+                                        <div class="tArea">
+                                            <textarea name="live_req_msg_cont" id="live_req_msg_cont" cols="30"
+                                                      rows="10" class="it"
+                                                      placeholder="요청일시와 함께 보내실 메시지를 입력해주세요."></textarea>
+                                            <!-- 글자수가 입력되지 않았을때 class 없음 -->
+                                            <span class="text"><em id="byteLiveMsg">2000</em>/2000자</span>
+                                        </div>
+                                        <p class="validationAlert live_req_msg_cont_message"></p>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="btnSet">
+                            <a href="#" class="btn normal" onclick="closePopup()">취소</a>
+                            <a href="javascript:void(0);" class="btn type_blue st02 normal"
+                               id="btn_live_next_step">다음</a>
+                        </div>
+                    </div>
+                    <div class="popLayer size02" id="live_step2" style="display:none">
+                        <div class="popCont">
+                            <p class="tit">라이브 인터뷰 요청하기</p>
+                            <ul class="popTab">
+                                <li><a href="javascript:void(0);" id="btn_step1">STEP <span>01</span></a></li>
+                                <li class="active"><a href="javascript:void(0);">STEP <span>02</span></a></li>
+                            </ul>
+                            <ul class="message interView">
+                                <li>라이브 인터뷰 참여자를 확인해주세요.</li>
+                                <li>라이브 인터뷰는 Admin 멤버를 포함하여 최대 5명까지 참여하실 수 있습니다.</li>
+                            </ul>
+                            <div class="liveReqMember">
+                                <p class="tit">참여 멤버</p>
+                                <ul class="joinMember">
+                                </ul>
+                                <p class="txt">아래 리스트에서 추가로 참여하실 멤버를 선택해주세요.</p>
+                                <ul class="selectMember">
+                                    {{range .EntpTeamMemberList}}
+                                        <li class='{{if eq "01" .EtPpChrgGbnCd}}admin{{end}} {{.EtPpChrgSn}}'><a
+                                                    href="javascript:void(0);" id="mem_list"
+                                                    data-pp_chrg_gbn_cd="{{.EtPpChrgGbnCd}}"
+                                                    data-pp_chrg_sn="{{.EtPpChrgSn}}" data-pp_chrg_nm="{{.EtPpChrgNm}}"
+                                                    data-pp_chrg_bp_nm="{{.EtPpChrgBpNm}}">
+                                                <span class="name">{{.EtPpChrgNm}}</span>
+                                                <span class="position">{{.EtPpChrgBpNm}}</span>
+                                            </a></li>
+                                    {{end}}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="btnSet">
+                            <a href="javascript:void(0);" class="btn normal" id="btn_live_pop_close">취소</a>
+                            <a href="javascript:void(0);" class="btn type_blue st02 normal" id="btn_live_reg">확인</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!--//라이브 인터뷰 요청 팝업-->
+        </div>
+    </div>
+    </body>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            {{/* 2020중견기업 */}}
+            {{/*if ("{{.EntpGroupCode}}" == "01") {*/}}
+            {{/*    setCustomCareer();*/}}
+            {{/*}*/}}
+            {{/*;*/}}
+            {{/* 2020중견기업 */}}
+
+            $('input.custom').customInput();
+            $(".movieList").find("li a").first().click();
+
+            $(".selectMember .admin").children().click();
+
+            $.datepicker.setDefaults({
+                dateFormat: 'yy-mm-dd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });
+        });
+
+        
+
+        $(function () {
+            $("#live_itv_sd").datepicker({});
+            $('#live_itv_st').timepicker({
+                timeFormat: 'H:mm',
+                interval: 5,        // LDK 2020/08/05 -->
+                minTime: '05',
+                maxTime: '11:00pm',
+                startTime: '05:00',
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true     // <--
+            });
+            $(".ui-datepicker").addClass('full_size');
+        });
+
+        // 지원자상세_코멘트 열기
+        $(document).off("click", "#comment_pop").on("click", "#comment_pop", function (e) {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            var popW = 1041
+            var popH = 1000
+            var popX = (screen.width / 2) - (popW / 2)
+            var popY = (screen.height / 2) - (popH / 2)
+            window.open("/comment/pop/list?recrut_sn=" + recrut_sn + "&pp_mem_no=" + pp_mem_no, "_blank", "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY)
+        });
+
+        $(document).off("click", "#pass_msg_cont").on("click", "#pass_msg_cont", function (e) {
+            $(".validationAlert").text("");
+            $("#pass_msg_cont").removeClass("validationAlert");
+        });
+        $(document).off("click", "#unpass_msg_cont").on("click", "#unpass_msg_cont", function (e) {
+            $(".validationAlert").text("");
+            $("#unpass_msg_cont").removeClass("validationAlert");
+        });
+        $(document).off("click", "#member_applicant_del").on("click", "#member_applicant_del", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            openPopup("pop_apply_del");
+        });
+
+        // 채용정보 상세이동
+        $(document).off("click", "#go_recrut").on("click", "#go_recrut", function (e) {
+            var recrut_sn = "{{.RecrutSn}}";
+            window.close();
+            opener.window.location.href = "/recruit/post/detail?recrut_sn=" + recrut_sn;
+        });
+        // 합격처리하기 팝업
+        $(document).off("click", "#btn_eval_pass").on("click", "#btn_eval_pass", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                openPopup('pop_pass');
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 합격 처리가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // 합격처리 확인(팝업)
+        $(document).off("click", "#btn_pop_pass_confirm").on("click", "#btn_pop_pass_confirm", function (e) {
+            if ($("#pass_msg_cont").val().trim().length == 0) {
+                $(".validationAlert.pass_msg_cont_message").text("합격 메시지를 작성해주세요.");
+                $("#pass_msg_cont").addClass("validationAlert");
+                return;
+            }
+            $("#msg_gbn_cd").val("04");
+            message_send();
+        });
+
+        // 합격처리 취소(팝업)
+        $(document).off("click", "#btn_pop_pass_close").on("click", "#btn_pop_pass_close", function (e) {
+            $("#pass_msg_cont").val("");
+            $("#msg_gbn_cd").val("");
+            closePopup();
+        });
+
+        // 불합격처리하기
+        $(document).off("click", "#btn_eval_unpass").on("click", "#btn_eval_unpass", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            if ("{{.SAuthCd}}" == "01") {
+                openPopup('pop_unpass');
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 불합격 처리가<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // 불합격처리 확인(팝업)
+        $(document).off("click", "#btn_pop_unpass_confirm").on("click", "#btn_pop_unpass_confirm", function (e) {
+            if ($("#unpass_msg_cont").val().trim().length == 0) {
+                $(".validationAlert.unpass_msg_cont_message").text("불합격 메시지를 작성해주세요.");
+                $("#unpass_msg_cont").addClass("validationAlert");
+                return;
+            }
+            $("#msg_gbn_cd").val("05");
+            message_send();
+        });
+
+        // 불합격처리 취소(팝업)
+        $(document).off("click", "#btn_pop_unpass_close").on("click", "#btn_pop_unpass_close", function (e) {
+            $("#unpass_msg_cont").val("");
+            $("#msg_gbn_cd").val("");
+            closePopup();
+        });
+
+        // 라이브인터뷰 요청 글자수 체크
+        $(document).on("keyup", "#live_req_msg_cont", function () {
+            textLenCheck(this, 2000, "#byteLiveMsg");
+        });
+
+        // 합격처리 글자수 체크
+        $(document).on("keyup", "#pass_msg_cont", function () {
+            textLenCheck(this, 2000, "#bytePassMsg");
+        });
+
+        // 불합격처리 글자수 체크
+        $(document).on("keyup", "#unpass_msg_cont", function () {
+            textLenCheck(this, 2000, "#byteUnPassMsg");
+        });
+
+        // 메시지 페이지 이동
+        $(document).off("click", "#go_msg").on("click", "#go_msg", function (e) {
+            opener.window.location.href = "/message?target={{.PpMemNo}}&sn={{.RecrutSn}}&end_yn={{.MsgEndYn}}";
+            window.close();
+        });
+
+        // 메시지 보내기
+        $(document).off("click", "#send_msg").on("click", "#send_msg", function (e) {
+            $("#live_itv_sdt").val("");
+            $("#arr_pp_chrg_sn").val("");
+            $("#msg_gbn_cd").val("01");
+            message_send();
+        });
+
+        // 라이브 인터뷰 요청
+        $(document).off("click", "#live_send_req").on("click", "#live_send_req", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            var proc_cd = {{.Recrut_proc_cd}};
+            if (proc_cd != "4" && proc_cd != "5" && proc_cd != "6" && proc_cd != "7") {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("라이브 인터뷰를 진행하지 않는 공고입니다.");
+            } else if ("{{.SAuthCd}}" == "01") {
+                openPopup('pop_live');
+                $("#live_step1").show();
+                $("#live_step2").hide();
+            } else {
+                openPopup('pop_common_alert');
+                $("#alert_text").html("Member 계정은 라이브 인터뷰 요청이<br>불가능합니다.<br>Admin 권한 계정에게 문의해주세요.");
+            }
+        });
+
+        // 라이브 인터뷰 요청 상태
+        $(document).off("click", "#live_req_ing").on("click", "#live_req_ing", function (e) {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+
+            opener.window.location.href = "/live/detail?recrut_sn=" + recrut_sn + "&pp_mem_no=" + pp_mem_no;
+            window.close();
+        });
+
+        // 라이브 인터뷰 예정
+        $(document).off("click", "#live_schedule").on("click", "#live_schedule", function (e) {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+
+            opener.window.location.href = "/live/detail?recrut_sn=" + recrut_sn + "&pp_mem_no=" + pp_mem_no;
+            window.close();
+        });
+
+        // 공통 알럿 팝업 닫기
+        $(document).off("click", "#pop_close_btn").on("click", "#pop_close_btn", function (e) {
+            if ("{{.SAuthCd}}" == "01") {
+                $(".common_alert").hide();
+                $("#pop_live").show();
+            } else {
+                closePopup();
+            }
+        });
+
+        // 공통 컨펌 팝업 열기
+        $(document).off("click", "#btn_live_pop_close").on("click", "#btn_live_pop_close", function (e) {
+            $("#pop_live").hide();
+            openPopup("pop_common_confirm");
+        });
+
+        // 공통 컨펌 팝업 닫기
+        $(document).off("click", "#btn_confirm_pop_close").on("click", "#btn_confirm_pop_close", function (e) {
+            $("#pop_common_confirm").hide();
+            $("#pop_live").show();
+        });
+
+        // 공통 컨펌 팝업 확인
+        $(document).off("click", "#btn_confirm_pop_ok").on("click", "#btn_confirm_pop_ok", function (e) {
+            closePopup();
+            $("#live_step1").show();
+            $("#live_step2").hide();
+        });
+
+        // 라이브 인터뷰 참여멤버 선택
+        $(document).off("click", "#mem_list").on("click", "#mem_list", function (e) {
+            if (!$(this).parent().hasClass("select")) {
+                var pp_chrg_sn = $(this).data("pp_chrg_sn");
+                var pp_chrg_nm = $(this).data("pp_chrg_nm");
+                var pp_chrg_bp_nm = $(this).data("pp_chrg_bp_nm");
+                var pp_chrg_gbn_cd = $(this).data("pp_chrg_gbn_cd");
+
+                console.log("pp_chrg_sn : "+pp_chrg_sn);
+                console.log("pp_chrg_nm : "+pp_chrg_nm);
+                console.log("pp_chrg_bp_nm : "+pp_chrg_bp_nm);
+                var max_cnt = 5;
+                var cnt = parseInt($("#select_cnt").val()) + 1;
+                $("#select_cnt").val(cnt);
+
+                var html = "";
+                if (pp_chrg_gbn_cd == "01") {
+                    html += "<li class=\"admin\" name=\"arr_mem[]\" data-pp_chrg_sn=\"" + pp_chrg_sn + "\">";
+                } else {
+                    html += "<li name=\"arr_mem[]\" data-pp_chrg_sn=\"" + pp_chrg_sn + "\">";
+                }
+                html += "    <span class=\"name\">" + pp_chrg_nm + "</span>";
+                html += "    <span class=\"position\">" + pp_chrg_bp_nm + "</span>";
+                if (pp_chrg_gbn_cd == "02") {
+                    html += "    <a href=\"javascript:void(0);\" id=\"mem_delete\" data-pp_chrg_sn=\"" + pp_chrg_sn + "\" class=\"delete\">삭제</a>";
+                }
+                html += "</li>";
+
+                if (cnt > max_cnt) { // 최대인원 수
+                    $("#pop_live").hide();
+                    openPopup("pop_common_alert");
+                    $("#alert_text").text("라이브 인터뷰는 최대 " + max_cnt + "명까지 참여 가능합니다.");
+                    $("#select_cnt").val(cnt - 1);
+                    return false;
+                } else {
+                    $(this).parent().addClass("select");
+                    $(".joinMember").last("li").append(html);                    
+                }
+            }
+        });
+
+        // 라이브 인터뷰 참여멤버 삭제
+        $(document).off("click", "#mem_delete").on("click", "#mem_delete", function (e) {
+            var pp_chrg_sn = $(this).data("pp_chrg_sn");
+
+            var cnt = parseInt($("#select_cnt").val()) - 1;
+            $("#select_cnt").val(cnt);
+
+            console.log("pp_chrg_sn : " + pp_chrg_sn);
+            $(this).parent().remove();
+            $("." + pp_chrg_sn).removeClass("select");
+        });
+
+        $(document).off("click", "#live_itv_sd").on("click", "#live_itv_sd", function (e) {
+            $("#live_itv_sd").removeClass("validationAlert");
+            $(".live_itv_sd_message").text(""); // message box clear
+        });
+        $(document).off("click", "#live_itv_st").on("click", "#live_itv_st", function (e) {
+            $("#live_itv_st").removeClass("validationAlert");
+            $(".live_itv_st_message").text(""); // message box clear
+        });
+        $(document).off("click", "#live_req_msg_cont").on("click", "#live_req_msg_cont", function (e) {
+            $("#live_req_msg_cont").removeClass("validationAlert");
+            $(".live_req_msg_cont_message").text(""); // message box clear
+        });
+
+        // 라이브 인터뷰 요청 step2 live_next_step
+        $(document).off("click", "#btn_live_next_step").on("click", "#btn_live_next_step", function (e) {
+            if ($("#live_itv_sd").val().length == 0) {
+                $(".live_itv_sd_message").text("라이브 인터뷰 요청 날짜를 선택해주세요.");
+                $("#live_itv_sd").addClass("validationAlert");
+                return;
+            }
+            if ($("#live_itv_st").val().length == 0) {
+                $(".live_itv_st_message").text("라이브 인터뷰 요청 시간을 선택해주세요.");
+                $("#live_itv_st").addClass("validationAlert");
+                return;
+            }
+            if ($("#live_req_msg_cont").val().length == 0) {
+                $(".live_req_msg_cont_message").text("라이브 인터뷰 요청 메시지를 입력해주세요.");
+                $("#live_req_msg_cont").addClass("validationAlert");
+                return;
+            }
+            $("#live_step1").hide();
+            $("#live_step2").show();
+        });
+
+        // 라이브 인터뷰 요청 step1 으로 이동
+        $(document).off("click", "#btn_step1").on("click", "#btn_step1", function (e) {
+            $("#live_step1").show();
+            $("#live_step2").hide();
+        });
+
+        // 라이브 인터뷰 등록
+        $(document).off("click", "#btn_live_reg").on("click", "#btn_live_reg", function (e) {
+            var live_itv_sd = $("#live_itv_sd").val().replace(/-/gi, "");
+            var live_itv_st = $("#live_itv_st").val()
+            var mem_sn_arr = [];
+            $('.joinMember').find("li[name='arr_mem[]']").each(function () {
+                var thisVal = $(this).data("pp_chrg_sn");
+                mem_sn_arr.push(thisVal);
+            });
+            if (live_itv_st.length == 4) {
+                live_itv_st = "0" + live_itv_st.replace(/:/gi, "") + "00";
+            } else {
+                live_itv_st = live_itv_st.replace(/:/gi, "") + "00";
+            }
+            var live_itv_sdt = live_itv_sd + live_itv_st
+            $("#live_itv_sdt").val(live_itv_sdt);
+            $("#arr_pp_chrg_sn").val(mem_sn_arr);
+            $("#msg_gbn_cd").val("06");
+            message_send();
+        });
+
+        var message_send = function () {
+
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            var msg_gbn_cd = $("#msg_gbn_cd").val();
+            if (msg_gbn_cd == "06") { //라이브 인터뷰 요청 메시지
+                var msg_cont = $("#live_req_msg_cont").val().replace(/'/gi, "`");
+            } else if (msg_gbn_cd == "04") { // 합격 메시지
+                var msg_cont = $("#pass_msg_cont").val().replace(/'/gi, "`");
+            } else if (msg_gbn_cd == "05") { // 불합격 메시지
+                //var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi,"`").replace(/(?:\r\n|\r|\n)/g, '<br>');
+                var msg_cont = $("#unpass_msg_cont").val().replace(/'/gi, "`");
+            } else { // 그외 메시지는 없음
+                var msg_cont = "";
+            }
+            var live_itv_sdt = $("#live_itv_sdt").val();
+            if (live_itv_sdt == undefined) {
+                live_itv_sdt = "";
+            }
+            var arr_pp_chrg_sn = $("#arr_pp_chrg_sn").val();
+            if (arr_pp_chrg_sn == undefined) {
+                arr_pp_chrg_sn = "";
+            }
+            var live_sn = $("#live_sn").val();
+            if (live_sn == undefined) {
+                live_sn = ""
+            }
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("msg_gbn_cd : "+msg_gbn_cd);
+            console.log("msg_cont : "+msg_cont);
+            console.log("live_itv_sdt : "+live_itv_sdt);
+            console.log("arr_pp_chrg_sn : "+arr_pp_chrg_sn);
+            console.log("live_sn : "+live_sn);
+            return;
+            */
+            var formData = new FormData();
+            formData.append("recrut_sn", recrut_sn);
+            formData.append("pp_mem_no", pp_mem_no);
+            formData.append("msg_gbn_cd", msg_gbn_cd);
+            formData.append("msg_cont", msg_cont);
+            formData.append("live_itv_sdt", live_itv_sdt);
+            formData.append("arr_pp_chrg_sn", arr_pp_chrg_sn);
+            formData.append("live_sn", live_sn);
+
+            // 메시지 등록처리
+            $.ajax({
+                cache: false,
+                url: '/message/send',
+                data: formData,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        if (msg_gbn_cd == "05") { //불합격
+                            window.opener.$("#btn_search").trigger('click');
+                            closePopup("pop_unpass");
+                            window.close();
+                        } else { //라이브인터뷰 요청, 합격
+                            opener.window.location.href = "/message?target=" + pp_mem_no + "&sn=" + recrut_sn + "&end_yn=0";
+                            window.close();
+                        }
+                    } else {
+                        console.log("message : " + rtnMsg);
+                        // console.log("[AJAX(/message/send)]: Login");
+                        // window.location.href = "/login";
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 코멘트 등록
+        $(document).off("click", "#btn_comment_reg").on("click", "#btn_comment_reg", function (e) {
+            if ($("#pp_chrg_cmt").val().length > 0) {
+                ajaxCommentReg();
+            }
+        });
+
+        // 코멘트 등록 처리
+        var ajaxCommentReg = function () {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            var pp_chrg_cmt = filteringXSS($("#pp_chrg_cmt").val()).replace(/'/gi, "`");
+            var pp_chrg_sn = "{{.SMemSn}}";
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("pp_chrg_cmt : "+pp_chrg_cmt);
+            console.log("pp_chrg_sn : "+pp_chrg_sn);
+            return;
+            */
+
+            $.ajax({
+                cache: false,
+                url: '/team/comment/insert',
+                data: {
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    pp_chrg_cmt: pp_chrg_cmt,
+                    pp_chrg_sn: pp_chrg_sn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        $("#pp_chrg_cmt").val("");
+                        ajaxCommentList();
+                        $("#commet_div").animate({scrollTop: $("#commet_div").prop("scrollHeight")}, 300);
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 코멘트 리스트 페이지 AJAX
+        var ajaxCommentList = function (v) {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+
+            $.ajax({
+                type: "POST",
+                url: "/team/comment/list",
+                data: {
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    if (rep.RtnRecruitApplyCommentListData.length > 0) {
+                        $(".messageArea").find("ul").children().remove();
+                        $.each(rep.RtnRecruitApplyCommentListData, function (e) {
+                            var html = "";
+                            html += "<div class=\"box";
+                            if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}") {
+                                html += " mine";
+                            }
+                            if (rep.RtnRecruitApplyCommentListData[e].CmtPpChrgGbnCd == "01") {
+                                html += " admin";
+                            }
+                            if (rep.RtnRecruitApplyCommentListData[e].CmtNewYn == "Y") {
+                                html += " new";
+                            }
+                            html += "\">";
+                            html += "	<p class=\"name\">[" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgBpNm + " " + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgNm + "]</p>";
+                            html += "	<p class=\"date\">" + rep.RtnRecruitApplyCommentListData[e].CmtRegDt + "</p>";
+                            if (rep.RtnRecruitApplyCommentListData[e].CmtRegId == "{{.SMemId}}" || "{{.SAuthCd}}" == "01") {
+                                html += "	<a href=\"javascript:void(0);\" class=\"btn type_red btnDelete\" id=\"btn_comment_del\" data-pp_chrg_cmt_sn=\"" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmtSn + "\">삭제</a>";
+                            }
+                            html += "	<p class=\"text\">" + rep.RtnRecruitApplyCommentListData[e].CmtPpChrgCmt + "</p>";
+                            html += "</div>";
+
+                            $(".messageArea").find("ul").append(html);
+                        })
+                        $("#comment_cnt").text(rep.RtnRecruitApplyCommentListData[0].CmtTotCnt);
+                    } else {
+                        $(".messageArea").find("ul").children().remove();
+                        var html = "";
+                        html += "<p class=\"noData\">지원자에 대한 코멘트가 없습니다.<br>코멘트를 통해 팀 멤버와 논의해보세요!</p>";
+                        $(".messageArea").find("ul").append(html);
+                        $("#comment_cnt").text(0);
+                    }
+                }
+            });
+        }
+
+        // 코멘트 삭제(팝업)
+        $(document).off("click", "#btn_comment_del").on("click", "#btn_comment_del", function (e) {
+            $('body, html').animate({scrollTop: 0}, 1);
+            $("#pp_chrg_cmt_sn").val($(this).data("pp_chrg_cmt_sn"));
+            openPopup("comment_del_pop");
+        });
+
+        // 코멘트 팝업내 삭제
+        $(document).off("click", "#btn_pop_comment_del").on("click", "#btn_pop_comment_del", function (e) {
+            closePopup("comment_del_pop");
+            ajaxCommentDel();
+        });
+
+        // 코멘트 삭제 처리
+        var ajaxCommentDel = function () {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            var pp_chrg_sn = "{{.SMemSn}}";
+            var pp_chrg_cmt_sn = $("#pp_chrg_cmt_sn").val();
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("pp_chrg_sn : "+pp_chrg_sn);
+            console.log("pp_chrg_cmt_sn : "+pp_chrg_cmt_sn);
+            return;
+            */
+
+            $.ajax({
+                cache: false,
+                url: '/team/comment/delete',
+                data: {
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    pp_chrg_sn: pp_chrg_sn,
+                    pp_chrg_cmt_sn: pp_chrg_cmt_sn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        ajaxCommentList();
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 질문 선택
+        $(document).off("click", "#qst_select").on("click", "#qst_select", function (e) {
+            $(".movieList").find("li").removeClass("selected");
+            if ($(this).parent().hasClass("selected")) {
+                $(this).parent().removeClass("selected");
+            } else {
+                var max_qst_sn = $("#max_qst_sn").val();
+                var qst_sn = $(this).data("qst_sn");
+                var vd_path = $(this).data("vd_path");
+                $("#qst_sn").val(qst_sn);
+                $(".movie.ans_vd").children().remove();
+                var vd_html = "";
+                vd_html += "<video controls width=\"222\" height=\"394\" id=\"video_" + qst_sn + "\" controlsList=\"nodownload\">";
+                vd_html += "<source src=\"" + vd_path + "\" type=\"video/mp4\">";
+                vd_html += "</video>";
+                $(".movie.ans_vd").append(vd_html);
+                document.getElementById("video_" + qst_sn).pause();
+                $(this).parent().addClass("selected");
+                var prev_curr_cnt = $("#btn_prev").attr('class').split(" ")[1];
+                //console.log("prev_curr_cnt : "+prev_curr_cnt);
+                var next_curr_cnt = $("#btn_next").attr('class').split(" ")[1];
+
+                if (parseInt(qst_sn) == 1) {
+                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                    $("#btn_next").addClass("2");
+                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                    $("#btn_prev").addClass("0");
+                    $("#btn_next").removeClass("disabled");
+                    $("#btn_prev").addClass("disabled");
+                } else if (parseInt(qst_sn) == 2) {
+                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                    $("#btn_next").addClass("3");
+                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                    $("#btn_prev").addClass("1");
+                    $("#btn_next").addClass("disabled");
+                    $("#btn_prev").removeClass("disabled");
+                } else if (parseInt(qst_sn) == 3) {
+                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                    $("#btn_next").addClass("4");
+                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                    $("#btn_prev").addClass("2");
+                    $("#btn_next").removeClass("disabled");
+                    $("#btn_prev").removeClass("disabled");
+                } else if (parseInt(qst_sn) == 4) {
+                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                    $("#btn_next").addClass("5");
+                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                    $("#btn_prev").addClass("3");
+                    $("#btn_next").removeClass("disabled");
+                    $("#btn_prev").removeClass("disabled");
+                } else {
+                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                    $("#btn_next").addClass("6");
+                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                    $("#btn_prev").addClass("4");
+                    $("#btn_next").addClass("disabled");
+                    $("#btn_prev").removeClass("disabled");
+                }
+                /*
+                            } else {
+                                if (parseInt(max_qst_sn) > parseInt(qst_sn)) {
+                                    console.log("111");
+                                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                                    $("#btn_next").addClass((parseInt(next_curr_cnt)+1).toString());
+                                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                                    $("#btn_prev").addClass((parseInt(prev_curr_cnt)+1).toString());
+                                } else {
+                                    console.log("222");
+                                    $("#btn_next").removeClass((parseInt(next_curr_cnt)).toString());
+                                    $("#btn_next").addClass((parseInt(next_curr_cnt)-1).toString());
+                                    $("#btn_prev").removeClass((parseInt(prev_curr_cnt)).toString());
+                                    $("#btn_prev").addClass((parseInt(prev_curr_cnt)-1).toString());
+                                }
+                            }*/
+            }
+        });
+
+        // 영상 다음
+        $(document).off("click", "#btn_next").on("click", "#btn_next", function (e) {
+            var max_qst_sn = $("#max_qst_sn").val();
+            var curr_cnt = $(this).attr('class').split(" ")[1];
+            var next_curr_cnt = $("#btn_next").attr('class').split(" ")[1];
+            if (parseInt(max_qst_sn) >= parseInt(curr_cnt)) {
+                $("." + curr_cnt).find("a").click();
+            } else {
+                console.log("last video");
+            }
+        });
+
+        // 영상 이전
+        $(document).off("click", "#btn_prev").on("click", "#btn_prev", function (e) {
+            var max_qst_sn = $("#max_qst_sn").val();
+            var curr_cnt = $(this).attr('class').split(" ")[1];
+            var prev_curr_cnt = $("#btn_prev").attr('class').split(" ")[1];
+            if (parseInt(curr_cnt) == 0) {
+                console.log("first video");
+            } else {
+                $("." + curr_cnt).find("a").click();
+            }
+        });
+
+        // 지원자 삭제(버튼)
+        $(document).off("click", "#applicant_del").on("click", "#applicant_del", function (e) {
+            $('html').scrollTop(0);
+            openPopup("applicant_del_pop");
+        });
+
+        // 지원자(팝업) 삭제
+        $(document).off("click", "#btn_delete").on("click", "#btn_delete", function (e) {
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            /*
+            console.log("=====================");
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("recrut_sn : "+recrut_sn);
+            return;
+            */
+            $.ajax({
+                cache: false,
+                url: '/applicant/each/delete',
+                data: {
+                    pp_mem_no: pp_mem_no,
+                    recrut_sn: recrut_sn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        window.opener.$("#btn_search").trigger('click');
+                        closePopup("applicant_del_pop");
+                        window.close();
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        });
+
+        // 관심아이콘 클릭이벤트
+        $('.ico_like a').on('click', function () {
+            if ($(this).parent().hasClass('active')) {
+                $(this).parent().removeClass('active')
+                var rs = $(this).parent().data("recrut_sn");
+                var pp = $(this).parent().data("pp_mem_no");
+                var yn = "N";
+                ajaxMemberSet(rs, pp, yn);
+            } else {
+                $(this).parent().addClass('active')
+                var rs = $(this).parent().data("recrut_sn");
+                var pp = $(this).parent().data("pp_mem_no");
+                var yn = "Y";
+                ajaxMemberSet(rs, pp, yn);
+            }
+        })
+
+        // 지원자 관심설정 처리
+        var ajaxMemberSet = function (rs, pp, yn) {
+            var recrut_sn = rs;
+            var pp_mem_no = pp;
+            var favr_set_yn = yn;
+            /*
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+            console.log("favr_set_yn : "+favr_set_yn);
+            */
+
+            $.ajax({
+                cache: false,
+                url: '/favor/member/set',
+                data: {
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    favr_set_yn: favr_set_yn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == "1") {
+                        if (favr_set_yn == "Y") {
+                            $('.toastBox.noti').fadeIn(1000)
+                            setTimeout(function () {
+                                $('.toastBox.noti').fadeOut(1000);
+                            }, 3000);
+                        } else {
+                            $('.toastBox.alert').fadeIn(1000)
+                            setTimeout(function () {
+                                $('.toastBox.alert').fadeOut(1000);
+                            }, 3000);
+                        }
+                    } else {
+                        console.log("message : " + rtnMsg);
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 2020중견기업
+        var setCustomCareer = function () {
+            console.log("setCustomCareer");
+
+            $("#school").text("-");
+            $("#career").text("-");
+            $("#license").text("-");
+            $("#lang").text("-");
+            $("#pdf_name").text("이력서");
+            $("#pdf").text("");
+            $("#pdf").attr("href", "#");
+            var email = "{{.Email}}";
+
+            $.ajax({
+                crossOrigin: true,
+                cache: false,
+                url: 'https://www.fome-job.com/api/',
+                data: {
+                    client_id: "54594548",
+                    client_secret: "6b8ce262163448a0dc02638ccbd8789c",
+                    mode: "doc_info",
+                    email: email,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+
+                    if (rep.result_code == 200) {
+                        $("#school").text(rep.data.school);
+                        $("#career").text(rep.data.career + "년");
+                        $("#license").text(rep.data.license);
+                        $("#lang").text(rep.data.lang);
+                        $("#pdf").text(rep.data.pdf);
+                        $("#pdf").attr("href", rep.data.pdf);
+                        setCustomCareerApplyStatus();
+                    } else {
+                        $("#profile_error_msg")
+                            .css("color", "red")
+                            .text("이력 데이터를 찾지 못했습니다. ( 오류코드 : " + rep.result_code + ")");
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        var setCustomCareerApplyStatus = function () {
+            var email = "{{.Email}}";
+            var recrutSn = "{{.RecrutSn}}";
+
+            $("#apply_status_name").text("서류지원합격여부");
+            $.ajax({
+                crossOrigin: true,
+                cache: false,
+                url: 'https://www.fome-job.com/api/',
+                data: {
+                    client_id: "54594548",
+                    client_secret: "6b8ce262163448a0dc02638ccbd8789c",
+                    mode: "apply_status",
+                    email: email,
+                    RecrutSn: recrutSn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    console.log("log : " + rep);
+
+                    if (rep.result_code == 200) {
+                        $("#apply_status").text(rep.data.status_detail + "(" + rep.data.status + ")");
+                    }
+                    ;
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+        // 2020중견기업
+    </script>
+
+{{end}} 

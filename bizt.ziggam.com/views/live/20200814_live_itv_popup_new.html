@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<title>라이브인터뷰</title>
+	<link href="/static/css/style_live.css?v=1" rel="stylesheet">	
+
+	<!-- 기본JS -->
+	<script src="https://kit.fontawesome.com/db6adb475d.js" crossorigin="anonymous"></script>
+	<script src="/static/js/jquery-3.3.1.min.js"></script>
+	<script src="/static/js/jquery-migrate-1.2.1.js"></script>
+	<script src="/static/js/jquery-ui.min.js"></script>
+	<script src="/static/plugin/jui-grid/jui-core.min.js"></script>
+	<script src="/static/plugin/jui-grid/jui-ui.js"></script>
+	<script src="/static/plugin/jui-grid/jui-grid.min.js"></script>
+	<script src="/static/js/common.js?v=0.0.11"></script>
+	<script src="/static/js/customInput.jquery.js"></script>
+
+	<!-- validation -->
+	<script type="text/javascript" src="/static/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="/static/js/additional-methods.js"></script>
+
+	<!-- timepicker -->
+	<script type="text/javascript" src="/static/js/jquery.datetimepicker.full.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.timepicker.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Ads: 661333810 -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=AW-661333810"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'AW-661333810');
+	</script>
+</head>
+<body>
+	<script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk/remon.min.js"></script>
+	<script src="/static/js/remoteMonster.js"></script>
+
+<div class="live-wrapper">
+	<!--live-top-->
+	<div class="live-top">
+		<div class="live-top-logo">
+			<img src="/static/images/logo-admin-top-white.png">
+		</div>
+		<div class="live-top-buttons">
+			
+			<div class="live-top-button" onClick="exitWindowPop();">
+				<img src="/static/images/ic-topbar-live-close-alone.svg">나가기
+			</div>
+			<div class="live-top-button" onClick="closeWindowPop();">
+				<img src="/static/images/ic-topbar-live-close-end.svg">종료하기
+			</div>
+		</div>
+	</div>
+	<!--live-top-->
+
+
+
+	<!-- live-timer -->
+	<div class="live-timer">
+		<div class="live-timer-left">
+			&middot; LIVE
+		</div>
+		<div class="live-timer-right">
+			<a id="elapse_time" class="elapse_time" style="color:#FFF;width:50px;height:50px;font-size:17px;">00:00:00</a> 
+		</div>
+	</div>
+	<!-- live-timer -->
+
+
+
+
+	<!-- live-face : 구직자 -->
+	<div class="live-face">
+		<div class="live-face-stream" id="live-face-stream"><!--동영상 스트림 사이즈 지정 -->			
+			
+		</div>
+		<div class="live-face-top">
+			<img src="{{.PtoPath}}" onerror="this.src='/static/images/img-profile-empty-02.svg'" class="live-face-profile-pic">
+			<div class="live-face-profile-name" id="live-face-profile-name"></div>
+		</div>
+		<div class="live-face-mute">
+			<img src="/static/images/ic-live-video-call-mute-off.svg">
+			<div class="live-face-mute-txt" id="live-face-mute">
+				소리 끄기
+			</div>
+		</div>
+	</div>
+	<!-- live-face -->
+
+	<!-- live-thums -->
+	<div class="live-thums">
+		<!-- live-thum-cell : 면접자 1 -->
+		<div class="live-thum">
+			<div class="live-thum-stream" id="live-thum-stream-1"><!--대기 스트림 사이즈 지정 -->
+				<!-- video 1 -->
+			</div>
+			<div class="live-thum-name">
+				<div class="live-thum-bar"></div>
+				<div class="live-thum-name-txt">
+					<div class="live-thum-name-txt1" id="live-thum-stream-1-tit1"></div>
+					<div class="live-thum-name-txt2" id="live-thum-stream-1-tit2"></div>
+				</div>
+			</div>
+			<div class="live-thum-mute">
+				<img src="/static/images/ic-live-video-call-mute-off.svg" class="live-thum-mute-pic">
+				<div class="live-thum-mute-txt" id="live-thum-mute-1">
+					소리 끄기
+				</div>
+			</div>
+		</div>
+		<!-- live-thum-cell : 면접자 1 -->
+
+		<!-- live-thum-cell : 면접자 2 -->
+		<div class="live-thum">
+			<div class="live-thum-stream" id="live-thum-stream-2">
+				<!-- video 2 -->	
+			</div>
+			<div class="live-thum-name">
+				<div class="live-thum-bar"></div>
+				<div class="live-thum-name-txt">
+					<div class="live-thum-name-txt1" id="live-thum-stream-2-tit1"></div>
+					<div class="live-thum-name-txt2" id="live-thum-stream-2-tit2"></div>
+				</div>
+			</div>
+			<div class="live-thum-mute">
+				<img src="/static/images/ic-live-video-call-mute-off.svg" class="live-thum-mute-pic">
+				<div class="live-thum-mute-txt" id="live-thum-mute-2">
+					소리 끄기
+				</div>
+			</div>
+		</div>
+		<!-- live-thum-cell : 면접자 2 -->
+
+		<!-- live-thum-cell : 면접자 3 -->
+		<div class="live-thum">
+			<div class="live-thum-stream" id="live-thum-stream-3">
+				<!-- video 3 -->	
+			</div>
+			<div class="live-thum-name">
+				<div class="live-thum-bar"></div>
+				<div class="live-thum-name-txt">
+					<div class="live-thum-name-txt1" id="live-thum-stream-3-tit1"></div>
+					<div class="live-thum-name-txt2" id="live-thum-stream-3-tit2"></div>
+				</div>
+			</div>
+			<div class="live-thum-mute">
+				<img src="/static/images/ic-live-video-call-mute-off.svg" class="live-thum-mute-pic">
+				<div class="live-thum-mute-txt" id="live-thum-mute-3">
+					소리 끄기
+				</div>
+			</div>
+		</div>
+		<!-- live-thum-cell : 면접자 3 -->
+
+		<!-- live-thum-cell : 면접자 4 -->
+		<div class="live-thum">
+			<div class="live-thum-stream" id="live-thum-stream-4">
+				<!-- video 4 -->	
+			</div>
+			<div class="live-thum-name">
+				<div class="live-thum-bar"></div>
+				<div class="live-thum-name-txt">
+					<div class="live-thum-name-txt1" id="live-thum-stream-4-tit1"></div>
+					<div class="live-thum-name-txt2" id="live-thum-stream-4-tit2"></div>
+				</div>
+			</div>
+			<div class="live-thum-mute">
+				<img src="/static/images/ic-live-video-call-mute-off.svg" class="live-thum-mute-pic">
+				<div class="live-thum-mute-txt" id="live-thum-mute-4">
+					소리 끄기
+				</div>
+			</div>
+		</div>
+		<!-- live-thum-cell : 면접자 4 -->
+
+		<!-- live-thum-cell : 면접자 5 -->
+		<div class="live-thum">
+			<div class="live-thum-stream" id="live-thum-stream-5">
+				<!-- video 5 -->	
+			</div>
+			<div class="live-thum-name">
+				<div class="live-thum-bar"></div>
+				<div class="live-thum-name-txt">
+					<div class="live-thum-name-txt1" id="live-thum-stream-5-tit1"></div>
+					<div class="live-thum-name-txt2" id="live-thum-stream-5-tit2"></div>
+				</div>
+			</div>
+			<div class="live-thum-mute">
+				<img src="/static/images/ic-live-video-call-mute-off.svg" class="live-thum-mute-pic">
+				<div class="live-thum-mute-txt" id="live-thum-mute-5">
+					소리 끄기
+				</div>
+			</div>
+		</div>
+		<!-- live-thum-cell : 면접자 5 -->
+
+	</div>
+	<!-- live-thums -->
+</div>
+
+<!-- 나가기 팝업 -->
+<div class="popupWrap" id="live_exit_pop">
+	<div class="popLayer">
+		<div class="popCont">
+			<p class="tit">정말 나가시겠습니까?</p>			
+		</div>
+		<div class="btnSet">
+			<a href="javascript:void(0);" class="btn" style="font-size:14px;" onclick="closePopup()">취소</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_live_exit" style="font-size:14px;">나가기</a>
+		</div>
+	</div>
+	<span class="cover"></span>
+</div>
+<!-- 나가기 팝업 -->
+
+<!-- 종료 팝업 -->
+<div class="popupWrap" id="live_close_pop">
+	<div class="popLayer">
+		<div class="popCont">
+			<p class="tit">정말 종료하시겠습니까?</p>			
+		</div>
+		<div class="btnSet">
+			<a href="javascript:void(0);" class="btn" style="font-size:14px;" onclick="closePopup()">취소</a>
+			<a href="javascript:void(0);" class="btn type_red" id="btn_live_close" style="font-size:14px;">종료</a>
+		</div>
+	</div>
+	<span class="cover"></span>
+</div>
+<!-- 종료 팝업 -->
+
+<script>
+	var entp_mem_no = {{.EntpMemNo}};
+	var entp_mem_sn = {{.SMemSn}};
+	var pp_mem_no = {{.PpMemNo}};		
+	var pp_mem_nm = {{.PpMemNm}};		
+	var recrut_sn = {{.RecrutSn}};
+	var live_sn = {{.pLiveSn}};
+	var member_list = {{.LiveMemList}};	
+	var member_list_cnt =  member_list.length;
+	var remon_list_cnt =  member_list_cnt + 1;	// 구직자 + 맴버 인원수
+
+	var pto_path = {{.PtoPath}};
+	
+	var lemonMembers = {};		// 기업 유저
+	var lemonPerson = {};		// 개인 유저	
+	
+	function initHtml() {		
+		
+		//var vd_html = 
+		$("#live-face-stream").append(`<video class=\"live-face-stream\" id=\"remoteVideo${0}\" autoplay controls></video>`);			
+	
+		//var vd_t_html = `<div class=\"title-overlay0\">${pp_mem_nm}</div>`
+		//var vd_t_html = `${pp_mem_nm}`
+		$("#live-face-profile-name").append(`${pp_mem_nm}`);			
+
+		//var vd_m_html = `<button type="button" id=\"remoteMute${0}\">Mute</button>`		
+		//var vd_m_html = `remoteMute${0}`;
+		$("#live-face-mute").attr("id",`remoteMute${0}`); 
+		
+		//console.log(`====== vd_html(${pp_mem_nm}): ${vd_html}`);			
+		
+		// 면접자(기업)
+		var num = 1;
+		var my_num;
+		for (var i = 0; i < member_list.length; i++) {
+
+			var base_html = 
+			"<div class=\"live-thum\">
+				<div class=\"live-thum-stream\" id=\"live-thum-stream-1\"><!--대기 스트림 사이즈 지정 -->
+					<!-- video 1 -->
+				</div>
+				<div class=\"live-thum-name\">
+					<div class=\"live-thum-bar\"></div>
+					<div class=\"live-thum-name-txt\">
+						<div class=\"live-thum-name-txt1\" id=\"live-thum-stream-1-tit1\"></div>
+						<div class=\"live-thum-name-txt2\" id=\"live-thum-stream-1-tit2\"></div>
+					</div>
+				</div>
+				<div class=\"live-thum-mute\">
+					<img src=\"/static/images/ic-live-video-call-mute-off.svg\" class=\"live-thum-mute-pic\">
+					<div class=\"live-thum-mute-txt\" id=\"live-thum-mute-1\">소리 끄기</div>
+				</div>
+			</div>";
+
+			
+			if (entp_mem_sn == member_list[i].LmPpChrgSn) {	// 본인
+
+				//vd_html   = `<video id=\"localVideo\" autoplay></video>`
+				$(`#live-thum-stream-${num}`).append(`<video class=\"live-thum-stream\" id=\"localVideo\" autoplay controls></video>`);				
+				
+				//vd_t_html = `${member_list[i].LmPpChrgBpNm}`
+				$(`#live-thum-stream-${num}-tit1`).append(`${member_list[i].LmPpChrgBpNm}`);
+
+				//vd_t_html = `${member_list[i].LmPpChrgNm}`
+				$(`#live-thum-stream-${num}-tit2`).append(`${member_list[i].LmPpChrgNm}`);
+
+				//vd_m_html = `<button type="button" id=\"localMute\">Mute</button>`
+				$(`#live-thum-mute-${num}`).attr("id",`localMute`);
+				
+				my_num = num;
+
+			} else {	// 원격자
+
+				//vd_html = `<video id=\"remoteVideo${num}\" autoplay></video>`
+				//$(`#live-thum-stream-${num}`).append(vd_html);
+				$(`#live-thum-stream-${num}`).append(`<video class=\"live-thum-stream\" id=\"remoteVideo${num}\" autoplay controls></video>`);
+				
+				//vd_t_html = `<div class=\"title-overlay${num}\">${member_list[i].LmPpChrgBpNm} ${member_list[i].LmPpChrgNm}</div>`
+				//vd_t_html = `${member_list[i].LmPpChrgBpNm}`
+				$(`#live-thum-stream-${num}-tit1`).append(`${member_list[i].LmPpChrgBpNm}`);
+
+				//vd_t_html = `${member_list[i].LmPpChrgNm}`
+				$(`#live-thum-stream-${num}-tit2`).append(`${member_list[i].LmPpChrgNm}`);
+
+				//vd_m_html = `<button type="button" id=\"remoteMute${num}\">Mute</button>`
+				$(`#live-thum-mute-${num}`).attr("id",`remoteMute${num}`);
+			}
+			
+			num++;		
+			
+			//console.log(`====== member: ${member_list[i].LmPpChrgGbnCd}, ${member_list[i].LmPpChrgNm}, ${member_list[i].LmPpChrgBpNm}, ${member_list[i].LmPpChrgSn}`);		
+			//console.log(`====== (${member_list[i].LmPpChrgNm}): ${vd_html}`);		
+		}		
+	}
+
+	function initRemoteMonster() {
+		
+		//LiveChNo”:“E2018102500001_2019110644_P2019082300298_201912091308002 => 지원하는 기업회원번호_ 공고번호_개인회원번호_라이브채팅방 번호	
+		
+		var base_channel = entp_mem_no + '_' + recrut_sn + '_' + pp_mem_no + '_' + live_sn;			
+		
+		lemonPerson = new RemoteMonster(
+				{
+					channel: base_channel + '_' + entp_mem_sn + '_' + '0000',
+					remoteVideo: '#remoteVideo' + '0',
+					localVideo: '#localVideo',
+					num: '0000',					
+					remoteMuteId: 'remoteMute' + '0',
+					localMuteId: 'localMute',
+				});	 
+			
+		var num = 1;
+		for (var i = 0; i < member_list.length; i++) {
+			
+			if (member_list[i].LmPpChrgSn !== entp_mem_sn) {			
+
+				lemonMembers[member_list[i].LmPpChrgSn] = new RemoteMonster(
+					{
+						channel: base_channel + '_' + getChannel(entp_mem_sn, member_list[i].LmPpChrgSn),
+						remoteVideo: '#remoteVideo' + num,
+						localVideo: '#localVideo',
+						num: member_list[i].LmPpChrgSn,						
+						remoteMuteId: 'remoteMute' + num,
+						localMuteId: 'localMute',
+					});	 
+				
+				console.log("====== 면접자 == : " + lemonMembers[member_list[i].LmPpChrgSn].roomName);
+			}
+			
+			console.log("====== num : " + num );
+			console.log(`====== member: ${member_list[i].LmPpChrgGbnCd}, ${member_list[i].LmPpChrgNm}, ${member_list[i].LmPpChrgBpNm}, ${member_list[i].LmPpChrgSn}`);		
+
+			num++;	
+		};		
+		
+		console.log(lemonPerson);
+		console.log(lemonMembers);	
+	}
+
+	function connectRemoteMonster() {
+
+		lemonPerson.connect();
+
+		for (const key in lemonMembers) {
+
+			lemonMembers[key].connect();
+		}	
+	}	
+
+	function disConnectRemoteMonster() {
+
+		lemonPerson.dis_connect();
+
+		for (const key in lemonMembers) {
+
+			lemonMembers[key].dis_connect();
+		}
+	}
+
+	function getChannel(myName, destName) {
+
+		return (myName > destName) ? myName + '_' + destName : destName + '_' + myName;
+	}
+	
+	function exitWindowPop() {
+
+		$('html').scrollTop(0);
+		openPopup("live_exit_pop");		
+		
+		// var con_test = confirm("정말 나가시겠습니까?");
+		// if (con_test == true){			
+		// 	disConnectRemoteMonster();
+
+		// 	ajaxExitProc("Exit");		
+		// }		
+	}
+
+	function closeWindowPop() {
+
+		$('html').scrollTop(0);
+		openPopup("live_close_pop");
+		
+		// var con_test = confirm("정말 종료하시겠습니까?");
+		// if (con_test == true){			
+		// 	disConnectRemoteMonster();
+
+		// 	ajaxExitProc("Close");		
+		// }		
+	}
+	
+	$(document).ready(function() {
+
+		initHtml(); 
+	});		
+
+	window.onload = function() {
+		
+		//alert( "인터뷰를 시작합니다.");
+
+		initRemoteMonster();
+
+		connectRemoteMonster();
+
+		var hour = 0;
+		var min = 0;
+		var sec = 0;
+		var time = 0;
+
+		setInterval(function () {
+			time++;
+
+			min = Math.floor(time / 60);
+			hour = Math.floor(min / 60);
+			sec = time % 60;
+			min = min % 60;
+
+			var th = hour;
+			var tm = min;
+			var ts = sec;
+			if (th < 10) {
+				th = "0" + hour;
+			}
+			if (tm < 10) {
+				tm = "0" + min;
+			}
+			if (ts < 10) {
+				ts = "0" + sec;
+			}
+
+			document.getElementById("elapse_time").innerHTML = th + ":" + tm + ":" + ts;				
+			//console.log(th + ":" + tm + ":" + ts);
+		}, 1000);
+	}
+
+	$(document).off("click", "#live_exit").on("click", "#live_exit", function (e) {
+
+		$('html').scrollTop(0);
+
+		openPopup("live_exit_pop");		
+	});
+
+	$(document).off("click", "#live_close").on("click", "#live_close", function (e) {
+
+		$('html').scrollTop(0);
+
+		openPopup("live_close_pop");
+	});
+
+	$(document).off("click", "#btn_live_exit").on("click", "#btn_live_exit", function (e) {
+
+		disConnectRemoteMonster();
+
+		ajaxExitProc("Exit");		
+	});
+
+	$(document).off("click", "#btn_live_close").on("click", "#btn_live_close", function (e) {
+
+		disConnectRemoteMonster();
+
+		ajaxExitProc("Close");		
+	});	
+
+	// 기본 종료 버튼 눌렀을때.
+	window.addEventListener("beforeunload", function (event) {
+
+		disConnectRemoteMonster();
+
+		var returnValue = {
+			stat : "Force_Exit",
+			recrut_sn: recrut_sn,
+			pp_mem_no: pp_mem_no,
+			live_sn: live_sn
+		};
+						
+		window.opener.getLiveItvResult(JSON.stringify(returnValue)); 		
+	});
+
+	function ajaxExitProc(exit_stat) {			
+
+		var in_url = (exit_stat == "Exit" ? '/live/itv/exit' : '/live/itv/close');
+
+		$.ajax({
+			cache: false,
+			url: in_url,
+			data: {
+					entp_mem_no: entp_mem_no,	
+					entp_mem_sn: entp_mem_sn,	
+					recrut_sn: recrut_sn,
+					pp_mem_no: pp_mem_no,
+					pp_mem_nm: pp_mem_nm,
+					live_sn: live_sn
+				},
+			type: 'POST',
+			dataType: "json",
+			error: function (e) {
+				console.log("error" + e);
+			},
+			success: function (rep) {
+				var entp_mem_no = rep.LirEntpMemNo;	// 기업 회원 번호
+				var recrut_sn = rep.LirRecrutSn;
+				var pp_mem_no = rep.LirPpMemNo;
+				var pp_mem_nm = rep.LirPpMemNm;
+				var live_sn = rep.LirLiveSn;
+				var entp_nm = rep.LirEntpNm;
+				var name = rep.LirNm;
+				var live_itv_sday = rep.LirLiveItvSday;
+				var live_itv_stime = rep.LirLiveItvSTime;
+				var live_itv_eday = rep.LirLiveItvEday;
+				var live_itv_etime = rep.LirLiveItvETime;
+				var live_itv_jt = rep.LirLiveItvJt;
+				var sdt_tstmp = rep.LirSdtTstmp;
+
+				closePopup();			
+
+				var returnValue = {
+					stat : exit_stat,
+					recrut_sn: recrut_sn,
+					pp_mem_no: pp_mem_no,
+					pp_mem_nm: pp_mem_nm,
+					entp_nm: entp_nm,
+					live_sn: live_sn,
+					live_itv_sday: live_itv_sday,
+					live_itv_stime: live_itv_stime,
+					live_itv_eday: live_itv_eday,
+					live_itv_etime: live_itv_etime,
+					live_itv_jt: live_itv_jt,
+					sdt_tstmp: sdt_tstmp
+				};
+					
+				window.opener.getLiveItvResult(JSON.stringify(returnValue));
+				window.open(location, '_self').close();						
+			}
+		});
+	}
+</script>
+
+</body>
+</html>

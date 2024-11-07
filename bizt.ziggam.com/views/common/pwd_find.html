@@ -1,0 +1,121 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+	<!-- Header start -->
+	{{template "include/join_header.html" .}}
+	<!-- Header end -->
+
+    <!-- 아이디,비밀번호찾기 영역 -->
+    <div class="joinWrap">
+        <div class="memberFind">
+            <ul class="tabMenu">
+                <li><a href="/common/id/find">아이디 찾기</a></li>
+                <li class="active"><a href="javascript:void(0);">비밀번호 찾기</a></li>
+            </ul>
+            <div class="idFindText">
+                <p>이메일 인증을 통해 비밀번호를 다시 설정하실 수 있습니다.</p>
+                <p>관리자 아이디로 등록된 정보를 입력해주세요.</p>
+            </div>
+            <div class="fieldList">
+                <dl>
+                    <dt>아이디</dt>
+                    <dd><input type="text" name="mem_id" id="mem_id" maxlength="16" class="it" placeholder="관리자 아이디를 입력해주세요."></dd>
+                </dl>
+                <dl>
+                    <dt>담당자 이름</dt>
+                    <dd><input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" class="it" placeholder="담당자 이름을 입력해주세요."></dd>
+                </dl>
+                <dl>
+                    <dt>담당자 이메일</dt>
+                    <dd><input type="text" name="email" id="email" maxlength="50" class="it" placeholder="담당자 이메일을 입력해주세요."></dd>
+                </dl>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" class="btn type_blue st02" id="btn_send_no">인증번호 받기</a>
+            </div>
+            <div class="alertMessage" style="display:none"><!--입력하신 정보와 일치하는 회원이 없습니다.<br>다시 한 번 확인해주세요.--></div>
+        </div>
+    </div>
+    <!-- // 아이디,비밀번호찾기 영역 -->
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    
+    <script type='text/javascript'>
+
+        // 인증번호 요청
+        $(document).off("click", "#btn_send_no").on("click", "#btn_send_no", function(){
+            var rtn = "";
+            var mem_id = $("#mem_id").val();
+            var pp_chrg_nm = $("#pp_chrg_nm").val();
+            var email = $("#email").val();
+      
+            if($("#mem_id").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("아이디를 입력해주세요.");
+                $("#mem_id").focus();
+                return;
+            }
+      
+            if($("#pp_chrg_nm").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("담당자 이름을 입력해주세요.");
+                $("#pp_chrg_nm").focus();
+                return;
+            }
+      
+            if($("#email").val().length == 0){
+                $(".alertMessage").show();
+                $(".alertMessage").text("이메일을 입력해주세요.");
+                $("#email").focus();
+                return;
+            }
+      
+            $.ajax({
+              cache : false,
+              url : '/common/pwd/find',
+              data : {
+                mem_id : mem_id,
+                pp_chrg_nm : pp_chrg_nm,
+                email : email,
+              },
+              type : 'POST',
+              async : false,
+              dataType : "json",
+              success : function(rep) {
+                var rtnCd = rep.RtnCd;
+                var rtnMsg = rep.RtnMsg;
+      
+                if (rtnCd == 1){
+                    window.location.href="/common/pwd/find/cert?mem_id="+mem_id+"&pp_chrg_nm="+pp_chrg_nm+"&email="+email;
+                } else {
+                    $(".alertMessage").show();
+                    $(".alertMessage").html("입력하신 정보와 일치하는 회원이 없습니다.<br>다시 한 번 확인해주세요.");
+                    rtn = false;
+                }
+              },
+              error : function(e) {
+                console.log("error:"+JSON.stringify(e));
+                //window.location.replace("/");
+                rtn = false;
+              },
+            });
+            return rtn;
+        });
+      
+        $(document).off("click", "#mem_id").on("click", "#mem_id", function(){
+            $(".alertMessage").hide();
+            $(".alertMessage").text("");
+        });  
+        $(document).off("click", "#pp_chrg_nm").on("click", "#pp_chrg_nm", function(){
+            $(".alertMessage").hide();
+            $(".alertMessage").text("");
+        });
+        $(document).off("click", "#email").on("click", "#email", function(){
+            $(".alertMessage").hide();
+            $(".alertMessage").text("");
+        });  
+
+    </script>          
+{{end}} 
