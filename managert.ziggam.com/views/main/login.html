@@ -1,0 +1,214 @@
+{{template "include/join_base.html" .}}
+
+{{define "body"}}
+
+    <!-- 로그인 영역 -->
+    <div class="loginWrap">
+    <form id="loginForm" name="loginForm" method="post" onsubmit="return false">
+    <input type="hidden" id="login_mtn" value="N">
+    <input type="hidden" id="ip_address">
+    <input type="hidden" id="os_gbn">
+        <div class="login">
+            <h1><img src="/static/img/logo-admin-main-beta.png" alt="직감 관리자"></h1>
+            <div class="loginForm">
+                <input type="text" class="it" name="mem_id" id="mem_id" style="text-transform: lowercase" maxlength="16" placeholder="아이디(4~16자)">
+                <input type="password" class="it" name="pwd" id="pwd" maxlength="16"  placeholder="비밀번호(6~16자)">
+                <input type="checkbox" name="loginChk" class="custom" id="loginChk"><label for="loginChk">로그인 유지</label>
+                <p class="agreeInfo">정보 보호를 위해 개인 PC에서만 사용해주세요.</p>
+            </div>
+            <div class="btnSet">
+                <a href="javascript:void(0);" id="btn_login" class="btn type_blue st02">로그인</a>
+            </div>
+            <div class="alertMessage" style="display:none"><!--입력하신 아이디와 비밀번호가 일치하지 않습니다.<br>다시 한 번 확인해주세요.--></div>
+            <ul class="memberInfo">
+                <li><a href="/join">회원가입</a></li>
+                <li><a href="/common/id/find">아이디 찾기</a></li>
+                <li><a href="/common/pwd/find">비밀번호 찾기</a></li>
+            </ul>
+        </div>
+    </form>
+    </div>
+    
+	<!-- footer start -->
+	{{template "include/join_footer.html" .}}
+    <!-- footer end -->
+    <script src="https://jsgetip.appspot.com/?getip" type="text/javascript"></script>
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+        $('input.custom').customInput();
+
+        // 로그인페이지인경우 bg컬러 변경
+        $('body').css("background","#fff")
+
+        if (!getip()) {
+            $("#ip_address").val("1.1.1.1");
+        } else {
+            $("#ip_address").val(getip());
+        }
+            
+        var b = navigator.userAgent.toLowerCase()
+        //alert(b);        
+        $.os = {
+            Linux: /linux/.test(b),
+            Unix: /x11/.test(b),
+            Mac: /mac/.test(b),
+            Windows: /win/.test(b)
+        }
+
+        if ($.os.Windows){
+            var os_kind = "windows"
+        } else if ($.os.Mac) {
+            var os_kind = "mac"
+        } else if ($.os.Unix) {
+            var os_kind = "unix"
+        } else if ($.os.Linux) {
+            var os_kind = "linux"
+        } else {
+            var os_kind = "etc"
+        }
+
+        $("#os_gbn").val(os_kind);
+    });
+
+	// 로그인유지
+	$(document).off("click", "#loginChk").on("click", "#loginChk", function(){
+		if($("input:checkbox[id='loginChk']").is(":checked")){
+			$("#login_mtn").val("Y");
+		}else{
+			$("#login_mtn").val("N");
+		}
+	});
+
+    $(document).off("click", "#mem_id").on("click", "#mem_id", function(){
+        $(".alertMessage").hide();
+        $(".alertMessage").text("");
+    });
+
+    $(document).off("click", "#pwd").on("click", "#pwd", function(){
+        $(".alertMessage").hide();
+        $(".alertMessage").text("");
+    });
+
+    // 로그인
+    $(document).off("click", "#btn_login").on("click", "#btn_login", function(){
+        login();
+    });
+    $(document).off("keydown", "#mem_id").on("keydown", "#mem_id", function(e) {
+      if (event.keyCode == 13) {
+        login();
+      }
+    });    
+    $(document).off("keydown", "#pwd").on("keydown", "#pwd", function(e) {
+      if (event.keyCode == 13) {
+        login();
+      }
+    });    
+
+    var login = function() {
+        
+        var mem_id = $("#mem_id").val();
+        var pwd = $("#pwd").val();
+        var rtn = "";
+
+        if($("#mem_id").val().length ==  0){
+            $(".alertMessage").show();
+            $(".alertMessage").text("아이디를 4자이상 입력해주세요.");
+            $("#mem_id").focus();
+            return;
+        }
+
+        if($("#pwd").val().length ==  0){
+            $(".alertMessage").show();
+            $(".alertMessage").text("비밀번호를 6자이상 입력해주세요.");
+            $("#pwd").focus();
+            return;
+        }
+
+        var login_mtn_yn = $("#login_mtn").val();
+        var ip_address = $("#ip_address").val();
+        var os_gbn = $("#os_gbn").val();
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+        cache : false,
+        url : '/login',
+        data : {
+            mem_id : mem_id,
+            pwd : pwd,
+            login_mtn_yn : login_mtn_yn,
+            ip_addr : ip_address,
+            os_gbn : os_gbn,
+        },
+        type : 'POST',
+        async : false,
+        dataType : "json",
+        success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+            var rtnData = rep.RtnData;
+            var rtnUrl = "";
+
+            if (rtnCd == 1){
+                if (rtnUrl == ""){
+                    window.location.replace("/");
+                    rtn = false;
+                }else{
+                    window.location.replace(rtnUrl);
+                    rtn = false;
+                }
+            } else if(rtnCd == 5) {
+                console.log("이메일 인증대기 상태");
+                window.location.href="/common/standby/email?mem_no="+rtnData.MemNo;
+            } else if(rtnCd == 6) {
+                console.log("승인 대기 상태");  
+                window.location.href="/join/complete";
+            } else if(rtnCd == 8) {
+                console.log("미검증 기업 상태");  
+                //$(".validationMessage.login").text("검증되지 않은 기업입니다.");
+                //openPopup("entp_control_popup");
+                $("#pwd").val("");
+                $(".loading").attr("style", "display:none");
+                //window.location.href="/common/standby/auth";
+
+                // sbsson    
+                $(".alertMessage").show();
+                console.log("rtnCd : "+rtnCd);
+                $(".alertMessage").html("기업 정보승인이 완료되어야 로그인이 가능합니다.<br>가입 후 1~3일 이내에 승인 메일이 발송됩니다.");
+                $("#pwd").val("");
+                rtn = false;
+
+            } else if(rtnCd == 9) {
+                // sbsson  
+                console.log("탈퇴 기업 상태");  
+                $("#pwd").val("");
+                $(".loading").attr("style", "display:none");
+
+                $(".alertMessage").show();
+                console.log("rtnCd : "+rtnCd);
+                $(".alertMessage").html("탈퇴한 기업입니다.<br>확인후 다시 로그인해 주시기 바랍니다.");
+                $("#pwd").val("");
+                rtn = false;
+             
+            } else {
+                //console.log("login fail! : Password do not matched");		
+                $(".loading").attr("style", "display:none");
+                $(".alertMessage").show();
+                console.log("rtnCd : "+rtnCd);
+                $(".alertMessage").html("입력하신 아이디와 비밀번호가 일치하지 않습니다.<br>다시 한번 확인해 주세요.");
+                $("#pwd").val("");
+                rtn = false;
+            }
+        },
+        error : function(e) {
+                console.log("error:"+JSON.stringify(e));
+                //$(".loading").attr("style", "display:none");
+                window.location.replace("/");
+                rtn = false;
+            },
+        });
+        return rtn;
+    }
+
+    </script>    
+{{end}} 

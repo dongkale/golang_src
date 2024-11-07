@@ -1,0 +1,226 @@
+2024/11/07 10:20:09.381  [I] [server.go:281]  http server Running on http://:7010
+2024/11/07 10:20:26.851  [D] [router.go:1305]  |            ::1|[47m 302 [0m|          1ms| nomatch|[44m GET     [0m /  
+2024/11/07 10:20:26.893  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    22.9986ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:20:33.548  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 10:20:33.592  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    30.5116ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:20:44.708  [C] [config.go:500]  the request url is  /login
+2024/11/07 10:20:44.708  [C] [config.go:501]  Handler crashed with error OpenSrv(ora.SrvCfg{Dblink:"localhost:1521/xe", Pool:ora.PoolCfg{Type:0x0, Name:"", Username:"", Password:"", Min:0x0, Max:0x0, Incr:0x0}, StmtCfg:ora.StmtCfg{prefetchRowCount:0x80, prefetchMemorySize:0x8000000, longBufferSize:0x1000000, longRawBufferSize:0x1000000, lobBufferSize:16777216, stringPtrBufferSize:4000, fetchLen:128, lobFetchLen:8, byteSlice:0x0, IsAutoCommitting:true, RTrimChar:true, FalseRune:48, TrueRune:49, RsetCfg:ora.RsetCfg{numberInt:0x2, numberBigInt:0x1e, numberFloat:0xa, numberBigFloat:0x1e, binaryDouble:0xa, binaryFloat:0xb, float:0xa, date:0x16, timestamp:0x16, timestampTz:0x16, timestampLtz:0x16, char1:0x18, char:0x18, varchar:0x18, long:0x18, clob:0x18, blob:0x1c, raw:0x1c, longRaw:0x1c, TrueRune:49, Err:error(nil)}, Err:error(nil)}}): Env.OpenSrv Env.ociError ORA-12541: Cannot connect. No listener at host 127.0.0.1 port 1521.
+Help: https://docs.oracle.com/error-help/db/ora-12541/
+
+2024/11/07 10:20:44.708  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 10:20:44.709  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/loginController.go:102
+2024/11/07 10:20:44.709  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1215
+2024/11/07 10:20:44.709  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 10:20:44.709  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 10:20:44.709  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 10:20:44.710  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 10:20:44.710  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 10:20:44.753  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 10:20:44.803  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    35.9986ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:21:03.368  [C] [config.go:500]  the request url is  /login
+2024/11/07 10:21:03.368  [C] [config.go:501]  Handler crashed with error OpenSrv(ora.SrvCfg{Dblink:"localhost:1521/xe", Pool:ora.PoolCfg{Type:0x0, Name:"", Username:"", Password:"", Min:0x0, Max:0x0, Incr:0x0}, StmtCfg:ora.StmtCfg{prefetchRowCount:0x80, prefetchMemorySize:0x8000000, longBufferSize:0x1000000, longRawBufferSize:0x1000000, lobBufferSize:16777216, stringPtrBufferSize:4000, fetchLen:128, lobFetchLen:8, byteSlice:0x0, IsAutoCommitting:true, RTrimChar:true, FalseRune:48, TrueRune:49, RsetCfg:ora.RsetCfg{numberInt:0x2, numberBigInt:0x1e, numberFloat:0xa, numberBigFloat:0x1e, binaryDouble:0xa, binaryFloat:0xb, float:0xa, date:0x16, timestamp:0x16, timestampTz:0x16, timestampLtz:0x16, char1:0x18, char:0x18, varchar:0x18, long:0x18, clob:0x18, blob:0x1c, raw:0x1c, longRaw:0x1c, TrueRune:49, Err:error(nil)}, Err:error(nil)}}): Env.OpenSrv Env.ociError ORA-12541: Cannot connect. No listener at host 127.0.0.1 port 1521.
+Help: https://docs.oracle.com/error-help/db/ora-12541/
+
+2024/11/07 10:21:03.368  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 10:21:03.368  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/loginController.go:102
+2024/11/07 10:21:03.368  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1215
+2024/11/07 10:21:03.368  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 10:21:03.368  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 10:21:03.368  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 10:21:03.368  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 10:21:03.369  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 10:21:03.414  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 10:21:03.447  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    19.4155ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:24:27.449  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 10:24:27.449  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 10:24:27.449  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   591.6175ms|   match|[46m POST    [0m /login   r:/login
+2024/11/07 10:24:27.518  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    35.0279ms|   match|[44m GET     [0m /     r:/
+2024/11/07 10:24:30.251  [C] [config.go:500]  the request url is  /api/banner/list
+2024/11/07 10:24:30.251  [C] [config.go:501]  Handler crashed with error Stmt.exeC Env.ociError ORA-06576: not a valid function or procedure name
+Help: https://docs.oracle.com/error-help/db/ora-06576/
+
+2024/11/07 10:24:30.251  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 10:24:30.251  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/apiGetBannerGroupListController.go:73
+2024/11/07 10:24:30.251  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1213
+2024/11/07 10:24:30.251  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 10:24:30.251  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 10:24:30.252  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 10:24:30.252  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 10:24:30.252  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 10:45:06.687  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 10:45:06.727  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    26.0001ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:48:23.927  [I] [server.go:281]  http server Running on http://:7010
+2024/11/07 10:48:32.581  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    25.0851ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:48:43.008  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    41.3093ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 10:48:45.810  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 10:48:45.810  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 10:48:45.810  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   231.1544ms|   match|[46m POST    [0m /login   r:/login
+2024/11/07 10:48:45.891  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    44.1033ms|   match|[44m GET     [0m /     r:/
+2024/11/07 10:48:53.939  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:49:12.397  [D] [router.go:1305]  |            ::1|[42m 200 [0m|  26.2646859s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:49:23.373  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    47.8132ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:49:27.115  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'RL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:49:27.136  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   3.5530091s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:49:35.512  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    15.9987ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:49:36.867  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'GD', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:49:36.881  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   1.0831011s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:49:37.477  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    62.0025ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:49:37.783  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'CL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:49:37.796  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   118.9717ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:51:13.242  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    35.5301ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:51:13.733  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:51:13.744  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   289.8804ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:51:14.982  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    17.3285ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:51:15.382  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'RL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:51:15.395  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   120.8045ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:51:16.190  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    44.2121ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:51:18.911  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'GD', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:51:18.924  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.5178039s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 10:51:18.944  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   1.4073442s|   match|[44m GET     [0m /main   r:/main
+2024/11/07 10:51:19.313  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'CL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 10:51:19.328  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   137.6318ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 11:31:14.575  [I] [server.go:281]  http server Running on http://:7010
+2024/11/07 11:31:23.770  [D] [router.go:1305]  |            ::1|[47m 302 [0m|      694.5µs| nomatch|[44m GET     [0m /  
+2024/11/07 11:31:23.815  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     24.491ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 11:31:26.904  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:31:26.904  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:31:26.904  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    256.573ms|   match|[46m POST    [0m /login   r:/login
+2024/11/07 11:31:26.943  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 11:31:26.981  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    25.8426ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 11:36:11.822  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:36:11.822  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:36:11.822  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.3599792s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 11:36:11.867  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 11:36:11.904  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    25.4575ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 11:48:35.572  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:48:35.573  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:48:35.573  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   35.143901s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 11:48:35.617  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 11:48:35.643  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    14.0857ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 11:51:19.566  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:51:19.567  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 11:51:19.567  [D] [router.go:1305]  |            ::1|[42m 200 [0m|  14.2351266s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 11:51:19.638  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    34.0023ms|   match|[44m GET     [0m /     r:/
+2024/11/07 11:51:21.033  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 11:51:21.089  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   1.1734305s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 11:51:23.899  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    182.303ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 11:51:24.361  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   146.7961ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 11:51:28.596  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   147.0373ms|   match|[44m GET     [0m /api/banner/detail   r:/api/banner/detail
+2024/11/07 11:51:29.016  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   208.8798ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 11:51:29.205  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   148.9581ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 11:52:22.364  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   120.5591ms|   match|[44m GET     [0m /api/banner/detail   r:/api/banner/detail
+2024/11/07 11:52:22.671  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   165.1934ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 11:52:22.841  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   126.2691ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 11:56:01.940  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   411.0026ms|   match|[44m GET     [0m /     r:/
+2024/11/07 11:56:02.726  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 11:56:02.739  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   122.0001ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 11:56:21.160  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   344.6741ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 11:56:22.323  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   126.0087ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 11:58:20.942  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   1.3960325s|   match|[44m GET     [0m /api/banner/detail   r:/api/banner/detail
+2024/11/07 11:58:21.754  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    250.606ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 11:58:21.953  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   129.3323ms|   match|[44m GET     [0m /api/content/link/option/list   r:/api/content/link/option/list
+2024/11/07 12:05:21.581  [I] [server.go:281]  http server Running on http://:7010
+2024/11/07 12:05:30.723  [D] [router.go:1305]  |            ::1|[47m 302 [0m|     1.0009ms| nomatch|[44m GET     [0m /  
+2024/11/07 12:05:30.755  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    21.0008ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:05:38.054  [C] [config.go:500]  the request url is  /login
+2024/11/07 12:05:38.055  [C] [config.go:501]  Handler crashed with error OpenSrv(ora.SrvCfg{Dblink:"localhost:1521/xe", Pool:ora.PoolCfg{Type:0x0, Name:"", Username:"", Password:"", Min:0x0, Max:0x0, Incr:0x0}, StmtCfg:ora.StmtCfg{prefetchRowCount:0x80, prefetchMemorySize:0x8000000, longBufferSize:0x1000000, longRawBufferSize:0x1000000, lobBufferSize:16777216, stringPtrBufferSize:4000, fetchLen:128, lobFetchLen:8, byteSlice:0x0, IsAutoCommitting:true, RTrimChar:true, FalseRune:48, TrueRune:49, RsetCfg:ora.RsetCfg{numberInt:0x2, numberBigInt:0x1e, numberFloat:0xa, numberBigFloat:0x1e, binaryDouble:0xa, binaryFloat:0xb, float:0xa, date:0x16, timestamp:0x16, timestampTz:0x16, timestampLtz:0x16, char1:0x18, char:0x18, varchar:0x18, long:0x18, clob:0x18, blob:0x1c, raw:0x1c, longRaw:0x1c, TrueRune:49, Err:error(nil)}, Err:error(nil)}}): Env.OpenSrv Env.ociError ORA-12541: Cannot connect. No listener at host 127.0.0.1 port 1521.
+Help: https://docs.oracle.com/error-help/db/ora-12541/
+
+2024/11/07 12:05:38.055  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 12:05:38.055  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/loginController.go:102
+2024/11/07 12:05:38.055  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1215
+2024/11/07 12:05:38.055  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 12:05:38.055  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 12:05:38.055  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 12:05:38.055  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 12:05:38.055  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 12:05:38.115  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:05:38.167  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    38.0202ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:05:52.008  [C] [config.go:500]  the request url is  /login
+2024/11/07 12:05:52.008  [C] [config.go:501]  Handler crashed with error OpenSrv(ora.SrvCfg{Dblink:"localhost:1521/xe", Pool:ora.PoolCfg{Type:0x0, Name:"", Username:"", Password:"", Min:0x0, Max:0x0, Incr:0x0}, StmtCfg:ora.StmtCfg{prefetchRowCount:0x80, prefetchMemorySize:0x8000000, longBufferSize:0x1000000, longRawBufferSize:0x1000000, lobBufferSize:16777216, stringPtrBufferSize:4000, fetchLen:128, lobFetchLen:8, byteSlice:0x0, IsAutoCommitting:true, RTrimChar:true, FalseRune:48, TrueRune:49, RsetCfg:ora.RsetCfg{numberInt:0x2, numberBigInt:0x1e, numberFloat:0xa, numberBigFloat:0x1e, binaryDouble:0xa, binaryFloat:0xb, float:0xa, date:0x16, timestamp:0x16, timestampTz:0x16, timestampLtz:0x16, char1:0x18, char:0x18, varchar:0x18, long:0x18, clob:0x18, blob:0x1c, raw:0x1c, longRaw:0x1c, TrueRune:49, Err:error(nil)}, Err:error(nil)}}): Env.OpenSrv Env.ociError ORA-12541: Cannot connect. No listener at host 127.0.0.1 port 1521.
+Help: https://docs.oracle.com/error-help/db/ora-12541/
+
+2024/11/07 12:05:52.008  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 12:05:52.008  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/loginController.go:102
+2024/11/07 12:05:52.008  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1215
+2024/11/07 12:05:52.008  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 12:05:52.009  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 12:05:52.009  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 12:05:52.009  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 12:05:52.009  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 12:05:52.096  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:05:52.142  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    32.0001ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:06:09.893  [C] [config.go:500]  the request url is  /login
+2024/11/07 12:06:09.893  [C] [config.go:501]  Handler crashed with error OpenSrv(ora.SrvCfg{Dblink:"localhost:1521/xe", Pool:ora.PoolCfg{Type:0x0, Name:"", Username:"", Password:"", Min:0x0, Max:0x0, Incr:0x0}, StmtCfg:ora.StmtCfg{prefetchRowCount:0x80, prefetchMemorySize:0x8000000, longBufferSize:0x1000000, longRawBufferSize:0x1000000, lobBufferSize:16777216, stringPtrBufferSize:4000, fetchLen:128, lobFetchLen:8, byteSlice:0x0, IsAutoCommitting:true, RTrimChar:true, FalseRune:48, TrueRune:49, RsetCfg:ora.RsetCfg{numberInt:0x2, numberBigInt:0x1e, numberFloat:0xa, numberBigFloat:0x1e, binaryDouble:0xa, binaryFloat:0xb, float:0xa, date:0x16, timestamp:0x16, timestampTz:0x16, timestampLtz:0x16, char1:0x18, char:0x18, varchar:0x18, long:0x18, clob:0x18, blob:0x1c, raw:0x1c, longRaw:0x1c, TrueRune:49, Err:error(nil)}, Err:error(nil)}}): Env.OpenSrv Env.ociError ORA-12541: Cannot connect. No listener at host 127.0.0.1 port 1521.
+Help: https://docs.oracle.com/error-help/db/ora-12541/
+
+2024/11/07 12:06:09.893  [C] [config.go:507]  C:/Program Files/Go/src/runtime/panic.go:920
+2024/11/07 12:06:09.893  [C] [config.go:507]  D:/LDK_Work/Source/golang/src/managert.ziggam.com/controllers/loginController.go:102
+2024/11/07 12:06:09.893  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1215
+2024/11/07 12:06:09.893  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/filter.go:83
+2024/11/07 12:06:09.893  [C] [config.go:507]  D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/router.go:1002
+2024/11/07 12:06:09.893  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2938
+2024/11/07 12:06:09.893  [C] [config.go:507]  C:/Program Files/Go/src/net/http/server.go:2009
+2024/11/07 12:06:09.893  [C] [config.go:507]  C:/Program Files/Go/src/runtime/asm_amd64.s:1650
+2024/11/07 12:06:09.983  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:06:10.017  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     18.999ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:09:41.187  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:09:41.187  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:09:41.187  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.4152299s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 12:09:41.236  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    18.0021ms|   match|[44m GET     [0m /     r:/
+2024/11/07 12:09:42.291  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:09:42.366  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   318.3437ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:09:46.014  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    1.346268s|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 12:09:47.336  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   174.9459ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 12:09:52.128  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:09:52.151  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    13.6375ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:09:59.009  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:09:59.045  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    23.9994ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:10:03.594  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:10:03.594  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:10:03.594  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.4462287s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 12:10:03.664  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    36.0003ms|   match|[44m GET     [0m /     r:/
+2024/11/07 12:10:04.676  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:10:04.710  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   234.9186ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:10:07.483  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   159.0744ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 12:10:08.643  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   111.0459ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 12:10:12.239  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:10:12.271  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    25.5423ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:10:19.445  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:10:19.468  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    15.0984ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:10:32.140  [D] [router.go:1305]  |            ::1|[47m 302 [0m|      592.1µs| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:10:32.161  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    14.8133ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:11:22.259  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:11:22.292  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    26.0004ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:11:43.336  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:11:43.358  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     15.082ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:11:47.490  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:11:47.490  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:11:47.490  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.2268504s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 12:11:47.555  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    18.7562ms|   match|[44m GET     [0m /     r:/
+2024/11/07 12:11:48.261  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:11:48.274  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   127.8531ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:13:57.639  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   216.9735ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 12:13:58.563  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   111.9995ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 12:18:19.142  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/07 12:18:19.173  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    23.8953ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:18:31.573  [D] [template.go:71]  template Execute err: template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:18:31.573  [E] [router.go:1246]  template: main/main.html:11:43: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/07 12:18:31.573  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   5.6962918s|   match|[46m POST    [0m /login   r:/login
+2024/11/07 12:18:31.625  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    18.9992ms|   match|[44m GET     [0m /     r:/
+2024/11/07 12:18:32.279  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:18:32.293  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   108.9997ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:20:40.717  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    87.7305ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 12:20:41.362  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'RL', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:20:41.378  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   147.2089ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:20:51.803  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    21.1048ms|   match|[44m GET     [0m /main   r:/main
+2024/11/07 12:20:53.043  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'GD', '0', '0', '20190101', '20250207', '', :1)
+2024/11/07 12:20:53.056  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    98.4877ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/07 12:20:54.891  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    151.012ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/07 12:20:55.843  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   124.1463ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/07 12:21:20.164  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:21:20.197  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    26.8043ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:21:25.443  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:21:25.463  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    13.3249ms|   match|[44m GET     [0m /login   r:/login
+2024/11/07 12:21:46.597  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /api/banner/detail
+2024/11/07 12:21:46.617  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    14.0045ms|   match|[44m GET     [0m /login   r:/login

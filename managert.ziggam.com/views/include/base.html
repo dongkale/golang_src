@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- head start -->
+{{template "include/head.html" .}}
+<style>
+    .container {
+        position: absolute;
+        width: 100%;
+        margin: 0px auto;
+        padding: 20px;
+    }
+
+    .lnb {
+        float: left;
+        width: 200px;
+        position: initial;
+    }
+
+    .content {
+        float: left;
+        width: 1600px;
+        position: initial;
+    }
+</style>
+<!-- head end -->
+<body>
+<div class="wrap">
+    <!-- Header start -->
+    {{template "include/top_menu.html" .}}
+    <!-- Header end -->
+
+    <div class="cWrap">
+        <div class="container">
+            <!-- left menu start -->
+            <div class="lnb">
+                {{template "include/left_menu.html" .}}
+            </div>
+            <!-- left menu -->
+
+            <!-- body start -->
+            <div class="content">
+                {{template "body" .}}
+            </div>
+            <!-- body end -->
+        </div>
+    </div>
+    <!-- loading -->
+    <div class="loading" style="display:none">
+        <p class="img"><img src="/static/img/loading_ziggam.gif" alt="로딩중입니다"></p>
+        <span class="cover"></span>
+    </div>
+    <!-- loading -->
+</div>
+</body>
+</html>

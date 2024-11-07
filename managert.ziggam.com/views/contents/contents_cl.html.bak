@@ -1,0 +1,1026 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="twelve wide column">
+                <p>
+                <h1 class="ui header">{{.GrpBnrData.BnrGrpTitle}}</h1>
+                <button id="btn_edit_title" class="ui small button">수정</button>
+                </p>
+            </div>
+            <div class="four wide column">
+                <a id="btn_add_company" class="ui primary button"
+                   style="width: 200px; height: 30px; font-size: 14px;">
+                    + 기업 추가하기
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="four wide column">
+                번호 {{.GrpBnrData.BnrGrpSn}}<br/>
+                타입 기업 리스트
+            </div>
+            <div class="four wide column">
+                생성일시 {{.GrpBnrData.RegDt}}<br/>
+                생성인 {{.GrpBnrData.RegId}}
+            </div>
+            <div class="two wide column"></div>
+            <div class="six wide column">
+                <table class="ui definition table">
+                    <tbody>
+                    <tr>
+                        <td>사용 여부</td>
+                        <td>
+                            <div class="ui red button btn_use_yn_all" data-use-yn-val="0"
+                                 style="width: 100px; height: 20px; font-size: xx-small">전체미사용
+                            </div>
+                            |
+                            <div id="" class="ui blue button btn_use_yn_all" data-use-yn-val="1"
+                                 style="width: 100px; height: 20px; font-size: xx-small">전체사용
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">게시 기간</td>
+                        <td>
+                            <div class="ui calendar" id="search_publ_date_start">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input id="cal_publ_sdy" type="text" placeholder="Start">
+                                    <label>부터</label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: white; border-left: 1px solid rgba(34,36,38,.15);">
+                            <div class="ui calendar" id="search_publ_date_end">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input id="cal_publ_edy" type="text" placeholder="End">
+                                    <label>까지</label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2>콘텐츠</h2>
+        </div>
+        <div class="row search_area">
+            <table class="ui celled table">
+                <tbody>
+                <tr>
+                    <td class="collapsing">
+                        상태
+                    </td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_use_y" name="chk_use_y"/>
+                            <label>사용</label>
+                        </div>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_use_n" name="chk_use_n"/>
+                            <label>미사용</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="collapsing">
+                        검색
+                    </td>
+                    <td>
+                        <div class="ui input">
+                            <input id="ipt_keyword" type="text" placeholder="Search...">
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="right aligned column">
+                <a class="ui primary button" id="btn_search_list" style="width: 200px; height: 30px; font-size: 14px;">검색</a>
+            </div>
+        </div>
+
+        <!-- 데이터 영역 -->
+        <div class="row">
+            <div class="data_count_area left aligned column" style="width: 50%">
+                <p>
+                    <span id="lbl_count_total" class="ui mini grey text">총 0개</span>
+                    <span id="lbl_count_use_y" class="ui mini blue text">사용 0</span>
+                    <span id="lbl_count_use_n" class="ui mini red text">미사용 0</span>
+                    <span id="lbl_count_select" class="ui mini green text">0개 선택</span>
+                </p>
+            </div>
+            <div class="data_button_area right aligned column" style="width: 50%">
+                <div id="save_index" class="ui button">순서저장</div>
+                <div id="" class="ui blue button btn_chk_use_yn" data-use-yn-val="1">사용하기</div>
+                <div id="" class="ui red button btn_chk_use_yn" data-use-yn-val="0">미사용하기</div>
+                <div id="btn_chk_del" class="ui button">삭제</div>
+            </div>
+        </div>
+        <div class="row">
+            <table class="ui celled table" style="width: 100%">
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="chk_list_all" name="chk_list_all"/>
+                    </th> <!-- 01 : 체크박스 -->
+                    <th>순번</th> <!-- 02 -->
+                    <th>상태</th> <!-- 03 -->
+                    <th>기업 코드</th> <!-- 04 -->
+                    <th>기업명</th> <!-- 05 -->
+                    <th>등록일시</th> <!-- 06 -->
+                    <th>관리</th> <!-- 07 -->
+                </tr>
+                </thead>
+                <tbody id="div_list_body" class="sortable">
+                </tbody>
+            </table>
+        </div>
+        <!-- 데이터 영역 -->
+    </div>
+
+    <!-- 제목 수정 -->
+    <div id="pop_edit_title" class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            제목 수정
+        </div>
+        <div class="content">
+            <div class="ui input" style="width: 100%;">
+                <input id="ipt_content_title" type="text" placeholder="" value="{{.GrpBnrData.BnrGrpTitle}}" maxlength="20">
+            </div>
+        </div>
+        <div class="actions">
+            <div id="btn_cancel_content_title" class="ui black deny button">
+                취소
+            </div>
+            <div id="btn_save_content_title" class="ui positive right labeled icon button">
+                저장
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+    <!-- 제목 수정 -->
+
+    <!-- 사용 팝업 -->
+    <div id="pop_all_use_y" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태에 따라 메인에 <span style="font-weight: bold;">노출</span> 됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_all_use">
+                사용하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+    <!-- 사용 팝업 -->
+
+    <!-- 미사용 팝업 -->
+    <div id="pop_all_use_n" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            미사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_all_use">
+                미사용하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+    <!-- 미사용 팝업 -->
+
+    <!-- 사용 팝업 -->
+    <div id="pop_use_y" class="ui mini modal">
+        <div class="header">
+            사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태에 따라 메인에 <span style="font-weight: bold;">노출</span> 됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_use">
+                사용하기
+            </div>
+        </div>
+    </div>
+    <!-- 사용 팝업 -->
+
+    <!-- 미사용 팝업 -->
+    <div id="pop_use_n" class="ui mini modal">
+        <div class="header">
+            미사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_use">
+                미사용하기
+            </div>
+        </div>
+    </div>
+    <!-- 미사용 팝업 -->
+
+    <!-- 삭제 팝업 -->
+    <div id="pop_all_del" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            정말 삭제하시겠습니까?
+        </div>
+        {{/*        <div class="content">*/}}
+        {{/*            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>*/}}
+        {{/*        </div>*/}}
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_pop_all_del" class="ui positive button">
+                삭제하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 기업 추가하기 -->
+    <div id="pop_company_list" class="ui modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            기업 추가하기
+        </div>
+        <div class="scrolling  content">
+            <div class="ui middle aligned grid">
+                <div class="row">
+                    <select id="dd_jobfair_list" class="ui selection dropdown">
+                    </select>
+                </div>
+                <div class="row">
+                    <div id="dd_company_area" class="ui search selection dropdown action" style="width: 80%">
+                        <input type="hidden" id="company_code" name="company_code">
+                        <div class="default text">기업코드, 회사명, 대표자명, 아이디, 담당자명, 담당자 휴대번호</div>
+                        <i class="dropdown icon"></i>
+                        <div id="cb_company_option_list" class="menu">
+                        </div>
+                    </div>
+                    <div id="btn_dd_add_company" class="ui button">
+                        추가
+                    </div>
+                    <div id="btn_dd_remove_company" class="ui button">
+                        제외
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="data_count_area left aligned column" style="width: 50%">
+                        <p>
+                            <span id="lbl_add_count_total" class="ui mini grey text">총 0개</span>
+                            <span id="lbl_add_count_use_y" class="ui mini blue text">0개 선택</span>
+                        </p>
+                    </div>
+                    <div class="data_button_area right aligned column" style="width: 50%">
+                        <div id="btn_add_list_chk_add" class="ui mini blue button " data-use-yn-val="1">추가</div>
+                        <div id="btn_add_list_chk_remove" class="ui mini red button" data-use-yn-val="0">제외</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="">
+                <table class="ui form celled table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="chk_add_list_all" name="chk_list_all"/>
+                        </th> <!-- 01 : 체크박스 -->
+                        <th>기업코드</th> <!-- 02 -->
+                        <th>회사명</th> <!-- 03 -->
+                    </tr>
+                    </thead>
+                    <tbody id="div_add_list_body" style="overflow-y: auto;">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_pop_all_add_save" class="ui positive button">
+                저장
+            </div>
+        </div>
+    </div>
+    <!-- 기업 추가하기 -->
+
+    <div id="pop_save_index" class="ui mini modal">
+        <div class="header">
+            순서를 변경하시겠습니까?
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_pop_save_index" class="ui positive button">
+                저장
+            </div>
+        </div>
+    </div>
+
+    <div id="pop_jobfair_change" class="ui mini modal">
+        <div class="header">
+            해당 박람회 참가 기업으로 조회하시겠습니까?
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_jobfair_select" class="ui positive button">
+                확인
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            init_datepicker();
+            init_sort_list();
+
+            select_list();
+        });
+
+        // 달력 초기화
+        function init_datepicker() {
+            // // 달력 생성 영역 //
+            $('#search_publ_date_start').calendar({
+                type: 'date',
+                initialDate: moment({{.GrpBnrData.PublSdy}}).format("YYYY-MM-DD"),
+                endCalendar: $('#search_publ_date_end'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                },
+                onChange: function (date, text) {
+                    var set_date = text.replace("-", "").replace("-", "");
+                    update_publ_date(set_date, "SDY");
+                },
+            });
+
+            $('#search_publ_date_end').calendar({
+                type: 'date',
+                initialDate: moment({{.GrpBnrData.PublEdy}}).format("YYYY-MM-DD"),
+                startCalendar: $('#search_publ_date_start'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                },
+                onChange: function (date, text) {
+                    var set_date = text.replace("-", "").replace("-", "");
+                    update_publ_date(set_date, "EDY");
+                },
+            });
+            // // 달력 생성 영역
+        }
+
+        function update_publ_date(date, type) {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/cl/date/update",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    date: date,
+                    type: type,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    // window.location.reload();
+                }
+            });
+
+        }
+
+        function select_list() {
+            // 사용 여부
+            var p_chk_use = 0;
+            p_chk_use += $("#chk_use_y").is(":checked") == true ? 1 : 0;
+            p_chk_use += $("#chk_use_n").is(":checked") == true ? 2 : 0;
+
+            $.ajax({
+                type: "GET",
+                url: "/api/content/cl/list",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    use_yn: p_chk_use,
+                    keyword: $("#ipt_keyword").val(),
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    console.log("result :" + JSON.stringify(rep));
+                    render_list_data(rep);
+                    init_list_count(rep);
+                }
+            });
+        }
+
+        templete_html = '<tr class="sort_list" data-bnr-grp-sub-sn="[[##000]]">' +
+            '<td data-label="checkBox">' +
+            '<input type="checkbox" class="chk_item" name="chk_use_yn"/>' +
+            '</td>' +
+            '<td class="list_index">[[##001]]</td>' +
+            '<td style="color: [[##002-02]]">[[##002]]</td>' +
+            '<td>[[##003]]</td>' +
+            '<td>[[##004]]</td>' +
+            '<td>[[##005]]</td>' +
+            '<td class="ui button btn_del">삭제</td>' +
+            '</tr>';
+
+        var date_format = "YYYY-MM-DD hh:mm:ss";
+
+        function render_list_data(list) {
+            var render_html = "";
+
+            for (var i = 0; i < list.length; i++) {
+                render_html += templete_html.replace("[[##000]]", list[i].BnrGrpSubSn)
+                    .replace("[[##001]]", i + 1)
+                    .replace("[[##002]]", list[i].UseYn === '1' ? '사용' : '미사용')
+                    .replace("[[##002-02]]", list[i].UseYn === '1' ? 'blue' : 'red')
+                    .replace("[[##003]]", list[i].EntpMemNo)
+                    .replace("[[##004]]", list[i].EntpKoNm)
+                    .replace("[[##005]]", moment(list[i].UptDt, "YYYYMMDDhhmmss").format(date_format));
+            }
+
+            $("#div_list_body").html("").html(render_html);
+        }
+
+        // 카운터 계산 //
+        function init_list_count(list) {
+            $("#lbl_count_total").html("총 " + numberWithCommas(list.length) + "개");
+            $("#lbl_count_use_y").html("사용 " + numberWithCommas(list.filter(v => v.UseYn === "1").length) + "개");
+            $("#lbl_count_use_n").html("미사용 " + numberWithCommas(list.filter(v => v.UseYn === "0").length) + "개");
+
+            if (list.length == 0) {
+                $("#div_list_body").html("<tr><td colspan='20'> 콘텐츠가 없습니다.</tr>")
+            }
+        }
+
+        // 체크박스 전체 선택 //
+        $(document).off("click", "#chk_list_all").on("click", "#chk_list_all", function (item) {
+            var checked = $("#chk_list_all").is(":checked") == true ? true : false;
+            var checkbox_list = $('#div_list_body').find('input:checkbox');
+
+            $(checkbox_list).each(function (index) {
+                $(checkbox_list[index]).prop('checked', checked);
+            });
+
+            $("#lbl_count_select").html((checked == true ? numberWithCommas(checkbox_list.length) : 0) + "개 선택");
+        });
+
+        $(document).off("click", ".chk_item").on("click", ".chk_item", function (e) {
+            var tbody = $('#div_list_body');
+            var checked = $(tbody).find('input:checkbox').length == $(tbody).find('input:checkbox:checked').length ? true : false;
+            $("#lbl_count_select").html(numberWithCommas($(tbody).find('input:checkbox:checked').length) + "개 선택");
+            $("#chk_list_all").prop('checked', checked);
+        });
+
+        $(document).off("click", "#btn_edit_title").on("click", "#btn_edit_title", function () {
+            $('#pop_edit_title')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", "#btn_cancel_content_title").on("click", "#btn_cancel_content_title", function () {
+            $('#pop_edit_title')
+                .modal('hide')
+            ;
+        });
+
+        $(document).off("click", "#btn_save_content_title").on("click", "#btn_save_content_title", function () {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/title/update",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    content_title: $("#ipt_content_title").val(),
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+        });
+
+        var useYnVal = "";
+        var checkItem = "";
+
+        $(document).off("click", ".btn_use_yn_all").on("click", ".btn_use_yn_all", function () {
+            useYnVal = this.dataset.useYnVal;
+            var pop_name = useYnVal === "1" ? "pop_all_use_y" : "pop_all_use_n";
+
+            $('#' + pop_name)
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", ".btn_pop_all_use").on("click", ".btn_pop_all_use", function () {
+            update_use_yn();
+        });
+
+        $(document).off("click", ".btn_chk_use_yn").on("click", ".btn_chk_use_yn", function () {
+            useYnVal = this.dataset.useYnVal;
+
+            checkItem = "Y";
+
+            var pop_name = useYnVal === "1" ? "pop_all_use_y" : "pop_all_use_n";
+
+            $('#' + pop_name)
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        function get_check_all_item(body) {
+            return $(body).find('input:checkbox:checked');
+        }
+
+        function update_use_yn() {
+            var tbody = $('#div_list_body');
+            var check_list = (checkItem === "Y") ? get_check_all_item(tbody).closest("tr") : $(tbody).find("tr");
+
+            for (var i = 0; i < check_list.length; i++) {
+                var bnr_grp_sub_sn = check_list[i].dataset.bnrGrpSubSn;
+                $.ajax({
+                    type: "POST",
+                    url: "/api/content/cl/use/update",
+                    data: {
+                        bnr_grp_sub_sn: bnr_grp_sub_sn,
+                        use_yn: useYnVal,
+                    },
+                    dataType: "json",
+                    error: function () {
+                    },
+                    success: function (rep) {
+                        window.location.reload();
+                    }
+                });
+            }
+
+            checkItem = "N";
+        }
+
+        function init_sort_list() {
+            $(".sortable").sortable({
+                //revert: true,
+                connectWith: ".sort_list",
+                update: function (event, ui) {
+                    refresh_index();
+
+                },
+            });
+        }
+
+        function refresh_index() {
+            var list = $("#div_list_body .list_index");
+
+            if (list !== undefined && list !== null && list.length > 0) {
+                for (var i = 0; i < list.length; i++) {
+                    $(list[i]).html(i + 1);
+                }
+            }
+        }
+
+        function save_index() {
+                    var list = $("#div_list_body .sort_list");
+
+                    for (var i = list.length; 0 < i; i--) {
+                        params = {}
+                        console.log("INDEX UPDATE : " + JSON.stringify(params));
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/content/index/update",
+                            data: {
+                                bnr_grp_sub_sn: list[i - 1].dataset.bnrGrpSubSn,
+                                index: i,
+                            },
+                            dataType: "json",
+                            error: function (response) {
+                                if (response) {
+                                    console.log(response);
+                                }
+                            },
+                            success: function (response) {
+                                if (response) {
+                                    console.log(response);
+
+                                }
+                            }
+                        });
+                    }
+        }
+
+        $(document).off("click", "#save_index").on("click", "#save_index", function (e) {
+            $('#pop_save_index')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", "#btn_pop_save_index").on("click", "#btn_pop_save_index", function (e) {
+            save_index();
+        });
+
+        var del_sn = "";
+
+        $(document).off("click", ".btn_del").on("click", ".btn_del", function () {
+            del_sn = $(this).closest("tr").data("bnr-grp-sub-sn");
+
+            $('#pop_all_del')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        var del_all = false;
+
+        $(document).off("click", "#btn_chk_del").on("click", "#btn_chk_del", function () {
+            del_all = true;
+
+            $('#pop_all_del')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        })
+
+        $(document).off("click", "#btn_pop_all_del").on("click", "#btn_pop_all_del", function () {
+            if (del_all === true) {
+                var tbody = $('#div_list_body');
+                var check_list = get_check_all_item(tbody).closest("tr");
+
+                for (var i = 0; i < check_list.length; i++) {
+                    check_delete(check_list[i].dataset.bnrGrpSubSn);
+                }
+            } else {
+                check_delete(del_sn);
+            }
+        });
+
+        function check_delete(del_sn) {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/delete",
+                data: {
+                    bnr_grp_sub_sn: del_sn,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+        }
+
+        $(document).off("click", "#btn_search_list").on("click", "#btn_search_list", function () {
+            select_list();
+        });
+
+        $(document).off("click", "#btn_add_company").on("click", "#btn_add_company", function () {
+            $('#pop_company_list')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                    onShow: function () {
+                        $(".remove.icon").trigger("click");
+                        loadCompanyList();
+                        loadJobfairList();
+                        load_search_option("");
+                    },
+                    onVisible: function () {
+                        // 체크박스 전체 선택 //
+                        $(document).off("click", "#chk_add_list_all").on("click", "#chk_add_list_all", function (item) {
+                            var checked = $("#chk_add_list_all").is(":checked") == true ? true : false;
+                            var checkbox_list = $('#div_add_list_body').find('input:checkbox');
+
+                            $(checkbox_list).each(function (index) {
+                                $(checkbox_list[index]).prop('checked', checked);
+                            });
+
+                            $("#lbl_add_count_use_y").html((checked == true ? numberWithCommas(checkbox_list.length) : 0) + "개 선택");
+                        });
+
+                        $(document).off("click", ".chk_add_item").on("click", ".chk_add_item", function (e) {
+                            var tbody = $('#div_add_list_body');
+                            var checked = $(tbody).find('input:checkbox').length == $(tbody).find('input:checkbox:checked').length ? true : false;
+                            $("#lbl_add_count_use_y").html(numberWithCommas($(tbody).find('input:checkbox:checked').length) + "개 선택");
+                            $("#chk_add_list_all").prop('checked', checked);
+                        });
+
+                        $('#dd_company_area')
+                            .dropdown({
+                                clearable: true,
+                            })
+                            .keyup(function () {
+                                var search_text = $("#dd_company_area").find(".search").val();
+
+                                load_search_option(search_text);
+                            })
+                        ;
+                    }
+                })
+                .modal('show')
+            ;
+
+            $('.ui.checkbox')
+                .checkbox()
+            ;
+        })
+
+        function load_search_option(keyword) {
+            $.ajax({
+                type: "GET",
+                url: "/api/content/cl/company/search",
+                data: {
+                    search_text: keyword
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (list) {
+                    console.log(list);
+
+                    var search_option_templete = ' <div class="item" data-value="[[##001]]"></i>[[##001-01]]</div>';
+
+                    var render_html = '';
+
+                    for (var i = 0; i < list.length; i++) {
+                        render_html += search_option_templete.replace("[[##001]]", list[i].EntpMemNo)
+                            .replace("[[##001-01]]", list[i].EntpKoNm);
+                    }
+                    $("#cb_company_option_list").html("").html(render_html);
+
+                }
+            });
+        }
+
+        function loadCompanyList() {
+
+            $.ajax({
+                type: "GET",
+                url: "/api/content/cl/add/list",
+                data: {
+                    bnr_gpr_sn: {{.GrpBnrData.BnrGrpSn}},
+                    jobfair_code: $("#dd_jobfair_list option:selected").val(),
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    console.log(rep);
+                    render_add_list_data(rep);
+                    init_add_list_count(rep);
+                    ////
+                }
+            });
+        }
+
+        add_item_template = '<tr data-entp-mem-no="[[##001]]" data-bnr-grp-sub-sn="[[##001-01]]">' +
+            '<td>' +
+            '<input type="checkbox" class="chk_add_item" name="chk_use_yn"/>' +
+            '</td>' +
+            '<td>[[##002]]</td>' +
+            '<td>' +
+            '<div class="ui grid">' +
+            '<div class="row">' +
+            '<div class="left aligned column" style="width: 50%">' +
+            '[[##003]]' +
+            '<input type="hidden" value="">' +
+            '</div>' +
+            '<div class="inline field company_display_add right aligned column" data-entp-mem-no="[[##004-03]]" style="display: [[##004-01]]; width: 50%">' +
+            '<div id="" class="ui mini blue button company_add" data-use-yn-val="1">추가</div>' +
+            '</div>' +
+            '<div class="inline field company_display_remove right aligned column" data-entp-mem-no="[[##004-04]]" style="display: [[##004-02]]; width: 50%">' +
+            '                       ✔︎' +
+            '<div id="" class="ui mini white button company_remove " data-use-yn-val="0">제외</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</td>' +
+            '</tr>';
+
+        function render_add_list_data(list) {
+            var render_html = "";
+
+            for (var i = 0; i < list.length; i++) {
+                render_html += add_item_template.replace("[[##001]]", list[i].EntpMemNo)
+                    .replace("[[##001-01]]", list[i].BnrGrpSubSn)
+                    .replace("[[##002]]", list[i].EntpMemNo)
+                    .replace("[[##003]]", list[i].EntpKoNm)
+                    .replace("[[##004-01]]", list[i].BnrGrpSubSn === "0" ? "" : "none")
+                    .replace("[[##004-02]]", list[i].BnrGrpSubSn === "0" ? "none" : "")
+                    .replace("[[##004-03]]", list[i].EntpMemNo)
+                    .replace("[[##004-04]]", list[i].EntpMemNo);
+            }
+
+            $("#div_add_list_body").html("").html(render_html);
+        }
+
+        $(document).off("click", ".company_add").on("click", ".company_add", function () {
+            $(this).parent().next().show();
+            $(this).parent().hide();
+        });
+
+        $(document).off("click", ".company_remove").on("click", ".company_remove", function () {
+            $(this).parent().prev().show();
+            $(this).parent().hide();
+        });
+
+        // 카운터 계산 //
+        function init_add_list_count(list) {
+            $("#lbl_add_count_total").html("총 " + numberWithCommas(list.length) + "개");
+
+        }
+
+        $(document).off("click", "#btn_add_list_chk_add").on("click", "#btn_add_list_chk_add", function () {
+            var check_list = get_check_all_item("#div_add_list_body").closest("tr")
+            for (var i = 0; check_list.length > i; i++) {
+                $(check_list[i]).find(".company_add").trigger("click");
+            }
+
+            $(".chk_add_item").prop("checked", false);
+            $("#chk_add_list_all").prop("checked", false);
+            $("#lbl_add_count_use_y").html("0개 선택");
+        });
+
+        $(document).off("click", "#btn_add_list_chk_remove").on("click", "#btn_add_list_chk_remove", function () {
+            var check_list = get_check_all_item("#div_add_list_body").closest("tr")
+            for (var i = 0; check_list.length > i; i++) {
+                $(check_list[i]).find(".company_remove").trigger("click");
+            }
+
+            $(".chk_add_item").prop("checked", false);
+            $("#chk_add_list_all").prop("checked", false);
+            $("#lbl_add_count_use_y").html("0개 선택");
+        });
+
+        $(document).off("click", "#btn_pop_all_add_save").on("click", "#btn_pop_all_add_save", function () {
+            var add_list = $("#div_add_list_body").find("tr[data-bnr-grp-sub-sn='0']").find(".company_display_remove:visible");     // 추가해야할 목록
+            var remove_list = $("#div_add_list_body").find("tr[data-bnr-grp-sub-sn!='0']").find(".company_display_add:visible");    // 삭제해야할 목록
+
+            var total_cnt = add_list.length + remove_list.length;
+            var p_cnt = 0;
+
+            if (total_cnt == 0) {
+                window.alert("변경사항이 없습니다.");
+                return;
+            }
+
+            for (var i = 0; i < add_list.length; i++) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/content/cl/list/update",
+                    data: {
+                        bnr_grp_sn: {{.GrpBnrData.BnrGrpSn}},
+                        entp_mem_no: add_list[i].dataset.entpMemNo,
+                        flag: "ADD"
+                    },
+                    dataType: "json",
+                    error: function () {
+                    },
+                    success: function (rep) {
+                        p_cnt++;
+
+                        if (p_cnt == total_cnt)
+                            window.location.reload();
+                    }
+                });
+            }
+            ;
+
+            for (var i = 0; i < remove_list.length; i++) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/content/cl/list/update",
+                    data: {
+                        bnr_grp_sn: {{.GrpBnrData.BnrGrpSn}},
+                        entp_mem_no: remove_list[i].dataset.entpMemNo,
+                        flag: "REMOVE"
+                    },
+                    dataType: "json",
+                    error: function () {
+                    },
+                    success: function (rep) {
+                        p_cnt++;
+
+                        if (p_cnt == total_cnt)
+                            window.location.reload();
+                    }
+                });
+            }
+        });
+
+        function loadJobfairList() {
+            $.ajax({
+                type: "GET",
+                url: "/api/jobfair/list",
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    console.log(rep);
+                    render_jobfair_data(rep);
+                }
+            });
+        }
+
+        var jabfair_templete = '<option value="[[##001]]">[[##001-01]]</option>';
+
+        function render_jobfair_data(list) {
+            var render_html = '<option value="">박람회를 선택해 주세요.</option>';
+
+            for (var i = 0; i < list.length; i++) {
+                render_html += jabfair_templete.replace("[[##001]]", list[i].MngCd)
+                    .replace("[[##001-01]]", list[i].Title);
+            }
+            $("#dd_jobfair_list").html("").html(render_html);
+        }
+
+        $(document).off("click", "#btn_dd_add_company").on("click", "#btn_dd_add_company", function () {
+            console.log($("#company_code").val());
+
+            var company_code = $("#company_code").val();
+
+            if (company_code === undefined || company_code === null || company_code === "") return;
+
+            $("#div_add_list_body").find("div.company_display_add[data-entp-mem-no='" + company_code + "']").children().trigger("click");
+        });
+
+        $(document).off("click", "#btn_dd_remove_company").on("click", "#btn_dd_remove_company", function () {
+            console.log($("#company_code").val());
+
+            var company_code = $("#company_code").val();
+
+            if (company_code === undefined || company_code === null || company_code === "") return;
+
+            $("#div_add_list_body").find("div.company_display_remove[data-entp-mem-no='" + company_code + "']").children().trigger("click");
+        });
+
+    </script>
+
+{{end}}

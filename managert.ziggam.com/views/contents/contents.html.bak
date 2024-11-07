@@ -1,0 +1,2535 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="twelve wide column">
+                <p>
+                <h1 class="ui header">{{.GrpBnrData.BnrGrpTitle}}</h1>
+                <button id="btn_edit_title" class="ui small button">수정</button>
+                </p>
+            </div>
+            <div class="four wide column">
+                <a id="btn_add_widget" class="ui primary button"
+                   style="width: 200px; height: 30px; font-size: 14px;">
+                    + 추가하기
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="four wide column">
+                번호 {{.GrpBnrData.BnrGrpSn}}<br/>
+                타입 <span id="lbl_type_name"></span>
+            </div>
+            <div class="four wide column">
+                생성일시 {{.GrpBnrData.RegDt}}<br/>
+                생성인 {{.GrpBnrData.RegId}}
+            </div>
+            <div class="two wide column"></div>
+            <div class="six wide column">
+                <table class="ui definition table">
+                    <tbody>
+                    <tr>
+                        <td>사용 여부</td>
+                        <td>
+                            <div class="ui red button btn_use_yn_all" data-use-yn-val="0"
+                                 style="width: 100px; height: 20px; font-size: xx-small">전체미사용
+                            </div>
+                            |
+                            <div id="" class="ui blue button btn_use_yn_all" data-use-yn-val="1"
+                                 style="width: 100px; height: 20px; font-size: xx-small">전체사용
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>롤링 타임</td>
+                        <td>
+                            <div id="div_rol_tm" class="ui field selection dropdown">
+                                <input id="ipt_rol_tm" type="hidden" name="ipt_rol_tm" value="{{.GrpBnrData.RolTm}}">
+                                <i class="dropdown icon"></i>
+                                <div id="div_rol_tm_txt" class="text">{{.GrpBnrData.RolTm}} 초</div>
+                                <div class="menu">
+                                </div>
+                            </div>
+                            <div id="btn_save_rol_tm" class="ui button" data-use-yn-val="0"
+                                 style="width: 60px; height: 20px; font-size: xx-small">저장
+                            </div>
+                        </td>
+                        {{/*                        <td>{{.GrpBnrData.RolTm}} 초*/}}
+                        {{/*                            <div id="save_rol_tm" class="ui button" data-use-yn-val="0"*/}}
+                        {{/*                                 style="width: 60px; height: 20px; font-size: xx-small">저장*/}}
+                        {{/*                            </div>*/}}
+                        {{/*                        </td>*/}}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2>콘텐츠</h2>
+        </div>
+        <div class="row search_area">
+            <table class="ui celled table">
+                <tbody>
+                <tr>
+                    <td class="collapsing">
+                        상태
+                    </td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_use_y" name="chk_use_y"/>
+                            <label>사용</label>
+                        </div>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_use_n" name="chk_use_n"/>
+                            <label>미사용</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="collapsing">
+                        게시상태
+                    </td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_publ_stat_wait" name="chk_publ_stat_wait"/>
+                            <label>대기</label>
+                        </div>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_publ_stat_ing" name="chk_publ_stat_ing"/>
+                            <label>진행</label>
+                        </div>
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="chk_publ_stat_cld" name="chk_publ_stat_cld"/>
+                            <label>마감</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="collapsing">
+                        게시기간
+                    </td>
+                    <td>
+                        <div class="ui form">
+                            <div class="fields">
+                                <div class="field">
+                                    <div class="ui calendar" id="search_publ_date_start">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input id="cal_publ_sdy" type="text" placeholder="Start">
+                                            <label>부터</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui calendar" id="search_publ_date_end">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input id="cal_publ_edy" type="text" placeholder="End">
+                                            <label>까지</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="collapsing">
+                        등록일시
+                    </td>
+                    <td>
+                        <div class="ui form">
+                            <div class="fields">
+                                <div class="field">
+                                    <div class="ui calendar" id="search_reg_date_start">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input id="cal_reg_sdy" type="text" placeholder="Start">
+                                            <label>부터</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui calendar" id="search_reg_date_end">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input id="cal_reg_edy" type="text" placeholder="End">
+                                            <label>까지</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="collapsing">
+                        검색
+                    </td>
+                    <td>
+                        <div class="ui input">
+                            <input id="ipt_keyword" type="text" placeholder="Search...">
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="right aligned column">
+                <a class="ui primary button" id="btn_search_list" style="width: 200px; height: 30px; font-size: 14px;">검색</a>
+            </div>
+        </div>
+
+        <!-- 데이터 영역 -->
+        <div class="row">
+            <div class="data_count_area left aligned column" style="width: 50%">
+                <p>
+                    <span id="lbl_count_total" class="ui mini grey text">총 0개</span>
+                    <span id="lbl_count_use_y" class="ui mini blue text">사용 0</span>
+                    <span id="lbl_count_use_n" class="ui mini red text">미사용 0</span>
+                    <span id="lbl_count_wait" class="ui mini violet text">대기 0</span>
+                    <span id="lbl_count_ing" class="ui mini olive text">진행 0</span>
+                    <span id="lbl_count_close" class="ui mini yellow text">마감 0</span>
+                    <span id="lbl_count_select" class="ui mini green text">0개 선택</span>
+                </p>
+            </div>
+            <div class="data_button_area right aligned column" style="width: 50%">
+                <div id="save_index" class="ui button">순서저장</div>
+                <div id="" class="ui blue button btn_chk_use_yn" data-use-yn-val="1">사용하기</div>
+                <div id="" class="ui red button btn_chk_use_yn" data-use-yn-val="0">미사용하기</div>
+                <div id="btn_chk_del" class="ui button">삭제</div>
+            </div>
+        </div>
+        <div class="row">
+            <div>
+                <table class="ui celled table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="chk_list_all" name="chk_list_all"/>
+                        </th> <!-- 01 : 체크박스 -->
+                        <th>순번</th> <!-- 02 -->
+                        <th>이미지</th> <!-- 03 -->
+                        <th>상태</th> <!-- 04 -->
+                        <th>배너 코드</th> <!-- 05 -->
+                        <th>배너명</th> <!-- 06 -->
+                        <th>게시 시작일시</th> <!-- 07 -->
+                        <th>게시 종료일시</th> <!-- 08 -->
+                        <th>게시상태</th> <!-- 09 -->
+                        <th>등록일시</th> <!-- 10 -->
+                        <th>관리</th> <!-- 11 -->
+                    </tr>
+                    </thead>
+                    <tbody id="div_list_body" class="sortable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 데이터 영역 -->
+    </div>
+
+    <div id="pop_add_contents" class="ui modal" style="width: 800px; height: 100%;">
+        <form class="ui form add_content">
+            {{/*        <form class="ui form">*/}}
+            <div class="header">
+                <h1 id="pop_add_contents_header">콘텐츠 추가하기</h1>
+                <div class="ui corner label">
+                    <i class="icon btn_modal_close" style="cursor: pointer">X</i>
+                </div>
+            </div>
+            <div class="content" style="width:100%;">
+                <table class="ui form celled table">
+                    <thead>
+                    {{/*            <tr>*/}}
+                    {{/*                <th class="left labeled" colspan="20">*/}}
+                    {{/*                    <h1 class="ui header"></h1>*/}}
+                    {{/*                </th>*/}}
+                    {{/*            </tr>*/}}
+                    </thead>
+                    <tbody id="tb_contents" class="">
+                    <tr>
+                        <td class="collapsing">
+                            <p id="lbl_title" class="ui">배너명</p>
+                            <p id="lbl_title_desc" class="ui" style="color: blue;">(앱 미노출)</p>
+                        </td>
+                        <td>
+                            <div class="ui input field">
+                                <h1 id="lbl_content_title"></h1>
+                                <input id="ipt_contents_title" type="text" placeholder="한글, 영문, 숫자, 띄어쓰기 사용 가능 (최대 30자)" style="width:600px;">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="gd_sub_title">
+                        <td class="collapsing">
+                            <p class="ui">설명</p>
+                            <p id="lbl_title_desc" class="ui" style="color: blue;">(앱 노출)</p>
+                        </td>
+                        <td>
+                            <div class="ui input field">
+                                <h1 id="lbl_content_title2"></h1>
+                                <input id="ipt_contents_title2" type="text" placeholder="한글, 영문, 숫자, 띄어쓰기 사용 가능 (최대 30자)" style="width:600px;">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            이미지
+                        </td>
+                        <td>
+                            <a id="btn_add_bnr_img" class="ui primary button "
+                               style="width: 200px; height: 30px; font-size: 14px;">
+                                + 이미지 등록하기
+                            </a>
+                            <label id="lbl_bnr_img"></label>
+                            <input type="file" name="file_bnr_img" id="file_bnr_img" accept="image/*"
+                                   style="display:none;">
+
+                            <br>
+                            <img id="img_bnr_view"
+                                 src="/static/img/sample-red-square-grunge-stamp-260nw-338250266.webp"/>
+
+                            <span class="imgUpload clear_btn">
+                    <a href="javascript:void(0);" id="logo_del" class="imgDelete">
+                        <img src="/static/img/ic-delete-small-white.png" alt="">
+                    </a>
+                </span>
+                        </td>
+                    </tr>
+                    <tr id="tr_link">
+                        <td class="collapsing">
+                            링크
+                        </td>
+                        <td id="td_lnk">
+                            <div id="div_lnk_0" class="ui field selection dropdown ipt_link_controller">
+                                <input id="ipt_lnk_0" type="hidden" name="ipt_lnk_0" value="" data-link-depth="0"
+                                       data-link-type="0">
+                                <i class="dropdown icon"></i>
+                                <div id="div_lnk_0_txt" class="default text">링크구분</div>
+                                <div class="menu">
+                                    <div class="item" data-value="1">내부링크</div>
+                                    <div class="item" data-value="2">외부링크</div>
+                                    <div class="item" data-value="99">링크없음</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            게시 기간
+                        </td>
+                        <td>
+                            <div class="ui form">
+                                <div class="fields">
+                                    <div class="field">
+                                        <div class="ui calendar" id="add_widget_rangestart">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input id="cal_cont_publ_sdy" type="text" placeholder="Start">
+                                                <label>부터</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui calendar" id="add_widget_rangeend">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input id="cal_cont_publ_edy" type="text" placeholder="End">
+                                                <label>까지</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            사용 여부
+                        </td>
+                        <td>
+                            <div class="ui form">
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" id="ipt_content_use_y" name="ipt_content_use_yn"
+                                                   value="1"
+                                                   checked="checked">
+                                            <label>사용</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" id="ipt_content_use_n" name="ipt_content_use_yn"
+                                                   value="0">
+                                            <label>미사용</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" class="center aligned">
+                            <a class="ui red button btn_modal_close"
+                               style="width: 200px; height: 30px; font-size: 14px;">
+                                취소
+                            </a>
+                            <a id="btn_content_add_content" class="ui primary submit button"
+                               style="width: 200px; height: 30px; font-size: 14px;">
+                                추가하기
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <div id="frm_error" class="ui error message"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <div id="pop_view_contents" class="ui modal" style="width: 800px; height: 100%;">
+        <form class="ui form add_content">
+            {{/*        <form class="ui form">*/}}
+            <div class="header">
+                <h1 id="pop_add_contents_header_view">콘텐츠 추가하기</h1>
+                <div class="ui corner label">
+                    <i class="icon btn_modal_close" style="cursor: pointer">X</i>
+                </div>
+            </div>
+            <div class="content" style="width:100%;">
+                <table class="ui form celled table">
+                    <thead>
+                    </thead>
+                    <tbody id="tb_contents_view" class="">
+                    <tr>
+                        <td class="collapsing">
+                            <p id="lbl_title_view" class="ui">배너명</p>
+                            <p id="lbl_title_desc_view" class="ui">(앱 미노출)</p>
+                        </td>
+                        <td>
+                            <div class="ui input field">
+                                <h1 id="lbl_content_title_view"></h1>
+                                <input id="ipt_contents_title_view" type="text" class="disabled" placeholder="Title"
+                                       style="width:600px;" readonly>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="gd_sub_title_view">
+                        <td class="collapsing">
+                            <p class="ui">설명</p>
+                            <p id="lbl_title_desc_view" class="ui" style="color: blue;">(앱 노출)</p>
+                        </td>
+                        <td>
+                            <div class="ui input field">
+                                <h1 id="lbl_content_title2_view"></h1>
+                                <input id="ipt_contents_title2_view" type="text" class="disabled" placeholder="Title"
+                                       style="width:600px;" readonly>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            이미지
+                        </td>
+                        <td>
+                            <img id="img_bnr_view_view"
+                                 src="/static/img/sample-red-square-grunge-stamp-260nw-338250266.webp"/>
+                        </td>
+                    </tr>
+                    <tr id="tr_link_view">
+                        <td class="collapsing">
+                            링크
+                        </td>
+                        <td id="td_lnk_view">
+                            <div id="div_lnk_0_view" class="ui disabled field selection dropdown ipt_link_controller">
+                                <input id="ipt_lnk_0_view" type="hidden" name="ipt_lnk_0_view" value=""
+                                       data-link-depth="0"
+                                       data-link-type="0">
+                                <i class="dropdown icon"></i>
+                                <div id="div_lnk_0_txt_view" class="default text">링크구분</div>
+                                <div class="menu">
+                                    <div class="item" data-value="1">내부링크</div>
+                                    <div class="item" data-value="2">외부링크</div>
+                                    <div class="item" data-value="99">링크없음</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            게시 기간
+                        </td>
+                        <td>
+                            <div class="ui form">
+                                <div class="fields">
+                                    <div class="field">
+                                        <div class="ui calendar disabled" id="add_widget_rangestart_view">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input id="cal_cont_publ_sdy_view" type="text" placeholder="Start">
+                                                <label>부터</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui calendar disabled" id="add_widget_rangeend_view">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input id="cal_cont_publ_edy_view" type="text" placeholder="End">
+                                                <label>까지</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">
+                            사용 여부
+                        </td>
+                        <td>
+                            <div class="ui form">
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div id="btn_view_modal_use_y" data-use-yn="1" class="ui" style="color: blue;">사용</div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="btn_view_modal_use_n" data-use-yn="0" class="ui" style="color: red;">미사용</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" class="center aligned">
+                            <div id="btn_view_copy" class="ui small button">복사</div>
+                            <div id="btn_view_edit"  class="ui small button">수정</div>
+                            <div id="btn_view_delete" class="ui small button">삭제</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- 제목 수정 -->
+    <div id="pop_edit_title" class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            제목 수정
+        </div>
+        <div class="content">
+            <div class="ui input" style="width: 100%;">
+                <input id="ipt_content_title" type="text" placeholder="" value="{{.GrpBnrData.BnrGrpTitle}}" maxlength="20">
+            </div>
+        </div>
+        <div class="actions">
+            <div id="btn_cancel_content_title" class="ui black deny button">
+                취소
+            </div>
+            <div id="btn_save_content_title" class="ui positive right labeled icon button">
+                저장
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+    <!-- 제목 수정 -->
+
+    <!-- 사용 팝업 -->
+    <div id="pop_all_use_y" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태에 따라 메인에 <span style="font-weight: bold;">노출</span> 됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_all_use">
+                사용하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+    <!-- 사용 팝업 -->
+
+    <!-- 미사용 팝업 -->
+    <div id="pop_all_use_n" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            미사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_all_use">
+                미사용하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+    <!-- 미사용 팝업 -->
+
+    <!-- 사용 팝업 -->
+    <div id="pop_use_y" class="ui mini modal">
+        <div class="header">
+            사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태에 따라 메인에 <span style="font-weight: bold;">노출</span> 됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_use">
+                사용하기
+            </div>
+        </div>
+    </div>
+    <!-- 사용 팝업 -->
+
+    <!-- 미사용 팝업 -->
+    <div id="pop_use_n" class="ui mini modal">
+        <div class="header">
+            미사용하시겠습니까?
+        </div>
+        <div class="content">
+            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>
+
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div class="ui positive button btn_pop_use">
+                미사용하기
+            </div>
+        </div>
+    </div>
+    <!-- 미사용 팝업 -->
+
+    <!-- 삭제 팝업 -->
+    <div id="pop_all_del" class="ui mini modal">
+        {{/*    <div class="ui mini modal">*/}}
+        <div class="header">
+            정말 삭제하시겠습니까?
+        </div>
+        {{/*        <div class="content">*/}}
+        {{/*            <p>게시 상태와 상관없이 메인에 <span style="font-weight: bold;">미노출</span>됩니다.</p>*/}}
+        {{/*        </div>*/}}
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_pop_all_del" class="ui positive button">
+                삭제하기
+                {{/*                <i class="checkmark icon"></i>*/}}
+            </div>
+        </div>
+    </div>
+    <!-- 삭제 팝업 -->
+
+    <div id="pop_save_index" class="ui mini modal">
+        <div class="header">
+            순서를 변경하시겠습니까?
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                취소
+            </div>
+            <div id="btn_pop_save_index" class="ui positive button">
+                저장
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var default_save_item = {
+            bnr_sn: "0",
+            bnr_title: "",
+            bnr_sub_title: "",
+            bnr_knd_cd: "01",
+            lnk_gbn_cd: "",
+            lnk_gbn_val: "",
+            pto_path: "",
+            thumb_pto_path: "",
+            brd_gbn_cd: "",
+            sn: 0,
+            entp_mem_no: "",
+            recrut_sn: "",
+            pp_mem_no: "",
+            parent_bnr_sn: "",
+            publ_sdy: "",
+            publ_edy: "",
+            cu_cd: "C",
+            bnr_img: null,
+            list_img: null,
+            img_yn: "N",
+            list_img_yn: "N",
+            sub_item: [],
+            img_ext: "",
+            list_img_ext: "",
+            ori_img_file: "",
+            ori_img_file_ext: "",
+            ori_thumb_img_file: "",
+            list_ori_img_file: "",
+            list_ori_img_file_ext: "",
+            list_ori_thumb_img_file: "",
+            list_title: "",
+            list_link_url: "",
+        }
+
+        var save_item = null;
+
+        $(document).ready(function () {
+            save_item = default_save_item;
+            init_type_label({{.BnrGrpTypCd}})
+            init_rol_tm();
+            init_datepicker();
+            init_sort_list();
+            select_data();
+
+            init_dropdown();
+            init_validation();
+        });
+
+        function init_type_label(type) {
+            if (type == "RL") { // 롤링배너
+                $("#lbl_title").html("배너명");
+                $("#lbl_title_desc").html("(앱 미노출)");
+                $("#gd_sub_title").remove();
+                $("#lbl_type_name").html("롤링 배너");
+            } else { // 그리드배너
+                $("#lbl_title").html("제목");
+                $("#lbl_title_desc").html("(앱 노출)");
+                $("#lbl_type_name").html("그리드 배너");
+            }
+        };
+
+
+        function init_type_label_view(type) {
+            if (type == "RL") { // 롤링배너
+                $("#lbl_title_view").html("배너명");
+                $("#lbl_title_desc_view").html("(앱 미노출)");
+                $("#gd_sub_title_view").remove();
+                $("#lbl_type_name_view").html("롤링 배너");
+            } else { // 그리드배너
+                $("#lbl_title_view").html("제목");
+                $("#lbl_title_desc_view").html("(앱 노출)");
+                $("#lbl_type_name_view").html("그리드 배너");
+            }
+        };
+
+        function init_sort_list() {
+            $(".sortable").sortable({
+                //revert: true,
+                connectWith: ".sort_list",
+                update: function (event, ui) {
+                    refresh_index();
+
+                },
+            });
+        }
+
+        function save_index() {
+                    var list = $("#div_list_body .sort_list");
+
+                    for (var i = list.length; 0 < i; i--) {
+                        params = {}
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/content/index/update",
+                            data: {
+                                bnr_grp_sub_sn: list[i - 1].dataset.bnrGrpSubSn,
+                                index: i,
+                            },
+                            dataType: "json",
+                            error: function (response) {
+                                if (response) {
+                                    console.log(response);
+                                }
+                            },
+                            success: function (response) {
+                                if (response) {
+                                    console.log(response);
+
+                                }
+                            }
+                        });
+                    }
+        }
+
+        function refresh_index() {
+            var list = $("#div_list_body .list_index");
+
+            if (list !== undefined && list !== null && list.length > 0) {
+                for (var i = 0; i < list.length; i++) {
+                    $(list[i]).html(i + 1);
+                }
+            }
+        }
+
+        $(document).off("click", "#save_index").on("click", "#save_index", function (e) {
+            $('#pop_save_index')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", "#btn_pop_save_index").on("click", "#btn_pop_save_index", function (e) {
+            save_index();
+        });
+
+        function init_rol_tm() {
+            var item_template = '<div class="item [[###001-02]]" data-value="[[###001-01]]">[[###001]] 초</div>';
+
+            var add_html = "";
+            var opt_count = 60;
+
+            for (var i = 0; i < opt_count; i++) {
+                add_html += item_template.replace("[[###001-01]]", (i + 1)).replace("[[###001]]", (i + 1)).replace("[[###001-02]]", {{.GrpBnrData.RolTm}} === (i + 1) ? "active selected" : "");
+            }
+
+            $("#div_rol_tm").children(".menu").html(add_html);
+        }
+
+        var select_banner_item = null;          // 수정할 배너 아이템
+        var edit_mode = "C";                    // 현재 모드
+
+        function get_banner_detail(bnr_sn, cu_cd, bnr_grp_sn, bnr_grp_sub_sn) {
+            $.ajax({
+                type: "GET",
+                url: "/api/banner/detail",
+                data: {
+                    bnr_sn: bnr_sn,
+                    cu_cd: cu_cd,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    console.log("banner detail result :" + JSON.stringify(rep));
+                    select_banner_item = rep[0];
+                    select_banner_item.BnrSn = bnr_sn;
+                    select_banner_item.BnrGrpSn = bnr_grp_sn;
+                    select_banner_item.BnrGrpSubSn = bnr_grp_sub_sn;
+                    //$.extend(select_banner_item, temp);
+                    console.log("Get /api/banner/detail cu_cd :" + cu_cd);
+                    edit_mode = cu_cd;
+
+                    if (edit_mode != "V") {
+                        edit_contents();
+                    } else {
+                        view_contents();
+                    }
+                }
+            });
+        }
+
+        function init_validation() {
+            $('.ui.form.add_content tbody')
+                .form({
+                    on: 'blur',
+                    fields: {
+                        ipt_contents_title: {
+                            identifier: 'ipt_contents_title',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '배너명을 입력해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_contents_title2: {
+                            identifier: 'ipt_contents_title2',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '배너명을 입력해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_lnk_0: {
+                            identifier: 'ipt_lnk_0',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '링크를 선택해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_lnk_1: {
+                            identifier: 'ipt_lnk_1',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '링크를 선택해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_lnk_2: {
+                            identifier: 'ipt_lnk_2',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '링크를 선택해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_lnk_3: {
+                            identifier: 'ipt_lnk_3',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '링크를 선택해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_text_val: {
+                            identifier: 'ipt_text_val',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '외부링크를 입력해 주세요.'
+                                }
+                            ]
+                        },
+                        ipt_text_lst_nm: {
+                            identifier: 'ipt_text_lst_nm',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: '리스트명을 입력해 주세요.'
+                                }
+                            ]
+                        },
+                    }
+                });
+
+            return true;
+        }
+
+        function init_datepicker() {
+            // 달력 생성 영역 //
+            $('#search_reg_date_start').calendar({
+                type: 'date',
+                initialDate: moment().add(-1, "month").format("YYYY-MM-DD"),
+                endCalendar: $('#search_reg_date_end'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            $('#search_reg_date_end').calendar({
+                type: 'date',
+                initialDate: moment().add(+1, "month").format("YYYY-MM-DD"),
+                startCalendar: $('#search_reg_date_start'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            // 달력 생성 영역
+
+            // // 달력 생성 영역 //
+            $('#search_publ_date_start').calendar({
+                type: 'date',
+                initialDate: moment().add(-1, "month").format("YYYY-MM-DD"),
+                endCalendar: $('#search_publ_date_end'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+
+            $('#search_publ_date_end').calendar({
+                type: 'date',
+                initialDate: moment().add(+1, "month").format("YYYY-MM-DD"),
+                startCalendar: $('#search_publ_date_start'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            // // 달력 생성 영역
+        }
+
+        $(document).off("click", "#btn_search_list").on("click", "#btn_search_list", function () {
+            select_data();
+        });
+
+        function select_data() {
+            // 파라미터 부분
+
+            // 사용 여부
+            var p_chk_use = 0;
+            p_chk_use += $("#chk_use_y").is(":checked") == true ? 1 : 0;
+            p_chk_use += $("#chk_use_n").is(":checked") == true ? 2 : 0;
+
+            // 게시상태
+            var p_chk_publ_stat = 0;
+            p_chk_publ_stat += $("#chk_publ_stat_wait").is(":checked") == true ? 1 : 0;
+            p_chk_publ_stat += $("#chk_publ_stat_ing").is(":checked") == true ? 2 : 0;
+            p_chk_publ_stat += $("#chk_publ_stat_cld").is(":checked") == true ? 4 : 0;
+
+            var p_cal_publ_sdy = $("#cal_publ_sdy").val().replace("-", "").replace("-", "");
+            var p_cal_publ_edy = $("#cal_publ_edy").val().replace("-", "").replace("-", "");
+
+            var p_cal_reg_sdy = $("#cal_reg_sdy").val().replace("-", "").replace("-", "");
+            var p_cal_reg_edy = $("#cal_reg_edy").val().replace("-", "").replace("-", "");
+
+            var p_ipt_keyword = $("#ipt_keyword").val();
+
+            console.log("p_chk_use : " + p_chk_use);
+            console.log("p_chk_publ_stat : " + p_chk_publ_stat);
+            console.log("p_cal_publ_sdy : " + p_cal_publ_sdy);
+            console.log("p_cal_publ_edy : " + p_cal_publ_edy);
+            console.log("p_cal_publ_sdy : " + p_cal_reg_sdy);
+            console.log("p_cal_publ_edy : " + p_cal_reg_edy);
+            console.log("p_ipt_keyword : " + p_ipt_keyword);
+
+            $.ajax({
+                type: "GET",
+                url: "/api/banner/detail/list",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    bnr_gpr_typ_cd: {{.GrpBnrData.BnrGrpTypCd}},
+                    use_yn: p_chk_use,
+                    publ_stat: p_chk_publ_stat,
+                    publ_sdy: '20190101',
+                    publ_edy: '20201231',
+                    reg_sdy: '20190101',
+                    reg_edy: '20201231',
+                    // publ_sdy: p_cal_publ_sdy,
+                    // publ_edy: p_cal_publ_edy,
+                    // reg_sdy: p_cal_reg_sdy,
+                    // reg_edy: p_cal_reg_sdy,
+                    keyword: p_ipt_keyword,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    console.log("result :" + JSON.stringify(rep));
+
+                    render_list_data(rep);
+                    init_list_count(rep);
+                }
+            });
+        }
+
+        var list_html_template = '<tr class="sort_list" data-bnr-grp-sub-sn="[[##000-01]]">' +
+            '<td data-label="checkBox">' +
+            '<input type="checkbox" class="chk_item" name="chk_use_yn"/>' +
+            '</td>' +
+            '<td class="list_index" data-label="index">[[##000]]</td>' +
+            '<td data-label="bnrImg"><img src="[[##001]]"></td>' +
+            '<td data-label="useYn">[[##002]]</td>' +
+            '<td data-label="bnrCd">[[##003]]</td>' +
+            '<td class="view_content" data-label="bnrTitle" data-bnr-sn="[[##004-01]]" data-bnr-grp-sn="[[##004-02]]" data-bnr-grp-sub-sn="[[##004-03]]" style="text-decoration:underline; cursor: pointer">[[##004]]</td>' +
+            '<td data-label="publSdy">[[##005]]</td>' +
+            '<td data-label="publEdy">[[##006]]</td>' +
+            '<td data-label="publStat">[[##007]]</td>' +
+            '<td data-label="regDt">[[##008]]</td>' +
+            '<td data-label="Ctl">' +
+            '<div class="ui small button btn_copy_contents" data-bnr-grp-sn="[[##009]]" data-bnr-grp-sub-sn="[[##009-01]]">복사</div>' +
+            '<div class="ui small button btn_edit_contents" data-bnr-sn="[[##010]]" data-bnr-grp-sn="[[##010-01]]" data-bnr-grp-sub-sn="[[##010-02]]">수정</div>' +
+            '<div class="ui small button btn_del_contents" data-bnr-grp-sn="[[##011]]" data-bnr-grp-sub-sn="[[##011-01]]">삭제</div>' +
+            '</td>' +
+            '</tr>';
+
+        var list_html_notata_template = '<tr>' +
+            '<td colspan="20">콘텐츠가 없습니다.</td>' +
+            '</tr>';
+
+        // 카운터 계산 //
+        function init_list_count(list) {
+            $("#lbl_count_total").html("총 " + numberWithCommas(list.length) + "개");
+            $("#lbl_count_use_y").html("사용 " + numberWithCommas(list.filter(v => v.UseYn === "1").length) + "개");
+            $("#lbl_count_use_n").html("미사용 " + numberWithCommas(list.filter(v => v.UseYn === "0").length) + "개");
+            $("#lbl_count_wait").html("대기 " + numberWithCommas(list.filter(v => v.PublStat === "WAT").length) + "개");
+            $("#lbl_count_ing").html("진행 " + numberWithCommas(list.filter(v => v.PublStat === "ING").length) + "개");
+            $("#lbl_count_close").html("마감 " + numberWithCommas(list.filter(v => v.PublStat === "CLD").length) + "개");
+            // $("#lbl_count_select").html("총 " + numberWithCommas(list.length) + "개");
+        }
+
+        // 코드 -> 화면 표시데이터 //
+        function code_to_label(item) {
+            var label_bnr_typ_array = {
+                "RL": "롤링배너",
+                "GD": "그리드배너",
+                "CL": "기업리스트",
+                "CH": "기업관",
+                "RH": "채용관",
+                "VL": "영상관",
+            }
+
+            var label_bnr_stat_array = {
+                "WAT": "대기",
+                "ING": "진행",
+                "CLS": "마감",
+            }
+
+            var label_bnr_use_yn_array = {
+                1: "사용",
+                0: "미사용",
+            }
+
+            var label_bnr_use_yn_color_array = {
+                1: "blue",
+                0: "red",
+            }
+
+            var label_bnr_use_yn_fn_array = {
+                1: "미사용",
+                0: "사용",
+            }
+
+            var label_bnr_use_yn_fn_color_array = {
+                1: "red",
+                0: "blue",
+            }
+
+            var date_format = "YYYY-MM-DD hh:mm:ss";
+            var date_format2 = "YYYY-MM-DD";
+
+            // 화면 표시를 위한 아이템 확장
+            var item_template = {
+                BnrGrpTypLabel: "",
+                PublStatName: "",
+                UseYnName: "",
+                UseYnColor: "",
+                PublStatName: "",
+                PublStatColor: "",
+            }
+
+            $.extend(item, item_template);
+
+            item.UseYnName = label_bnr_use_yn_array[item.UseYn];
+            item.PublSdy = moment(item.PublSdy, "YYYYMMDD").format(date_format2) + " 00:00:00";  // 게시시작일자
+            item.PublEdy = moment(item.PublEdy, "YYYYMMDD").format(date_format2) + " 23:59:59";  // 게시종료일자
+            item.RegDt = moment(item.RegDt, "YYYYMMDDhhmmss").format(date_format);  // 등록일자
+            item.PublStatName = label_bnr_stat_array[item.PublStat];                // 게시상태
+            item.PublStatColor = label_bnr_use_yn_fn_array[item.PublStat];
+
+            item.UseYnColor = label_bnr_use_yn_color_array[item.UseYn];
+            item.UseYnFnName = label_bnr_use_yn_fn_array[item.UseYn];
+
+            if (item.UseYn == 1) {
+
+            }
+
+            item.RegDt = moment(item.RegDt, "YYYYMMDDhhmmss").format(date_format);
+
+            return item;
+        }
+
+        // 리스트 그리기 //
+        function render_list_data(list) {
+            var html = "";
+            if (list !== undefined && list !== null && list !== "") {
+                for (var i = 0; i < list.length; i++) {
+                    var item = list[i];
+
+                    var rendering_data = code_to_label(item);
+
+
+                    html += list_html_template
+                        .replace("[[##000]]", i + 1)
+                        .replace("[[##000-01]]", rendering_data.BnrGrpSubSn)
+                        .replace("[[##001]]", rendering_data.ThumbPtoFullPath)
+                        .replace("[[##002]]", rendering_data.UseYnName)
+                        .replace("[[##003]]", rendering_data.BnrSn)
+                        .replace("[[##004]]", rendering_data.BnrTitle)
+                        .replace("[[##004-01]]", rendering_data.BnrSn)
+                        .replace("[[##004-02]]", {{.BnrGrpSn}})
+                        .replace("[[##004-03]]", rendering_data.BnrGrpSubSn)
+                        .replace("[[##005]]", rendering_data.PublSdy)
+                        .replace("[[##006]]", rendering_data.PublEdy)
+                        .replace("[[##007]]", rendering_data.PublStatName)
+                        .replace("[[##008]]", rendering_data.RegDt)
+                        .replace("[[##009]]", {{.BnrGrpSn}})
+                        .replace("[[##009-01]]", rendering_data.BnrGrpSubSn)
+                        .replace("[[##010]]", rendering_data.BnrSn)
+                        .replace("[[##010-01]]", {{.BnrGrpSn}})
+                        .replace("[[##010-02]]", rendering_data.BnrGrpSubSn)
+                        .replace("[[##011]]", {{.BnrGrpSn}})
+                        .replace("[[##011-01]]", rendering_data.BnrGrpSubSn)
+                }
+            } else {
+                html += list_html_notata_template;
+                console.log("fn ( select_data ) : return Value Error !!!!");
+            }
+
+            console.log(html);
+
+            $("#div_list_body").html("");
+            $("#div_list_body").html(html);
+
+            //init_list_control();
+        }
+
+        function set_add_widget_modal_data() {
+            default_banner_data.banner_group_type = $('input[name="rd_bnr_grp_typ"]:checked').val();
+            default_banner_data.banner_group_title = $("#ipt_bnr_grp_ttl").val();
+        }
+
+        function init_widget_datepicker(init_sdy, init_edy) {
+            if (init_sdy == undefined || init_sdy == null || init_sdy == "") {
+                init_sdy = moment().add(-1, "month").format("YYYY-MM-DD");
+            } else {
+                init_sdy = moment(init_sdy).format("YYYY-MM-DD");
+            }
+
+            if (init_edy == undefined || init_edy == null || init_edy == "") {
+                init_edy = moment().add(+1, "month").format("YYYY-MM-DD");
+            } else {
+                init_edy = moment(init_edy).format("YYYY-MM-DD");
+            }
+
+            // 달력 생성 영역 //
+            $('#add_widget_rangestart').calendar({
+                type: 'date',
+                initialDate: init_sdy,
+                endCalendar: $('#add_widget_rangeend'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            $('#add_widget_rangeend').calendar({
+                type: 'date',
+                initialDate: init_edy,
+                startCalendar: $('#add_widget_rangestart'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            // 달력 생성 영역
+        }
+
+        function init_widget_datepicker2(init_sdy, init_edy) {
+            if (init_sdy == undefined || init_sdy == null || init_sdy == "") {
+                init_sdy = moment().add(-1, "month").format("YYYY-MM-DD");
+            } else {
+                init_sdy = moment(init_sdy).format("YYYY-MM-DD");
+            }
+
+            if (init_edy == undefined || init_edy == null || init_edy == "") {
+                init_edy = moment().add(+1, "month").format("YYYY-MM-DD");
+            } else {
+                init_edy = moment(init_edy).format("YYYY-MM-DD");
+            }
+
+            // 달력 생성 영역 //
+            $('#add_widget_rangestart_view').calendar({
+                type: 'date',
+                initialDate: init_sdy,
+                endCalendar: $('#add_widget_rangeend_view'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            $('#add_widget_rangeend_view').calendar({
+                type: 'date',
+                initialDate: init_edy,
+                startCalendar: $('#add_widget_rangestart_view'),
+                formatter: {
+                    date: function (date, settings) {
+                        return moment(date).format('YYYY-MM-DD')
+                    }
+                }
+            });
+            // 달력 생성 영역
+        }
+
+        function init_content_modal() {
+            $("#lbl_content_title").text("").text(default_banner_data.banner_group_title);
+        }
+
+        $(document).off("change", ".ipt_link_controller").on("change", ".ipt_link_controller", function (e) {
+            console.log("id :" + $("#" + e.target.id));
+
+            var target_link_depth = Number($("#" + e.target.id).data("link-depth"));
+            var target_link_type = Number($("#" + e.target.id).data("link-type"));
+            var target_value = $("#" + e.target.id).val();
+            console.log(e.target.id + ":" + target_link_depth + ":" + target_link_type + ":" + target_value);
+
+            change_link_control(target_link_depth, target_link_type, target_value);
+        });
+
+        async function change_link_control(target_link_depth, target_link_type, target_value) {
+            console.log("depth : " + target_link_depth + " / " + "type : " + target_link_type + " / " + "value : " + target_value + " / edit_mode : " + edit_mode);
+
+            var opt_list = {};
+            var html = {};
+
+            if (
+                (target_link_depth === 0 && target_link_type == 0 && target_value === "1")
+                || (target_link_depth === 1 && target_link_type == 1) // 내부링크
+            ) {
+                opt_list = load_link_option(target_link_depth, target_link_type, target_value);
+                html = make_link_combo_html(target_link_depth, target_link_type, target_value, opt_list);
+            } else if (target_link_depth === 0 && target_value === "2") {
+                // 외부링크
+                html = edit_mode != "V" ? input_template : input_template_view;
+            } else if (target_link_depth === 0 && target_value === "3") {
+                //링크없음
+            } else if (target_link_depth === 2 && target_link_type === 1 && (Number($("#ipt_lnk_1").val()) == 2 || Number($("#ipt_lnk_1_view").val()) == 2)) {
+                //리스트 타입생성
+                console.log("리스트타입");
+                opt_list = await load_ajax_link_option(target_link_depth, target_link_type, "1" + target_value);
+                html = make_link_list_html(target_link_depth, target_link_type, target_value, opt_list);
+            } else if (target_link_depth === 2 && target_link_type === 1 && Number(target_value) > 5) {
+
+            } else if (target_link_depth === 3 && target_link_type === 1 && Number(target_value) > 5) {
+
+            } else if (target_link_depth === 3 && target_link_type === 1
+                && (Number($("#ipt_lnk_2").val()) == 1 || Number($("#ipt_lnk_2").val()) == 2)) {
+            } else if (target_link_depth >= 4) {
+
+            } else if (target_link_depth === 3 && target_link_type === 1 && (Number($("#ipt_lnk_2").val()) == 4 || Number($("#ipt_lnk_2").val()) == 5)) {
+            } else if (target_link_depth >= 2
+                || (target_link_depth === 3 && target_link_type === 1 && Number($("#ipt_lnk_2").val()) == 3)) {
+                opt_list = await load_ajax_link_option(target_link_depth, target_link_type, target_value);
+                html = make_link_combo_html(target_link_depth, target_link_type, target_value, opt_list);
+            }
+
+            //html = make_link_combo_html(target_link_depth, target_link_type, target_value, opt_list);
+            // remove html
+
+            // var link_list = $(".ipt_link_controller");
+            // if (link_list.length > 0) {
+            //     for (var i = 1; i < link_list.length; i++) {
+            //         if (Number($(link_list[i]).children()[0].dataset.linkDepth) > target_link_depth) {
+            //             link_list[i].remove();
+            //         }
+            //     }
+            // }
+
+            remove_link_list(target_link_depth);
+
+            // add html
+            if (edit_mode != "V") {
+                $("#td_lnk").append(html);
+            } else {
+                $("#td_lnk_view").append(html);
+            }
+
+            init_dropdown();
+            init_list_control();
+
+            if (edit_mode != "V") {
+                init_validation();
+            }
+            ;
+        }
+
+
+        function remove_link_list(target_link_depth) {
+            var link_list = $(".ipt_link_controller");
+            if (link_list.length > 0) {
+                for (var i = 1; i < link_list.length; i++) {
+                    if (Number($(link_list[i]).children()[0].dataset.linkDepth) > target_link_depth) {
+                        link_list[i].remove();
+                    }
+                }
+            }
+        }
+
+        function make_link_list_html(link_depth, link_type, target_value, opt_list) {
+            var list01 = opt_list.filter(v => v.SelectYn == "N");
+            var list02 = opt_list.filter(v => v.SelectYn == "Y");
+            // 템플릿 읽어오기
+            var temp_html = edit_mode != "V" ? list_template : list_template_view;
+            var temp_opt_html_01 = "";
+            var temp_opt_html_02 = "";
+
+            for (var i = 0; list01.length > i; i++)
+                temp_opt_html_01 += make_link_option(list_item_template, list01[i].OptionKey, list01[i].OptionValue);
+
+            for (var i = 0; list02.length > i; i++)
+                temp_opt_html_02 += make_link_option(list_item_template, list02[i].OptionKey, list02[i].OptionValue);
+
+            // Html 생성
+            temp_html = temp_html.replace("[[##item_list_01]]", temp_opt_html_01).replace("[[##item_list_02]]", temp_opt_html_02);
+            //temp_html += '<br/>';
+            temp_html += edit_mode != "V" ? list_input_template : list_input_template_view;
+
+            // 옵션처리(witdh등등)
+
+            // html 생성
+
+            return temp_html;
+        }
+
+
+        function init_dropdown() {
+            $('.ui.dropdown')
+                .dropdown()
+            ;
+        }
+
+        function init_list_control() {
+            $("#sortable1, #sortable2").sortable({
+                connectWith: ".connectedSortable"
+            }).disableSelection();
+            // $(".sortable").sortable({
+            //     //revert: true,
+            //     connectWith: ".sort_list",
+            //     update: function (event, ui) {
+            //     },
+            // });
+        }
+
+        // 정적 옵션 리턴
+        function load_link_option(link_depth, link_type, target_value) {
+            var opt_list = (link_depth === 0 && link_type == 0 && target_value == 1) == true ? depth_opt_1
+                : (link_depth === 1 && link_type == 1 && target_value == 1) == true ? depth_opt_1_1 : depth_opt_1_2;
+
+            console.log(opt_list);
+            return opt_list;
+        }
+
+        $(document).off("click", "#btn_add_bnr_img").on("click", "#btn_add_bnr_img", function (e) {
+            e.preventDefault();
+            $("#file_bnr_img").trigger('click');
+        });
+
+        $(document).off("click", "#btn_add_list_img").on("click", "#btn_add_list_img", function (e) {
+            e.preventDefault();
+            $("#file_bnr_list_img").trigger('click');
+        });
+
+        function make_link_option(template, key, value) {
+            return template
+                .replace("[[##_value]]", key)
+                .replace("[[##_name]]", value);
+        }
+
+        function make_link_combo_html(link_depth, link_type, target_value, opt_list) {
+            // 템플릿 읽어오기
+            var temp_html = edit_mode != "V" ? lnk_combo_template : lnk_combo_template_view;
+            var temp_opt_html = "";
+
+            for (var i = 0; opt_list.length > i; i++)
+                // DB조회이면
+                if (link_type == 1 && link_depth >= 2) {
+                    temp_opt_html += make_link_option(option_template, opt_list[i].OptionKey, opt_list[i].OptionValue);
+                } else {
+                    temp_opt_html += make_link_option(option_template, i + 1, opt_list[i]);
+                }
+
+            // Html 생성
+            temp_html = temp_html.replace("[[##div_lnk_id]]", "div_lnk_" + (link_depth + 1))
+                .replace("[[##linkDepth]]", String((link_depth + 1)))
+                .replace("[[##linkType]]", "1")
+                .replace("[[##ipt_lnk_id]]", "ipt_lnk_" + (link_depth + 1))
+                .replace("[[##ipt_lnk_name]]", "ipt_lnk_" + (link_depth + 1))
+                .replace("[[##defaultText]]", "선택해 주세요.")
+                .replace("[[##dd_option]]", "dd_opt_" + (link_depth + 1))
+                .replace("[[##opt_list]]", temp_opt_html);
+
+
+            // 옵션처리(witdh등등)
+
+            // html 생성
+
+            return temp_html;
+        }
+
+        $(document).off("change", "#file_bnr_img").on("change", "#file_bnr_img", function (e) {
+            readURL(this, "img_bnr_view", "logo_del");
+        });
+
+        $(document).off("change", "#file_bnr_list_img").on("change", "#file_bnr_list_img", function (e) {
+            readURL(this, "img_list_view", "list_view_del");
+        });
+
+        // 파일 업로드 //
+        var readURL = function (input, img_id, del_btn_id) {
+            var ext = $('#' + input.id).val().split('.').pop().toLowerCase();
+            //console.log("ext : "+ext);
+
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg', 'gif']) == -1) {
+                alert("PNG/JPEG/GIF 형식을 지원합니다.");
+                // openPopup("pop_regno");
+                // $(".popCont .tit").text("CI등록 오류 알림");
+                // $(".popCont .text.t1").text("PNG/JPEG/GIF로 된");
+                // $(".popCont .text.t2").text("CI 이미지로 업로드해주세요.");
+                // $("#entp_logo").val("");
+                return false;
+            }
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#" + img_id).attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+
+                var fileValue = $('#' + input.id).val().split("\\");
+                var fileName = fileValue[fileValue.length - 1]; // 파일명
+                var fileExt = $('#' + input.id).val().split('.').pop().toLowerCase(); //파일확장자
+                $("#" + del_btn_id).css("display", "");
+                if (img_id == "img_bnr_view") {
+                    save_item.img_yn = "Y";
+                    $("#lbl_bnr_img").html('');
+                } else {
+                    save_item.list_img_yn = "Y";
+                    $("#lbl_bnr_list_img").html('');
+                }
+            }
+        }
+
+        // 로고삭제 //
+        $(document).off("click", "#logo_del").on("click", "#logo_del", function (e) {
+            save_item.img_yn = "N";
+            $("#img_bnr_view").attr('src', '');
+            $("#logo_del").css("display", "none");
+        });
+
+        $(document).off("click", "#list_view_del").on("click", "#list_view_del", function (e) {
+            save_item.list_img_yn = "N";
+            $("#img_list_view").attr('src', '');
+            $("#list_view_del").css("display", "none");
+        });
+
+        // 로고삭제 //
+
+        async function load_ajax_link_option(link_depth, link_type, target_value) {
+            // 기본 데이터 옵션
+            var params = {
+                opt_code: (link_type == 1 && link_depth == 3) ? "0" : target_value,
+                opt_sub_code: (link_type == 1 && link_depth == 3) ? target_value : "0",
+                bnr_sn: select_banner_item != undefined ? select_banner_item.BnrSn : "0",
+            };
+
+            console.log("/api/content/link/option/list : " + JSON.stringify(params));
+
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/content/link/option/list",
+                    data: params,
+                    dataType: "json",
+                    error: function () {
+                    },
+                    success: function (response) {
+                        if (response) {
+                            console.log(response);
+                            resolve(response);
+                        }
+                        reject(new Error("Request is failed"));
+                    }
+                });
+            });
+        }
+
+        var option_template = '<div class=\"item\" data-value=\"[[##_value]]\">[[##_name]]</div>';
+
+        var lnk_combo_template =
+            '<div id=\"[[##div_lnk_id]]\" class=\"ui field selection dropdown ipt_link_controller\" style=\"\">' +
+            '<input id=\"[[##ipt_lnk_id]]\" type=\"hidden\" name=\"[[##ipt_lnk_name]]\" value=\"\" data-link-depth=\"[[##linkDepth]]\" data-link-type=\"[[##linkType]]\">' +
+            '<i class=\"dropdown icon\"></i>' +
+            '<div class=\"default text\">[[##defaultText]]</div>' +
+            '<div id=\"[[##dd_option]]\" class=\"menu\">' +
+            '[[##opt_list]]' +
+            '</div>' +
+            '</div>';
+
+        var input_template = '<div class=\"ui field input ipt_link_controller\">' +
+            '<input id="ipt_text_val" type="text" placeholder="" style="width:600px;" data-link-depth=\"1\" data-link-type=\"2\">' +
+            '</div>';
+
+        var list_template = '<div class=\"ui segment ipt_link_controller\">' +
+            '<div class=\"ui two column very relaxed grid\" data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<div class=\"column\">' +
+            '<div id=\"sortable1\" class=\"ui middle aligned divided list connectedSortable\" style=\"width:100%; height:250px; overflow-x:hidden; overflow-y: scroll;\">' +
+            '[[##item_list_01]]' +
+            '</div>' +
+            '</div>' +
+            '<div class=\"column\" >' +
+            '<div id=\"sortable2\" class=\"ui middle aligned divided list connectedSortable\" style=\"width:100%; height:250px; overflow-x:hidden; overflow-y: scroll;\">' +
+            '[[##item_list_02]]' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class=\"ui vertical divider\">' +
+            '<->' +
+            '</div>' +
+            '</div>';
+
+        var list_item_template = '<div class=\"item\">' +
+            '<img class=\"ui avatar image\" src=\"/static/img/loading_ziggam.gif\">' +
+            '<div class=\"content list_value\" data-list-value=\"[[##_value]]\">' +
+            '[[##_name]]' +
+            '</div>' +
+            '</div>';
+
+        // 리스트 s 입력 영역 //
+        var list_input_template =
+            '<div class=\"ui input segments ipt_link_controller\">' +
+            '<div data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<br>' +
+            '<span class="field error">리스트명' +
+            '<input id="ipt_text_lst_nm" class="" type="text" placeholder="Title" style="width:600px;"  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '</span>' +
+            '<a id="btn_add_list_img" class="ui primary button" data-link-depth=\"4\" data-link-type=\"2\" style="width: 220px; height: 30px; font-size: 14px;"> + 리스트 이미지 등록하기 </a>' +
+            '<label id="lbl_bnr_list_img"></label>' +
+            '<br>' +
+            '<input type="file" name="file_bnr_list_img" id="file_bnr_list_img" accept="image/*" style="display:none;  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<br>' +
+            '<img id="img_list_view" src="/static/img/sample-red-square-grunge-stamp-260nw-338250266.webp"  data-link-depth=\"4\" data-link-type=\"2\"/>' +
+            '<br>' +
+            '<span class="imgUpload clear_btn"  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<a href="javascript:void(0);" id="list_view_del" class="imgDelete"  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<img src="/static/img/ic-delete-small-white.png" alt=""  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<br>' +
+            '</a>' +
+            '</span>' +
+            '<br>' +
+            '<span>링크주소</span>' +
+            '<input id="ipt_text_lnk_addr" type="text" placeholder="Title" style="width:600px;" data-link-depth=\"4\" data-link-type=\"2\">' +
+            '</div>' +
+            '</div>';
+
+        var lnk_combo_template_view =
+            '<div id=\"[[##div_lnk_id]]_view\" class=\"ui field selection dropdown ipt_link_controller\" style=\"\">' +
+            '<input id=\"[[##ipt_lnk_id]]_view\" type=\"hidden\" name=\"[[##ipt_lnk_name]]_view\" value=\"\" data-link-depth=\"[[##linkDepth]]\" data-link-type=\"[[##linkType]]\">' +
+            '<i class=\"dropdown icon\"></i>' +
+            '<div class=\"default text\">[[##defaultText]]</div>' +
+            '<div id=\"[[##dd_option]]\" class=\"menu\">' +
+            '[[##opt_list]]' +
+            '</div>' +
+            '</div>';
+
+        var input_template_view = '<div class=\"ui field input ipt_link_controller\">' +
+            '<input id="ipt_text_val_view" type="text" placeholder=""  style="width:600px;" data-link-depth=\"1\" data-link-type=\"2\" readonly>' +
+            '</div>';
+
+        var list_template_view = '<div class=\"ui segment ipt_link_controller\">' +
+            '<div class=\"ui two column very relaxed grid\" data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<div class=\"column\">' +
+            '<div id=\"sortable1_view\" class=\"ui middle aligned divided list connectedSortable\" style=\"width:100%; height:250px; overflow-x:hidden; overflow-y: scroll;\">' +
+            '[[##item_list_01]]' +
+            '</div>' +
+            '</div>' +
+            '<div class=\"column\" >' +
+            '<div id=\"sortable2_view\" class=\"ui middle aligned divided list connectedSortable\" style=\"width:100%; height:250px; overflow-x:hidden; overflow-y: scroll;\">' +
+            '[[##item_list_02]]' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class=\"ui vertical divider\">' +
+            '<->' +
+            '</div>' +
+            '</div>';
+
+        // 리스트 s 입력 영역 //
+        var list_input_template_view =
+            '<div class=\"ui input segments ipt_link_controller\">' +
+            '<div data-link-depth=\"4\" data-link-type=\"2\">' +
+            '<br>' +
+            '<span class="field error">리스트명' +
+            '<input id="ipt_text_lst_nm_view" class="disabled" type="text" placeholder="Title" style="width:600px;"  data-link-depth=\"4\" data-link-type=\"2\">' +
+            '</span>' +
+            '<img id="img_list_view_view" src="/static/img/sample-red-square-grunge-stamp-260nw-338250266.webp"  data-link-depth=\"4\" data-link-type=\"2\"/>' +
+            '<br>' +
+            '<span>링크주소</span>' +
+            '<input id="ipt_text_lnk_addr_view" type="text" placeholder="Title" class="disabled" style="width:600px;" data-link-depth=\"4\" data-link-type=\"2\">' +
+            '</div>' +
+            '</div>';
+
+        var depth_opt_1 = [
+            "일반",
+            "리스트",
+        ];
+
+        var depth_opt_1_1 = [
+            "공지사항",
+            "이벤트",
+            "채용공고(개별)",
+            "채용공고(기업)",
+            "기업영상",
+            "개인설정",
+            "영상프로필",
+        ];
+        var depth_opt_1_2 = [
+            "기업",
+            "채용공고",
+        ];
+
+        $(document).off("click", "#btn_content_add_content").on("click", "#btn_content_add_content", function (e) {
+            e.preventDefault();
+
+            if ($("#tb_contents").find(".ui.field.error").length > 0) {
+                console.log("Validation Error!! ");
+                return;
+            } else {
+                save_content();
+            }
+        });
+
+        function check_add_img(img_lbl_id, err_msg) {
+            //save_item.bnr_img = "";
+            $("#" + img_lbl_id).html(err_msg);
+            // $("#lbl_img_bnr").fadeOut(300, function () {
+            //     $(this).css("color", "#6b6b6b");
+            // });
+            $("#" + img_lbl_id).fadeIn(1000, function () {
+                $(this).css("color", "#e04c53");
+            });
+        }
+
+        function save_content() {
+
+            if (edit_mode != "V") {
+                if (select_banner_item != undefined) {
+                    save_item.bnr_sn = select_banner_item.BnrSn;
+                    save_item.bnr_grp_sub_sn = select_banner_item.BnrGrpSubSn;
+                } else {
+                    save_item.bnr_sn = "0";
+                }
+            }
+
+            save_item.bnr_title = $("#ipt_contents_title").val();
+            save_item.bnr_sub_title = $("#ipt_contents_title2").val();
+
+            save_item.lnk_gbn_cd = zeroPad($("#ipt_lnk_0").val(), 10);
+            if (save_item.lnk_gbn_cd == "01") {
+                save_item.bnr_knd_cd = zeroPad($("#ipt_lnk_1").val(), 10);
+                save_item.lnk_gbn_val = zeroPad($("#ipt_lnk_2").val(), 10); // 분기
+            }
+            //save_item.pto_path = $("#").val();
+            //save_item.thumb_pto_path = $("#").val();
+
+            //
+
+            if (save_item.bnr_knd_cd == "01" && (save_item.lnk_gbn_val == "01" || save_item.lnk_gbn_val == "02")) {
+                save_item.sn = $("#ipt_lnk_3").val();                     // div_lnk_2 가 01, 혹은 02일때 SN 넣기
+
+                // div_lnk_2 가 01, 혹은 02일때 01 : 공지사항, 06 : 이벤트
+                if (save_item.lnk_gbn_val == "01") {
+                    save_item.brd_gbn_cd = "01";
+                } else {
+                    save_item.brd_gbn_cd = "06";
+                }
+            }
+
+            if (save_item.lnk_gbn_val == "03" || save_item.lnk_gbn_val == "04" || save_item.lnk_gbn_val == "05") {
+                save_item.entp_mem_no = $("#ipt_lnk_3").val();           // div_lnk_2 03, 04, 05 일때 넣기
+
+                // div_lnk_2 가 01, 혹은 02일때 01 : 공지사항, 06 : 이벤트
+                if (save_item.lnk_gbn_val == "03") {
+                    save_item.recrut_sn = $("#ipt_lnk_4").val();
+                }
+            }
+
+            if (save_item.bnr_knd_cd == "02") {
+                var temp_list = $("#sortable2").children(".item").children(".list_value");
+                if (temp_list.length == 0) {
+                    console.log("내부링크 - 리스트 - 기업 - 선택없음");
+                }
+
+                for (var i = 0; i < temp_list.length; i++) {
+                    // var temp_sub_item = save_sub_item_list;
+                    //
+                    // temp_sub_item.bnr_dtl_sn = i + 1;
+                    // temp_sub_item.srt_sn = temp_sub_item.bnr_dtl_sn;
+                    //
+                    // if (save_item.lnk_gbn_cd == "01") {
+                    //     temp_sub_item.entp_mem_no = temp_list[i].dataset.listValue;
+                    // } else {
+                    //     temp_sub_item.recrut_sn = temp_list[i].dataset.listValue;
+                    // }
+                    //
+                    // console.log("sub_item : " + temp_sub_item);
+                    //
+                    // save_item.sub_item.push(temp_sub_item);
+
+                    var str = temp_list[i].dataset.listValue;
+                    save_item.sub_item.push(str);
+                }
+
+                console.log(temp_list);
+            }
+
+            // 외부링크
+            if (save_item.lnk_gbn_cd == "02") {
+                save_item.lnk_gbn_val = $("#ipt_text_val").val();
+            }
+
+            // 리스트 형테일때 리스트명, 내부 이미지, 링크주소 추가 등록
+            if (save_item.lnk_gbn_cd == "01" && save_item.bnr_knd_cd == "02") {
+                save_item.list_title = $("#ipt_text_lst_nm").val();
+                save_item.list_link_url = $("#ipt_text_lnk_addr").val();
+
+            }
+
+            //save_item.pp_mem_no = $("#").val();             // ?? 언제 넣는거냐 ??
+
+            // 애도 까먹었다 // div_lnk_1 가 02, LNK_GBN_CD가 01일때 들어감 -- 서브 아이템 SN인데 LNK_GBN_VAL, PTO_PATH, THUMB_PTO_PATH가 중요할듯
+            // 서브 타이틀 입력창 하나더 필요, 이미지 업로드 창도 하나 더 필요
+            //save_item.parent_bnr_sn = $("#").val();
+
+            save_item.publ_sdy = $("#cal_cont_publ_sdy").val().replace("-", "").replace("-", "");          // 날짜 입력
+            save_item.publ_edy = $("#cal_cont_publ_edy").val().replace("-", "").replace("-", "");          // 날짜 입력
+
+
+            save_item.use_yn = $('input[name="ipt_content_use_yn"]:checked').val();
+
+            save_item.bnr_img = $("#file_bnr_img")[0].files[0]; //이미지
+            if (save_item.img_yn != "N" && save_item.bnr_img == undefined) {
+                check_add_img("lbl_bnr_img", "이미지를 등록해 주세요!");
+
+                return false;
+            }
+
+            save_item.list_img = "";
+            if (save_item.list_img_yn == "Y") {
+                save_item.list_img = $("#file_bnr_list_img")[0].files[0]; //이미지
+            }
+
+            if (save_item.list_img_yn != "N" && save_item.list_img == undefined) {
+                check_add_img("lbl_bnr_list_img", "이미지를 등록해 주세요!");
+                //save_item.list_img = "";
+            }
+
+            if (edit_mode != "V") {
+                if (save_item.img_yn == "Y") {
+                    if (select_banner_item != undefined) {
+                        save_item.ori_img_file = select_banner_item.OriImgPath //기존이미지파일경로
+                        save_item.ori_img_file_ext = select_banner_item.OriImgPath.split('.').pop().toLowerCase(); //원본파일확장자
+                    }
+                } else {
+                    save_item.ori_img_file = "";
+                    save_item.ori_img_file_ext = "";
+                }
+            } else {
+                save_item.ori_img_file = "";
+                save_item.ori_img_file_ext = "";
+            }
+            if (select_banner_item != undefined && select_banner_item.ThumbPtoPath != "") {
+                save_item.ori_thumb_img_file = select_banner_item.ThumbPtoPath; //기존썸네일파일경로
+            }
+
+            if (save_item.img_yn == "Y") {
+                if (save_item.bnr_img != null && save_item.bnr_img != undefined) {
+                    save_item.img_ext = save_item.bnr_img.name.split('.').pop().toLowerCase(); //파일확장자
+                } else {
+                    save_item.img_ext = $("#img_bnr_view").attr("src").split('.').pop().toLowerCase(); //파일확장자
+                }
+            }
+
+            // 배너 이미지 영역
+
+            // 그룹 이미지 영역
+
+
+            if (edit_mode != "V") {
+                if (save_item.list_img_yn == "Y") {
+                    if (select_banner_item != undefined) {
+                        save_item.list_ori_img_file = select_banner_item.ListOriImgPath; //기존이미지파일경로
+                        save_item.list_ori_img_file_ext = select_banner_item.ListOriImgPath.split('.').pop().toLowerCase(); //원본파일확장자
+                    }
+                } else {
+                    save_item.list_ori_img_file = "";
+                    save_item.list_ori_img_file_ext = "";
+                }
+            } else {
+
+
+                save_item.list_ori_img_file = "";
+                save_item.ori_img_file_ext = "";
+            }
+
+            if (select_banner_item != undefined && select_banner_item.ListThumbPhotoPath != "") {
+                save_item.list_ori_thumb_img_file = select_banner_item.ListThumbPhotoPath; //기존썸네일파일경로
+            }
+
+            if (save_item.list_img_yn == "Y") {
+                if (save_item.list_img != null && save_item.list_img != undefined) {
+                    save_item.list_img_ext = save_item.list_img.name.split('.').pop().toLowerCase(); //파일확장자
+                } else {
+                    save_item.list_img_ext = $("#img_list_iew").attr("src").split('.').pop().toLowerCase(); //파일확장자
+                }
+            }
+
+            // 그룹 이미지 영역
+
+            //return;
+
+            var formData = new FormData();
+
+            formData.append("bnr_grp_sn", {{.BnrGrpSn}});
+            formData.append("bnr_grp_sub_sn", save_item.bnr_grp_sub_sn);
+            formData.append("bnr_sn", save_item.bnr_sn);
+            formData.append("bnr_title", save_item.bnr_title);
+            formData.append("bnr_sub_title", save_item.bnr_sub_title);
+            formData.append("list_title", save_item.list_title);
+
+            formData.append("list_link_url", save_item.list_link_url);
+            formData.append("lnk_gbn_cd", save_item.lnk_gbn_cd);
+            formData.append("bnr_knd_cd", save_item.bnr_knd_cd);
+            if (save_item.lnk_gbn_cd == "01" && save_item.bnr_knd_cd == "02") {
+                formData.append("lnk_gbn_list_val", save_item.sub_item);
+            } else {
+                formData.append("lnk_gbn_list_val", "");
+            }
+            formData.append("entp_mem_no", save_item.entp_mem_no);
+            formData.append("recruit_sn", save_item.recrut_sn);
+            formData.append("sn", save_item.sn);
+            if (save_item.lnk_gbn_cd == "01" || save_item.lnk_gbn_cd == "02") { //내부링크 혹은 외부링크
+                formData.append("lnk_gbn_val", save_item.lnk_gbn_val);
+            } else if (save_item.bnr_knd_cd == "02") { // 리스트 타입일떄
+                formData.append("lnk_gbn_val", save_item.list_link_url);
+            } else { //링크없음
+                formData.append("lnk_gbn_val", "");
+            }
+            formData.append("sdy", save_item.publ_sdy);
+            formData.append("edy", save_item.publ_edy);
+            formData.append("use_yn", save_item.use_yn);
+            formData.append("cu_cd", edit_mode);
+            // 배너 이미지 영역
+            formData.append("bnr_img", save_item.bnr_img);
+            formData.append("img_yn", save_item.img_yn);
+            formData.append("img_ext", save_item.img_ext);
+            formData.append("ori_img_file", save_item.ori_img_file);
+            formData.append("ori_thumb_img_file", save_item.ori_thumb_img_file);
+            formData.append("ori_img_file_ext", save_item.ori_img_file_ext);
+            // 배너 이미지 영역
+
+            // 그룹 이미지 영역
+            formData.append("list_img", save_item.list_img);
+            formData.append("list_img_yn", save_item.list_img_yn);
+            formData.append("list_img_ext", save_item.list_img_ext);
+            formData.append("list_ori_img_file", save_item.list_ori_img_file);
+            formData.append("list_ori_thumb_img_file", save_item.list_ori_thumb_img_file);
+            formData.append("list_ori_img_file_ext", save_item.list_ori_img_file_ext);
+
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/api/banner/save/",
+                data: formData,
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                error: function () {
+                    //e.preventDefault()
+                },
+                success: function (response) {
+                    console.log("/api/banner/save/ Result : " + response);
+                    //select_data();
+                    window.location.reload();
+                    //e.preventDefault();
+                    // if (response) {
+                    //
+                    // }
+                }
+            });
+        }
+
+        var default_banner_data = {
+            banner_group_type: "",
+            banner_group_title: "",
+        };
+
+        var default_contents_data = {};
+
+        var contents_data;
+
+        // Default Setting
+        function set_contents_default_data() {
+            edit_mode = "C";
+            save_item = default_save_item;
+
+            $("#ipt_contents_title").val('');
+            $("#ipt_lnk_0").val('');
+            $("#div_lnk_0_txt").addClass("default").html('링크구분');
+            $("#ipt_content_use_y").prop("checked", true);
+            $("#img_bnr_view").attr("src", "");
+            // $("#img_list_view").attr("src", "");
+            $("#file_bnr_img").val('');
+            //if ($("#file_bnr_list_img")[0] !=  $("#file_bnr_list_img")[0].files[0] = null;
+            $("#div_lnk_0").children("div").children("div .item").removeClass("active").removeClass("selected");
+
+            $("#tb_contents").find("div").removeClass("error");
+            $("#frm_error").html('').addClass("error");
+        };
+
+        $(document).off("click", "#btn_add_widget").on("click", "#btn_add_widget", function (e) {
+            edit_mode = "U";
+            save_item = default_save_item;
+            remove_link_list(0);
+            set_contents_default_data();
+            set_add_widget_modal_data();
+            save_item = default_save_item;
+
+            $("#pop_add_contents_header").html("콘텐츠 추가하기");
+            $("#btn_content_add_content").html("추가하기");
+
+            $('#pop_add_contents')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+
+            init_widget_datepicker();
+            init_content_modal();
+        });
+
+        // 모달닫기 //
+        $(document).off("click", ".btn_modal_close").on("click", ".btn_modal_close", function (e) {
+            $('.modal')
+                .modal('hide');
+        });
+        // 버튼 매핑 /
+
+        $(document).off("click", ".btn_edit_contents").on("click", ".btn_edit_contents", function (e) {
+            $("#pop_add_contents_header").html("콘텐츠 수정하기");
+            $("#btn_content_add_content").html("수정하기");
+            get_banner_detail(this.dataset.bnrSn, "U", this.dataset.bnrGrpSn, this.dataset.bnrGrpSubSn);
+        });
+
+        $(document).off("click", "#btn_view_edit").on("click", "#btn_view_edit", function (e) {
+            $("#pop_add_contents_header").html("콘텐츠 수정하기");
+            $("#btn_content_add_content").html("수정하기");
+            get_banner_detail(select_banner_item.BnrSn, "U", select_banner_item.BnrGrpSn, select_banner_item.BnrGrpSubSn);
+        });
+
+        $(document).off("click", ".view_content").on("click", ".view_content", function (e) {
+            get_banner_detail(this.dataset.bnrSn, "V", this.dataset.bnrGrpSn, this.dataset.bnrGrpSubSn);
+        });
+
+        var del_bnr_grp_sub_sn = "";
+
+        $(document).off("click", ".btn_del_contents").on("click", ".btn_del_contents", function (e) {
+            del_bnr_grp_sub_sn = this.dataset.bnrGrpSubSn;
+
+            $('#pop_all_del')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+            delete_contents();
+        });
+
+        $(document).off("click", "#btn_view_delete").on("click", "#btn_view_delete", function (e) {
+            del_bnr_grp_sub_sn = select_banner_item.BnrGrpSubSn;
+
+            $('#pop_all_del')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+            delete_contents();
+        });
+
+        $(document).off("click", "#btn_chk_del").on("click", "#btn_chk_del", function (e) {
+            $('#pop_all_del')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+            delete_contents();
+        });
+
+        $(document).off("click", "#btn_pop_all_del").on("click", "#btn_pop_all_del", function (e) {
+            if (del_bnr_grp_sub_sn != "") {
+                delete_contents(del_bnr_grp_sub_sn);
+                del_bnr_grp_sub_sn = "";
+                select_data();
+            } else {
+                var tbody = $('#div_list_body');
+                var check_list = get_check_all_item(tbody);
+
+                for (var i = 0; i < check_list.length; i++) {
+                    var bnr_grp_sub_sn = $(check_list[i].closest("tr")).data("bnr-grp-sub-sn");
+                    //console.log("bnr_grp_sn :: " + bnr_grp_sn);
+                    delete_contents(bnr_grp_sub_sn);
+                }
+                select_data();
+            }
+        });
+
+
+        function delete_contents(bnr_grp_sub_sn) {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/delete",
+                data: {
+                    bnr_grp_sub_sn: bnr_grp_sub_sn,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    //window.location.reload();
+                }
+            });
+        }
+
+
+        async function setOption(target_id, target_value) {
+            $("#" + target_id).val(target_value);
+
+            var target_link_depth = Number($("#" + target_id).data("link-depth"));
+            var target_link_type = Number($("#" + target_id).data("link-type"));
+            var target_value = $("#" + target_id).val();
+
+
+            await change_link_control(target_link_depth, target_link_type, target_value);
+
+
+            return true;
+        }
+
+        async function edit_contents() {
+            $('#pop_add_contents')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show');
+
+
+            // select_banner_item
+            // edit_mode
+            $("#ipt_contents_title").val(select_banner_item.BnrTitle);
+
+            $("#ipt_contents_title2").val(select_banner_item.BnrSubTitle);
+            //$("#file_bnr_img").val(select_banner_item.PtoPath);
+            $("#img_bnr_view").attr("src", select_banner_item.PtoPath);
+            save_item.img_yn = "N";
+            init_widget_datepicker(select_banner_item.Sdy, select_banner_item.Edy);
+
+            select_banner_item.UseYn == 0 ? $("#ipt_content_use_n").prop("checked", true) : $("#ipt_content_use_y").prop("checked", true);
+
+            // 내부, 외부, 처리
+
+            var temp_lnk_gbn_cd = Number(select_banner_item.LnkGbnCd);
+            $("#ipt_lnk_0").val(temp_lnk_gbn_cd).trigger('change');
+            if (temp_lnk_gbn_cd == 1) {
+                var temp_bnr_knd_cd = Number(select_banner_item.BnrKndCd);
+                $("#ipt_lnk_1").val(temp_bnr_knd_cd).trigger('change');
+                var temp_lnk_gbn_val = Number(select_banner_item.LnkGbnVal);
+                if (temp_bnr_knd_cd == 1) {
+                    // 일반
+                    await setOption("ipt_lnk_2", temp_lnk_gbn_val);
+
+                    if (temp_lnk_gbn_val == 1 || temp_lnk_gbn_val == 2) {
+                        // 공지사항, 이벤트
+                        await setOption("ipt_lnk_3", select_banner_item.Sn);
+                    } else if (temp_lnk_gbn_val == 3) {
+                        await setOption("ipt_lnk_3", select_banner_item.EntpMemNo);
+                        await setOption("ipt_lnk_4", select_banner_item.RecrutSn);
+                    } else if (temp_lnk_gbn_val == 4) {
+                        await setOption("ipt_lnk_3", select_banner_item.EntpMemNo);
+                    } else if (temp_lnk_gbn_val == 5) {
+                    } else if (temp_lnk_gbn_val == 6) {
+                    } else if (temp_lnk_gbn_val == 7) {
+                    }
+
+                } else if (temp_bnr_knd_cd == 2) {
+                    // 리스트
+                    await setOption("ipt_lnk_2", temp_lnk_gbn_val);
+
+                    $("#ipt_text_lst_nm").val(select_banner_item.ListTitle);
+                    $("#img_list_view").attr("src", select_banner_item.ListPhotoPath);
+                    save_item.img_yn = "N";
+                    $("#ipt_text_lnk_addr").val(select_banner_item.ListLinkUrl);
+                }
+            }
+
+            if (temp_lnk_gbn_cd == 2) {
+                console.log("리스트 temp_lnk_gbn_cd == 2")
+                $("#ipt_text_val").val(select_banner_item.LnkGbnVal);
+            }
+
+            $(".ui.dimmer.modals.page.inverted.transition.visible.active").css("overflow-y", "scroll");
+        }
+
+        async function view_contents() {
+            $('#pop_view_contents')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show');
+            init_type_label_view({{.BnrGrpTypCd}});
+
+            // select_banner_item
+            // edit_mode
+            $("#ipt_contents_title_view").val(select_banner_item.BnrTitle);
+            $("#ipt_contents_title2_view").val(select_banner_item.BnrSubTitle);
+            //$("#file_bnr_img").val(select_banner_item.PtoPath);
+            $("#img_bnr_view_view").attr("src", select_banner_item.PtoPath);
+            save_item.img_yn = "N";
+            init_widget_datepicker2(select_banner_item.Sdy, select_banner_item.Edy);
+
+            select_banner_item.UseYn == 0 ? $("#ipt_content_use_n_view").prop("checked", true) : $("#ipt_content_use_y_view").prop("checked", true);
+
+            // 내부, 외부, 처리
+
+            var temp_lnk_gbn_cd = Number(select_banner_item.LnkGbnCd);
+            $("#ipt_lnk_0_view").val(temp_lnk_gbn_cd).trigger('change');
+            if (temp_lnk_gbn_cd == 1) {
+                var temp_bnr_knd_cd = Number(select_banner_item.BnrKndCd);
+                $("#ipt_lnk_1_view").val(temp_bnr_knd_cd).trigger('change');
+                var temp_lnk_gbn_val = Number(select_banner_item.LnkGbnVal);
+                if (temp_bnr_knd_cd == 1) {
+                    // 일반
+                    await setOption("ipt_lnk_2_view", temp_lnk_gbn_val);
+
+                    if (temp_lnk_gbn_val == 1 || temp_lnk_gbn_val == 2) {
+                        // 공지사항, 이벤트
+                        await setOption("ipt_lnk_3_view", select_banner_item.Sn);
+                    } else if (temp_lnk_gbn_val == 3) {
+                        await setOption("ipt_lnk_3_view", select_banner_item.EntpMemNo);
+                        await setOption("ipt_lnk_4_view", select_banner_item.RecrutSn);
+                    } else if (temp_lnk_gbn_val == 4) {
+                        await setOption("ipt_lnk_3_view", select_banner_item.EntpMemNo);
+
+                    } else if (temp_lnk_gbn_val == 5) {
+                    } else if (temp_lnk_gbn_val == 6) {
+                    } else if (temp_lnk_gbn_val == 7) {
+                    }
+
+                } else if (temp_bnr_knd_cd == 2) {
+                    // 리스트
+                    await setOption("ipt_lnk_2_view", temp_lnk_gbn_val);
+
+                    $("#ipt_text_lst_nm_view").val(select_banner_item.ListTitle);
+                    $("#img_list_view_view").attr("src", select_banner_item.ListPhotoPath);
+                    save_item.img_yn = "N";
+                    $("#ipt_text_lnk_addr_view").val(select_banner_item.ListLinkUrl);
+                }
+            }
+
+            if (temp_lnk_gbn_cd == 2) {
+                console.log("리스트 temp_lnk_gbn_cd == 2")
+                $("#ipt_text_val_view").val(select_banner_item.LnkGbnVal);
+            }
+
+            $(".ui.dimmer.modals.page.inverted.transition.visible.active").css("overflow-y", "scroll");
+
+            $("#div_lnk_1_view").addClass("disabled");
+            $("#div_lnk_2_view").addClass("disabled");
+            $("#div_lnk_3_view").addClass("disabled");
+            $("#div_lnk_4_view").addClass("disabled");
+
+            $("#ipt_text_lst_nm_view").prop("readonly", true);
+            $("#ipt_text_lnk_addr_view").prop("readonly", true);
+
+            if (select_banner_item.UseYn == "1") {
+                $("#btn_view_modal_use_y").css("border", "0px").removeClass("btn_use_yn");
+                $("#btn_view_modal_use_n").css("border", "1px solid").addClass("btn_use_yn");
+            } else {
+                $("#btn_view_modal_use_n").css("border", "0px").removeClass("btn_use_yn");
+                $("#btn_view_modal_use_y").css("border", "1px solid").addClass("btn_use_yn");
+            }
+        }
+
+        var useValue;
+
+        $(document).off("click", ".btn_use_yn").on("click", ".btn_use_yn", function () {
+            useValue = this.dataset.useYn;
+
+            if (useValue == "1") {
+                $('#pop_use_y')
+                    .modal({
+                        allowMultiple: true,
+                        duration: 0,
+                        inverted: true,
+                    })
+                    .modal('show')
+                ;
+            } else {
+                $('#pop_use_n')
+                    .modal({
+                        allowMultiple: true,
+                        duration: 0,
+                        inverted: true,
+                    })
+                    .modal('show')
+                ;
+            }
+        });
+
+        $(document).off("click", "#btn_edit_title").on("click", "#btn_edit_title", function () {
+            $('#pop_edit_title')
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", "#btn_cancel_content_title").on("click", "#btn_cancel_content_title", function () {
+            $('#pop_edit_title')
+                .modal('hide')
+            ;
+        });
+
+        $(document).off("click", "#btn_save_content_title").on("click", "#btn_save_content_title", function () {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/title/update",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    content_title: $("#ipt_content_title").val(),
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+        });
+
+        $(document).off("click", "#btn_save_rol_tm").on("click", "#btn_save_rol_tm", function () {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/rolling/time/update",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    rol_tm: $("#ipt_rol_tm").val(),
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+
+        });
+
+        // 체크박스 전체 선택 //
+        $(document).off("click", "#chk_list_all").on("click", "#chk_list_all", function (item) {
+            var checked = $("#chk_list_all").is(":checked") == true ? true : false;
+            var checkbox_list = $('#div_list_body').find('input:checkbox');
+
+            $(checkbox_list).each(function (index) {
+                $(checkbox_list[index]).prop('checked', checked);
+            });
+
+            $("#lbl_count_select").html((checked == true ? numberWithCommas(checkbox_list.length) : 0) + "개 선택");
+        });
+
+        $(document).off("click", ".chk_item").on("click", ".chk_item", function (e) {
+            var tbody = $('#div_list_body');
+            var checked = $(tbody).find('input:checkbox').length == $(tbody).find('input:checkbox:checked').length ? true : false;
+            $("#lbl_count_select").html(numberWithCommas($(tbody).find('input:checkbox:checked').length) + "개 선택");
+            $("#chk_list_all").prop('checked', checked);
+        });
+
+        var useYnVal;
+        var checkItem;
+
+
+        $(document).off("click", ".btn_chk_use_yn").on("click", ".btn_chk_use_yn", function () {
+            useYnVal = this.dataset.useYnVal;
+
+            checkItem = "Y";
+
+            var pop_name = useYnVal === "1" ? "pop_all_use_y" : "pop_all_use_n";
+
+            $('#' + pop_name)
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+        });
+
+        $(document).off("click", ".btn_use_yn_all").on("click", ".btn_use_yn_all", function () {
+            useYnVal = this.dataset.useYnVal;
+            var pop_name = useYnVal === "1" ? "pop_all_use_y" : "pop_all_use_n";
+
+            $('#' + pop_name)
+                .modal({
+                    duration: 0,
+                    inverted: true,
+                })
+                .modal('show')
+            ;
+
+
+        });
+
+        $(document).off("click", ".btn_pop_all_use").on("click", ".btn_pop_all_use", function () {
+            if (checkItem === "Y") {
+                use_yn_check();
+            } else {
+                use_yn_all();
+            }
+        });
+
+        function get_check_all_item(body) {
+            return $(body).find('input:checkbox:checked');
+        }
+
+        // 복사
+        $(document).off("click", ".btn_copy_contents").on("click", ".btn_copy_contents", function (e) {
+            var bnr_grp_sub_sn = $(this).data("bnr-grp-sub-sn");
+
+            $.ajax({
+                type: "POST",
+                url: "/api/content/copy",
+                data: {
+                    bnr_grp_sub_sn: bnr_grp_sub_sn
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (response) {
+                    if (response) {
+                        console.log(response);
+
+                        select_data();
+                    }
+                }
+            });
+        });
+
+        // 복사
+        $(document).off("click", "#btn_view_copy").on("click", "#btn_view_copy", function (e) {
+
+            $.ajax({
+                type: "POST",
+                url: "/api/content/copy",
+                data: {
+                    bnr_grp_sub_sn: select_banner_item.BnrGrpSubSn
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (response) {
+                    if (response) {
+                        console.log(response);
+
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
+        $(document).off("click", ".btn_pop_use").on("click", ".btn_pop_use", function (e) {
+
+            $.ajax({
+                type: "POST",
+                url: "/api/content/banner/use/update",
+                data: {
+                    bnr_grp_sn: '',
+                    bnr_grp_sub_sn: select_banner_item.BnrGrpSubSn,
+                    use_yn: useValue,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    $('.modal')
+                        .modal('hide');
+                    select_data();
+                    get_banner_detail(select_banner_item.BnrSn, "V", select_banner_item.BnrGrpSn, select_banner_item.BnrGrpSubSn);
+                }
+            });
+
+        });
+
+        function use_yn_check() {
+            var tbody = $('#div_list_body');
+            var check_list = get_check_all_item(tbody);
+
+
+            for (var i = 0; i < check_list.length; i++) {
+                var bnr_grp_sub_sn = $(check_list[i].closest("tr")).data("bnr-grp-sub-sn");
+                $.ajax({
+                    type: "POST",
+                    url: "/api/content/banner/use/update",
+                    data: {
+                        bnr_grp_sn: '',
+                        bnr_grp_sub_sn: bnr_grp_sub_sn,
+                        use_yn: useYnVal,
+                    },
+                    dataType: "json",
+                    error: function () {
+                    },
+                    success: function (rep) {
+                        window.location.reload();
+                    }
+                });
+            }
+
+            checkItem = "N";
+        }
+
+        function use_yn_all() {
+            $.ajax({
+                type: "POST",
+                url: "/api/content/banner/use/update",
+                data: {
+                    bnr_grp_sn: {{.BnrGrpSn}},
+                    bnr_grp_sub_sn: '',
+                    use_yn: useYnVal,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+
+{{end}}
