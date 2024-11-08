@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {{template "base/head.html" .}}
+</head>
+<body class="fix-header">
+<!-- preloader start -->
+{{template "base/preloader.html" .}}
+<!-- preloader end -->
+
+    <!-- ============================================================== -->
+    <!-- Wrapper -->
+    <!-- ============================================================== -->
+    <div id="wrapper">
+            <!-- ============================================================== -->
+            <!-- Topbar header - style you can find in pages.scss -->
+            <!-- ============================================================== -->
+            {{template "base/topnavi.html" .}}
+            {{template "base/leftsidebar.html" .}}
+
+            <!-- content page start -->
+            {{template "contentPage" .}}
+            <!-- content page end -->
+
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    {{template "base/alljquery.html" .}}
+
+<!-- footer start -->
+{{template "base/footer.html" .}}
+<!-- footer end -->
+</body>
+</html>
