@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 
-	"github.com/astaxie/beego/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	"gopkg.in/rana/ora.v4"
 	"managert.ziggam.com/models"
@@ -17,8 +16,8 @@ type ApiGetBannerGroupDetailListController struct {
 
 func (c *ApiGetBannerGroupDetailListController) Get() {
 	// start : log
-	log := logs.NewLogger()
-	log.SetLogger(logs.AdapterConsole)
+	// log := logs.NewLogger()
+	// log.SetLogger(logs.AdapterConsole)
 	// end : log
 
 	imgServer, _ := beego.AppConfig.String("viewpath")
@@ -53,7 +52,7 @@ func (c *ApiGetBannerGroupDetailListController) Get() {
 	// 그룹 배너 단일 내역
 
 	// 그룹 배너 상세 리스트
-	log.Debug("CALL MNG_LIST_GRP_BAR_DTL_INFO('%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
+	logs.Debug("CALL MNG_LIST_GRP_BAR_DTL_INFO('%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
 		pLang, pBnrGrpSn, pBnrGrpTypCd, pUseYn, pPublStat, pPublSdy, pPublEdy, pRegSdy, pRegEdy, pKeyword)
 	stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL MNG_LIST_GRP_BAR_DTL_INFO('%v', '%v', '%v', '%v','%v', '%v','%v', '%v','%v', '%v',:1)",
 		pLang, pBnrGrpSn, pBnrGrpTypCd, pUseYn, pPublStat, pPublSdy, pPublEdy, pRegSdy, pRegEdy, pKeyword),
