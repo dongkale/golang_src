@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/astaxie/beego/logs"
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 
 	// "bizt.ziggam.com/models"
@@ -53,10 +53,10 @@ func (c *LoginController) Get() {
 }
 
 func (c *LoginController) Post() {
-	// start : log
-	log := logs.NewLogger()
-	log.SetLogger(logs.AdapterConsole)
-	// end : log
+	// // start : log
+	// log := logs.NewLogger()
+	// log.SetLogger(logs.AdapterConsole)
+	// // end : log
 
 	session := c.Ctx.Input.CruSession
 	//session := c.StartSession()
@@ -91,7 +91,7 @@ func (c *LoginController) Post() {
 	sha.Write([]byte(pPwd))
 	sha_pPwd := hex.EncodeToString(sha.Sum(nil))
 
-	fmt.Println(sha_pPwd)
+	logs.Debug(sha_pPwd)
 
 	// Start : Oracle DB Connection
 	env, srv, ses, err := GetRawConnection()
@@ -103,7 +103,7 @@ func (c *LoginController) Post() {
 	}
 	// End : Oracle DB Connection
 
-	fmt.Println(fmt.Sprintf("CALL ZSP_LOGIN_PROC( '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
+	logs.Debug(fmt.Sprintf("CALL ZSP_LOGIN_PROC( '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
 		pLang, pMemTypCd, pMemId, sha_pPwd, pLoginMtnYn, shaTknKey, pOsGbn, pIpAddress))
 
 	stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL ZSP_LOGIN_PROC( '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",

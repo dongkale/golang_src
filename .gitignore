@@ -4,6 +4,7 @@ __backup
 node_modules/
 */vender/
 /vendor
+/vendor/*
 
 *.exe
 *.mov
@@ -15,3 +16,6 @@ node_modules/
 *.jpeg
 
 __*
+
+*/static/
+go-gin-example02-ex/vendor

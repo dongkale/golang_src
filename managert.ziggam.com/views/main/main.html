@@ -8,10 +8,10 @@
         <!-- 상단 메뉴 -->
         <div class="row top_menu">
             <div class="ui eight item menu">
-                <a href="main" class="{{if eq "" .BnrGrpTypCd}}active{{end}} item">전체</a>
-                <a href="main?bnr_grp_typ_cd=RL" class="{{if eq "RL" .BnrGrpTypCd}}active{{end}} item">롤링 배너</a>
-                <a href="main?bnr_grp_typ_cd=GD" class="{{if eq "GD" .BnrGrpTypCd}}active{{end}} item">그리드 배너</a>
-                <a href="main?bnr_grp_typ_cd=CL" class="{{if eq "CL" .BnrGrpTypCd}}active{{end}} item">기업 리스트</a>
+                <a href="main"                   class="{{ if eq ""   .BnrGrpTypCd}}active{{end}} item">전체</a>
+                <a href="main?bnr_grp_typ_cd=RL" class="{{ if eq "RL" .BnrGrpTypCd}}active{{end}} item">롤링 배너</a>
+                <a href="main?bnr_grp_typ_cd=GD" class="{{ if eq "GD" .BnrGrpTypCd}}active{{end}} item">그리드 배너</a>
+                <a href="main?bnr_grp_typ_cd=CL" class="{{ if eq "CL" .BnrGrpTypCd}}active{{end}} item">기업 리스트</a>
                 <a href="main?bnr_grp_typ_cd=RL" class="item disabled">채용 공고 리스트</a>
                 <a href="main?bnr_grp_typ_cd=CH" class="item disabled">기업관</a>
                 <a href="main?bnr_grp_typ_cd=RH" class="item disabled">채용관</a>
@@ -1685,7 +1685,6 @@
             return ret_val;
         }
 
-        // 컨텐츠 추가 //
-        <!-- 컨텐츠 추가 영역 -->
+        // 컨텐츠 추가 //        
     </script>
 {{end}}
