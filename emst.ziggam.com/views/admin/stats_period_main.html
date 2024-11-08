@@ -1,0 +1,526 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+        <!-- top start -->
+        {{template "include/top.html" .}}
+        <!-- top end -->
+        <!-- 페이지 영역 -->
+        <div class="content_stat jui">
+            <h2>통계 관리</h2>
+            <div class="periodList">
+                <input type="hidden" id="page_no" value="{{.PageNo}}">
+                <div class="tabMenu">
+                    <ul>
+                        <li><a href="/admin/stats/main">회원 현황</a></li>
+                        <li><a href="/admin/stats/recruit/main">채용 현황</a></li>
+                        <li class="active"><a href="/admin/stats/period/main">기간별 현황</a></li>
+                    </ul>
+                </div>
+                <div class="listBox">
+                    <div class="topSec">
+                        <div class="posL">
+                            <select name="search_type" id="search_type" class="select w230">
+                                <option value="01" selected>공고 내역 + 기간(시작일, 종료일)</option>
+                                <option value="02">지원 내역</option>
+                                <option value="03">원웨이 내역</option>
+                                <option value="04">라이브 내역(전체)</option>
+                                <option value="05">라이브 내역(예정/종료)</option>                                    
+                                <option value="06">다대다 라이브 내역(전체)</option>                                
+                            </select>                                    
+                            </td>                            
+                            <input type="text" id="sdy" class="sdy"/>&nbsp;~&nbsp;
+                            <input type="text" id="edy" class="edy"/>
+                            <input type="text" id="entp_ko_nm" class="entpKoNm" placeholder="기업명"/>                            
+                            <select name="jobfair" id="jobfair" class="select jobfair" size="3" multiple>                                
+                                <option value=""  data-title="박람회 미지정">박람회 미지정</option>
+                                {{range .JobFairList}}
+                                    <option value="{{.MngCd}}" data-title="{{.Title}}">{{.Title}}</option>
+                                {{end}}                                
+                            </select>                                                        
+                            <a id="btn_search" class="btn"><img style="padding:6px 6px 6px 2px" src="/static/images/search_326690.png">검색</a>
+                            <a id="table_period_btn" download="table.csv" class="btn"><img style="padding:6px 6px 6px 2px" src="/static/images/excel_2993694.png"></img>Excel Download</a>                            
+                        </div>
+                    </div>
+					<br/>
+                    <br/>
+                    <br/>
+                    <br/>                    
+                    <div class="periodList">
+                        <table id="table_period" class="table simple headline">
+                            <thead id="period_head">
+                            <tr style="border: 1px solid #eeeeee">
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <script id="period01" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>
+                            <td><!= RecrutSn !></td>          
+                            <td><!= RecrutJfMngCd !></td>        
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>          
+                            <td><!= DcmntUseCd !></td>          
+                            <td><!= OnwyUseCd !></td>          
+                            <td><!= LiveIntrvUseCd !></td>          
+                            <td><!= Sdy !></td>
+                            <td><!= Edy !></td>
+                            <td><!= RecrutEdt !></td>
+                            <td><!= RegDt !></td>
+                            </tr>
+                        </script>
+                        <script id="period02" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>
+                            <td><!= RecrutSn !></td>          
+                            <td><!= RecrutJfMngCd !></td>        
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>          
+                            <td><!= RegDt !></td>
+                            <td><!= Nm !></td>
+                            <td><!= PpMemNo !></td>
+                            <td><!= Sex !></td>
+                            <td><!= Birth !></td>
+                            <td><!= MoNo !></td>
+                            <td><!= Email !></td>
+                            <td><!= LstEdu !></td>                            
+                            <td><!= LstEduDesc !></td>
+                            <td><!= CarrGbn !></td>
+                            <td><!= CarrGbnDesc !></td>
+                            <td><!= TechQlftKnd !></td>
+                            <td><!= FrgnLangAbltDesc !></td>
+                            </tr>
+                        </script>
+                        <script id="period03" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>
+                            <td><!= RecrutSn !></td>          
+                            <td><!= RecrutJfMngCd !></td>   
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>          
+                            <td><!= RegDt !></td>
+                            <td><!= OneWayDt !></td>
+                            <td><!= OneWayCnt !></td>
+                            <td><!= OneWayType !></td>
+                            <td><!= Nm !></td>
+                            <td><!= Sex !></td>
+                            <td><!= Birth !></td>
+                            <td><!= MoNo !></td>
+                            <td><!= Email !></td>
+                            <td><!= LstEdu !></td>                            
+                            <td><!= LstEduDesc !></td>
+                            <td><!= CarrGbn !></td>
+                            <td><!= CarrGbnDesc !></td>
+                            <td><!= TechQlftKnd !></td>
+                            <td><!= FrgnLangAbltDesc !></td>
+                            </tr>
+                        </script>
+                        <script id="period04" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>                            
+                            <td><!= RecrutSn !></td>                           
+                            <td><!= RecrutJfMngCd !></td>
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>                           
+                            <td><!= RequestDt !></td>                            
+                            <td><!= BeginDt !></td>
+                            <td><!= EndDt !></td>
+                            <td><!= LiveState !></td>                            
+                            <td><!= Nm !></td>
+                            <td><!= Sex !></td>
+                            <td><!= Birth !></td>
+                            <td><!= MoNo !></td>
+                            <td><!= Email !></td>
+                            <td><!= LstEdu !></td>                            
+                            <td><!= LstEduDesc !></td>
+                            <td><!= CarrGbn !></td>
+                            <td><!= CarrGbnDesc !></td>
+                            <td><!= TechQlftKnd !></td>
+                            <td><!= FrgnLangAbltDesc !></td>
+                            </tr>
+                        </script>
+                        <script id="period05" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>
+                            <td><!= RecrutSn !></td>          
+                            <td><!= RecrutJfMngCd !></td>
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>            
+                            <td><!= ConfirmDt !></td>
+                            <td><!= BeginDt !></td>
+                            <td><!= EndDt !></td>
+                            <td><!= Nm !></td>
+                            <td><!= Sex !></td>
+                            <td><!= Birth !></td>
+                            <td><!= MoNo !></td>
+                            <td><!= Email !></td>
+                            <td><!= LstEdu !></td>                            
+                            <td><!= LstEduDesc !></td>
+                            <td><!= CarrGbn !></td>
+                            <td><!= CarrGbnDesc !></td>
+                            <td><!= TechQlftKnd !></td>
+                            <td><!= FrgnLangAbltDesc !></td>
+                            </tr>
+                        </script>
+                        <script id="period06" data-tpl="row" type="application/json" class="period_template">
+                            <tr style="background:#fff;text-align: center;">
+                            <<td><!= EntpKoNm !></td>
+                            <td><!= EntpMemNo !></td>
+                            <td><!= JobFairCds !></td>
+                            <td><!= RecrutTitle !></td>           
+                            <td><!= RecrutSn !></td>          
+                            <td><!= RecrutJfMngCd !></td>
+                            <td><!= UpJobGrp !></td>          
+                            <td><!= JobGrp !></td>                           
+                            <td><!= RequestDt !></td>                            
+                            <td><!= BeginDt !></td>
+                            <td><!= EndDt !></td>                            
+                            <td><!= ApplyList !></td>
+                            <td><!= MemList !></td>                            
+                            <td><!= LiveState !></td>    
+                            </tr>
+                        </script>                        
+                        <script data-jui="#table_period_contents" data-tpl="none" type="application/json">
+                            <tr>
+                            <td colspan="20" class="none" align="center" style="height:120px;">검색된 내용이 없습니다.</td>
+                            </tr>
+                        </script>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script type="text/javascript">
+        // var table_period_contents;
+
+        // Set DatePicker
+        {
+            $("#sdy").val(moment().add('day', -7).format('YYYY-MM-DD'));
+            $("#edy").val(moment().format('YYYY-MM-DD'));
+        }
+
+        // Set SelectBox
+        // {
+        //     jui.ready(["ui.combo"], function (combo) {
+        //         combo_1 = combo("#btnPeriodType", {
+        //             index: 0,
+        //             event: {
+        //                 change: function (data) {
+        //                     onSelectPeriod();
+        //                 }
+        //             }
+        //         });
+        //     });
+        // }
+
+        $(document).ready(function () {            
+            onSelectPeriod();
+
+        });
+
+        function onSelectPeriod() {
+            //var type = $("#btnPeriodType").attr("value");
+            var search_type = $("select[id=search_type] option:selected").val();
+            //search_type = (search_type == '0') ? '' : search_type;
+
+            var sdy = $("#sdy").val().replace(/\-/g, '');  //$("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+            var edy = $("#edy").val().replace(/\-/g, ''); //$("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+
+            var entp_ko_nm = $("#entp_ko_nm").val().replace(/\-/g, '');
+            //var jf_mng_cd = $("#jf_mng_cd").val().replace(/\-/g, '');
+            //var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+
+            var jobfair_list = [];
+            $('#jobfair :selected').each(function(i, sel){                 
+                //console.log( "============================== " +  );
+                var __value = $(sel).val();
+                if (__value.length > 0)
+                    jobfair_list.push($(sel).val());
+            });
+
+            //console.log( "============================== " + jobfair_list.join(",") );
+
+            console.log(`search_type:${search_type}, sdy:${sdy}, edy:${edy}, entp_ko_nm:${entp_ko_nm}, jf_mng_cd_list:${JSON.stringify(jobfair_list)}`);
+
+            ajaxSelectPeriod(search_type, sdy, edy, entp_ko_nm, jobfair_list.join(","));
+        }
+
+        // $( "#entp_ko_nm" ).keydown(function(event) {
+        //     if(event.keyCode == 13) {
+        //         onSelectPeriod();                
+        //     }
+        // });
+
+        // $( "#jf_mng_cd" ).keydown(function(event) {
+        //     if(event.keyCode == 13) {
+        //         onSelectPeriod();                
+        //     }
+        // });
+
+        $( "#entp_ko_nm" ).change(function(event) {
+            console.log("[Change] entp_ko_nm")
+        });
+        
+        $( "#search_type" ).change(function () {
+                onSelectPeriod();                
+            //console.log("[Change] search_type")
+        });
+
+        $( "#jobfair" ).change(function () {            
+                onSelectPeriod();                
+        });
+        
+
+        $("#jobfair").click(function () {         
+            console.log("[click]");
+        });
+
+        $("#jobfair").select(function () {         
+            console.log("[select]");
+        });
+                
+        
+        $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {            
+            onSelectPeriod();
+        });          
+
+        function setPeriodGrid(type, data) {
+            var csvKey = [];
+            var csvTitle = [];
+            var fileName = "";
+
+            if (type == "01") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "DcmntUseCd", "OnwyUseCd", "LiveIntrvUseCd", "Sdy", "Edy", "RecrutEdt", "RegDt"];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "서류전형", "원웨이 인터뷰", "라이브 인터뷰", "모집 시작", "모집 종료", "마감시간", "등록일"];
+                fileName = "공고내역";
+            } else if (type == "02") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "RegDt", "Nm", "PpMemNo",  "Sex", "Birth", "MoNo", "Email", "LstEdu", "LstEduDesc", "CarrGbn", "CarrGbnDesc", "TechQlftKnd", "FrgnLangAbltDesc"];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "지원일", "지원자", "개인번호", "성별", "생년월일", "휴대폰 번호", "이메일", "최종학력", "최종학력설명", "경력사항", "경력설명", "자격증", "외국어", ];
+                fileName = "지원 내역";
+            } else if (type == "03") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "RegDt", "OneWayDt", "OneWayCnt", "OneWayType", "Nm", "Sex", "Birth", "MoNo", "Email", "LstEdu", "LstEduDesc", "CarrGbn", "CarrGbnDesc", "TechQlftKnd", "FrgnLangAbltDesc"];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "지원일", "원웨이등록일", "원웨이 갯수", "원웨이 타입", "지원자", "성별", "생년월일", "휴대폰 번호", "이메일", "최종학력", "최종학력설명", "경력사항", "경력설명", "자격증", "외국어", ];
+                fileName = "원웨이 내역";            
+            } else if (type == "04") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "RequestDt", "BeginDt", "EndDt", "LiveState", "Nm", "Sex", "Birth", "MoNo", "Email", "LstEdu", "LstEduDesc", "CarrGbn", "CarrGbnDesc", "TechQlftKnd", "FrgnLangAbltDesc"];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "인터뷰 요청시간", "인터뷰 시작시간", "인터뷰 종료시간", "라이브 상태", "지원자", "성별", "생년월일", "휴대폰 번호", "이메일", "최종학력", "최종학력설명", "경력사항", "경력설명", "자격증", "외국어", ];
+                fileName = "라이브내역(전체)";
+            } else if (type == "05") { 
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "ConfirmDt", "BeginDt", "EndDt", "Nm", "Sex", "Birth", "MoNo", "Email", "LstEdu", "LstEduDesc", "CarrGbn", "CarrGbnDesc", "TechQlftKnd", "FrgnLangAbltDesc"];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "인터뷰 확정시간", "인터뷰 시작시간", "인터뷰 종료시간", "지원자", "성별", "생년월일", "휴대폰 번호", "이메일", "최종학력", "최종학력설명", "경력사항", "경력설명", "자격증", "외국어", ];
+                fileName = "라이브내역(예정/종료)";
+            } else if (type == "06") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "RequestDt", "BeginDt", "EndDt", "ApplyList", "MemList", "LiveState" ];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "인터뷰 요청시간", "인터뷰 시작시간", "인터뷰 종료시간", "면접자", "면접관", "라이브 상태" ];
+                fileName = "다대다 라이브내역(전체)";            
+            } else if (type == "07") {
+                csvKey = ["EntpKoNm", "EntpMemNo", "JobFairCds", "RecrutTitle", "RecrutSn", "RecrutJfMngCd", "UpJobGrp", "JobGrp", "RequestDt", "BeginDt", "EndDt", "ApplyList", "MemList", "LiveState" ];
+                csvTitle = ["회사명", "회사번호", "박람회 코드(기업)", "모집 공고", "모집 공고 번호", "박람회 코드(공고)", "직군", "직무", "인터뷰 요청시간", "인터뷰 시작시간", "인터뷰 종료시간", "면접자", "면접관", "라이브 상태" ];
+                fileName = "다대다 라이브내역(전체)";            
+            }
+
+            fileName = moment().format("YYYYMMDDHHmmss_") + fileName + ".xls";
+            $("#table_period_btn").attr("download", fileName);
+
+            $("#period_head").html("");
+            csvTitle.forEach(function (item) {
+                var style_str = 'border:1px solid #eeeeee;text-align: center;background: #eff0f0;height: 33px;font-size: 15px;font-family: "Noto Sans Bold";color: #000025;'
+
+                if (item.indexOf("박람회 코드") != -1) {
+                    style_str += 'width:115px';
+                }
+                else if (item.indexOf("이메일") != -1) {
+                    style_str += 'width:170px';
+                }
+                else if (item.indexOf("경력사항") != -1) {
+                    style_str += 'width:70px';
+                }
+                else if (item.indexOf("시간") != -1) {
+                    style_str += 'width:145px';
+                }
+                else if (item.indexOf("성별") != -1) {                    
+                    style_str += 'width:30px';
+                }                 
+                else if (item.indexOf("지원자") != -1) {                    
+                    style_str += 'width:100px';
+                }
+                else if (item.indexOf("생년월일") != -1) {                    
+                    style_str += 'width:80px';
+                }
+                else if (item.indexOf("휴대폰 번호") != -1) {                    
+                    style_str += 'width:110px';
+                }
+                else if (item.indexOf("원웨이 갯수") != -1) {                    
+                    style_str += 'width:80px';
+                }
+                else if (item.indexOf("원웨이 타입") != -1) {                    
+                    style_str += 'width:80px';
+                }                
+                else if (item.indexOf("지원일") != -1 || 
+                         item.indexOf("원웨이등록일") != -1 || 
+                         item.indexOf("인터뷰 요청시간") != -1 || 
+                         item.indexOf("인터뷰 시작시간") != -1 || 
+                         item.indexOf("인터뷰 종료시간") != -1 ||
+                         item.indexOf("마감시간") != -1 ||
+                         item.indexOf("등록일") != -1 ) {                    
+                    style_str += 'width:130px';
+                }
+                else if (item.indexOf("라이브 상태") != -1) {                    
+                    style_str += 'width:80px';
+                }
+                else if (item.indexOf("모집 공고 번호") != -1) {                    
+                    style_str += 'width:90px';
+                }
+                else if (item.indexOf("회사번호") != -1) {                    
+                    style_str += 'width:115px';
+                }                               
+                else if (item.indexOf("모집 공고") != -1) {                    
+                    style_str += 'width:200px';
+                }                      
+                else if (item.indexOf("모집 시작") != -1 || item.indexOf("등록일") != -1) {                    
+                    style_str += 'width:70px';
+                }
+                else if (item.indexOf("면접자") != -1) {                    
+                    style_str += 'width:180px';
+                }
+                else if (item.indexOf("면접관") != -1) {                    
+                    style_str += 'width:180px';
+                }
+                else {                    
+                    style_str += 'width:110px';
+                }                               
+
+                $("#period_head").append("<td style='" + style_str + "'>" + item + "</td>");    
+            });
+
+            var table_period;
+            {
+                jui.ready(["grid.table"], function (table) {
+                    $('#table_period > tbody').empty();
+                    
+                    table_period = table("#table_period", {
+                        data: data,
+                        csv: csvKey,
+                        csvNames: csvTitle,
+                        tpl: {
+                            row: $("#period" + type).html()
+                        },
+                    });
+
+                    $("#table_period_btn").attr("href", table_period.getCsvBase64());
+                });
+            }
+        }
+
+        $(function () {
+            $('#sdy').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: $('#edy').val() ? $('#edy').val() : false
+                    })
+                },
+                onClose: function () {
+                    onSelectPeriod();
+                     console.log("[onClose]")
+                },
+                timepicker: false,
+            });
+            $('#edy').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: $('#sdy').val() ? $('#sdy').val() : false
+                    })
+                },
+                onClose: function () {
+                    onSelectPeriod();
+                    console.log("[onClose]")
+                },
+                timepicker: false,
+            });
+        });
+
+        // 조회 API
+        var ajaxSelectPeriod = function (search_type, sdy, edy, entp_ko_nm, jf_mng_cd) {
+            console.log(`[ajaxSelectPeriod] search_type:${search_type}, sdy:${sdy}, edy:${edy}`);
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/stats/period/api",
+                data: {
+                    search_type: search_type,
+                    sdy: sdy,
+                    edy: edy,
+                    entp_ko_nm: entp_ko_nm,
+                    jf_mng_cd: jf_mng_cd
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    if (rep.Result.length > 0) {
+                        //console.log(`Result:${JSON.stringify(rep.Result)}`);
+                        console.log(`Result =====>`);
+                        console.log(rep.Result);
+                        console.log(`Result <=====`);
+                        
+                        // var __jf = rep.JobFairList;
+                        // console.log("=====================" + JSON.stringify(__jf));
+
+                        setPeriodGrid(search_type, rep.Result);
+                        //table_period_contents.refresh(type, rep.Result);
+                    } else {
+                        setPeriodGrid(search_type, "");
+                    }
+                }
+            });
+        }
+
+        $(document).off("click", "#table_period_btn").on("click", "#table_period_btn", function(e) {                    
+            var search_type = $("select[id=search_type] option:selected").val();
+            //search_type = (search_type == '0') ? '' : search_type;
+
+            var sdy = $("#sdy").val().replace(/\-/g, '');  //$("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+            var edy = $("#edy").val().replace(/\-/g, ''); //$("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+
+            var entp_ko_nm = $("#entp_ko_nm").val().replace(/\-/g, '');
+            //var jf_mng_cd = $("#jf_mng_cd").val().replace(/\-/g, '');
+            //var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+
+            var jobfair_list = [];
+            $('#jobfair :selected').each(function(i, sel){                 
+                //console.log( "============================== " +  );
+                var __value = $(sel).val();
+                if (__value.length > 0)
+                    jobfair_list.push($(sel).val());
+            });
+
+            //console.log( "============================== " + jobfair_list.join(",") );
+
+            console.log(`search_type:${search_type}, sdy:${sdy}, edy:${edy}, entp_ko_nm:${entp_ko_nm}, jf_mng_cd_list:${JSON.stringify(jobfair_list)}`);
+        }); 
+    </script>
+
+{{end}}

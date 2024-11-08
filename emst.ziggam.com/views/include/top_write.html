@@ -1,0 +1,25 @@
+      <!-- 상단 고정아이콘 -->
+      <ul class="topMenu">
+        <!-- 새알람이 있는경우 class="new" 추가 -->
+        {{if eq "1" .BasicNotificationYn}}
+        <li class="ico message active"><a href="/notification/list" title="알림"><span>알림</span></a></li>
+          {{else}}
+        <li class="ico message"><a href="/notification/list" title="알림"><span>알림</span></a></li>
+        {{end}}
+        <li class="ico notice active"><a href="/notice/list" title="공지사항"><span>공지사항</span></a></li>
+        <li class="ico request"><a href="/inquiry/list" title="문의하기"><span>문의하기</span></a></li>
+        <!-- 설청 클릭시 class="active" 추가 -->
+        <li class="ico setting">
+          <a href="javascript:void(0);" title="설정"><span>설정</span></a>
+          <ul>
+            <li><a href="/common/change/pwd">비밀번호 변경</a></li>
+            <li><a href="/common/logout">로그아웃</a></li>
+          </ul>
+        </li>
+     </ul>
+     <span class="topMenuWrap"></span>
+     <!-- // 상단 고정아이콘 -->
+     <!-- bg 이미지영역 -->
+     <span class="topBg"></span>
+     <span class="bottomBg"></span>
+     

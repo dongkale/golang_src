@@ -1,0 +1,167 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->   
+      <div class="content">
+        <div class="mainNoti">
+          <ul>
+            <!-- 24시간내 등록된 공지사항에 class="new" 추가 -->
+            {{if .MainNotiList}}
+            {{range .MainNotiList}}
+            <li class='{{if eq "Y" .NotiNewYn}}new{{end}}'>
+              <span class="date">{{.NotiRegDt}}</span>
+              <a href="javascript:void(0);" id="btn_noti_dtl" data-sn="{{.NotiSn}}">{{.NotiTitle}}</a>
+            </li>
+            {{end}}
+            {{else}}
+              <li class="noData">등록된 공지사항이 없습니다.</li>
+            {{end}}
+          </ul>
+        </div>
+        <ul class="mainStat">
+          <li class="stat01">
+            <p class="tit">기업 홍보 재생 수</p>
+            <dl>
+              <dt>오늘</dt>
+              <dd><span>{{.VideoTodaycnt}}</span>회</dd>
+            </dl>
+            <dl>
+              <dt>누적</dt>
+              <dd><span>{{.VideoTotCnt | IntFmt}}</span>회</dd>
+            </dl>
+          </li>
+          <li class="stat02">
+            <p class="tit">공고 현황</p>
+            <dl>
+              <dt>진행중</dt>
+              <dd><span>{{.RecrutIngCnt}}</span>건</dd>
+            </dl>
+            <dl>
+              <dt>누적</dt>
+              <dd><span>{{.RecrutTotCnt}}</span>건</dd>
+            </dl>
+          </li>
+          <li class="stat03">
+            <p class="tit">지원자 현황</p>
+            <dl>
+              <dt>오늘</dt>
+              <dd><span>{{.ApplyTodayCnt}}</span>명</dd>
+            </dl>
+            <dl>
+              <dt>누적</dt>
+              <dd><span>{{.ApplyTotCnt}}</span>명</dd>
+            </dl>
+          </li>
+        </ul>
+        <div class="mainData">
+          {{if .MainRecruitList}}
+          <div class="mainList">
+            <p class="tit">채용 공고 관리</p>
+            <a href="/recruit/post/list" class="btnMore">전체 보기 &gt;</a>
+            <ul>
+            {{range .MainRecruitList}} 
+            <li>
+              <a href="javascript:void(0);" id="btn_recruit_dtl" data-mem_no="{{.RcEntpMemNo}}" data-recruit_sn="{{.RcRecrutSn}}" class="link">
+                <span class="listTit">{{.RcRecrutTitle}}</span>
+                <span class="moreText">
+                  <em>{{if eq "R" .RcEmplTyp}}정규직{{else}}아르바이트{{end}}</em> |
+                  <em>{{.RcUpJobGrp}} &gt; {{.RcJobGrp}}</em> |
+                  <em>{{.RcRecrutDy}}</em>
+                </span>
+              </a>
+              <a href="javascript:void(0);" id="btn_apply_stat" data-mem_no="{{.RcEntpMemNo}}" data-recruit_sn="{{.RcRecrutSn}}" class="supportInfo">
+                지원 현황
+                {{if gt 0 .RcNewCnt}}
+                <span class="new">신규 {{.RcNewCnt}}</span>
+                {{end}}
+              </a>
+            </li>
+            {{end}}
+            </ul>
+          </div>
+          {{else}}
+          <div class="mainList">
+            <p class="tit">채용 공고 관리</p>
+            <p class="noData">진행중인 공고가 없습니다.</p>
+          </div>
+          {{end}}
+          {{if .MainApplyList}}
+          <div class="mainUser">
+            <p class="tit">마감 임박 지원자</p>
+            <a href="/applicant/list" class="btnMore">전체 보기 &gt;</a>
+            <ul>
+            {{range .MainApplyList}}
+            <li>
+              <a href="javascript:void(0);" id="btn_apply_dtl" data-mem_no="{{.ApEntpMemNo}}" data-recruit_sn="{{.ApRecrutSn}}" data-pp_mem_no="{{.ApPpMemNo}}" class="userText">
+                <span class="userTit">지원 공고</span>                  
+                <span class="profile">
+                  {{if eq "M" .ApSex}}
+                  <em class="img"><img src="{{.ApPtoPath}}"  onerror="this.src='/static/images/male_no_img.png'" alt="프로필사진"></em>
+                  {{else}}
+                  <em class="img"><img src="{{.ApPtoPath}}"  onerror="this.src='/static/images/female_no_img.png'" alt="프로필사진"></em>
+                  {{end}}
+                  <em class="name">{{.ApNm}}</em>
+                </span>
+                <span class="time">{{.ApLeftDy}}</span>
+              </a>
+              <a href="javascript:void(0);" id="btn_recruit_dtl" data-mem_no="{{.ApEntpMemNo}}" data-recruit_sn="{{.ApRecrutSn}}" class="txtLink">{{.ApRecrutTitle}}</a>
+              <a href="javascript:void(0);" id="btn_apply_dtl" data-mem_no="{{.ApEntpMemNo}}" data-recruit_sn="{{.ApRecrutSn}}" data-pp_mem_no="{{.ApPpMemNo}}" class="btnDetail">상세보기</a>
+            </li>
+            {{end}}
+            </ul>
+          </div>
+          {{else}}
+          <div class="mainUser">
+            <p class="tit">마감 임박 지원자</p>
+            <p class="noData">대기 중인 지원자가 없습니다.</p>
+          </div>
+        {{end}}
+      </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <script type="text/javascript">
+
+      // 공지사항 상세
+      $(document).off("click", "#btn_noti_dtl").on("click","#btn_noti_dtl",function(e) {
+        var sn = $(this).data("sn");
+
+        window.location.href="/notice/detail?sn="+sn;
+      }); 
+
+      // 공고상세
+      $(document).off("click", "#btn_recruit_dtl").on("click","#btn_recruit_dtl",function(e) {
+        var entp_mem_no = $(this).data("mem_no");
+        var recrut_sn = $(this).data("recruit_sn");
+
+        window.location.href="/recruit/post/detail?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn;
+      });
+
+      // 지원현황
+      $(document).off("click", "#btn_apply_stat").on("click","#btn_apply_stat",function(e) {
+        var entp_mem_no = $(this).data("mem_no");
+        var recrut_sn = $(this).data("recruit_sn");
+
+        window.location.href="/recruit/stat/list?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn;
+      });      
+
+      // 지원자 상세
+      $(document).off("click", "#btn_apply_dtl").on("click","#btn_apply_dtl",function(e) {
+        var entp_mem_no = $(this).data("mem_no");
+        var recrut_sn = $(this).data("recruit_sn");
+        var pp_mem_no = $(this).data("pp_mem_no");
+
+        window.location.href="/recruit/apply/detail?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+      });           
+
+    </script>
+
+{{end}} 

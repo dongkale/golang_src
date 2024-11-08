@@ -1,0 +1,25 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+  <div class="inCert">
+    <dl class="text">
+      <dt>조금만 기다려주세요.</dt>
+      <dd>내부 인증이 완료되지 않았습니다.</dd>
+      <dd class="img">직감의 모든 기업회원 서비스를 이용하실 수 있도록 별도의<br/>
+      인증 절차가 진행중입니다. 절차가 완료되면 이메일로 알려드릴게요.</dd>
+    </dl>
+    <p class="textGuide">*회원가입 관련 문의사항은 고객센터를 이요해주세요.</p>
+    <p class="btnBack"><a href="#">돌아가기</a></p>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <p><a href="#">고객센터</a></p>
+    <p class="copy">ⓒ QRATE.CO. All rights reserved.</p>
+  </div>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+{{end}}

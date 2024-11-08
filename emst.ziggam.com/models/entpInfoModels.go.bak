@@ -1,0 +1,40 @@
+package models
+
+type EntpInfo struct {
+	EntpKoNm    string
+	BizRegNo    string
+	LogoPtoPath string
+	RepNm       string
+	EstDy       string
+	EmpCnt      int64
+	BizTpy      string
+	BizCond     string
+	PpChrgNm    string
+	PpChrgTelNo string
+	Zip         string
+	Addr        string
+	DtlAddr     string
+	RefAddr     string
+	EntpHtag    string
+	EntpHtag1   string
+	EntpHtag2   string
+	EntpHtag3   string
+	EntpIntr    string
+	HomePg      string
+	VdTitle1    string
+	VdTitle2    string
+	VdTitle3    string
+	VdTitle4    string
+	VdFilePath1 string
+	VdFilePath2 string
+	VdFilePath3 string
+	VdFilePath4 string
+	VideoYn     string
+	VideoCnt    int64
+	MemStatCd   string
+	OriLogoFile string
+	Email       string
+	UseYn       string
+	jobfairCdsArr string
+	LoginDt       string
+}

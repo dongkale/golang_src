@@ -1,0 +1,121 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+          <h2>문의하기</h2>
+          <div class="request">
+            <p class="text">직감 이용에 어려움이 있으세요?</p>
+            <a href="javascript:void(0);" id="inquiry_write" class="btn">문의하기</a>
+          </div>
+          {{if .InquiryList}}
+          <h2 class="st02">지난 문의 내역</h2>
+          <div class="tblWrap">
+            <table>
+              <colgroup>
+                <col width="74px" />
+                <col width="144px" />
+                <col width="142px" />
+                <col width="" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>날짜</th>
+                  <th>종류</th>
+                  <th>내용</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- tr.question 뒤에 tr.answer 이 없으면 토글되지 않음 -->
+                <!-- tr.qeustion 뒤에 tr.answer 이 있을시 토글하면 두개의 tr 에 active 추가 -->
+                  {{range .InquiryList}}
+                    <tr class="question">
+                        <td>{{.BrdNo}}</td>
+                        <td>{{.RegDy}}</td>
+                        <td>{{.InqGbnNm}}</td>                
+                        <td class="text">
+                          <div class="replyWrap">
+                            <div class='replyBtn {{if eq "1" .AnsYn}}complete old{{else}}ready{{end}}'>{{.AnsYnNm}}</div>
+                            <div class="textView">
+                              <a href="javascript:void(0);">{{.InqTitle}}</a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="answer">
+                        <td colspan="4">
+                          <div class="reply">
+                            <div class="repContent" style="white-space:pre-line;">
+                                {{.InqCont}}
+                            </div>
+                            {{if eq "1" .AnsYn}}
+                            <span class="date"><em class="btn">답변</em> 작성일 : {{.AnsDt}}</span>
+                            <div class="repContent" style="white-space:pre-line;">
+                              {{str2html .AnsCont}}
+                            </div>
+                              {{end}} 
+                          </div>
+                        </td>
+                      </tr>
+                    {{end}}
+                </tbody>
+              </table>
+            <div class="paging">
+              {{str2html .Pagination}}
+            </div>
+        </div>
+        {{end}}
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/inquiry/list?pn="+pageno;
+      }	
+          
+      // 문의하기
+      $(document).off("click", "#inquiry_write").on("click", "#inquiry_write", function(e) {
+        window.location.href="/inquiry/write";
+      });      
+
+      // 답변완료시에 펼치기/접기
+      $(function(){
+        $(".tblWrap .replyWrap a").on("click",function(){
+          if($(this).closest("tr").hasClass("active")){
+            $(".tblWrap tr").removeClass("active")
+          } else {
+            if($(this).parent().closest("tr").next()[0].className == "answer"){
+              $(".tblWrap tr").removeClass("active")
+              $(this).parent().closest("tr").addClass("active");
+              $(this).parent().closest("tr").next().addClass("active")
+            }        
+          }
+          return false;
+        })
+      })
+      
+    </script>    
+{{end}}    

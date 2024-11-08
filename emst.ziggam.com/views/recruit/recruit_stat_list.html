@@ -1,0 +1,641 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <input type="hidden" id="page_no" value="1">  
+        <input type="hidden" id="entp_mem_no" value="{{.MemNo}}">  
+        <input type="hidden" id="recrut_sn" value="{{.RecrutSn}}">  
+        <input type="hidden" id="evl_prgs_stat" value="{{.EvlPrgsStat}}">  
+        <input type="hidden" id="evl_prgs_stat_cd" value="">  
+        <input type="hidden" id="pp_mem_no" value="">  
+        <!--// 파라미터 정의 -->
+        <input type="hidden" id="p_keyword" value="{{.pKeyword}}">  
+        <input type="hidden" id="p_empl_typ" value="{{.pEmplTyp1}}">  
+        <input type="hidden" id="p_job_grp_cd" value="{{.pJobGrpCd}}">  
+        <input type="hidden" id="p_sort_gbn" value="{{.pSortGbn}}">  
+        <input type="hidden" id="p_gbn_cd" value="{{.pGbnCd}}">  
+        <input type="hidden" id="p_page_no" value="{{.pPageNo}}">  
+
+        <div class="recruitView">
+          <!-- 채용중 class="type1" / 기간마감 class="type2" / 종료 class="type3" -->
+          {{if eq "END" .PrgsStat}}
+          <p class="state type3">종료</p>
+          {{else if eq "PED" .PrgsStat}}
+          <p class="state type2">기간마감</p>
+          {{else}}
+          <p class="state type1">채용중</p>
+          {{end}}
+          <a href="javascript:void(0);" class="btnList" id="btn_go_list">목록으로가기</a>
+          <p class="tit">{{.RecrutTitle}}</p>
+            <div class="titInfoText">
+              <p class="info"><span>{{if eq "R" .EmplTyp}}정규직{{else}}아르바이트{{end}}</span> | <span>{{.UpJobGrp}} &lt; {{.JobGrp}}</span></p>
+              <p class="date">
+                {{.RecrutDy}}
+                {{if eq "END" .PrgsStat}}<span class="endDate">(종료일 {{.RecrutEdt}})</span>{{end}}
+              </p>
+              <p class="btnDetail">
+              <a href="javascript:void(0);" id="btn_recruit_detail" data-mem_no="{{.MemNo}}" data-recruit_sn="{{.RecrutSn}}"><span>공고상세</span></a>
+              {{if ne "END" .PrgsStat}}
+              <a href="javascript:void(0);" id="btn_recruit_end">채용종료</a>
+              {{else}}
+              <a href="javascript:void(0);" class="incruitEnd" id="btn_recruit_close">종료된 공고입니다.</a>
+              {{end}}
+              </p>
+            </div>
+        </div>
+        <div class="recruitList">
+          <div class="tabMenu">
+            <ul>
+              <!-- 활성화 페이지 class="active" -->
+              {{if eq "00" .EvlPrgsStat}}
+              <li class="active"><a href="javascript:void(0);">전체 <span id="apply_cnt">{{.ApplyCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/recruit/stat/list?entp_mem_no={{.MemNo}}&recrut_sn={{.RecrutSn}}">전체 <span id="apply_cnt">{{.ApplyCnt}}</span></a></li>
+              {{end}}
+              {{if eq "02" .EvlPrgsStat}}
+              <li class="active"><a href="javascript:void(0);">대기 <span id="ing_cnt">{{.IngCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/recruit/stat/list?entp_mem_no={{.MemNo}}&recrut_sn={{.RecrutSn}}&evl_prgs_stat=02">대기 <span id="ing_cnt">{{.IngCnt}}</span></a></li>
+              {{end}}
+              {{if eq "03" .EvlPrgsStat}}
+              <li class="active"><a href="javascript:void(0);">합격 <span id="pass_cnt">{{.PassCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/recruit/stat/list?entp_mem_no={{.MemNo}}&recrut_sn={{.RecrutSn}}&evl_prgs_stat=03">합격 <span id="pass_cnt">{{.PassCnt}}</span></a></li>
+              {{end}}
+              {{if eq "04" .EvlPrgsStat}}
+              <li class="active"><a href="javascript:void(0);">불합격 <span id="fail_cnt">{{.FailCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/recruit/stat/list?entp_mem_no={{.MemNo}}&recrut_sn={{.RecrutSn}}&evl_prgs_stat=04">불합격 <span id="fail_cnt">{{.FailCnt}}</span></a></li>
+              {{end}}
+            </ul>
+            {{if ne 0 .ApplyCnt}}
+            <a href="javascript:void(0);" id="excel_download" class="excelDownload">지원자 리스트 엑셀 저장</a>
+            {{end}}
+          </div>
+          <div class="listBox">
+          {{if .RecruitStatList}}
+            <div class="topSec">
+              <div class="posL">
+                <select name="sex" id="sex" class="st02">
+                  <option value="A">성별</option>
+                  <option value="M">남자</option>
+                  <option value="F">여자</option>
+                </select>
+                <select name="age" id="age" class="st02">
+                  <option value="00">연령</option>
+                  <option value="01">19세 이하</option>
+                  <option value="02">20~29세</option>
+                  <option value="03">30~39세</option>
+                  <option value="04">40~49세</option>
+                  <option value="05">50~59세</option>
+                  <option value="06">60세 이상</option>
+                </select>
+                <select name="vp_yn" id="vp_yn" class="st03">
+                  <option value="9">영상 프로필</option>
+                  <option value="1">있음</option>
+                  <option value="0">없음</option>
+                </select>
+                <select name="favr_aply_pp" id="favr_aply_pp" class="st02">
+                  <option value="9">관심</option>
+                  <option value="1">on</option>
+                  <option value="0">off</option>
+                </select>
+              </div>
+              <div class="posR">                
+                <div class="searchBox">
+                  <input type="text" name="keyword" id="keyword" maxlength="30" placeholder="지원자명을 입력하세요.">
+                  <a href="javascript:void(0);" id="btn_search"><img src="/static/images/btn_search.gif" alt="검색"></a>
+                </div>
+              </div>
+            </div>
+            <div class="sectionTop">
+              <div class="posL">
+                <p class="total">총 <span id="tcnt">0</span>명</p>
+              </div>
+              <div class="posR">
+                <select name="sort_gbn" id="sort_gbn" class="sort">
+                  <option value="01">신규 순</option>
+                  <option value="02">마감 순</option>
+                </select>
+                <select name="size" id="size" class="sort">
+                  <option value="9">3줄씩</option>
+                  <option value="15">5줄씩</option>
+                  <option value="30">10줄씩</option>
+                </select>
+              </div>
+            </div>  
+            <div class="userList">
+              <ul>
+              {{range .RecruitStatList}}
+              <!-- 신규일경우 class="new" 추가 / 관심지원자 class="like" 추가 -->
+                <li class='{{if eq "0" .EntpCfrmYn}} new {{end}} {{if eq "1" .FavrAplyPpYn}} like {{end}} {{if eq "03" .EvlPrgsStatCd}} result success{{end}} {{if eq "04" .EvlPrgsStatCd}} result fail {{end}}'>
+                  <input type="hidden" id="tot_cnt" value="{{.TotCnt}}">
+                  {{if eq "M" .Sex}}
+                  <p class="img"><a href="javascript:void(0);"><img src="/static/images/no_img_user.png" alt="남자 지원자사진"></a></p>
+                  {{else}}
+                  <p class="img"><a href="javascript:void(0);"><img src="/static/images/no_img_user.png" alt="여자 지원자사진"></a></p>
+                  {{end}}
+                  <p class="cont">&nbsp;</p>
+                  <p class="title"></p>
+                  <p class="name">{{.Nm}} <span class="etc">({{if eq "M" .Sex}}남자{{else}}여자{{end}}/{{.Age}}세)</span></p>
+                  {{ if eq "03" .EvlPrgsStatCd}}
+                  <p class="time">합격 {{.EvlStatDt}}</p>
+                  {{ else if eq "04" .EvlPrgsStatCd}} 
+                  <p class="time">불합격 {{.EvlStatDt}}</p>
+                  {{else}}
+                  <p class="time">마감 {{.LeftDy}}</p>
+                  {{end}}
+                  <p class="date">지원 {{.ApplyDt}}</p>
+                  {{if or (eq "03" .EvlPrgsStatCd) (eq "04" .EvlPrgsStatCd) }}
+                  <p class="btn"><a href="javascript:void(0);">상세보기</a></p>
+                  {{else}}
+                  <p class="btn"><a href="javascript:void(0);" id="btn_detail" data-pp_mem_no="{{.PpMemNo}}">상세보기</a></p>
+                  {{end}}
+                  <span class="icoResult"></span>
+                  <span class="icoLike"></span>
+                  <a href="javascript:void(0);" id="btn_apply_del" class="btnClose" data-pp_mem_no="{{.PpMemNo}}" data-evl_prgs_stat_cd="{{.EvlPrgsStatCd}}"><img src="/static/images/btn_close.png" alt="삭제"></a>
+                </li>
+                {{end}}
+              </ul>
+            </div>
+            {{else}}
+            <div class="userList">
+              <p class="noData">지원자가 없습니다</p>
+            </div>
+            {{end}}
+            <div class="paging">
+                {{str2html .Pagination}}
+            </div>
+          </div>
+        </div>        
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+    
+    <!-- 일반팝업_버튼2개 -->
+    <div class="popupWrap confirm" id="recruit_common_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 일반팝업_버튼2개 -->
+
+    <!-- 일반팝업_버튼1개 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p>현재 진행중인 지원자가 있으므로<br>종료처리를 할 수 없습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 일반팝업_버튼1개 -->    
+
+    <!-- 엑셀다운로드 -->
+    <div class="popupWrap confirm" id="excel_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">해당 지원자 리스트<br>엑셀 파일을 저장하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_excel_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 엑셀다운로드 -->         
+
+    <script type="text/javascript">
+      
+      $(document).ready(function() {
+        $("#tcnt").text($("#tot_cnt").val());
+      });
+
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      var paging = function(pageno) {
+        $("#page_no").val(pageno);
+        ajaxRecruitList();
+      }	
+
+      // 채용종료 팝업
+      $(document).off("click", "#btn_recruit_end").on("click", "#btn_recruit_end", function(e) {
+        $("#confirmMessage").html("해당 채용 공고를<br>정말 종료하시겠습니까?");
+        $(".status").removeClass("end del");
+        openPopup("recruit_common_pop");
+        $(".status").addClass("end");
+      });
+
+      // 지원자 삭제
+      $(document).off("click", "#btn_apply_del").on("click", "#btn_apply_del", function(e) {
+        $("#pp_mem_no").val($(this).data("pp_mem_no"));
+        $("#evl_prgs_stat_cd").val($(this).data("evl_prgs_stat_cd"));
+        $("#confirmMessage").html("정말 지원자를 삭제하시겠어요?<br>삭제 후에는 모든 정보가 삭제됩니다.");
+        $(".status").removeClass("end del");
+        openPopup("recruit_common_pop");
+        $(".status").addClass("del");
+      });
+    
+     // 채용종료, 지원자삭제
+     $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        var recrut_sn = $("#recrut_sn").val();
+        var pp_mem_no = $("#pp_mem_no").val();
+        if ($(".status").hasClass("end")) {
+          //console.log("종료");          
+          recrutEnd(entp_mem_no, recrut_sn);
+        } else {
+          //console.log("삭제");
+          applyDel(entp_mem_no, recrut_sn, pp_mem_no);
+        }
+     });            
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+      });      
+
+      // 채용종료 처리
+      var recrutEnd = function(entp_mem_no, recrut_sn){
+        $.ajax({
+          cache : false,
+          url : '/recruit/post/end',
+          data : {
+            entp_mem_no : entp_mem_no,
+            recrut_sn : recrut_sn
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              var date = new Date(); 
+              var year = date.getFullYear(); 
+              var month = new String(date.getMonth()+1); 
+              var day = new String(date.getDate()); 
+              if(month.length == 1){ 
+                month = "0" + month; 
+              } 
+              if(day.length == 1){ 
+                day = "0" + day; 
+              } 
+              var acnt = parseInt($("#apply_cnt").text());
+              var icnt = parseInt($("#ing_cnt").text());
+              var fcnt = parseInt($("#fail_cnt").text());
+              $("#btn_recruit_end").addClass("incruitEnd");
+              $("#btn_recruit_end").text("종료된 공고입니다.");
+              $(".state").removeClass("type1 type2");
+              $(".state").addClass("type3");
+              $(".state.type3").text("종료");
+              $(".endDate").text("(종료일 "+year+"."+month+"."+day+")");
+              $("#ing_cnt").text("0");
+              $("#fail_cnt").text(icnt + fcnt);
+              $('.popupWrap.confirm').hide();
+              ajaxRecruitList();
+            } else if (rtnCd == 3) {
+              console.log("ongoing");
+              $('.popupWrap.confirm').hide();
+              openPopup("recruit_alert_pop");
+            } else {
+              console.log("error");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+          }
+        });	 
+      }      
+
+      // 지원자 삭제 처리
+      var applyDel = function(entp_mem_no, recrut_sn, pp_mem_no){
+        $.ajax({
+          cache : false,
+          url : '/recruit/apply/member/delete',
+          data : {
+            entp_mem_no : entp_mem_no,
+            recrut_sn : recrut_sn,
+            pp_mem_no : pp_mem_no
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              console.log("success");
+              var chk = $("#evl_prgs_stat_cd").val();
+              var acnt = parseInt($("#apply_cnt").text());
+              var icnt = parseInt($("#ing_cnt").text());
+              var pcnt = parseInt($("#pass_cnt").text());
+              var fcnt = parseInt($("#fail_cnt").text());
+              if(chk == "03") { //삭제자가 합격자인 경우
+                $("#apply_cnt").text(acnt - 1);
+                $("#pass_cnt").text(pcnt - 1);
+              } else if(chk == "04") { //삭제자가 불합격자인 경우
+                $("#apply_cnt").text(acnt - 1);
+                $("#fail_cnt").text(fcnt - 1);
+              } else { // 삭제자가 대기자인 경우
+                $("#apply_cnt").text(acnt - 1);
+                $("#iail_cnt").text(icnt - 1);
+              }
+              ajaxRecruitList();
+              $("#pp_mem_no").val("");
+              $('.popupWrap.confirm').hide();
+            } else if (rtnCd == 3) {
+              console.log("ongoing");
+              $("#pp_mem_no").val("");
+              $('.popupWrap.confirm').hide();
+            } else {
+              console.log("error");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+          }
+        });	 
+      }      
+
+      // 엑셀 저장
+      $(document).off("click", "#excel_download").on("click", "#excel_download", function(e) {
+        openPopup("excel_pop");
+      });           
+
+      // 엑셀 저장 확인
+      $(document).off("click", "#btn_excel_confirm").on("click", "#btn_excel_confirm", function(e) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        var evl_prgs_stat_cd = $("#evl_prgs_stat").val();
+        var recrut_sn = $("#recrut_sn").val();
+        excelDownload(entp_mem_no, evl_prgs_stat_cd, recrut_sn);
+      });
+
+      var excelDownload = function(entp, evl, recru) {
+        $.ajax({
+          cache : false,
+          url : '/recruit/apply/member/excel',
+          data : {
+            entp_mem_no : entp,
+            evl_prgs_stat_cd : evl,
+            recrut_sn : recru,
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+            closePopup();
+          },
+          success : function(rep) {
+            var downFile = rep.RtnRecruitApplyMemberExcelData[0].DownloadPath;
+            window.location.replace(downFile);
+            closePopup();
+          },
+        });	        
+      }
+
+      // 공고상세이동
+      $(document).off("click", "#btn_recruit_detail").on("click", "#btn_recruit_detail", function(e) {
+        var e_mem_no = $(this).data("mem_no");
+        var r_sn = $(this).data("recruit_sn");
+        window.location.href="/recruit/post/detail?entp_mem_no="+e_mem_no+"&recrut_sn="+r_sn;
+      });
+
+      // 성별 선택
+      $(document).off("change", "#sex").on("change", "#sex", function(e) {
+        ajaxRecruitList();
+      });
+
+      // 연령 선택
+      $(document).off("change", "#age").on("change", "#age", function(e) {
+        ajaxRecruitList();
+      });
+
+      // 영상프로필 선택
+      $(document).off("change", "#vp_yn").on("change", "#vp_yn", function(e) {
+        ajaxRecruitList();
+      });
+
+      // 관심지원자 선택
+      $(document).off("change", "#favr_aply_pp").on("change", "#favr_aply_pp", function(e) {
+        ajaxRecruitList();
+      });
+
+			// 지원자 검색(Enter Key)
+			$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+				if (event.keyCode == 13) {
+					ajaxRecruitList();
+				}
+      });
+
+      // 지원자 검색 (클릭)
+      $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+        ajaxRecruitList();
+      });  
+
+      // 정렬 선택
+      $(document).off("change", "#sort_gbn").on("change", "#sort_gbn", function(e) {
+        ajaxRecruitList();
+      });  
+
+      // 리스트 수 선택
+      $(document).off("change", "#size").on("change", "#size", function(e) {
+        ajaxRecruitList();
+      });        
+
+      // 리스트 페이지 AJAX
+			var ajaxRecruitList = function(v) {
+				var keyword = $("#keyword").val();
+        var entp_mem_no = $("#entp_mem_no").val();
+        var recrut_sn = $("#recrut_sn").val();
+        var evl_prgs_stat = $("#evl_prgs_stat").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var favr_aply_pp = $("#favr_aply_pp").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+
+        $.ajax({
+					type: "POST",
+					url: "/recruit/stat/list",
+					data:{
+						entp_mem_no : entp_mem_no,
+						recrut_sn : recrut_sn,
+						evl_prgs_stat : evl_prgs_stat,
+						sex : sex,
+						age : age,
+						vp_yn : vp_yn,
+						favr_aply_pp : favr_aply_pp,
+						keyword : keyword,
+						sort_gbn : sort_gbn,
+						size : size,
+						pn : page_no
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnRecruitStatListData.length > 0){
+							$(".listBox").find("ul").children().remove();
+							$.each(rep.RtnRecruitStatListData,function(e) {
+                var html = "";
+                html += "<li class=\"";
+                if (rep.RtnRecruitStatListData[e].EntpCfrmYn == "0") {
+                  html += " new ";
+                }
+                if (rep.RtnRecruitStatListData[e].FavrAplyPpYn == "1") {
+                  html += " like ";
+                }
+                if (rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "03") {
+                  html += " result success ";
+                } 
+                if (rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "04") {
+                  html += " result fail ";
+                } 
+                html += "\">";
+                if (rep.RtnRecruitStatListData[e].Sex == "M") {
+                  html += "<p class=\"img\"><a href=\"javascript:void(0);\"><img src=\"/static/images/no_img_user.png\" alt=\"남자 지원자사진\"></a></p>";
+                } else {
+                  html += "<p class=\"img\"><a href=\"javascript:void(0);\"><img src=\"/static/images/no_img_user.png\" alt=\"여자 지원자사진\"></a></p>";
+                }
+                html += "<p class=\"cont\">&nbsp;</p>";
+                html += "<p class=\"title\"></p>";
+                html += "<p class=\"name\">"+rep.RtnRecruitStatListData[e].Nm+" <span class=\"etc\">(";
+                if (rep.RtnRecruitStatListData[e].Sex == "M") {
+                  html += "남자";
+                } else {
+                  html += "여자";
+                }
+                html += "/"+rep.RtnRecruitStatListData[e].Age+"세)</span></p>";
+                html += "<p class=\"time\">";
+                if (rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "03") {
+                  html += "합격 "+rep.RtnRecruitStatListData[e].EvlStatDt;
+                } else if (rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "04") {
+                  html += "불합격 "+rep.RtnRecruitStatListData[e].EvlStatDt;
+                } else {
+                  html += "마감 "+rep.RtnRecruitStatListData[e].LeftDy;
+                }
+                html += "</p>";
+                html += "<p class=\"date\">"+rep.RtnRecruitStatListData[e].ApplyDt+"</p>";
+                if (rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "03" || rep.RtnRecruitStatListData[e].EvlPrgsStatCd == "04"){
+                  html += "<p class=\"btn\"><a href=\"javascript:void(0);\">상세보기</a></p>";
+                } else {
+                  html += "<p class=\"btn\"><a href=\"javascript:void(0);\" id=\"btn_detail\" data-pp_mem_no="+rep.RtnRecruitStatListData[e].PpMemNo+">상세보기</a></p>";
+                }
+                html += "<span class=\"icoResult\"></span>";
+                html += "<span class=\"icoLike\"></span>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_del\" class=\"btnClose\" data-pp_mem_no="+rep.RtnRecruitStatListData[e].PpMemNo+" data-evl_prgs_stat_cd="+rep.RtnRecruitStatListData[e].EvlPrgsStatCd+"><img src=\"/static/images/btn_close.png\" alt=\"삭제\"></a>";
+                html += "</li>";
+								$(".listBox").find("ul").append(html);
+              })
+							$(".paging").children().remove();
+              $(".paging").append(rep.RtnRecruitStatListData[0].Pagination);
+              $("#tcnt").text(rep.RtnRecruitStatListData[0].TotCnt);
+              
+						}else{
+              $(".listBox").find("ul").children().remove();
+              var html = "";
+              html += "<div class=\"userList\">";
+              html += "<p class=\"noData\">지원자가 없습니다</p>";
+              html += "</div>";
+              $(".listBox").find("ul").append(html);
+							$(".paging").children().remove();
+              $("#tcnt").text(0);
+              $("#page_no").val("1");
+						}
+					}
+				});				
+			}      
+
+      // 지원자 상세이동
+      $(document).off("click", "#btn_detail").on("click", "#btn_detail", function(e) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        var recrut_sn = $("#recrut_sn").val();
+        var pp_mem_no = $(this).data("pp_mem_no");
+        var evl_prgs_stat = $("#evl_prgs_stat").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var favr_aply_pp = $("#favr_aply_pp").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var page_no = $("#page_no").val();
+				var keyword = $("#keyword").val().replace(/'/gi,"`");
+        var size = $("#size").val();
+        var param = "entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no+"&evl_prgs_stat="+evl_prgs_stat+"&sex="+sex+"&age="+age+"&vp_yn="+vp_yn+"&favr_aply_pp="+favr_aply_pp+"&sort_gbn="+sort_gbn+"&page_no="+page_no+"&keyword="+keyword+"&size="+size;
+        window.location.href="/recruit/apply/detail?"+param;
+      });
+
+      // 현황이동
+      $(document).off("click", "#btn_stat").on("click", "#btn_stat", function(e) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        var recrut_sn = $("#recrut_sn").val();
+        var pp_mem_no = $(this).data("pp_mem_no");
+        var evl_prgs_stat = $("#evl_prgs_stat").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var favr_aply_pp = $("#favr_aply_pp").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var page_no = $("#page_no").val();
+				var keyword = $("#keyword").val().replace(/'/gi,"`");
+        var size = $("#size").val();
+        var param = "entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no+"&evl_prgs_stat="+evl_prgs_stat+"&sex="+sex+"&age="+age+"&vp_yn="+vp_yn+"&favr_aply_pp="+favr_aply_pp+"&sort_gbn="+sort_gbn+"&page_no="+page_no+"&keyword="+keyword+"&size="+size;
+        window.location.href="/recruit/stat/list?"+param;
+      });
+
+        // 목록으로 이동
+        $(document).off("click", "#btn_go_list").on("click", "#btn_go_list", function(e) {
+          var entp_mem_no = $("#entp_mem_no").val();
+          var recrut_sn = $("#recrut_sn").val();
+
+          var keyword = $("#p_keyword").val();
+          var empl_typ = $("#p_empl_typ").val();
+          var job_grp_cd = $("#p_job_grp_cd").val();
+          var sort_gbn = $("#p_sort_gbn").val();
+          var gbn_cd = $("#p_gbn_cd").val();
+          var page_no = $("#p_page_no").val();
+          var param = "entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+
+          window.location.href="/recruit/post/list?"+param;
+        });      
+    </script>
+
+  {{end}}

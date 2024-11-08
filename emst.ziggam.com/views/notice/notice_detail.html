@@ -1,0 +1,54 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>공지사항</h2>
+        <div class="notice">
+          <table class="view">
+            <colgroup>
+              <col width="107px" />
+              <col />
+              <col width="141px" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>{{.GbnNm}}</th>
+                <th class="text">{{.Title}}</th>
+                <th>{{.RegDt}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3" class="text">
+                  <div class="notiContent" style="min-height:500px">
+                    {{str2html .Cont}}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="btnSec">
+            <a href="javascript:void(0);" id="goList">목록</a>
+          </p>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <script type="text/javascript">
+
+      // 목록 이동
+      $(document).off("click", "#goList").on("click","#goList",function(e) {
+        window.location.href="/notice/list?pn={{.PageNo}}";
+      });
+    
+    </script>
+    {{end}}    

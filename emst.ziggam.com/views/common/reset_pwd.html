@@ -1,0 +1,122 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+  <div class="formArea">
+  <form id="resetForm" name="resetForm" method="post">
+    <a href="javascript:void(0);" class="btnBack">이전페이지로돌아가기</a>
+    <p class="findSec">비밀번호 재설정</p>
+    <p class="findText">새로운 비밀번호를 입력해주세요<br/>
+    변경된 비밀번호는 직감 app과 동일하게 적용됩니다.</p>
+    <div class="findForm">
+      <p class="formText">변경 비밀번호</p>
+      <p><input type="password" class="formInput" name="pwd" id="pwd" placeholder="영문과 숫자 모두 포함 (6~16자리)"></p>      
+      <p class="validationMessage mt5 al pwd_message"></p>
+      <p class="formText st02">변경 비밀번호 확인</p>
+      <p><input type="password" class="formInput" name="repwd" id="repwd" placeholder="변경하실 비밀번호를 다시 입력해주세요."></p>
+      <p class="validationMessage mt5 al repwd_message"></p>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <p class="btn pwBtnChange"><a href="javascript:void(0);" class="btnLicense" id="btn_change">비밀번호 변경 완료</a></p>
+    </div>
+  </form>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <p class="copy"><img src="/static/images/copyright.jpg" alt="ⓒ QRATE.CO. All rights reserved."></p>
+  </div>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+<script type='text/javascript'>
+
+	// Form Validation Check
+	$(document).ready(function() {
+		$("#resetForm").validate(validOption);
+	});
+
+	// 비밀번호 변경 Validation
+	var validOption = {
+		onkeyup: false
+		,onclick: false
+		,onfocusout: function(element) {		// 포커스 아웃 시 동작
+			if($(element).valid()){				// 체크 통과
+				var id = $(element).attr("id");	
+				$("."+id+"_message").text("");	// message box clear
+			}
+		}
+		,onfocusin: function(element) {			// 포커스 인 시 동작
+			var id = $(element).attr("id");
+			resetInput(id);
+		}
+		,rules: {
+			pwd : {
+				required: true, 
+				maxlength: 16, 
+				minlength: 6
+			},
+			repwd : {required: true, equalTo: "#pwd"},
+		}
+		,errorPlacement: function(error, element){		
+			var id = element.attr("id");
+			//console.log("err_id :"+id);
+			$("."+id+"_message").text(error.text());
+		}
+		,messages: {
+			nowpwd:{
+				required: "현재 비밀번호를 입력해주세요"
+			},
+			pwd: {
+				required: "비밀번호를 입력해주세요."
+				,minlength: "비밀번호는 최소 6자 이상입니다."
+				,maxlength: "비밀번호는 최대 16자 이상입니다."
+			},
+			repwd: {
+				required: "비밀번호를 다시 입력해주세요."
+				,equalTo: "비밀번호가 일치하지 않습니다."
+			},
+		}
+		,success: function(element){
+			var str = $(element).attr("id");
+			var id = str.substring(0,str.length-6);
+		}
+	}
+
+	// input box reset
+	var resetInput = function(id){
+		$("."+id+"_message").text("");				// message box clear
+	}
+
+  // 비밀번호 변경
+  $(document).off("click", "#btn_change").on("click", "#btn_change", function(){
+		if($("#resetForm").valid()){
+			var change_pwd = $("#pwd").val(); //password
+
+			$.ajax({
+				url : '/common/pwd/reset',
+				data : {
+					pwd : change_pwd
+				},
+				type : 'POST',
+				dataType : "json",
+				error : function(e) {
+					//console.log("error" + JSON.stringify(e));
+					console.log("error : "+e);
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+					if(rtnCd == 1){
+						console.log("비밀번호 변경 완료");
+						window.location.href="/common/login";
+					} else {
+						console.log("비밀번호변경 실패 : "+rtnMsg);
+					}
+				}
+			});	
+		}
+	});
+  </script>
+
+{{end}}

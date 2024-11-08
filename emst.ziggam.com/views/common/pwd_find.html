@@ -1,0 +1,168 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+  <div class="formArea">
+    <a href="#" class="btnBack">이전페이지로돌아가기</a>
+    <p class="findSec">비밀번호 찾기</p>
+    <p class="findText">이메일 인증을 통해 비밀번호를 다시 설정하실 수 있습니다.<br/>
+    직감 기업회원 가입 당시 입력한 정보를 입력해주세요.</p>
+    <div class="findForm">
+      <p><input type="text" class="formInput" name="mem_id" id="mem_id" maxlength="16" placeholder="아이디"></p>
+      <p><input type="text" class="formInput" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" placeholder="담당자이름"></p>
+      <p class="st02"><input type="text" class="formInput" name="email" id="email" maxlength="50" placeholder="이메일 주소"></p>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <p class="btn"><a href="javascript:void(0);" class="btnLicense" id="btn_send_no">인증번호 전송</a></p>
+      <p class="validationMessage findPwd"></p>
+    </div>
+    <div class="viewBox cert">
+      <p class="text st02">입력하신 이메일로 인증번호를 전송했습니다.<br/>
+      이메일로 전송된 인증번호를 아래 입력해주세요.</p>
+      <p><input type="text" class="formInput" name="cert_no" id="cert_no" maxlength="6" placeholder="인증번호"></p>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <p class="btn mt5"><a href="javascript:void(0);" id="btn_cert">인증</a></p>
+      <!-- 벨리데이션문구가 없는경우는 텍스트만 제거해주세요-->
+      <p class="validationMessage mt5"></p>
+    </div>
+    <div class="customer">
+      <p class="text">
+        <span>아이디를 찾으시나요?</span>
+        <a href="/common/find/id">아이디 찾기</a>
+      </p>
+      <p class="info">* 아이디, 비밀번호 찾기 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a> 를 이용해주세요.</p>
+    </div>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <p class="copy"><img src="/static/images/copyright.jpg" alt="ⓒ QRATE.CO. All rights reserved."></p>
+  </div>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+<script type='text/javascript'>
+
+  // 인증번호 요청
+  $(document).off("click", "#btn_send_no").on("click", "#btn_send_no", function(){
+      var rtn = "";
+      var mem_id = $("#mem_id").val();
+      var pp_chrg_nm = $("#pp_chrg_nm").val();
+      var email = $("#email").val();
+
+      if($("#mem_id").val().length == 0){
+        $(".validationMessage.findPwd").text("아이디를 입력해주세요.");
+        return;
+      }
+
+      if($("#pp_chrg_nm").val().length == 0){
+        $(".validationMessage.findPwd").text("담당자 이름을 입력해주세요.");
+        return;
+      }
+
+      if($("#email").val().length == 0){
+        $(".validationMessage.findPwd").text("이메일을 입력해주세요.");
+        return;
+      }
+
+      $.ajax({
+        cache : false,
+        url : '/common/find/pwd',
+        data : {
+          mem_id : mem_id,
+          pp_chrg_nm : pp_chrg_nm,
+          email : email,
+        },
+        type : 'POST',
+        async : false,
+        dataType : "json",
+        success : function(rep) {
+          var rtnCd = rep.RtnCd;
+          var rtnMsg = rep.RtnMsg;
+
+          if (rtnCd == 1){
+            $(".validationMessage.findPwd").text("");
+            $(".viewBox.cert").show();
+          } else {
+            $(".viewBox.cert").hide();
+            $(".validationMessage.findPwd").text("일치하는 정보가 없습니다.");
+            $("#mem_id").val("");
+            $("#pp_chrg_nm").val("");
+            $("#email").val("");
+            rtn = false;
+          }
+        },
+        error : function(e) {
+          console.log("error:"+JSON.stringify(e));
+          window.location.replace("/");
+          rtn = false;
+        },
+      });
+      return rtn;
+  });
+
+  $(document).off("click", "#mem_id").on("click", "#mem_id", function(){
+    $(".validationMessage.findPwd").text("");
+  });  
+
+  $(document).off("click", "#pp_chrg_nm").on("click", "#pp_chrg_nm", function(){
+    $(".validationMessage.findPwd").text("");
+  });
+  
+  $(document).off("click", "#email").on("click", "#email", function(){
+    $(".validationMessage.findPwd").text("");
+  });  
+
+  // 인증번호 전송
+  $(document).off("click", "#btn_cert").on("click", "#btn_cert", function(){
+      var rtn = "";
+      var mem_id = $("#mem_id").val();
+      var pp_chrg_nm = $("#pp_chrg_nm").val();
+      var email = $("#email").val();
+      var cert_no = $("#cert_no").val();
+
+      if($("#cert_no").val().length == 0){
+        $(".validationMessage.mt5").text("인증번호를 입력해주세요.");
+        return;
+      }
+
+      $.ajax({
+        cache : false,
+        url : '/common/find/pwd/cert',
+        data : {
+          mem_id : mem_id,
+          pp_chrg_nm : pp_chrg_nm,
+          email : email,
+          cert_no : cert_no,
+        },
+        type : 'POST',
+        async : false,
+        dataType : "json",
+        success : function(rep) {
+          var rtnCd = rep.RtnCd;
+          var rtnMsg = rep.RtnMsg;
+
+          if (rtnCd == 1){
+            window.location.replace("/common/pwd/reset");
+          } else {
+            $(".validationMessage.mt5").text("인증번호가 일치하지 않습니다.");
+            $("#btn_cert").text("재인증");
+            $("#cert_no").val("");
+            rtn = false;
+          }
+        },
+        error : function(e) {
+          console.log("error:"+JSON.stringify(e));
+          window.location.replace("/");
+          rtn = false;
+        },
+      });
+      return rtn;
+  });
+
+  $(document).off("click", "#cert_no").on("click", "#cert_no", function(){
+    $(".validationMessage.mt5").text("");
+  });    
+
+</script>
+{{end}}

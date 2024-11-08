@@ -1,0 +1,164 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>비밀번호 변경</h2>     
+        <form id="changeForm" name="changeForm" method="post">
+        <div class="pwChange">
+          <p class="infoText">소중한 개인정보 보호를 위해 비밀번호를 주기적으로 변경해주세요.<br/>
+          변경된 비밀번호는 직감 APP과 동일하게 적용됩니다.</p>
+          <div class="pwForm">
+            <dl class="st02">
+              <dt>현재 비밀번호</dt>
+              <dd><input type="password" name="now_pwd" id="now_pwd" maxlength="16" placeholder="영문과 숫자 모두 포함 (6~16자리)"></dd>
+              <dd class="valdite now_pwd_message"></dd>
+            </dl>
+            <dl>
+              <dt>변경 비밀번호</dt>
+              <dd><input type="password" name="pwd" id="pwd" maxlength="16" placeholder="영문과 숫자 모두 포함 (6~16자리)"></dd>
+              <dd class="valdite pwd_message"></dd>
+            </dl>
+            <dl>
+              <dt>변경 비밀번호 확인</dt>
+              <dd><input type="password" name="re_pwd" id="re_pwd" maxlength="16" placeholder="영문과 숫자 모두 포함 (6~16자리)"></dd>
+              <dd class="valdite re_pwd_message"></dd>
+            </dl>
+          </div>
+          <p class="btn"><a href="javascript:void(0);" id="btn_pwd_update">비밀번호 변경 완료</a></p>
+          <p class="validationMessage"></p>
+        </div>
+      </form> 
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <script type="text/javascript">
+
+      // Form Validation Check
+      $(document).ready(function() {
+        $("#changeForm").validate(validOption);
+      });
+
+      // 영문,숫자조합 체크
+      function CheckPass(str){
+        var reg1 = /^[a-z0-9]{6,16}$/;
+        var reg2 = /[a-z]/g;    
+        var reg3 = /[0-9]/g;
+        return(reg1.test(str) &&  reg2.test(str) && reg3.test(str));
+      };
+
+      // 비밀번호 변경 Validation
+      var validOption = {
+        onkeyup: false
+        ,onclick: false
+        ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+          if($(element).valid()){				// 체크 통과
+            var id = $(element).attr("id");	
+            $("."+id+"_message").text("");	// message box clear
+          }
+        }
+        ,onfocusin: function(element) {			// 포커스 인 시 동작
+          var id = $(element).attr("id");
+          resetInput(id);
+        }
+        ,rules: {
+          now_pwd: {
+            required: true,
+          },
+          pwd : {
+            required: true, 
+            maxlength: 16, 
+            minlength: 6
+          },
+          re_pwd : {required: true, equalTo: "#pwd"},
+        }
+        ,errorPlacement: function(error, element){		
+          var id = element.attr("id");
+          //console.log("err_id :"+id);
+          $("."+id+"_message").text(error.text());
+        }
+        ,messages: {
+          now_pwd:{
+            required: "현재 비밀번호를 입력해주세요"
+          },
+          pwd: {
+            required: "비밀번호를 입력해주세요."
+            ,minlength: "비밀번호는 최소 6자 이상입니다."
+            ,maxlength: "비밀번호는 최대 16자 이상입니다."
+          },
+          re_pwd: {
+            required: "비밀번호를 다시 입력해주세요."
+            ,equalTo: "비밀번호가 일치하지 않습니다."
+          },
+        }
+        ,success: function(element){
+          var str = $(element).attr("id");
+          var id = str.substring(0,str.length-6);
+        }
+      }
+
+      // input box reset
+      var resetInput = function(id){
+        $("."+id+"_message").text("");				// message box clear
+      }
+
+      // 비밀번호 변경
+      $(document).off("click", "#btn_pwd_update").on("click", "#btn_pwd_update", function(){
+        if($("#changeForm").valid()){
+          $(".loading").attr("style", "display:''");
+          var change_nowpwd = $("#now_pwd").val(); //password
+          var change_pwd = $("#pwd").val(); //password
+
+          if(CheckPass(change_pwd) == false) {
+            $(".pwd_message").text("");
+            $(".pwd_message").text("비밀번호는 영문,숫자 조합으로 설정해주세요.");
+            $(".loading").attr("style", "display:none");
+            return;
+          }
+
+          $.ajax({
+            url : '/common/change/pwd',
+            data : {
+              curr_pwd : change_nowpwd,
+              pwd : change_pwd
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+              //console.log("error" + JSON.stringify(e));
+              $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+              var rtnCd = rep.RtnCd
+              var rtnMsg = rep.RtnMsg
+
+              if(rtnCd == "1"){
+                window.location.reload();
+              }else if(rtnCd == "3"){
+                $(".loading").attr("style", "display:none");
+                $(".now_pwd_message").text("현재 비밀번호가 일치하지 않습니다.");
+                return;
+              }else if(rtnCd == "2"){
+                $(".loading").attr("style", "display:none");
+                $(".pwd_message").text("현재 비밀번호와 변경 할 비밀번호를 다르게 설정해주세요.");
+                return;
+              } else {
+                $(".loading").attr("style", "display:none");
+                console.log("비밀번호변경 실패 : "+rtnMsg);
+              }
+            }
+          });	
+        }
+      });      
+
+    </script>
+
+{{end}}    

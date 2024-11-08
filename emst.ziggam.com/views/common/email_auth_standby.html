@@ -1,0 +1,82 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+  <div class="certification">
+    <dl class="text">
+      <dt>직감 기업회원 인증 대기 중</dt>
+      <dd>이메일 인증이 완료되지 않았습니다.</dd>
+      <dd class="img">회원가입 시 등록한 주소로 발송된 인증 메일을 확인해주세요.<br/>메일 인증을 완료하셨다면, 다시 로그인해주세요.</dd>
+      <dd class="btn"><a href="/common/login">로그인하기</a></dd>
+    </dl>
+    <dl class="certEmail">
+      <dt>이메일을 못받으셨나요?</dt>
+      <dd>회원가입 시 입력하신 이메일 주소를 확인하시고<br/>
+      이메일 주소 변경이나 인증 메일 재전송을 요청하세요.</dd>
+      <dd class="input"><input type="text" name="email" id="email" maxlength="30" placeholder="이메일"></dd>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <dd class="btn"><a href="javascript:void(0);" id="btn_resend">인증 메일 재전송</a></dd>
+    </dl>
+    <p class="validationMessage resend"></p>
+    <p class="textGuide">*회원가입 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a>를 이용해주세요.</p>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <p class="copy">ⓒ QRATE.CO. All rights reserved.</p>
+  </div>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+<script type='text/javascript'>
+
+  // 인증번호 요청
+  $(document).off("click", "#btn_resend").on("click", "#btn_resend", function(){
+      var rtn = "";
+      var mem_no = "{{.MemNo}}";
+      var email = $("#email").val();
+
+      if($("#email").val().length == 0){
+        $(".validationMessage.resend").text("인증번호를 전송받으실 이메일 주소를 입력해주세요.");
+        return;
+      }
+      $(".loading").attr("style", "display:''");
+
+      $.ajax({
+        cache : false,
+        url : '/common/cert/resend',
+        data : {
+          mem_no : mem_no,
+          email : email,
+        },
+        type : 'POST',
+        async : false,
+        dataType : "json",
+        success : function(rep) {
+          var rtnCd = rep.RtnCd;
+          var rtnMsg = rep.RtnMsg;
+
+          if (rtnCd == 1){
+            //$(".validationMessage.resend").text("");
+            window.location.href="/common/login";
+          } else {
+            $(".loading").attr("style", "display:none");
+            $(".validationMessage.resend").text("비정상적인 접근 입니다.");
+            $("#email").val("");
+            rtn = false;
+          }
+        },
+        error : function(e) {
+          //console.log("error:"+JSON.stringify(e));
+          $(".loading").attr("style", "display:none");
+          //window.location.replace("/");
+          rtn = false;
+        },
+      });
+      return rtn;
+  });
+
+</script>
+  
+{{end}}

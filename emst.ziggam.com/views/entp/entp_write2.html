@@ -1,0 +1,227 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<div class="pageLogin">
+  <div class="join">
+    <a href="javascript:void(0);" class="btnBack">이전페이지로돌아가기</a>
+    <dl class="topInfo">
+      <dt>회원가입</dt>
+      <dd>직감 기업회원</dd>
+      <dd class="step st02">STEP2</dd>
+    </dl>
+    <form id="regForm" name="regForm" method="post" action="/entp/write/step3">
+    <input type="hidden" name="email_recv_yn" id="email_recv_yn" value="{{.EmailRecvYn}}">
+    <div class="joinForm">
+      <dl>
+        <dt>필수 기업 정보</dt>
+        <dd>
+          <input type="text" name="entp_ko_nm" id="entp_ko_nm" maxlength="30" placeholder="기업명">
+          <p class="validate entp_ko_nm_message"></p>
+        </dd>
+        <dd>
+          <input type="text" name="biz_reg_no" id="biz_reg_no" maxlength="12" numberOnly placeholder="사업자등록번호 ('-'를 제외하고 입력)">
+          <p class="validate biz_reg_no_message init">사업자번호는 '-' 를 제외한 숫자로 입력해주세요.</p>
+        </dd>
+        <dd>
+          <input type="text" name="rep_nm" id="rep_nm" maxlength="10" placeholder="대표자명">
+          <p class="validate rep_nm_message"></p>
+        </dd>
+      </dl>
+      <dl>
+        <dt>담당자 정보</dt>
+        <dd class="line02">
+          <input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" placeholder="담당자 이름">
+          <!-- 최초 안내문구 -->
+          <p class="validate init pp_chrg_nm_message">담당자 이름은 아이디와 비밀번호 찾기에 사용되는 정보입니다.</p>
+          <!-- 최초 안내문구 -->
+          <!-- 오류문구 출력시 init 제거
+          <p class="validate">담당자 이름을 입력해주세요.</p>
+          -->
+        </dd>
+        <dd>
+          <input type="text" name="pp_chrg_tel_no" id="pp_chrg_tel_no" maxlength="12" numberOnly placeholder="담당자 휴대폰/내선 번호 ('-'를 제외하고 입력)">
+          <p class="validate pp_chrg_tel_no_message"></p>
+        </dd>
+      </dl>
+    </div>    
+    <p class="btn"><a href="javascript:void(0);" id="btn_next">다음</a></p>
+    <p class="info">* 아이디, 비밀번호 찾기 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a> 를 이용해주세요.</p>
+  </div>
+  <span class="loginBoxBg"></span>
+</form>
+</div>
+<!-- 회원가입 -->
+
+<!-- 일반팝업_버튼2개 -->
+<div class="popupWrap confirm" id="reg_common_pop">
+  <div class="popup">
+    <div class="popContent">
+      <p id="confirmMessage"></p>
+    </div>
+    <div class="popBtn">
+      <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+      <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+    </div>
+  </div>
+  <span class="cover"></span>
+</div>    
+<!-- 일반팝업_버튼2개 -->
+
+<script type="text/javascript">
+
+    // Form Validation Check
+    $(document).ready(function() {
+      $("#regForm").validate(validOption);
+    });
+
+    // Validation
+    var validOption = {
+      onkeyup: false
+      ,onclick: false
+      ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+        if($(element).valid()){				// 체크 통과
+          var id = $(element).attr("id");	
+          $(".validate."+id+"_message").removeClass("init");
+          $("."+id+"_message").text("");	// message box clear
+        }
+      }
+      ,onfocusin: function(element) {			// 포커스 인 시 동작
+        var id = $(element).attr("id");
+        console.log("id : "+id);
+        resetInput(id);
+      }
+      ,rules: {
+        entp_ko_nm: {
+          required: true,
+        },
+        biz_reg_no: {
+          required: true,
+          minlength : 10,
+          remote: {
+            url:"/common/dup_chk"
+            ,type: "post"
+            ,data: {
+              gbn_cd: '003'
+              ,item_val: function() {
+                return $("#biz_reg_no").val();
+              }
+            }
+          }
+        },
+        rep_nm: {
+          required: true,
+        },
+        pp_chrg_nm: {
+          required: true,
+        },
+        pp_chrg_tel_no: {
+          required: true,
+        },
+      }
+      ,errorPlacement: function(error, element){		
+        var id = element.attr("id");
+        //console.log("err_id :"+id);
+        $("."+id+"_message").text(error.text());
+      }
+      ,messages: {
+        entp_ko_nm:{
+          required: "기업명을 입력해주세요."
+        },
+        biz_reg_no:{
+          required: "사업자등록번호를 입력해주세요.",
+          minlength: "사업자등록번호를 정확히 입력해주세요.",
+          remote: "이미 존재하는 사업자등록번호 입니다."
+        },
+        rep_nm:{
+          required: "대표자명을 입력해주세요."
+        },
+        pp_chrg_nm:{
+          required: "담당자 이름을 입력해주세요"
+        },
+        pp_chrg_tel_no:{
+          required: "담당자 연락처를 입력해주세요"
+        },
+      }
+      ,success: function(element){
+        var str = $(element).attr("id");
+        var id = str.substring(0,str.length-6);
+      }
+    }
+
+    // input box reset
+    var resetInput = function(id){
+      $(".validate."+id+"_message").removeClass("init");
+      $("."+id+"_message").text("");				// message box clear
+    }
+
+    // 다음
+    $(document).off("click", "#btn_next").on("click", "#btn_next", function(){
+      if($("#regForm").valid()){
+
+        var entp_ko_nm = $("#entp_ko_nm").val();
+        var biz_reg_no = $("#biz_reg_no").val();
+        var rep_nm = $("#rep_nm").val();
+        var pp_chrg_nm = $("#pp_chrg_nm").val();
+        var pp_chrg_tel_no = $("#pp_chrg_tel_no").val();
+        var email_recv_yn = $("#email_recv_yn").val();
+
+        $("#regForm").submit();
+        /*
+        var formData = new FormData();
+
+        formData.append("entp_ko_nm", entp_ko_nm);
+        formData.append("biz_reg_no", biz_reg_no);
+        formData.append("rep_nm", rep_nm);
+        formData.append("pp_chrg_nm", pp_chrg_nm);
+        formData.append("pp_chrg_tel_no", pp_chrg_tel_no);
+
+        $.ajax({
+            cache : false,
+            url : '/entp/write/step3',
+            data : formData,
+            type : 'POST',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+            console.log("error" + JSON.stringify(e));
+          },
+          success : function(rep) {
+              window.location.href="/entp/write/step3";
+          }
+        });	
+        */
+      }
+    });      
+
+    //숫자만 입력가능
+    $("input:text[numberOnly]").on("focus", function() {
+        var x = $(this).val();
+    }).on("focusout", function() {
+        var x = $(this).val();
+        if(x && x.length > 0) {
+            if(!$.isNumeric(x)) {
+                x = x.replace(/[^0-9]/g,"");
+            }
+            $(this).val(x);
+        }
+    }).on("keyup", function() {
+        $(this).val($(this).val().replace(/[^0-9]/g,""));
+    });
+
+    // 뒤로가기 팝업
+    $(document).off("click", ".btnBack").on("click", ".btnBack", function(e) {
+      $("#confirmMessage").html("회원가입이 완료되지 않았어요!<br>입력하신 내용은 저장되지 않았습니다.<br>정말 이동하시겠어요?");
+      openPopup("reg_common_pop");
+    });
+
+    // 팝업창 닫기
+    $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+      //history.go(-1);
+      window.location.href="/entp/write/step1";
+    });      
+
+</script>
+
+{{end}}

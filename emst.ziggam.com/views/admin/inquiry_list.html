@@ -1,0 +1,194 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>문의하기</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              {{template "include/admin_contents_menu.html" .}}
+            </div>
+            <div class="listBox">
+          {{if .AdminInquiryList}}
+          <div class="tblWrap1">
+            <table>
+              <colgroup>
+                <col width="70px" />
+                <col width="140px" />
+                <col width="110px" />
+                <col width="" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>날짜</th>
+                  <th>종류</th>
+                  <th>내용</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- tr.question 뒤에 tr.answer 이 없으면 토글되지 않음 -->
+                <!-- tr.qeustion 뒤에 tr.answer 이 있을시 토글하면 두개의 tr 에 active 추가 -->
+                  {{range .AdminInquiryList}}
+                    <tr class="question">
+                        <td>{{.BrdNo}}</td>
+                        <td>{{.RegDt}}</td>
+                        <td>{{.InqGbnNm}}</td>                
+                        <td class="text">
+                          <div class="replyWrap">
+                            <div class='replyBtn {{if eq "1" .AnsYn}}complete old{{else}}ready{{end}}'>{{.AnsYnNm}}</div>
+                            <div class="textView">
+                              <a href="javascript:void(0);" id="ans_{{.BrdNo}}">{{.EntpKoNm}} &gt; {{.InqTitle}}</a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="answer">
+                        <td colspan="4">
+                          <div class="reply">
+                            <div class="repContent">
+                                <table>
+                                  <tr>
+                                    <td>
+                                      <div class="repContent" style="white-space:pre-line;">
+                                        [ email : {{.Email}} ]<br>[문의 내용] <br>
+                                        <!--{{.InqCont}} -->
+                                        {{str2html .InqCont}}
+                                      </div>                                      
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                        <textarea name="ans_cont_{{.BrdNo}}" id="ans_cont_{{.BrdNo}}" cols="116" rows="10" maxlength="2000">{{.AnsCont}}</textarea>
+                                        {{if eq "1" .AnsYn}}
+                                        <p>[답변일] : {{.AnsDt}}</p>
+                                        {{end}}
+                                        <p class="btnSec"><a href="javascript:void(0);" id="btn_answer" data-entp_mem_no="{{.EntpMemNo}}" data-inq_gbn_cd="{{.InqGbnCd}}" data-reg_dy="{{.RegDy}}" data-ans_no="{{.BrdNo}}">답변등록</a></p>
+                                    </td>
+                                  </tr>
+                                </table>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    {{end}}
+                </tbody>
+              </table>
+            <div class="paging">
+              {{str2html .Pagination}}
+            </div>
+        </div>
+        {{end}}
+      </div>
+      <!-- // 페이지 영역 -->
+      </div>
+      <!-- 컨텐츠영역 -->
+    </div>
+
+
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/admin/inquiry/list?pn="+pageno;
+      }	
+
+      // 답변 등록
+      $(document).off("click", "#btn_answer").on("click", "#btn_answer", function(){
+
+        var entp_mem_no = $(this).data("entp_mem_no");
+        var inq_gbn_cd = $(this).data("inq_gbn_cd");
+        var reg_dy = $(this).data("reg_dy");
+        var ans_no = $(this).data("ans_no");
+        var ans_cont = $("#ans_cont_"+ans_no).val().replace(/'/gi,"`");
+
+
+        if ($("#ans_cont_"+ans_no).val().length == 0) {
+          alert("문의 답변 내용을 입력해주세요.");
+          $("#ans_cont_"+ans_no).focus();
+          return;
+        }
+
+        $(".loading").attr("style", "display:''");
+
+        console.log("entp_mem_no : "+entp_mem_no);
+        console.log("inq_gbn_cd : "+inq_gbn_cd);
+        console.log("reg_dy : "+reg_dy);
+        console.log("ans_no : "+ans_no);
+        console.log("ans_cont : "+ans_cont);
+
+        $.ajax({
+          cache : false,
+          url : '/admin/inquiry/insert',
+          data : {
+            entp_mem_no : entp_mem_no,
+            inq_gbn_cd : inq_gbn_cd,
+            reg_dy : reg_dy,
+            ans_cont : ans_cont
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              console.log("success");
+              $(".loading").attr("style", "display:none");
+              window.location.reload();
+              $("#ans_no").trigger("click");
+
+            } else {
+              console.log("error");
+              $(".loading").attr("style", "display:none");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+            $(".loading").attr("style", "display:none");
+          }
+        });
+      });
+      
+      // 답변완료시에 펼치기/접기
+      $(function(){
+        $(".tblWrap1 .replyWrap a").on("click",function(){
+          if($(this).closest("tr").hasClass("active")){
+            $(".tblWrap1 tr").removeClass("active")
+          } else {
+            if($(this).parent().closest("tr").next()[0].className == "answer"){
+              $(".tblWrap1 tr").removeClass("active")
+              $(this).parent().closest("tr").addClass("active");
+              $(this).parent().closest("tr").next().addClass("active")
+            }        
+          }
+          return false;
+        })
+      })      
+
+
+
+    </script>    
+    {{end}}    

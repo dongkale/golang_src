@@ -1,0 +1,198 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>인트로 팝업</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              {{template "include/admin_contents_menu.html" .}}
+            </div>
+            <div class="listBox">
+              <div class="topSec">
+                <div class="posR">
+                  <div class="btnSecTop">
+                    <input type="hidden" id="intro_use_yn" value="{{.IntroUseYn}}">
+                    <em style="font-size: 16px">★ 인트로 팝업 활성상태 여부</em>&nbsp;&nbsp;
+                    {{if eq "1" .IntroUseYn}}
+                      <a href="javascript:void(0);" style="background: #5959ff" id="intro_use">활성 상태</a>
+                    {{else}}
+                      <a href="javascript:void(0);" style="background: #ff5353" id="intro_use">비활성 상태</a>
+                    {{end}}
+                  </div>
+                </div>
+              </div>
+              <div class="notice">
+                <table>
+                  <colgroup>
+                    <col width="60px" />
+                    <col width="100px" />
+                    <col />
+                    <col width="80px" />
+                    <col width="80px" />
+                    <col width="140px" />
+                  </colgroup>
+                  <thead>
+                    <tr style="height:50px">
+                      <th>이미지</th>
+                      <th>위치</th>
+                      <th>컨텐츠 제목</th>
+                      <th>링크구분</th>
+                      <th>게시여부</th>
+                      <th>등록일자<br>(게시기간)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {{if .AdminIntroPopUpList}} 
+                    {{range .AdminIntroPopUpList}}
+                    <tr>
+                      <td><img src="{{.PtoPath}}" alt=""></td>
+                      <td>{{.LnkGbnValNm}}</td>
+                      <td class="text"><a href="javascript:void(0);" id="goDetail" data-intro_sn="{{.IntroSn}}">{{.IntroTitle}}</a></td>
+                      <td>{{.LnkGbnNm}}</td>
+                      {{if eq "0" .UseYn}}
+                      <td><span style="color: red">대기</span></td>
+                      {{else}}
+                        {{if eq "1" .EndYn}}
+                          <td><span style="color: #5a5a5a">[마감]</span></td>
+                        {{else}}
+                          <td><span style="color: blue">노출{{if eq "1" .StbYn}}<br><span style="color: #fd6536">[예약]</span>{{end}}</td>
+                        {{end}}
+                      {{end}}
+                      <td>{{.RegDt}}<br><span style="font-size: 10px">({{.Sdy}}~{{.Edy}})</span></td>
+                    </tr>
+                    {{end}}
+                  {{else}}
+                    <tr>
+                      <td colspan="6">
+                        <p class="noData">등록된 컨텐츠가 없습니다</p>
+                      </td>
+                    </tr>
+                  {{end}}
+                  </tbody>
+                </table>
+                <div class="paging">
+                  {{str2html .Pagination}}
+                </div>
+            </div>
+            <div class="btnSec">
+              <a href="javascript:void(0);" class="active" id="btn_write">등록</a>
+            </div>
+        </div>
+        <!-- // 페이지 영역 -->
+      </div>
+      <!-- 컨텐츠영역 -->
+    </div>
+
+    <div class="popupWrap confirm" id="intro_stat_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>  
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/admin/intro/popup/list?pn="+pageno;
+      }	
+
+      // 인트로팝업 상세
+      $(document).off("click", "#goDetail").on("click", "#goDetail", function(){
+        var intro_sn = $(this).data("intro_sn");
+        window.location.href="/admin/intro/write?cu_cd=U&intro_sn="+intro_sn+"&pn={{.PageNo}}";
+      });
+      
+      // 인트로팝업 등록
+      $(document).off("click", "#btn_write").on("click", "#btn_write", function(){
+        window.location.href="/admin/intro/write?cu_cd=C&pn={{.PageNo}}";
+      });
+      
+      // 인트로팝업 활성상태
+      $(document).off("click", "#intro_use").on("click", "#intro_use", function(){
+        var intro_use_yn = $("#intro_use_yn").val();
+        if (intro_use_yn == "1") {
+          $("#confirmMessage").text("인트로 팝업을 비활성화 하시겠습니까?");
+        } else {
+          $("#confirmMessage").text("인트로 팝업을 활성화 하시겠습니까?");
+        }
+        openPopup("intro_stat_pop");
+      });
+
+      // 활성상태 처리
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var intro_use_yn = $("#intro_use_yn").val();
+        //console.log("intro_use_yn : "+intro_use_yn);
+        if (intro_use_yn == "1") {
+          var intro_use_chk = "0";
+        } else {
+          var intro_use_chk = "1";
+        }
+        statProc(intro_use_chk);
+      });
+
+      var statProc = function(intro_use_chk){
+      $.ajax({
+          cache : false,
+          url : '/admin/intro/popup/stat/update',
+          data : {
+            intro_use_yn : intro_use_chk,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+                //window.location.reload();
+                $(".loading").attr("style", "display:none");
+                closePopup("intro_stat_pop");
+                if (intro_use_chk == "1") {
+                  $(".btnSecTop").find("a").css("background","#5959ff");
+                  $(".btnSecTop").find("a").text("활성 상태");
+                  $("#intro_use_yn").val("1");
+                } else {
+                  $(".btnSecTop").find("a").css("background","#ff5353");
+                  $(".btnSecTop").find("a").text("비활성 상태");
+                  $("#intro_use_yn").val("0");
+                }
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+            window.location.replace("/");
+          },
+        });      
+      }
+
+    </script>    
+    {{end}}    

@@ -1,0 +1,244 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>배너 관리</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              {{template "include/admin_contents_menu.html" .}}
+            </div>
+            <div class="listBox">
+              <div class="topSec">
+                <div class="posR">
+                  <div class="btnSecTop">
+                    <input type="hidden" id="bnr_use_yn" value="{{.BnrUseYn}}">
+                    <em style="font-size: 16px">★ 배너 활성상태 여부</em>&nbsp;&nbsp;
+                    {{if eq "1" .BnrUseYn}}
+                      <a href="javascript:void(0);" style="background: #5959ff" id="bnr_use">활성 상태</a>
+                    {{else}}
+                      <a href="javascript:void(0);" style="background: #ff5353" id="bnr_use">비활성 상태</a>
+                    {{end}}
+                    * 자동 롤링타임 설정 : 
+                    <select name="rol_time" id="rol_time" style="width: 40px">
+                      <option value="3" {{if eq 3 .RolTime}}selected='selected'{{end}}>3</option>
+                      <option value="4" {{if eq 4 .RolTime}}selected='selected'{{end}}>4</option>
+                      <option value="5" {{if eq 5 .RolTime}}selected='selected'{{end}}>5</option>
+                      <option value="6" {{if eq 6 .RolTime}}selected='selected'{{end}}>6</option>
+                      <option value="7" {{if eq 7 .RolTime}}selected='selected'{{end}}>7</option>
+                      <option value="8" {{if eq 8 .RolTime}}selected='selected'{{end}}>8</option>
+                      <option value="9" {{if eq 9 .RolTime}}selected='selected'{{end}}>9</option>
+                      <option value="10" {{if eq 10 .RolTime}}selected='selected'{{end}}>10</option>
+                    </select> 초 간격
+                  </div>
+                </div>
+              </div>
+              <div class="notice">
+                <table>
+                  <colgroup>
+                    <col width="100px" />
+                    <col width="100px" />
+                    <col />
+                    <col width="80px" />
+                    <col width="80px" />
+                    <col width="80px" />
+                    <col width="140px" />
+                  </colgroup>
+                  <thead>
+                    <tr style="height:50px">
+                      <th>이미지</th>
+                      <th>위치</th>
+                      <th>배너명</th>
+                      <th>링크구분</th>
+                      <th>배너유형</th>
+                      <th>게시여부</th>
+                      <th>등록일자<br>(게시기간)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {{if .AdminBannerList}} 
+                    {{range .AdminBannerList}}
+                    <tr>
+                      <td><img src="{{.PtoPath}}" alt=""></td>
+                      <td>{{str2html .LnkGbnValNm}}</td>
+                      <td class="text"><a href="javascript:void(0);" id="goDetail" data-bnr_sn="{{.BnrSn}}">{{.BnrTitle}}</a></td>
+                      <td>{{.LnkGbnNm}}</td>
+                      <td>{{.BnrKndNm}}</td>
+                      {{if eq "0" .UseYn}}
+                      <td><span style="color: red">대기</span></td>
+                      {{else}}
+                        {{if eq "1" .EndYn}}
+                          <td><span style="color: #5a5a5a">[마감]</span></td>
+                        {{else}}
+                          <td><span style="color: blue">노출{{if eq "1" .StbYn}}<br><span style="color: #fd6536">[예약]</span>{{end}}</td>
+                        {{end}}
+                      {{end}}
+                      <td>{{.RegDt}}<br><span style="font-size: 10px">({{.Sdy}}~{{.Edy}})</span></td>
+                    </tr>
+                    {{end}}
+                  {{else}}
+                    <tr>
+                      <td colspan="7">
+                        <p class="noData">등록된 배너가 없습니다</p>
+                      </td>
+                    </tr>
+                  {{end}}
+                  </tbody>
+                </table>
+                <div class="paging">
+                  {{str2html .Pagination}}
+                </div>
+            </div>
+            <div class="btnSec">
+              <a href="javascript:void(0);" class="active" id="btn_write">등록</a>
+            </div>
+        </div>
+        <!-- // 페이지 영역 -->
+      </div>
+      <!-- 컨텐츠영역 -->
+    </div>
+
+    <div class="popupWrap confirm" id="bnr_stat_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>  
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/admin/banner/list?pn="+pageno;
+      }	
+
+     // 배너 자동 롤링타임 설정
+     $(document).off("change", "#rol_time").on("change", "#rol_time", function(){
+        var rol_time = $(this).val();
+        console.log("rol_time : "+rol_time);
+        rolTimeSetProc(rol_time);
+      });
+
+
+      var rolTimeSetProc = function(rol_time){
+      $.ajax({
+          cache : false,
+          url : '/admin/banner/time/update',
+          data : {
+            rol_time : rol_time,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+                //window.location.reload();
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+          },
+        });      
+      }
+
+      // 배너 상세
+      $(document).off("click", "#goDetail").on("click", "#goDetail", function(){
+        var bnr_sn = $(this).data("bnr_sn");
+        window.location.href="/admin/banner/write?cu_cd=U&bnr_sn="+bnr_sn+"&pn={{.PageNo}}";
+      });
+      
+      // 배너 등록
+      $(document).off("click", "#btn_write").on("click", "#btn_write", function(){
+        window.location.href="/admin/banner/write?cu_cd=C&pn={{.PageNo}}";
+      });
+      
+      // 배너 활성상태
+      $(document).off("click", "#bnr_use").on("click", "#bnr_use", function(){
+        var bnr_use_yn = $("#bnr_use_yn").val();
+        if (bnr_use_yn == "1") {
+          $("#confirmMessage").text("배너를 비활성화 하시겠습니까?");
+        } else {
+          $("#confirmMessage").text("배너를 활성화 하시겠습니까?");
+        }
+        openPopup("bnr_stat_pop");
+      });
+
+      // 활성상태 처리
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var bnr_use_yn = $("#bnr_use_yn").val();
+        //console.log("bnr_use_yn : "+bnr_use_yn);
+        if (bnr_use_yn == "1") {
+          var bnr_use_chk = "0";
+        } else {
+          var bnr_use_chk = "1";
+        }
+        statProc(bnr_use_chk);
+      });
+
+      var statProc = function(bnr_use_chk){
+      $.ajax({
+          cache : false,
+          url : '/admin/banner/stat/update',
+          data : {
+            bnr_use_yn : bnr_use_chk,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+                //window.location.reload();
+                $(".loading").attr("style", "display:none");
+                closePopup("bnr_stat_pop");
+                if (bnr_use_chk == "1") {
+                  $(".btnSecTop").find("a").css("background","#5959ff");
+                  $(".btnSecTop").find("a").text("활성 상태");
+                  $("#bnr_use_yn").val("1");
+                } else {
+                  $(".btnSecTop").find("a").css("background","#ff5353");
+                  $(".btnSecTop").find("a").text("비활성 상태");
+                  $("#bnr_use_yn").val("0");
+                }
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+            window.location.replace("/");
+          },
+        });      
+      }
+
+    </script>    
+    {{end}}    

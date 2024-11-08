@@ -1,0 +1,269 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+      <!--// 파라미터 정의 -->
+      <input type="hidden" id="p_keyword" value="{{.pKeyword}}">  
+      <input type="hidden" id="p_empl_typ" value="{{.pEmplTyp1}}">  
+      <input type="hidden" id="p_job_grp_cd" value="{{.pJobGrpCd}}">  
+      <input type="hidden" id="p_sort_gbn" value="{{.pSortGbn}}">  
+      <input type="hidden" id="p_gbn_cd" value="{{.pGbnCd}}">  
+      <input type="hidden" id="p_page_no" value="{{.pPageNo}}">  
+        <div class="recruitView">
+          <!-- 채용중 class="type1" / 기간마감 class="type2" / 종료 class="type3" -->
+          {{if eq "ING" .PrgsStat}}
+          <p class="state type1">채용중</p>
+          {{else if eq "PED" .PrgsStat}}
+          <p class="state type2">기간마감</p>
+          {{else}}
+          <p class="state type3">종료</p>
+          {{end}}
+          <a href="javascript:void(0);" class="btnList" id="btn_go_list">목록으로가기</a>
+          <p class="tit">{{.RecrutTitle}}</p>
+          <div class="data">
+            <div class="box01">
+              <p><span>{{.Pv}}</span>누적 조회수</p>
+              <p><span>{{.Uv}}</span>누적 방문자수</p>
+            </div>
+            <div class="box02">
+              <p><span id="apply_cnt">{{.ApplyCnt}}</span>전체 지원자 수</p>
+              <p><span id="ing_cnt">{{.IngCnt}}</span>대기</p>
+              <p><span id="pass_cnt">{{.PassCnt}}</span>합격</p>
+              <p><span id="fail_cnt">{{.FailCnt}}</span>불합격</p>
+            </div>
+          </div>
+          <p class="btn"><a href="javascript:void(0);" id="btn_apply_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}"><img src="/static/images/btn_result.gif" alt="지원 현황 상세"></a></p>
+          <div class="recruitInfo">
+            <p class="info">채용정보</p>
+            <table class="recruitTbl type02">
+              <colgroup>
+                <col width="130px"/>
+                <col width="339px"/>
+                <col width="130px" />
+                <col />
+              </colgroup>
+              <tr>
+                <th>공고 형태</th>
+                <td>{{if eq "R" .EmplTyp}}정규직{{else}}아르바이트{{end}}</td>
+                <th>직무 선택</th>
+                <td>{{.UpJobGrp}} &gt; {{.JobGrp}}</td>
+              </tr>
+              <tr>
+                <th>성별</th>
+                <td>{{if eq "A" .Sex}}무관{{else if eq "M" .Sex}}남자{{else}}여자{{end}}</td>
+                <th>모집인원</th>
+                <td>{{.RecrutCnt}} 명</td>
+              </tr>
+              <tr>
+                <th>답변 제한 시간</th>
+                <td>{{.AnsLmtTmNm}}</td>
+                <th>접수 기간</th>
+                <td>{{.RecrutDy}} {{if eq "END" .PrgsStat}}<font color="#000000">(종료일 {{.RecrutEdt}})</font>{{end}}</td>
+              </tr>
+            </table>
+            <table class="recruitTbl">
+              <tr>
+                <th>역할</th>
+              </tr>
+              <tr>
+                <td style="white-space:pre-line;">{{.Rol}}</td>
+              </tr>
+              <tr>
+                <th>지원 자격</th>
+              </tr>
+              <tr>
+                <td style="white-space:pre-line;">{{.AplyQufct}}</td>
+              </tr>
+              <tr>
+                <th>우대 사항</th>
+              </tr>
+              <tr>
+                <td style="white-space:pre-line;">{{.PerferTrtm}}</td>
+              </tr>
+              <tr>
+                <th>채용 절차 진행 시 발송 메시지</th>
+              </tr>
+              <tr>
+                <td style="white-space:pre-line;">{{.PrgsMsg}}</td>
+              </tr>
+            </table>
+            <p class="info">채용 질문</p>
+            <table class="recruitTbl">
+              <tr>
+                <th>질문1</th>
+              </tr>
+              <tr>
+                <td>{{.VdTitle1}}</td>
+              </tr>
+              <tr>
+                <th>질문2</th>
+              </tr>
+              <tr>
+                <td>{{.VdTitle2}}</td>
+              </tr>
+              <tr>
+                <th>질문3</th>
+              </tr>
+              <tr>
+                <td>{{.VdTitle3}}</td>
+              </tr>
+              <tr>
+                <th>질문4</th>
+              </tr>
+              <tr>
+                <td>{{.VdTitle4}}</td>
+              </tr>
+              <tr>
+                <th>질문5</th>
+              </tr>
+              <tr>
+                <td>{{.VdTitle5}}</td>
+              </tr>
+            </table>
+          </div>
+          {{if ne "END" .PrgsStat}}
+          <p class="btnSec">
+            <a href="javascript:void(0);" id="btn_modify" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" class="btnModify">수정</a>
+            <a href="javascript:void(0);" id="btn_recruit_end" class="btnEnd">채용 종료</a>
+          </p>
+          {{end}}
+        </div>        
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 일반팝업_버튼2개 -->
+    <div class="popupWrap confirm" id="recruit_common_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 일반팝업_버튼2개 -->
+        
+    <!-- 일반팝업_버튼1개 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p>현재 진행중인 지원자가 있으므로<br>종료처리를 할 수 없습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 일반팝업_버튼1개 -->       
+
+    <script type="text/javascript">
+      
+      // 채용종료 팝업
+      $(document).off("click", "#btn_recruit_end").on("click", "#btn_recruit_end", function(e) {
+        $("#confirmMessage").html("해당 채용 공고를<br>정말 종료하시겠습니까?");
+        openPopup("recruit_common_pop");
+      });     
+      
+     // 채용종료
+     $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        var entp_mem_no = $(this).data("mem_no");
+        var recrut_sn = $(this).data("recruit_sn");
+        recrutEnd(entp_mem_no, recrut_sn);
+     });       
+
+    // 알림팝업 닫기
+    $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+      $('.popupWrap.alert').hide();
+    });      
+
+    // 채용종료 처리
+    var recrutEnd = function(entp_mem_no, recrut_sn){
+      $.ajax({
+        cache : false,
+        url : '/recruit/post/end',
+        data : {
+          entp_mem_no : entp_mem_no,
+          recrut_sn : recrut_sn
+        },
+        type : 'POST',
+        dataType : "json",
+        error : function(e) {
+          console.log("error" + e);
+        },
+        success : function(rep) {
+          var rtnCd = rep.RtnCd
+          var rtnMsg = rep.RtnMsg
+
+          if(rtnCd == 1){
+            //console.log("success");
+            var acnt = parseInt($("#apply_cnt").text());
+            var icnt = parseInt($("#ing_cnt").text());
+            var fcnt = parseInt($("#fail_cnt").text());
+            $("#btn_modify").remove();
+            $("#btn_recruit_end").remove();
+            $(".state").removeClass("type1 type2");
+            $(".state").addClass("type3");
+            $(".state.type3").text("종료");
+            $("#ing_cnt").text("0");
+            $("#fail_cnt").text(icnt + fcnt);
+            $('.popupWrap.confirm').hide();
+          } else if (rtnCd == 3) {
+            //console.log("ongoing");
+            $('.popupWrap.confirm').hide();
+            openPopup("recruit_alert_pop");
+          } else {
+            console.log("error");
+          }
+        },
+        error : function(e) {
+          console.log("error + "+e);
+        }
+      });	 
+    }         
+
+    // 지원현황이동
+    $(document).off("click", "#btn_apply_stat").on("click", "#btn_apply_stat", function(e) {
+      var entp_mem_no = $(this).data("mem_no");
+      var recrut_sn = $(this).data("recruit_sn");
+      window.location.href="/recruit/stat/list?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn;
+    });
+
+    // 채용공고 수정
+    $(document).off("click", "#btn_modify").on("click", "#btn_modify", function(e) {
+      var entp_mem_no = $(this).data("mem_no");
+      var recrut_sn = $(this).data("recruit_sn");
+      window.location.href="/recruit/post/modify?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn;
+    });
+
+    // 목록으로 이동
+    $(document).off("click", "#btn_go_list").on("click", "#btn_go_list", function(e) {
+      var entp_mem_no = $("#entp_mem_no").val();
+      var recrut_sn = $("#recrut_sn").val();
+
+      var keyword = $("#p_keyword").val();
+      var empl_typ = $("#p_empl_typ").val();
+      var job_grp_cd = $("#p_job_grp_cd").val();
+      var sort_gbn = $("#p_sort_gbn").val();
+      var gbn_cd = $("#p_gbn_cd").val();
+      var page_no = $("#p_page_no").val();
+      var param = "entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+
+      window.location.href="/recruit/post/list?"+param;
+    });      
+
+    
+    </script>
+  {{end}}

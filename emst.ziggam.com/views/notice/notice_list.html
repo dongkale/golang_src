@@ -1,0 +1,80 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>공지사항</h2>
+        <div class="notice">
+          <table>
+            <colgroup>
+              <col width="107px" />
+              <col />
+              <col width="141px" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>구분</th>
+                <th>제목</th>
+                <th>날짜</th>
+              </tr>
+            </thead>
+            <tbody>
+            {{if .NoticeList}} 
+              {{range .NoticeList}}
+              <tr>
+                <td>{{.MemNm}}</td>
+                <td class='text {{if eq "Y" .NewYn}} new {{end}}'><a href="javascript:void(0);" id="goNotice" data-sn="{{.Sn}}">{{.Title}}</a></td>
+                <td>{{.RegDt}}</td>
+              </tr>
+              {{end}}
+            {{else}}
+              <tr>
+                <td colspan="3">
+                  <p class="noData">등록된 공지사항이 없습니다</p>
+                </td>
+              </tr>
+            {{end}}
+            </tbody>
+          </table>
+          <div class="paging">
+            {{str2html .Pagination}}
+          </div>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/notice/list?pn="+pageno;
+      }	
+    
+      // 공지사항 상세 페이지 이동
+        $(document).off("click", "#goNotice").on("click", "#goNotice", function(){
+        var sn = $(this).data("sn");
+        window.location.href="/notice/detail?sn="+sn+"&pn={{.PageNo}}";
+      });
+      
+    </script>    
+    {{end}}    

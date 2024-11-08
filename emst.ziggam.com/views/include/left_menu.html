@@ -1,0 +1,26 @@
+    <!-- 좌측 메뉴영역 -->
+    <div class="sideNav">
+        <a href="/"><img src="/static/images/btn_home.jpg" alt="HOME 화면으로 이동"></a>
+        <div class="NavInfo">
+          <!-- company_logo 이미지는 115/115 사이즈로 테두리 없는 이미지 넣으셔도 라운딩에 테두리 추가 됩니다. -->
+          <p class="logo"><img src="{{.BasicLogoPtoPath}}" onerror="this.src='/static/images/entp_no_img.png'" width="115px" height="115px" alt="회사이미지"></p>
+          <p class="name">{{str2html .BasicEntpKoNm}}</p>
+          <a href="/recruit/post/write" class="newRecruit">신규채용등록</a>
+        </div>
+        <div class="gnb">
+          <ul>
+            <li class='{{if eq "01" .MenuId}}active{{end}}'><a href="/entp/info/write">기업 정보 관리</a></li>
+            <li class='{{if eq "02" .MenuId}}active{{end}}'><a href="/recruit/post/list">채용 공고 관리</a></li>
+            <li class='{{if eq "03" .MenuId}}active{{end}}'><a href="/applicant/list">지원자 관리</a></li>
+            {{if eq "qrate" .SMemId}}
+            <li class='{{if eq "04" .MenuId}}active{{end}}'><a href="/admin/notice/list">컨텐츠 관리</a></li>
+            <li class='{{if eq "05" .MenuId}}active{{end}}'><a href="/admin/member/list">회원 관리</a></li>
+            <li class='{{if eq "06" .MenuId}}active{{end}}'><a href="/admin/entp/list">기업 관리</a></li>
+            <li class='{{if eq "07" .MenuId}}active{{end}}'><a href="/admin/event/list">프로필영상 관리</a></li>
+            <li class='{{if eq "99" .MenuId}}active{{end}}'><a href="/admin/stats/main">통계 관리</a></li>
+            {{end}}
+          </ul>
+        </div>
+        <span class="copyright"><img src="/static/images/copyright_ziggam.jpg" alt="직감 ⓒ qrate.CO. All rights reserved."></span>
+      </div>
+      <!-- // 좌측 메뉴영역 -->

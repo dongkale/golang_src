@@ -1,0 +1,772 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+
+        <!--// 파라미터 세팅 -->
+        <input type="hidden" id="p_mem_stat" value="{{.pMemStat}}">
+        <input type="hidden" id="p_keyword" value="{{.pKeyword}}">
+        <input type="hidden" id="p_sex" value="{{.pSex}}">
+        <input type="hidden" id="p_age" value="{{.pAge}}">
+        <input type="hidden" id="p_yp_yn" value="{{.pVpYn}}">
+        <input type="hidden" id="p_os_gbn" value="{{.pOsGbn}}">
+        <input type="hidden" id="p_page_no" value="{{.pPageNo}}">
+        <input type="hidden" id="p_size" value="{{.pSize}}">
+        <input type="hidden" id="p_sdy" value="{{.pSdy}}">
+        <input type="hidden" id="p_edy" value="{{.pEdy}}">
+                
+        <h2>회원정보 상세</h2>
+        <div class="userDetail">
+          <p class="subTit">{{.Nm}} <span class="more">({{if eq "M" .Sex}}남자{{else}}여자{{end}}/{{.Age}}세)</span></p>
+          <div class="box">
+            <p class="name">{{.JoinGbnNm}}가입 회원입니다. (가입일시 : {{.RegDt}}, 상태 : {{.MemStatNm}})</span></p>
+          </div>
+          <p class="subTit">지원자 기본 정보</p>
+          <div class="userBox">
+            <div class="imgSec">
+              <p class="img">
+                {{if eq "M" .Sex}}
+                <img src="{{.PtoPath}}" onerror="this.src='/static/images/male_no_img.png'" alt="남자 지원자">
+                {{else}}
+                <img src="{{.PtoPath}}" onerror="this.src='/static/images/female_no_img.png'" alt="여자 지원자">
+                {{end}}
+              </p>
+              <!--<p style="text-align: center; margin-left: 20px">일반 회원</p>-->
+            </div>
+            <div class="textSec">
+              <div class="userTbl">
+                <table>
+                  <colgroup>
+                    <col width="152px"/><col/>
+                  </colgroup>
+                  {{if eq "99" .SnsCd}}
+                  <tr>
+                    <th>아이디</th>
+                    <td> {{.MemId}}</td>
+                  </tr>
+                  {{else}}
+                  <tr>
+                    <th>SNS 고유번호</th>
+                    <td> {{.SnsCustNo}}</td>
+                  </tr>
+                  {{end}}
+                  <tr>
+                            <th>개인 관리 번호</th>
+                            <td> {{.PpMemNo}}</td>
+                        </tr>
+                        <tr>
+                    <th>이메일 (수신여부)</th>
+                    <td> {{.Email}} ({{if eq "1" .EmailRecvYn}}수신{{else}}미수신{{end}})</td>
+                  </tr>
+                  <tr>
+                    <th>휴대폰 번호 (수신여부)</th>
+                    <td> {{.MoNo}} ({{if eq "1" .SmsRecvYn}}수신{{else}}미수신{{end}})</td>
+                  </tr>
+                  <tr>
+                    <th>생년 월일</th>
+                    <td>{{.BrthYmd}}</td>
+                  </tr>
+                  <tr>
+                    <th>디바이스 정보</th>
+                    <td>{{if eq "AD" .OsGbn}}Android OS{{else}}iOS{{end}} (ver : {{.OsVer}})</td>
+                  </tr>
+                  <tr>
+                    <th>채용 지원이력</th>
+                    <td>총지원수 : {{.TotApplyCnt}}건 | 대기수 : {{.StnbyCnt}}건 | 합격수 : {{.PassCnt}}건 | 불합격수 : {{.FailCnt}}건 | 매칭률 : {{.MachingRate}}%</td>
+                  </tr>
+                  <tr>
+                    <th>박람회</th>
+                    <td>
+                      {{range .JobFairList}}
+                          <p>{{.}}</p>
+                      {{end}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>최근 접속 일시</th>
+                    <td>{{.LoginDt}}</td>
+                  </tr>
+                  </table>
+              </div>
+            </div>
+          </div>
+          <p class="subTit">영상 프로필</p>
+          <div class="repVideo">
+            <ul>
+              {{if .MemberVideoProfileList}}
+              {{range .MemberVideoProfileList}}
+              <li>
+                <p style="height:30px">[등록일] {{.VpRegDt}}</p>
+                <video controls width="100%" controlsList="nodownload">
+                  <source src="{{.VpVdFilePath}}" type="video/mp4">
+                </video>
+                <p>[{{.VpThmNm}}]{{.VpQstDesc}}</p>
+              </li>
+              {{end}}
+              {{else}}
+              <p>등록된 프로필 영상이없습니다.</p>
+              {{end}}
+            </ul>
+          </div>
+          <p class="subTit" style="height:40px">지원 내역 {{if .MemberApplyHistoryList}}(총{{.AhTotCnt}}건){{end}} <a href="javascript:void(0);" id="btn_recrut_apply_del" class="btn type_red" style="line-height: 32px; min-width: 59px;"><span>삭제</span></a> </p>
+            <div class="applyHistory">
+          {{if .MemberApplyHistoryList}}
+                    <select class="" id="apply_history" >
+              <option value="">채용공고를 선택해주세요.</option>
+              {{range .MemberApplyHistoryList}}
+              <option value="{{.AhEntpMemNo}},{{.AhRecrutSn}},{{.AhPpMemNo}}">[{{.AhEntpKoNm}}] {{.AhRecrutTitle}} [{{.AhEvlPrgsStatNm}}]</option>
+              {{end}}
+            </select>
+          {{else}}
+          <br><p>지원한 내역이 없습니다.</p>
+          {{end}}
+            </div>
+          <div class="ansVideo">
+            <ul>
+            </ul>
+          </div>
+          <p class="subTit">지원자 상세 프로필</p>
+          <div class="userProfile">
+            <table>
+              <colgroup>
+                <col width="175px"/>
+                <col />
+              </colgroup>
+              <tr>
+                <th>최종 학력</th>
+                <td>{{.LstEdu}}</td>
+              </tr>
+              <tr>
+                <th>경력</th>
+                <td>{{.CarrDesc}}</td>
+              </tr>
+              <tr>
+                <th>보유 기술 / 자격증</th>
+                <td>
+                  {{str2html .TechQlftKnd}}
+                </td>
+              </tr>
+              <tr>
+                <th>외국어 능력</th>
+                <td>{{.FrgnLangAbltDesc}}</td>
+              </tr>
+              <tr>
+                <th>첨부자료 링크</th>
+                <td>{{.AtchDataPath}}</td>
+              </tr>
+              <tr>
+                <th>첨부 파일</th>
+                {{if not .AtchFilePath}}
+                <td>첨부파일이 없습니다.</td>
+                {{else}}
+                <td><a href="{{.AtchFilePath}}" download>첨부파일 다운로드</a></td>
+                {{end}}
+              </tr>
+            </table>
+          </div>    
+
+            <!---->
+            <p class="subTit">암호 관리</p>
+            <div class="userPass">
+                <input style="margin-top:5px;" type="text" name="pw_init" id="pw_init" minlength="6" maxlength="16">                            
+                <a class="btn02" style="vertical-align: middle;margin-top: 5px;" id="btn_pw_init" style="ime-mode:active;">암호 초기화</a>            
+            </div>  
+            <!---->
+
+          <p class="btnSec">
+              <a href="javascript:void(0);" id="btn_go_list" class="btnList">목록</a>
+          </p>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+<div class="popupWrap confirm" id="pw_init_yn">
+    <div class="popup">
+        <div class="popContent">                
+            <p id="pw_init_yn_text"></p>
+        </div>
+        <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="status" id="btn_pw_init_yn_confirm">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>  
+
+<div class="popupWrap confirm" id="empty_pw_init">
+    <div class="popup">
+        <div class="popContent">
+            <p id="alert_text">초기화 암호를 입력해주세요.</p>
+        </div>
+        <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+
+<div class="popupWrap confirm" id="valid_pw_init">
+    <div class="popup">
+        <div class="popContent">
+            <p id="alert_text">암호를 6~16 길이로 영문,숫자 포함으로 입력 해주세요.</p>
+        </div>
+        <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">확인</a>
+        </div>
+    </div>
+    <span class="cover"></span>
+</div>
+
+<div class="popupWrap alert" id="update_pop">
+    <div class="popup">
+      <div class="popContent">
+        <p id="alert_text">정상적으로 수정되었습니다.</p>
+      </div>
+      <div class="popBtn">
+        <a href="javascript:void(0);" id="btn_update_pop_confirm">확인</a>
+      </div>
+    </div>
+    <span class="cover"></span>
+</div>
+
+<div class="popupWrap alert" id="update_fail_pop">
+    <div class="popup">
+      <div class="popContent">
+        <p id="alert_text">오류가 발생했습니다.</p>
+      </div>
+      <div class="popBtn">
+        <a href="javascript:void(0);" id="btn_update_fail_pop_confirm">확인</a>
+      </div>
+    </div>
+    <span class="cover"></span>
+</div>
+
+    <script type="text/javascript">
+
+    // 지원 내역 선택
+    $(document).off("change", "#apply_history").on("change", "#apply_history", function(e) {
+      var arr_val = $(this).val();
+      if (!arr_val) {
+        $(".ansVideo").find("ul").children().remove();
+      } else {
+        //console.log("arr_val : "+arr_val);
+        var splitVal = arr_val.split(',');
+        var entp_mem_no = splitVal[0];
+        var recrut_sn = splitVal[1];
+        var pp_mem_no = splitVal[2];
+
+            console.log("entp_mem_no : "+entp_mem_no);
+            console.log("recrut_sn : "+recrut_sn);
+            console.log("pp_mem_no : "+pp_mem_no);
+        vdHistory(entp_mem_no, recrut_sn, pp_mem_no);
+      }
+    });
+
+    // 지원내역 영상 리스트 가져오기
+    var vdHistory = function(entp_mem_no, recrut_sn, pp_mem_no){
+      $.ajax({
+        cache : false,
+        url : '/admin/qa/history/list',
+        data : {
+          entp_mem_no : entp_mem_no,
+          recrut_sn : recrut_sn,
+          pp_mem_no : pp_mem_no
+        },
+        type : 'POST',
+        dataType : "json",
+        error : function(e) {
+          console.log("error" + e);
+        },
+        success : function(args) {
+                console.log(JSON.stringify(args));
+              $(".ansVideo").find("ul").children().remove();
+                if(args.RtnQaHistoryListData.length > 0){
+                    //$(".ansVideo").find("ul").children().remove();
+                
+              var html = "";
+              $.each(args.RtnQaHistoryListData,function(e) {
+                html += "<li>";
+                html += "<video controls width=\"100%\" controlsList=\"nodownload\">";
+                html += "<source src="+args.RtnQaHistoryListData[e].VdFilePath+" type=\"video/mp4\">";
+                html += "</video>";
+                html += "<dl>";
+                html += "<dt>[질문"+args.RtnQaHistoryListData[e].QstSn+"]</dt>";
+                html += "<dd>"+args.RtnQaHistoryListData[e].VdTitle+"</dd>";
+                html += "</dl>";
+                html += "</li>";
+              })
+              $(".ansVideo").find("ul").append(html);     
+                } else {
+                    var html = "";
+
+                    html += "<li>";
+                    html += "<dl>";
+                    //html += "데이터가 없습니다";
+                    html += "</dl>";            
+                    html += "</li>";
+
+                    $(".ansVideo").find("ul").append(html);     
+          }
+        },
+        error: function(e){
+            alert("fail "+e.responseText);
+        }
+      });	 
+    }          
+
+    // 다음 영상 재생
+    $(document).off("click", ".btnNext.answer").on("click", ".btnNext.answer", function(e) {
+      var curr = parseInt($("#now_page").text());
+      var tot_cnt = parseInt($(this).data("tot_cnt"));
+        
+      if (tot_cnt == curr) {
+        $("#alert_message").html("마지막 영상입니다.");
+        openPopup("start_end_pop");
+      } else if (tot_cnt > curr){
+        $(".ans_video").attr("style", "display:none");
+        $(".message").attr("style", "display:none");
+        $("#video_"+(curr+1)).attr("style", "display:''");
+        $(".message.ans_"+(curr+1)).attr("style", "display:''");
+        $("#now_page").text((curr+1));
+        document.getElementById("video_"+curr).pause();
+        document.getElementById("video_"+(curr+1)).play();
+      }
+    });
+
+    // 이전 영상 재생
+    $(document).off("click", ".btnPrev.answer").on("click", ".btnPrev.answer", function(e) {
+      var curr = parseInt($("#now_page").text());
+      var tot_cnt = parseInt($(this).data("tot_cnt"));
+        
+      if (curr == 1) {
+        $("#alert_message").html("처음 영상입니다.");
+        openPopup("start_end_pop");
+      } else if (curr > 1){
+        $(".ans_video").attr("style", "display:none");
+        $(".message").attr("style", "display:none");
+        $("#video_"+(curr-1)).attr("style", "display:''");
+        $(".message.ans_"+(curr-1)).attr("style", "display:''");
+        $("#now_page").text((curr-1));
+        document.getElementById("video_"+curr).pause();
+        document.getElementById("video_"+(curr-1)).play();
+      }
+    });    
+
+    // 영상 확인 닫기 팝업
+    function videoClosePopup() {
+      $('#start_end_pop').hide();
+      return false;
+    }
+
+    // 전체 재생
+    $(document).off("click", "#btn_play_all").on("click", "#btn_play_all", function(e) {
+      openPopup("video_pop");
+      var tot_cnt = $("#video_pop").data("tot_cnt");
+      //console.log("tot_cnt : "+tot_cnt);
+      $("#now_page").text(1);
+      $("#tot_page").text(tot_cnt);
+      loopVideo(1, tot_cnt);
+    });
+    
+    var loopVideo = function(i, tot_cnt) {
+      if (tot_cnt >= i) {
+        $("#video_"+i).attr("style", "display:''");
+        $(".message.ans_"+i).attr("style", "display:''");
+        document.getElementById("video_"+i).play();
+        
+        document.getElementById("video_"+i).onended = function() {
+          $("#video_"+i).attr("style", "display:none");
+          $(".message.ans_"+i).attr("style", "display:none");
+          var j = i + 1;
+          loopVideo(j, tot_cnt);
+                
+          if (j == tot_cnt) {
+            $("#now_page").text(tot_cnt);
+          } else {
+            if (j < tot_cnt) {
+              $("#now_page").text(j);
+            } else {
+              $("#now_page").text(1);
+            }
+          }
+        };
+      } else {
+        $("#video_1").attr("style", "display:''");
+        $(".message.ans_1").attr("style", "display:''");
+        $("#now_page").text(1);
+        //loopVideo(1, tot_cnt);
+        return;
+      }
+    }
+    
+    // 영상 팝업창 닫기
+    $(document).off("click", "#video_close").on("click", "#video_close", function(e) {
+      window.location.reload();
+      /*
+      closePopup();
+      var tot_cnt = $("#video_pop").data("tot_cnt");
+      var i;
+      for (i = 1; i <= tot_cnt; i++) {
+        document.getElementById("video_"+i).load();
+        document.getElementById("video_"+i).pause();
+      }
+      */
+    });
+
+    // 다음 프로필영상 재생
+    $(document).off("click", ".btnNext.profile").on("click", ".btnNext.profile", function(e) {
+      var curr = parseInt($("#vp_now_page").text());
+      var tot_cnt = parseInt($(this).data("tot_cnt"));
+        
+      if (tot_cnt == curr) {
+        $("#alert_message").html("마지막 영상입니다.");
+        openPopup("start_end_pop");
+      } else if (tot_cnt > curr){
+        $(".profile_video").attr("style", "display:none");
+        $(".message").attr("style", "display:none");
+        $("#profile_video_"+(curr+1)).attr("style", "display:''");
+        $(".message.profile_"+(curr+1)).attr("style", "display:''");
+        $("#vp_now_page").text((curr+1));
+        document.getElementById("profile_video_"+curr).pause();
+        document.getElementById("profile_video_"+(curr+1)).play();
+      }
+    });
+
+    // 이전 프로필영상 재생
+    $(document).off("click", ".btnPrev.answprofileer").on("click", ".btnPrev.profile", function(e) {
+      var curr = parseInt($("#vp_now_page").text());
+      var tot_cnt = parseInt($(this).data("tot_cnt"));
+      if (curr == 1) {
+        $("#alert_message").html("처음 영상입니다.");
+        openPopup("start_end_pop");
+      } else if (curr > 1){
+        $(".profile_video").attr("style", "display:none");
+        $(".message").attr("style", "display:none");
+        $("#profile_video_"+(curr-1)).attr("style", "display:''");
+        $(".message.profile_"+(curr-1)).attr("style", "display:''");
+        $("#vp_now_page").text((curr-1));
+        document.getElementById("profile_video_"+curr).pause();
+        document.getElementById("profile_video_"+(curr-1)).play();
+      }
+    });    
+
+    // 프로필영상 확인 닫기 팝업
+    function videoClosePopup() {
+      $('#start_end_pop').hide();
+      return false;
+    }
+
+    // 프로필 영상 전체 재생
+    $(document).off("click", "#btn_play_vp").on("click", "#btn_play_vp", function(e) {
+      openPopup("profile_video_pop");
+      var tot_cnt = $("#profile_video_pop").data("tot_cnt");
+      console.log("tot_cnt : "+tot_cnt);
+      $("#vp_now_page").text(1);
+      $("#vp_tot_page").text(tot_cnt);
+      loopProfileVideo(1, tot_cnt);
+    });
+    
+    var loopProfileVideo = function(i, tot_cnt) {
+      if (tot_cnt >= i) {
+        $("#profile_video_"+i).attr("style", "display:''");
+        $(".message.profile_"+i).attr("style", "display:''");
+        document.getElementById("profile_video_"+i).play();
+        document.getElementById("profile_video_"+i).onended = function() {
+          $("#profile_video_"+i).attr("style", "display:none");
+          $(".message.profile_"+i).attr("style", "display:none");
+          var j = i + 1;
+          loopProfileVideo(j, tot_cnt);
+          if (j == tot_cnt) {
+            $("#vp_now_page").text(tot_cnt);
+          } else {
+            if (j < tot_cnt) {
+              $("#vp_now_page").text(j);
+            } else {
+              $("#vp_now_page").text(1);
+            }
+          }
+        };
+      } else {
+        $("#profile_video_1").attr("style", "display:''");
+        $(".message.profile_1").attr("style", "display:''");
+        $("#vp_now_page").text(1);
+        //loopProfileVideo(1, tot_cnt);
+        return;
+      }
+    }
+    
+    // 프로필 영상 팝업창 닫기
+    $(document).off("click", "#profile_video_close").on("click", "#profile_video_close", function(e) {
+      window.location.reload();
+      /*
+      closePopup();
+      var tot_cnt = $("#profile_video_pop").data("tot_cnt");
+      var i;
+      for (i = 1; i <= tot_cnt; i++) {
+        document.getElementById("profile_video_"+i).load();
+        document.getElementById("profile_video_"+i).pause();
+      }
+      */
+    });    
+        
+    // 목록으로 이동
+    $(document).off("click", "#btn_go_list").on("click", "#btn_go_list", function(e) {
+
+      var mem_stat = "{{.pMemStat}}";
+      var keyword = "{{.pKeyword}}";
+      var sex = "{{.pSex}}";
+      var age = "{{.pAge}}";
+      var vp_yn = "{{.pVpYn}}";
+      var os_gbn = "{{.pOsGbn}}";
+      var page_no = "{{.pPageNo}}";
+      var size = "{{.pSize}}";
+      var sdy = "{{.pSdy}}";
+      var edy = "{{.pEdy}}";
+        var login_sdy = "{{.pLoginSdy}}";
+        var login_edy = "{{.pLoginEdy}}";
+
+        var param = "p_mem_stat="+mem_stat+"&p_keyword="+keyword+"&p_sex="+sex+"&p_age="+age+"&p_vp_yn="+vp_yn+"&p_os_gbn="+os_gbn+"&p_page_no="+page_no+"&p_size="+size+"&p_sdy="+sdy+"&p_edy="+edy+"&p_login_sdy="+login_sdy+"&p_login_edy="+login_edy;
+      window.location.href="/admin/member/list?"+param;
+    });
+
+    // 지원자관심설정 팝업
+    $(document).off("click", "#favr_aply_pp_yn").on("click", "#favr_aply_pp_yn", function(e) {
+      var entp_mem_no = "{{.EntpMemNo}}";
+      var recrut_sn = "{{.RecrutSn}}";
+      var pp_mem_no = "{{.PpMemNo}}";
+
+      if($("#favr_aply_pp_yn").hasClass("active")) {
+        //$("#confirmMessage_favor").html("해당 지원자를<br>관심 해제 하시겠습니까?");
+        //openPopup("favor_set_pop");
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '0'); //해제
+      } else {
+        //$("#confirmMessage_favor").html("해당 지원자를<br>관심 설정 하시겠습니까?");
+        //openPopup("favor_set_pop");
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '1'); //설정
+      }
+    });
+
+    // 지원자관심 설정,해제
+    /*
+    $(document).off("click", "#btn_favor_confirm").on("click", "#btn_favor_confirm", function(e) {
+      var entp_mem_no = "{{.EntpMemNo}}";
+      var recrut_sn = "{{.RecrutSn}}";
+      var pp_mem_no = "{{.PpMemNo}}";
+      
+      if($("#favr_aply_pp_yn").hasClass("active")) {
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '0'); //해제
+      } else {
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '1'); //설정
+      }
+    });
+    */        
+
+    // 지원자관심 처리
+    var favorSet = function(entp_mem_no, recrut_sn, pp_mem_no, favr_aply_pp_yn){
+      $.ajax({
+        cache : false,
+        url : '/recruit/favor/member/update',
+        data : {
+          entp_mem_no : entp_mem_no,
+          recrut_sn : recrut_sn,
+          pp_mem_no : pp_mem_no,
+          favr_aply_pp_yn : favr_aply_pp_yn
+        },
+        type : 'POST',
+        dataType : "json",
+        error : function(e) {
+          console.log("error" + e);
+        },
+        success : function(rep) {
+          var rtnCd = rep.RtnCd
+          var rtnMsg = rep.RtnMsg
+
+          if(rtnCd == 1){
+            //console.log("success");
+            $('.popupWrap.favor').hide();
+            if(favr_aply_pp_yn == "1") {
+              $("#favr_aply_pp_yn").addClass("active");
+            } else {
+              $("#favr_aply_pp_yn").removeClass("active");
+            }
+          } else {
+            //console.log("error");
+            $('.popupWrap.favor').hide();
+          }
+        },
+        error : function(e) {
+          console.log("error + "+e);
+        }
+      });	 
+    }      
+
+
+    // 공고상세이동
+    $(document).off("click", "#btn_recruit_detail").on("click", "#btn_recruit_detail", function(e) {
+      var entp_mem_no = $(this).data("entp_mem_no");
+      var recrut_sn = $(this).data("recruit_sn");
+      //console.log("entp_mem_no : "+entp_mem_no);
+      //console.log("recrut_sn : "+recrut_sn);
+      window.location.href="/recruit/post/detail?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn;
+    });
+
+    // 채용진행 팝업
+    $(document).off("click", "#btn_recruit_ing").on("click", "#btn_recruit_ing", function(e) {
+      $("#confirmMessage").html("지원자에게 결과가 즉시 통보되며<br>결정을 번복하실 수 없습니다.<br>계속 진행 하시겠습니까?");
+      $(".status").removeClass("ing end");
+      openPopup("recruit_common_pop");
+      $(".status").addClass("ing");
+    });
+
+    // 채용포기 팝업
+    $(document).off("click", "#btn_recruit_end").on("click", "#btn_recruit_end", function(e) {
+      $("#confirmMessage").html("채용 포기를 선택하실 경우<br>지원자의 상세 정보가 삭제되고<br>결정을 번복하실 수 없습니다.<br>계속 진행 하시겠습니까?");
+      $(".status").removeClass("ing end");
+      openPopup("recruit_common_pop");
+      $(".status").addClass("end");
+    });
+  
+    // 채용진행, 채용포기
+    $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+      var entp_mem_no = "{{.EntpMemNo}}";
+      var recrut_sn = "{{.RecrutSn}}";
+      var pp_mem_no = "{{.PpMemNo}}";
+      if ($(".status").hasClass("ing")) {
+        console.log("진행");
+        recrutEval(entp_mem_no, recrut_sn, pp_mem_no, '03');
+        $(".loading").attr("style", "display:''");
+      } else {
+        console.log("포기");
+        recrutEval(entp_mem_no, recrut_sn, pp_mem_no, '04');
+        $(".loading").attr("style", "display:''");
+      }
+    });        
+
+    // 채용결정팝업 닫기
+    $(document).off("click", "#btn_result_confirm").on("click", "#btn_result_confirm", function(e) {
+      $('.popupWrap.result').hide();
+      var entp_mem_no = "{{.EntpMemNo}}";
+      var p_recrut_sn = "{{.pRecrutSn}}";
+      var evl_prgs_stat = "{{.pEvlPrgsStat}}";
+      var sex = "{{.pSex}}";
+      var age = "{{.pAge}}";
+      var vp_yn = "{{.pVpYn}}";
+      var favr_aply_pp = "{{.pFavrAplyPp}}";
+      var sort_gbn = "{{.pSortGbn}}";
+      var page_no = "{{.pPageNo}}";
+      var keyword = "{{.pKeyword}}";
+      var size = "{{.pSize}}";
+      var param = "entp_mem_no="+entp_mem_no+"&p_recrut_sn="+p_recrut_sn+"&p_evl_prgs_stat="+evl_prgs_stat+"&p_sex="+sex+"&p_age="+age+"&p_vp_yn="+vp_yn+"&p_favr_aply_pp="+favr_aply_pp+"&p_sort_gbn="+sort_gbn+"&p_page_no="+page_no+"&p_keyword="+keyword+"&p_size="+size;
+      window.location.href="/applicant/list?"+param;
+    });
+    // 영상 팝업창 닫기
+    $(document).off("click", "#btn_recrut_apply_del").on("click", "#btn_recrut_apply_del", function(e) {
+      var option_val = $("#apply_history").val();
+
+      if (option_val == "") {
+        alert("선택된 값이 없습니다.");
+      } else {
+        var split_option_val = option_val.split(",");
+
+        if (confirm("정말 삭제하시겠습니까?")){
+          $.ajax({
+            cache : false,
+            url : '/recruit/apply/delete',
+            data : {
+              entp_mem_no : split_option_val[0],
+              recrut_sn : split_option_val[1],
+              pp_mem_no : split_option_val[2],
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+              console.log("error" + e);
+            },
+            success : function(rep) {
+              var rtnCd = rep.RtnCd
+              var rtnMsg = rep.RtnMsg
+
+              if(rtnCd == 1){
+                console.log("success");
+
+                window.location.reload();
+              } else {
+                console.log("error");
+                alert("삭제 오류(" + rtnCd + ") : 관리자에게 문의하세요.")
+              }
+            },
+            error : function(e) {
+              console.log("error + "+e);
+            }
+          });
+        }
+      }
+
+      return;
+    });
+        
+    // 채용평가 처리
+    var recrutEval = function(entp_mem_no, recrut_sn, pp_mem_no, gbn_cd){
+      $.ajax({
+        cache : false,
+        url : '/recruit/eval/update',
+        data : {
+          entp_mem_no : entp_mem_no,
+          recrut_sn : recrut_sn,
+          pp_mem_no : pp_mem_no,
+          gbn_cd : gbn_cd
+        },
+        type : 'POST',
+        dataType : "json",
+        error : function(e) {
+          console.log("error" + e);
+          $(".loading").attr("style", "display:none");
+        },
+        success : function(rep) {
+          var rtnCd = rep.RtnCd
+          var rtnMsg = rep.RtnMsg
+
+          if(rtnCd == 1){
+            console.log("success");
+            if (gbn_cd == "03") {
+              $('.popupWrap.confirm').hide();
+              $(".loading").attr("style", "display:none");
+              openPopup("recruit_result_pop");
+            } else {
+              var p_entp_mem_no = "{{.EntpMemNo}}";
+              var p_recrut_sn = "{{.pRecrutSn}}";
+              var evl_prgs_stat = "{{.pEvlPrgsStat}}";
+              var sex = "{{.pSex}}";
+              var age = "{{.pAge}}";
+              var vp_yn = "{{.pVpYn}}";
+              var favr_aply_pp = "{{.pFavrAplyPp}}";
+              var sort_gbn = "{{.pSortGbn}}";
+              var page_no = "{{.pPageNo}}";
+              var keyword = "{{.pKeyword}}";
+              var size = "{{.pSize}}";
+              var param = "entp_mem_no="+p_entp_mem_no+"&p_recrut_sn="+p_recrut_sn+"&p_evl_prgs_stat="+evl_prgs_stat+"&p_sex="+sex+"&p_age="+age+"&p_vp_yn="+vp_yn+"&p_favr_aply_pp="+favr_aply_pp+"&p_sort_gbn="+sort_gbn+"&p_page_no="+page_no+"&p_keyword="+keyword+"&p_size="+size;
+              window.location.href="/applicant/list?"+param;
+            }
+          } else {
+            console.log("error");
+            $('.popupWrap.confirm').hide();
+            $(".loading").attr("style", "display:none");
+          }
+        },
+        error : function(e) {
+          console.log("error + "+e);
+        }
+      });	 
+    }       
+    </script>
+    
+    {{end}}

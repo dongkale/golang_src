@@ -1,0 +1,379 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+    <input type="hidden" id="write_yn" />
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>공지사항</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              {{template "include/admin_contents_menu.html" .}}
+            </div>
+            <div class="listBox">
+
+                  
+            <div class="reqWrite">
+            <input type="hidden" id="page_no" value="{{.PageNo}}">
+            <form id="inquiryForm" name="inquiryForm" method="post">
+            <input type="hidden" id="inq_gbn" name="inq_gbn">
+              <table class="formTable">
+                <colgroup>
+                  <col width="80px" />
+                  <col />
+                </colgroup>
+                <tbody>
+                <form method="post" action="#" id="notiFrm" name="notiFrm" enctype="multipart/form-data">
+                  <tr>
+                    <th class="tit">대상*</th>
+                    <td>
+                      <select name="mem_cd" id="mem_cd">
+                        <option value="">선택하세요</option>
+                        <option {{if eq "00" .MemCd}}selected{{end}} value="00">개인,기업</option>
+                        <option {{if eq "01" .MemCd}}selected{{end}} value="01">개인(미 로그인 포함)</option>
+                        <option {{if eq "02" .MemCd}}selected{{end}} value="02">기업</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <th class="tit">구분*</th>
+                  <td>
+                    <select name="gbn_cd" id="gbn_cd">
+                      <option value="">선택하세요</option>
+                      <option {{if eq "01" .GbnCd}}selected{{end}} value="01">일반</option>
+                      <option {{if eq "02" .GbnCd}}selected{{end}} value="02">이벤트</option>
+                    </select>
+                  </td>
+                </tr>
+                <th class="tit">노출여부*</th>
+                <td>
+                  <select name="eps_yn" id="eps_yn">
+                    <option value="">선택하세요</option>
+                    <option {{if eq "0" .EpsYn}}selected{{end}} value="0">미노출</option>
+                    <option {{if eq "1" .EpsYn}}selected{{end}} value="1">노출</option>
+                  </select>
+                </td>
+              </tr>
+                  <tr>
+                    <th class="tit">제목*</th>
+                    <td>
+                      <div class="countArea">
+                        <p class="count">(<span><em id="areaByteTitle">80</em>/80</span>)</p>
+                          <input type="text" class="w100p" maxlength="80" name="title" id="title" value="{{.Title}}" placeholder="공지 제목을 입력해주세요">
+                        </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="tit">내용*</th> 
+                    <td><script name="noti_doc" id="noti_doc" type="text/plain">{{str2html .Cont}}</script></td>
+                  </tr>
+                </tbody>
+                </form>
+              </table>
+              <div class="btnSec">
+                <a href="javascript:void(0);" id="btn_cancel">목록</a>
+                <a href="javascript:void(0);" id="btn_process" data-cu_cd="{{.CuCd}}" class="active">{{if eq "U" .CuCd}}수정{{else}}등록{{end}}</a>
+                {{if eq "U" .CuCd}}
+                <a href="javascript:void(0);" id="btn_delete">삭제</a>
+                {{end}}
+              </div>
+              <p class="validationMessage"  style="display:none">게시 형태를 선택해주세요.</p>
+            </form>
+            </div>
+          </div>
+          <!-- // 페이지 영역 -->
+        </div>
+        <!-- 컨텐츠영역 -->
+      </div>
+
+      <!-- 삭제 팝업 -->
+      <div class="popupWrap confirm" id="notice_delete_pop">
+        <div class="popup">
+          <div class="popContent">
+            <p id="confirmMessage">해당 공지사항을<br>삭제 하시겠습니까?</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+          </div>
+        </div>
+        <span class="cover"></span>
+      </div>    
+      <!-- 삭제 팝업 -->
+
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        $("#write_yn").val("0");
+
+        var ue = UE.getEditor('noti_doc',{
+          initialFrameWidth :"100%",
+          initialFrameHeight:350,
+          scaleEnabled:true			
+        });
+        ue.ready(function () {
+          ue.addListener('focus', function () {
+            var ueFolderNm = "service";
+            var ueSubFolderNm = "notice";
+
+            ue.execCommand('serverparam', {
+              "ueFolderNm": ueFolderNm,
+              "ueSubFolderNm": ueSubFolderNm,
+            });
+          });
+        });
+
+        //$("#notiFrm").validate(validOption);
+        $("#title").keyup();
+      });
+
+      // 공지 제목 글자수 체크
+      $(document).on("keyup","#title",function(){
+        textLenCheck(this, 80, "#areaByteTitle");
+      });
+
+      $(document).off("change", "#gbn_cd").on("change", "#gbn_cd", function(e) {
+        $(".validationMessage").attr("style", "display:none");
+        $(".validationMessage").text("");
+      });
+
+      $(document).off("change", "#mem_cd").on("change", "#mem_cd", function(e) {
+        $(".validationMessage").attr("style", "display:none");
+        $(".validationMessage").text("");
+      });
+
+      $(document).off("change", "#eps_yn").on("change", "#eps_yn", function(e) {
+        $(".validationMessage").attr("style", "display:none");
+        $(".validationMessage").text("");
+      });
+
+      // 목록
+      $(document).off("click", "#btn_cancel").on("click", "#btn_cancel", function(e) {
+        var pn = $("#page_no").val();
+        window.location.href="/admin/notice/list?pn="+pn;
+      });
+
+      // 삭제
+      $(document).off("click", "#btn_delete").on("click", "#btn_delete", function(e) {
+        openPopup("notice_delete_pop");
+      });      
+
+     // 공지사항 삭제
+     $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        var serno = "{{.Sn}}";
+        var pn = $("#page_no").val();
+
+        $(".loading").attr("style", "display:''");
+        $.ajax({
+          cache : false,
+          url : '/admin/notice/delete',
+          data : {
+            sn : serno
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              window.location.href="/admin/notice/list?pn"+pn;
+            } else {
+              console.log("error");
+              $(".loading").attr("style", "display:none");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+            $(".loading").attr("style", "display:none");
+          }
+        });	
+     });            
+
+      // 등록/수정
+      $(document).off("click", "#btn_process").on("click", "#btn_process", function(e) {
+        var write_yn = $("#write_yn").val();
+        if (write_yn != "0") {
+          console.log("중복클릭");
+          return;
+        }
+
+        if(!$("#gbn_cd").val()){
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("구분을 선택해주세요");
+          return;
+        }
+
+        if(!$("#mem_cd").val()){
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("대상을 선택해주세요");
+          return;
+        }
+
+        if($("#title").val().length < 4){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("공지제목을 4자이상 입력해주세요");
+          return;
+        }            
+
+        if ($.trim(UE.getEditor('noti_doc').getContent()) == ""){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("공지내용을 입력해주세요");
+          return;
+        }
+
+        $("#write_yn").val("1");
+
+        var serno = "{{.Sn}}";
+        var cu_cd = $(this).data("cu_cd");
+        var sn = serno;
+        var mem_cd = $('select[id=mem_cd] option:selected').val();
+        var gbn_cd = $('select[id=gbn_cd] option:selected').val();
+        var eps_yn = $('select[id=eps_yn] option:selected').val();
+        var title = $("#title").val();
+        var noti_doc = UE.getEditor('noti_doc').getContent();
+
+        /*
+        console.log("cu_cd : "+cu_cd);
+        console.log("sn : "+sn);
+        console.log("gbn_cd : "+gbn_cd);
+        console.log("title : "+title);
+        console.log("noti_doc : "+noti_doc);
+        
+        if ($.trim(UE.getEditor('noti_doc').getContent()) == ""){
+          $(".noti_doc_message").addClass("error");
+          $(".noti_doc_message").text("내용을 입력해주세요");
+          return;
+        }
+        */
+
+        var noti_doc1 = noti_doc.substring(0,1500);
+        var noti_doc2 = noti_doc.substring(1500,3000);
+        var noti_doc3 = noti_doc.substring(3000,4500);
+        var noti_doc4 = noti_doc.substring(4500,6000);
+        var noti_doc5 = noti_doc.substring(6000,7500);
+        var noti_doc6 = noti_doc.substring(7500,9000);
+        var noti_doc7 = noti_doc.substring(9000,10500);
+        var noti_doc8 = noti_doc.substring(10500,12000);
+        var noti_doc9 = noti_doc.substring(12000,13500);
+
+        var noti_doc10 = noti_doc.substring(13500,15000);
+        var noti_doc11 = noti_doc.substring(15000,16500);
+        var noti_doc12 = noti_doc.substring(16500,18000);
+        var noti_doc13 = noti_doc.substring(18000,19500);
+        var noti_doc14 = noti_doc.substring(19500,21000);
+        var noti_doc15 = noti_doc.substring(21000,22500);
+        var noti_doc16 = noti_doc.substring(22500,24000);
+        var noti_doc17 = noti_doc.substring(24000,25500);
+        var noti_doc18 = noti_doc.substring(25500,27000);
+        var noti_doc19 = noti_doc.substring(27000,28500);
+        var noti_doc20 = noti_doc.substring(28500,30000);
+
+        var noti_doc21 = noti_doc.substring(30000,31500);
+        var noti_doc21 = noti_doc.substring(31500,33000);
+        var noti_doc22 = noti_doc.substring(33000,34500);
+        var noti_doc23 = noti_doc.substring(34500,36000);
+        var noti_doc24 = noti_doc.substring(36000,37500);
+        var noti_doc25 = noti_doc.substring(37500,39000);
+        var noti_doc26 = noti_doc.substring(39000,40500);
+        var noti_doc27 = noti_doc.substring(40500,42000);
+        var noti_doc28 = noti_doc.substring(42000,43500);
+        var noti_doc29 = noti_doc.substring(43500,45000);
+        var noti_doc30 = noti_doc.substring(45000,46500);
+
+        /*
+        console.log("순번 : "+sn);
+        console.log("구분 : "+brd_gbn_cd);
+        console.log("제목 : "+title);
+        console.log("내용 : "+noti_doc1);
+        console.log("내용 : "+noti_doc2);
+        console.log("내용 : "+noti_doc3);
+        console.log("내용 : "+noti_doc4);
+        console.log("내용 : "+noti_doc5);
+        console.log("내용 : "+noti_doc6);
+        console.log("내용 : "+noti_doc7);
+        
+        return;
+        */
+        var formData = new FormData();
+
+        formData.append("sn", sn);
+        formData.append("cu_cd", cu_cd);
+        formData.append("mem_cd", mem_cd);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("epsYn", eps_yn);
+        formData.append("title", title);
+        formData.append("notiDoc1", noti_doc1);
+        formData.append("notiDoc2", noti_doc2);
+        formData.append("notiDoc3", noti_doc3);
+        formData.append("notiDoc4", noti_doc4);
+        formData.append("notiDoc5", noti_doc5);
+        formData.append("notiDoc6", noti_doc6);
+        formData.append("notiDoc7", noti_doc7);
+        formData.append("notiDoc8", noti_doc8);
+        formData.append("notiDoc9", noti_doc9);
+        formData.append("notiDoc10", noti_doc10);
+        formData.append("notiDoc11", noti_doc11);
+        formData.append("notiDoc12", noti_doc12);
+        formData.append("notiDoc13", noti_doc13);
+        formData.append("notiDoc14", noti_doc14);
+        formData.append("notiDoc15", noti_doc15);
+        formData.append("notiDoc16", noti_doc16);
+        formData.append("notiDoc17", noti_doc17);
+        formData.append("notiDoc18", noti_doc18);
+        formData.append("notiDoc19", noti_doc19);
+        formData.append("notiDoc20", noti_doc20);
+        formData.append("notiDoc21", noti_doc21);
+        formData.append("notiDoc22", noti_doc22);
+        formData.append("notiDoc23", noti_doc23);
+        formData.append("notiDoc24", noti_doc24);
+        formData.append("notiDoc25", noti_doc25);
+        formData.append("notiDoc26", noti_doc26);
+        formData.append("notiDoc27", noti_doc27);
+        formData.append("notiDoc28", noti_doc28);
+        formData.append("notiDoc29", noti_doc29);
+        formData.append("notiDoc30", noti_doc30);
+        
+        $.ajax({
+          cache : false,
+          url : '/admin/notice/process',
+          data : formData,
+          type : 'POST',
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            //$('.waitloadingbar').attr('style','display:none');
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == "1"){
+              var pn = $("#page_no").val();
+              window.location.href="/admin/notice/list?pn="+pn;
+            } else {
+              console.log("message" + rtnMsg);
+              $("#btnInsert").prop("disabled", false);
+            }
+          },
+          error : function() {
+            //$('.waitloadingbar').attr('style','display:none');
+          }
+        });	
+    });
+    </script>    
+
+{{end}}    

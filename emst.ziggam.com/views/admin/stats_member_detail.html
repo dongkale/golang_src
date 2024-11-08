@@ -1,0 +1,256 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        {{if eq "P" .MemGbn}}
+        <h2>통계 관리 > 개인회원(가입/탈퇴) 현황</h2>
+        {{else}}
+        <h2>통계 관리 > 기업회원(가입/탈퇴) 현황</h2>
+        {{end}}
+        <div class="recruitList">
+            <input type="hidden" id="stat_cd" value="{{.StatCd}}">  
+            <input type="hidden" id="mem_gbn" value="{{.MemGbn}}">  
+            <input type="hidden" id="gbn_val" value="0">  
+            <div class="tabMenu">
+              <ul>
+                <!-- 활성화 페이지 class="active" -->
+                {{if eq "P" .MemGbn}}
+                  {{if eq "01" .StatCd}}
+                  <li class="active"><a href="javascript:void(0);">정상 <span>{{.ComCnt}}</span></a></li>
+                  {{else}}
+                  <li><a href="/admin/stats/member/detail?mem_gbn=P&stat_cd=01">정상 <span>{{.ComCnt}}</span></a></li>
+                  {{end}}
+                {{else}}
+                  {{if eq "01" .StatCd}}
+                  <li class="active"><a href="javascript:void(0);">정상 <span>{{.ComCnt}}</span></a></li>
+                  {{else}}
+                  <li><a href="/admin/stats/member/detail?mem_gbn=E&stat_cd=01">정상 <span>{{.ComCnt}}</span></a></li>
+                  {{end}}
+                {{end}}
+                {{if eq "P" .MemGbn}}
+                  {{if eq "99" .StatCd}}
+                  <li class="active"><a href="javascript:void(0);">탈퇴 <span>{{.WtdCnt}}</span></a></li>
+                  {{else}}
+                  <li><a href="/admin/stats/member/detail?mem_gbn=P&stat_cd=99">탈퇴 <span>{{.WtdCnt}}</span></a></li>
+                  {{end}}
+                {{else}}
+                  {{if eq "99" .StatCd}}
+                  <li class="active"><a href="javascript:void(0);">탈퇴 <span>{{.WtdCnt}}</span></a></li>
+                  {{else}}
+                  <li><a href="/admin/stats/member/detail?mem_gbn=E&stat_cd=99">탈퇴 <span>{{.WtdCnt}}</span></a></li>
+                  {{end}}
+                {{end}}
+                {{if eq "E" .MemGbn}}
+                  {{if eq "98" .StatCd}}
+                  <li class="active"><a href="javascript:void(0);">미검증 <span>{{.UvfCnt}}</span></a></li>
+                  {{else}}
+                  <li><a href="/admin/stats/member/detail?mem_gbn=E&stat_cd=98">미검증 <span>{{.UvfCnt}}</span></a></li>
+                  {{end}}
+                {{end}}
+              </ul>
+              <!--<a href="#" class="excelDownload">회원 리스트 엑셀 저장</a>-->
+            </div>
+              <div class="listBox">
+                <div class="topSec">
+                  <div class="posL">
+                    기간검색&nbsp;
+                    <input type="text" id="sdt" style="width: 100px; height:35px"/>&nbsp;~&nbsp;
+                    <input type="text" id="edt" style="width: 100px; height:35px"/>
+                    <a href="javascript:void(0);" id="btn_search"><img src="/static/images/btn_search.gif" alt="검색"></a>
+                  </div>
+                </div>
+                <div class="sectionTop">
+                  <div class="posL">
+                    <p class="total"><input type="checkbox" id="chk_gbn_val"> 0건 데이터 숨기기</p>
+                  </div>
+                  <div class="posR">
+                    <select name="t_gbn" id="t_gbn" class="sort">
+                      <option value="M">월별</option>
+                      <option value="W">주별</option>
+                      <option value="D">일별</option>
+                    </select>
+                  </div>
+                </div>  
+                <div class="memberList">
+                  <table width="300">
+                    <colgroup>
+                      <col width="200px" />
+                      <col />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        {{if eq "01" .StatCd}}
+                        <th>가입일자</th>
+                        {{else}}
+                        <th>탈퇴일자</th>
+                        {{end}}
+                        <th>건수</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{if .AdminStatsMemberDetail}}
+                      {{range .AdminStatsMemberDetail}}
+                      <tr>
+                        <td>{{.AnalDt}}</td>
+                        <td style="text-align: right; padding-right: 10px">{{.AnalCnt}} 건</td>
+                      </tr>
+                      {{end}}
+                      {{else}}
+                      <tr>
+                        <td colspan="2">
+                          <p class="noData">조회 내역이 없습니다</p>
+                        </td>
+                      </tr>
+                    {{end}}                      
+                    </tbody>
+                  </table>
+                </div>
+                <div class="btnSec">
+                  <p class="btn"><a href="/admin/stats/main" id="btn_back">메인</a> </p>
+                </div>                
+              </div>
+            </div>
+          </div>
+          <!-- // 페이지 영역 -->
+        </div>
+        <!-- 컨텐츠영역 -->
+      </div>
+
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+
+        var now = new Date();
+        var year= now.getFullYear();
+        var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+        var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+                
+        var now_dt = year + '-' + mon + '-' + day;
+        $("#sdt").val(now_dt);
+        $("#edt").val(now_dt);
+  
+      });
+
+      $(function(){
+        $('#sdt').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+          this.setOptions({
+            maxDate:$('#edt').val()?$('#edt').val():false
+          })
+        },
+        timepicker:false,
+      });
+      $('#edt').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+          this.setOptions({
+            minDate:$('#sdt').val()?$('#sdt').val():false
+          })
+        },
+        timepicker:false,
+      });
+      });
+
+      // 0건 데이터 숨김
+      $(document).off("click", "#chk_gbn_val").on("click", "#chk_gbn_val", function(e) {
+        if ($(this).is(":checked") == true) {
+          $("#gbn_val").val("1");
+        } else {
+          $("#gbn_val").val("0");
+        }
+        ajaxStatsList();
+      });
+
+      // 기간검색 클릭
+      $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+        ajaxStatsList();
+      });
+
+      // 시간구분 선택
+      $(document).off("change", "#t_gbn").on("change", "#t_gbn", function(e) {
+        ajaxStatsList();
+      });
+
+      // 리스트 페이지 AJAX
+			var ajaxStatsList = function(v) {
+
+        var today = new Date();  
+        var sdate = $("#sdt").val();  
+        var edate = $("#edt").val();  
+
+        var sdateArray = sdate.split("-"); 
+        var edateArray = edate.split("-"); 
+
+        var sdateObj = new Date(sdateArray[0], Number(sdateArray[1])-1, sdateArray[2]);  
+        var edateObj = new Date(edateArray[0], Number(edateArray[1])-1, edateArray[2]);  
+        var betweenDay = (edateObj - sdateObj)/1000/60/60/24;
+
+        var now = new Date();
+        var year= now.getFullYear();
+        var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+        var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+                
+        var now_dt = year + '-' + mon + '-' + day;
+        //console.log("betweenDay : "+betweenDay);
+        if (betweenDay > 365) {
+          alert("조회기간은 최대 1년입니다.");
+          $("#sdt").val(now_dt);
+          $("#edt").val(now_dt);
+          return;
+        }
+
+        var sdt = $("#sdt").val().replace(/\-/g,'');
+        var edt = $("#edt").val().replace(/\-/g,'');
+        var t_gbn = $("#t_gbn").val();
+        var stat_cd = $("#stat_cd").val();
+        var gbn_val = $("#gbn_val").val();
+        var mem_gbn = $("#mem_gbn").val();
+        //console.log("entp_mem_no : "+entp_mem_no);
+        
+        $.ajax({
+					type: "POST",
+					url: "/admin/stats/member/detail",
+					data:{
+						sdt : sdt,
+						edt : edt,
+						t_gbn : t_gbn,
+						stat_cd : stat_cd,
+						gbn_val : gbn_val,
+						mem_gbn : mem_gbn,
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnAdminStatsMemberDetailData.length > 0){
+							$(".memberList").find("tbody").children().remove();
+							$.each(rep.RtnAdminStatsMemberDetailData,function(e) {
+                var html = "";
+                html += "<tr>";
+                html += "<td>"+rep.RtnAdminStatsMemberDetailData[e].AnalDt+"</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsMemberDetailData[e].AnalCnt+" 건</td>";
+								$(".memberList").find("tbody").append(html);
+              })
+						}else{
+              $(".memberList").find("tbody").children().remove();
+              var html = "";
+              html += "<td colspan=\"2\">";
+              html += "<p class=\"noData\">조회 내역이 없습니다</p>";
+              html += "</td>";
+              $(".memberList").find("tbody").append(html);
+						}
+					}
+				});				
+			}   
+
+    </script>
+
+{{end}}

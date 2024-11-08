@@ -1,0 +1,136 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>알림</h2>            
+        {{if .NotificationList}}
+        <div class="alertPage">
+          {{range .NotificationList}}
+            {{if ne .GrpNo .NextGrpNo}}
+            <p class="date">{{.RegDy}}</p>
+            <ul>
+            {{else}}
+            <ul>
+            {{end}}
+
+            {{if eq 0 .Sn}}
+            <!-- 파란색테두리 class="line_b" / 빨간색테두리 class="line_r" / 검은색테두리 class="line_g" -->
+            <li class='{{if not .CfrmDt}}line_b{{end}}'>
+              <a href="javascript:void(0);" id="btn_apply_dtl" data-entp_mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" data-pp_mem_no="{{.PpMemNo}}">
+                <span class="img">
+                  {{if eq "M" .Sex}}
+                  <img src="{{.PtoPath}}"  onerror="this.src='/static/images/male_no_img.png'" alt="">
+                  {{else}}
+                  <img src="{{.PtoPath}}"  onerror="this.src='/static/images/female_no_img.png'" alt="">
+                  {{end}}
+                </span>
+                <span class="textSec">
+                  <span class="tit">{{.NotiKndCd}}</span>
+                  <span class="text">{{.NotiCont}}</span>
+                  <span class="info">
+                    <em>{{.Nm}} ({{if eq "M" .Sex}}남자{{else}}여자{{end}}/{{.Age}}세)</em> | 
+                    <em>{{.UpJobGrp}} &lt; {{.JobGrp}}</em>
+                  </span>
+                  <span class="time">{{.RegHm}}</span>
+                </span>
+              </a>
+            </li>
+            {{else}}
+            <li class='{{if eq "Y" .NewYn}}line_r{{end}}'>
+              <a href="javascript:void(0);" id="btn_noti_dtl" data-sn="{{.Sn}}">
+                <span class="img"><img src="/static/images/img_notice.png" alt=""></span>
+                <span class="textSec">
+                  <span class="tit">{{.NotiKndCd}}</span>
+                  <span class="text">{{.NotiCont}}</span>
+                  <span class="time">{{.RegHm}}</span>
+                </span>
+              </a>
+            </li>
+            {{end}}
+
+            
+          {{if ne .GrpNo .NextGrpNo}}  
+          </ul>
+          {{end}}
+        </ul>
+        {{end}}
+        </div>
+        {{else}}
+        <div class="alertPage">
+          <p class="noData">새로운 소식이 없습니다</p>
+        </div>
+        {{end}}
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 채용확인 알림팝업 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p>이미 채용된 회원입니다.<br>채용 결정된 정보는 바로 삭제됩니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 채용확인 알림팝업 -->       
+
+    <script type="text/javascript">
+
+      // 공지사항 상세
+      $(document).off("click", "#btn_noti_dtl").on("click","#btn_noti_dtl",function(e) {
+        var sn = $(this).data("sn");
+
+        window.location.href="/notice/detail?sn="+sn;
+      }); 
+
+      // 지원자 상세
+      $(document).off("click", "#btn_apply_dtl").on("click","#btn_apply_dtl",function(e) {
+        var entp_mem_no = $(this).data("entp_mem_no");
+        var recrut_sn = $(this).data("recruit_sn");
+        var pp_mem_no = $(this).data("pp_mem_no");
+
+        $.ajax({
+          cache : false,
+          url : '/recruit/eval/check',
+          data : {
+            entp_mem_no : entp_mem_no,
+            recrut_sn : recrut_sn,
+            pp_mem_no : pp_mem_no,
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            if (rtnCd == 1) {
+              window.location.href="/recruit/apply/detail?entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&pp_mem_no="+pp_mem_no;
+            } else {  // 이미 채용된 회원 (상세보기 진입금지)
+              openPopup("recruit_alert_pop");
+              return;
+            }
+          },
+        });	          
+      });           
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+      }); 
+
+    </script>
+
+{{end}}

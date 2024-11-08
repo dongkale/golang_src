@@ -1,0 +1,74 @@
+/* UEditor Config.json */
+{
+    /* Upload photo placement item */
+    "imageActionName": "uploadimage", /* Carry out the images action of the name. */
+    "imageFieldName": "upfile", /* Upfile submit pictures of single name. */
+    "imageMaxSize": 2048000, /* Upload size limit. */
+    "imageAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* Upload pictures formats. */
+    "imageCompressEnable": true, /* The default is true, whether or not compressed images. */
+    "imageCompressBorder": 1600, /* Image compression the longest on the edge of the restrictions. */
+    "imageInsertAlign": "none", /* Insert a picture of floating. */
+    "imageUrlPrefix": "", /* Route access to pictures of prefix. */
+    "imagePathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", 
+    /* Graffiti pictures on the pyramid configuration. */
+    "scrawlActionName": "uploadscrawl", /* Carry out the action of the graffiti name. */
+    "scrawlFieldName": "upfile", /* Submit pictures of single name. */
+    "scrawlPathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", /* Upload saved file name and preserved, you can customize path format. */
+    "scrawlMaxSize": 2048000, /* Upload size limit */
+    "scrawlUrlPrefix": "", /* Route access to pictures of prefix. */
+    "scrawlInsertAlign": "none",
+    /* Cross-sectional drawing tools from. */
+    "snapscreenActionName": "uploadimage", /* To intercept a map on the Implementation of the action name. */
+    "snapscreenPathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", /* Upload saved file name and preserved, you can customize path format. */
+    "snapscreenUrlPrefix": "", /* Route access to pictures of prefix. */
+    "snapscreenInsertAlign": "none", /* Insert a picture of floating. */
+    /* Configuration for grabbing away at the remote pictures. */
+    "catcherLocalDomain": ["127.0.0.1", "localhost", "img.baidu.com"],
+    "catcherActionName": "catchimage", /* The grabbing away at the remote images action of the name. */
+    "catcherFieldName": "source", /* Submit the list form pictures of the name. */
+    "catcherPathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", /* Upload saved file name and preserved, you can customize path format. */
+    "catcherUrlPrefix": "", /* Route access to pictures of prefix. */
+    "catcherMaxSize": 2048000, /* Upload size limit */
+    "catcherAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* Grabbing away at the picture format. */
+    /* Upload video distribution. */
+    "videoActionName": "uploadvideo", /* Carry out the video action of the name. */
+    "videoFieldName": "upfile", /* Submit video form of the name. */
+    "videoPathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", /* Upload saved file name and preserved, you can customize path format. */
+    "videoUrlPrefix": "", /* Video access route to the prefix. */
+    "videoMaxSize": 102400000, /* Upload size limit，100MB */
+    "videoAllowFiles": [
+        ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
+        ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid"], /* Upload video frequency format. */
+    /* Upload the file configuration. */
+    "fileActionName": "uploadfile", /* controller里,Carry out the video action of the name. */
+    "fileFieldName": "upfile", /* Submit the document form name. */
+    "filePathFormat": "/static/upload/{yyyy}{mm}{dd}/{time}{rand:6}", /* Upload saved file name and preserved, you can customize path format. */
+    "fileUrlPrefix": "", /* File access route to the prefix. */
+    "fileMaxSize": 51200000, /* Upload size limit，50MB */
+    "fileAllowFiles": [
+        ".png", ".jpg", ".jpeg", ".gif", ".bmp",
+        ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
+        ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid",
+        ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso",
+        ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml"
+    ], /* Upload the file format. */
+    /* Directory specified list of the pictures. */
+    "imageManagerActionName": "listimage", /* Implementation of the pictures management action of the name. */
+    "imageManagerListPath": "/static/upload/", /* Designated to list the picture of the directory. */
+    "imageManagerListSize": 20, /* Every time a list file number. */
+    "imageManagerUrlPrefix": "", /* Route access to pictures of prefix. */
+    "imageManagerInsertAlign": "none", /* Insert a picture of floating. */
+    "imageManagerAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* List file types. */
+    /* Directory specified list of documents. */
+    "fileManagerActionName": "listfile", /* The executable file management action of the name. */
+    "fileManagerListPath": "/static/upload/", /* Specify a file to be listed in the catalog. */
+    "fileManagerUrlPrefix": "", /* File access route to the prefix. */
+    "fileManagerListSize": 20, /* Every time a list file number. */
+    "fileManagerAllowFiles": [
+        ".png", ".jpg", ".jpeg", ".gif", ".bmp",
+        ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
+        ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid",
+        ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso",
+        ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml"
+    ] /* List file types. */
+}

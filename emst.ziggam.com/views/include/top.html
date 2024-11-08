@@ -1,0 +1,56 @@
+      <!-- 상단 고정아이콘 -->
+      <ul class="topMenu">
+        <!-- 새알람이 있는경우 class="new" 추가 -->
+        {{if eq "1" .BasicNotificationYn}}
+        <li class="ico message active"><a href="/notification/list" title="알림"><span>알림</span></a></li>
+          {{else}}
+        <li class="ico message"><a href="/notification/list" title="알림"><span>알림</span></a></li>
+        {{end}}
+        <li class="ico notice active"><a href="/notice/list" title="공지사항"><span>공지사항</span></a></li>
+        <li class="ico request"><a href="/inquiry/list" title="문의하기"><span>문의하기</span></a></li>
+        <!-- 설청 클릭시 class="active" 추가 -->
+        <li class="ico setting">
+          <a href="javascript:void(0);" title="설정"><span>설정</span></a>
+          <ul>
+            <li><a href="/common/change/pwd">비밀번호 변경</a></li>
+            <li><a href="/common/logout">로그아웃</a></li>
+          </ul>
+        </li>
+     </ul>
+     <span class="topMenuWrap"></span>
+     <!-- // 상단 고정아이콘 -->
+     <!-- bg 이미지영역 -->
+     <span class="topBg"></span>
+     <span class="bottomBg"></span>
+     
+      <!-- 기업회원인증완료팝업 -->
+      <div class="popupWrap" id="entp_info_popup">
+        <div class="infoPopup">
+          <p class="popTit">직감 기업 관리자 사용을 위해서는<br>기업 정보 입력이 필요합니다.</p>
+          <p class="joinImg"><img src="/static/images/ico_joinComplete.jpg" alt="인증완료"></p>
+          <div class="addText">
+            <p>기업 정보는 직감 앱과 기업용 웹페이지에서</br>언제든지 입력과 수정이 가능합니다.</p>
+          </div>
+          <p class="btn st02"><a href="/entp/info/write">기업 정보 입력하기</a></p>
+        </div>
+        <span class="cover"></span>
+      </div>
+      <!-- // 기업회원인증완료팝업 -->
+
+     <script type="text/javascript">
+
+      $(document).ready(function() {
+        var basic_zip = "{{.BasicZip}}";
+        var basic_entp_tag = "{{.BasicEntpTag}}";
+        var basic_entp_intr = "{{.BasicEntpIntr}}";
+        var basic_est_dy = "{{.BasicEstDy}}";
+        var basic_biz_tpy = "{{.BasicBizTpy}}";
+        var basic_pp_chrg_nm = "{{.BasicPpChrgNm}}";
+        var basic_pp_chrg_tel_no = "{{.BasicPpChrgTelNo}}";
+        if (!basic_zip || !basic_entp_tag || !basic_entp_intr || !basic_est_dy || !basic_biz_tpy || !basic_pp_chrg_nm || !basic_pp_chrg_tel_no) {
+          // 기업정보 입력 권유팝업
+          openPopup("entp_info_popup");
+        }
+      });      
+
+      </script>     

@@ -1,0 +1,831 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+        <!-- top start -->
+        {{template "include/top.html" .}}
+        <!-- top end -->
+        <!-- 페이지 영역 -->
+        <div class="content">
+            <input type="hidden" id="recrut_sn" value="{{.pRecrutSn}}">
+
+            <!--// 파라미터 세팅 -->
+            <input type="hidden" id="p_recrut_sn" value="{{.pRecrutSn}}">
+            <input type="hidden" id="p_pp_mem_no" value="{{.pPpMemNo}}">
+            <input type="hidden" id="p_evl_prgs_stat" value="{{.pEvlPrgsStat}}">
+            <input type="hidden" id="p_sex" value="{{.pSex}}">
+            <input type="hidden" id="p_age" value="{{.pAge}}">
+            <input type="hidden" id="p_vp_yn" value="{{.pVpYn}}">
+            <input type="hidden" id="p_favr_aply_pp" value="{{.pFavrAplyPp}}">
+            <input type="hidden" id="p_sort_gbn" value="{{.pSortGbn}}">
+            <input type="hidden" id="p_page_no" value="{{.pPageNo}}">
+            <input type="hidden" id="p_keyword" value="{{.pkeyword}}">
+            <input type="hidden" id="p_size" value="{{.pSize}}">
+
+            <h2>지원자 상세</h2>
+            <a href="javascript:void(0);" id="btn_go_list" class="btnList">목록으로가기</a>
+            <div class="userDetail">
+                <p class="subTit">지원 공고</p>
+                <div class="box">
+                    <p class="tit">{{.RecrutTitle}}</p>
+                    <p class="text">
+                        <span>{{if eq "A" .EmplTyp}}아르바이트{{else}}정규직{{end}}</span> |
+                        <span>{{.UpJobGrp}} &gt; {{.JobGrp}}</span> |
+                        <span>{{.RecrutDy}}</span>
+                        <!-- 채용중 class="type1" / 기간마감 class="type2" / 종료 class="type3" -->
+                        <span class='{{if eq "ING" .PrgsStat}}type1{{else if eq "PED" .PrgsStat}}type2{{else}}type3{{end}}'>{{if eq "ING" .PrgsStat}}채용중{{else if eq "PED" .PrgsStat}}기간마감{{else}}종료{{end}}</span>
+                    </p>
+                    <a href="javascript:void(0);" class="detail" id="btn_recruit_detail"
+                       data-entp_mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}"><span>공고상세</span></a>
+                </div>
+                <p class="subTit">지원자 기본 정보</p>
+                <div class="userBox">
+                    <div class="imgSec">
+                        <p class="img">
+                            {{if eq "M" .Sex}}
+                                <img src="{{.PtoPath}}" onerror="this.src='/static/images/male_no_img.png'"
+                                     alt="남자 지원자">
+                            {{else}}
+                                <img src="{{.PtoPath}}" onerror="this.src='/static/images/female_no_img.png'"
+                                     alt="여자 지원자">
+                            {{end}}
+                        </p>
+                        <p class="btn"><a href="javascript:void(0);" id="favr_aply_pp_yn"
+                                          class='{{if eq "1" .FavrAplyPpYn}}active{{end}}'><span>관심설정</span></a></p>
+                    </div>
+                    <div class="textSec">
+                        <p class="name">{{.Nm}} <span
+                                    class="more">({{if eq "M" .Sex}}남자{{else}}여자{{end}}/{{.Age}}세) {{.Email}}{{if .MoNo}} / {{.MoNo}}{{end}}</span>
+                        </p>
+                        <div class="userTbl">
+                            <table>
+                                <colgroup>
+                                    <col width="152px"/>
+                                    <col/>
+                                </colgroup>
+                                <tr>
+                                    <th>최종 지원 일시</th>
+                                    <td>{{.ApplyDt}}</td>
+                                </tr>
+                                <tr>
+                                    <th>최종 답변 소요 시간</th>
+                                    <td>{{.ShootTm}}</td>
+                                </tr>
+                                <tr>
+                                    <th>지원 시도 횟수</th>
+                                    <td>{{.ShootCnt}}회</td>
+                                </tr>
+                                <tr>
+                                    <th>잔여 마감 시간</th>
+                                    <td class="point">{{.LeftDy}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p class="moreText">공고 마감일로부터 7일 내 채용 진행/포기 처리가 가능합니다. (공고 마감 이후 7일이 지난 지원 내역은 자동으로 채용 포기
+                            처리됩니다.)</p>
+                    </div>
+                </div>
+                <p class="subTit">답변 영상 <a href="javascript:void(0);" id="btn_play_all"
+                                           class="btnAllPlay"><span>전체 재생</span></a></p>
+                <div class="repVideo">
+                    <ul>
+                        {{if .RecruitApplyMemberAnswerList}}
+                            {{range .RecruitApplyMemberAnswerList}}
+                                <li>
+                                    <video controls width="100%" height="100%" controlsList="nodownload">
+                                        <source src="{{.AnsVdFilePath}}" type="video/mp4">
+                                    </video>
+                                    <dl>
+                                        <dt>질문{{.AnsQstSn}}</dt>
+                                        <dd>{{.AnsVdTitle}}</dd>
+                                    </dl>
+                                </li>
+                            {{end}}
+                        {{end}}
+                    </ul>
+                </div>
+                <p class="subTit">지원자 상세 프로필</p>
+                <div class="userProfile">
+                    <table>
+                        <colgroup>
+                            <col width="175px"/>
+                            <col/>
+                        </colgroup>
+                        <tr>
+                            <th>영상 프로필</th>
+                            <td>{{if eq "1" .VpYn}}<a href="javascript:void(0);" id="btn_play_vp" class="btnPlay"><span>재생하기</span></a>{{else}}영상프로필을 등록하지 않은 지원자입니다.{{end}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>최종 학력</th>
+                            <td id="school">{{.LstEdu}}</td>
+                        </tr>
+                        <tr>
+                            <th>경력</th>
+                            <td id="career">{{.CarrDesc}}</td>
+                        </tr>
+                        <tr>
+                            <th>보유 기술 / 자격증</th>
+                            <td id="license">
+                                {{str2html .TechQlftKnd}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>외국어 능력</th>
+                            <td id="lang">{{.FrgnLangAbltDesc}}</td>
+                        </tr>
+                        <tr>
+                            <th>첨부자료 링크</th>
+                            <td>{{.AtchDataPath}}</td>
+                        </tr>
+                        <tr>
+                            <th>첨부 파일</th>
+                            {{if not .AtchFilePath}}
+                                <td>첨부파일이 없습니다.</td>
+                            {{else}}
+                                <td><a href="{{.AtchFilePath}}" download>첨부파일 다운로드</a></td>
+                            {{end}}
+                        </tr>
+
+                        {{if eq "01" .EntpGroupCode}}
+                            <tr>
+                                <th id="pdf_name">이력서</th>
+                                <td><a id="pdf" href=".">이력서 다운로드</a></td>
+                            </tr>
+                            <tr>
+                                <th id="apply_status_name">첨부 파일</th>
+                                <td><a id="apply_status" href="javascript:void(0);" download>첨부파일 다운로드</a></td>
+                            </tr>
+                        {{end}}
+                    </table>
+                </div>
+                <p class="btnSec">
+                    <a href="javascript:void(0);" id="btn_recruit_ing">채용 진행</a>
+                    <a href="javascript:void(0);" id="btn_recruit_end">채용 포기</a>
+                </p>
+            </div>
+        </div>
+        <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 영상팝업 -->
+    <div class="popupWrap" id="video_pop" data-tot_cnt="{{.VideoCnt}}">
+        <div class="videoPopup">
+            <div class="popContent">
+                <div class="movie pop">
+                    {{range .RecruitApplyMemberAnswerList}}
+                        <video controls width="100%" height="100%" name="video" class="ans_video"
+                               id="video_{{.AnsQstSn}}" controlsList="nodownload" style="display:none">
+                            <source src="{{.AnsVdFilePath}}" type="video/mp4">
+                        </video>
+                        <!-- 메시지 추가 -->
+                        <div class="message ans_{{.AnsQstSn}}" style="display:none">
+                            <dl>
+                                <dt id="qst_sn">Q{{.AnsQstSn}}</dt>
+                                <dd id="qst_title">{{.AnsVdTitle}}</dd>
+                            </dl>
+                        </div>
+                        <!-- // 메시지 추가 -->
+                    {{end}}
+                </div>
+                <p class="page">( <em id="now_page">1</em> / <em id="tot_page">2</em> )</p>
+            </div>
+            <a href="javascript:void(0);" class="btnPrev answer" data-tot_cnt="{{.VideoCnt}}"><img
+                        src="/static/images/btn_video_prev.png" title="이전 영상"></a>
+            <a href="javascript:void(0);" class="btnNext answer" data-tot_cnt="{{.VideoCnt}}"><img
+                        src="/static/images/btn_video_next.png" title="다음 영상"></a>
+            <a href="javascript:void(0);" class="btnClose" id="video_close"><img
+                        src="/static/images/btn_video_close.png" widht="40px" height="40px" title="닫기"></a>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 영상팝업 -->
+
+    <!-- 프로필 영상팝업 -->
+    <div class="popupWrap" id="profile_video_pop" data-tot_cnt="{{.ProfileVideoCnt}}">
+        <div class="videoPopup">
+            <div class="popContent">
+                <div class="movie pop">
+                    {{range .VideoProfileList}}
+                        <video controls width="100%" height="100%" name="profile_video" class="profile_video"
+                               id="profile_video_{{.VpSn}}" controlsList="nodownload" style="display:none">
+                            <source src="{{.VpVdFilePath}}" type="video/mp4">
+                        </video>
+                        <!-- 메시지 추가 -->
+                        <div class="message profile_{{.VpSn}}" style="display:none">
+                            <dl>
+                                <dd id="theme_title">{{.VpQstDesc}}</dd>
+                            </dl>
+                        </div>
+                        <!-- // 메시지 추가 -->
+                    {{end}}
+                </div>
+                <p class="page">( <em id="vp_now_page">1</em> / <em id="vp_tot_page">2</em> )</p>
+            </div>
+            <a href="javascript:void(0);" class="btnPrev profile" data-tot_cnt="{{.ProfileVideoCnt}}"><img
+                        src="/static/images/btn_video_prev.png" title="이전 영상"></a>
+            <a href="javascript:void(0);" class="btnNext profile" data-tot_cnt="{{.ProfileVideoCnt}}"><img
+                        src="/static/images/btn_video_next.png" title="다음 영상"></a>
+            <a href="javascript:void(0);" class="btnClose" id="profile_video_close"><img
+                        src="/static/images/btn_video_close.png" widht="30px" height="30px" title="닫기"></a>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 프로필 영상팝업 -->
+
+    <!-- 채용 진행/포기 팝업 -->
+    <div class="popupWrap confirm" id="recruit_common_pop">
+        <div class="popup">
+            <div class="popContent">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <!-- 관심설정팝업-->
+    <div class="popupWrap favor" id="favor_set_pop">
+        <div class="popup">
+            <div class="popContent">
+                <p id="confirmMessage_favor"></p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_favor_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <!-- 채용진행완료팝업 -->
+    <div class="popupWrap result" id="recruit_result_pop">
+        <div class="infoPopup">
+            <p class="popTit">채용 진행을<br/>선택해주셔서 감사합니다.</p>
+            <div class="userInfo">
+          <span class="img">
+            {{if eq "M" .Sex}}
+                <img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/male_no_img.png'" alt="남자 프로필사진">
+            {{else}}
+                <img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/female_no_img.png'" alt="여자 프로필사진">
+            {{end}}
+          </span>
+                <div class="text">
+                    <p class="name">{{.Nm}}</p>
+                    <p>({{if eq "M" .Sex}}남자{{else}}여자{{end}}/{{.Age}}세)</p>
+                    <p>{{.Email}}</p>
+                </div>
+            </div>
+            <dl class="messageTo">
+                <dt>지원자 {{.Nm}}님에게 메시지가 전달됩니다.</dt>
+                <!--<dd class="box" style="white-space:pre-line;">{{.PrgsMsg}}</dd>-->
+                <dd class="box"><textarea readonly cols="58" rows="8" maxlength="100">{{.PrgsMsg}}</textarea></dd>
+                <dd class="text">직감의 역할은 여기까지입니다.<br/>별도의 자체 절차를 진행해주세요.</dd>
+            </dl>
+            <p class="btn"><a href="javascript:void(0);" id="btn_result_confirm" onclick="closePopup()">확인</a></p>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- // 채용진행완료팝업 -->
+
+    <!-- 처음/마지막 영상 알림 -->
+    <div class="popupWrap sepop" id="start_end_pop">
+        <div class="popup">
+            <div class="popContent">
+                <p id="alert_message"></p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="videoClosePopup()">확인</a>
+            </div>
+        </div>
+    </div>
+    <!-- // 처음/마지막 영상 알림 -->
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            {{/* 2020중견기업 */}}
+            if ("{{.EntpGroupCode}}" == "01") {
+                setCustomCareer();
+            }
+            ;
+            {{/* 2020중견기업 */}}
+
+            var divs = document.querySelectorAll('.imgSec .img');
+            for (var i = 0; i < divs.length; ++i) {
+                var div = divs[i];
+                var divAspect = div.offsetHeight / div.offsetWidth;
+                div.style.overflow = 'hidden';
+
+                var img = div.querySelector('img');
+                var imgAspect = img.height / img.width;
+
+                if (imgAspect <= divAspect) {
+                    // 이미지가 div보다 납작한 경우 세로를 div에 맞추고 가로는 잘라낸다
+                    var imgWidthActual = div.offsetHeight / imgAspect;
+                    var imgWidthToBe = div.offsetHeight / divAspect;
+                    console.log("imgWidthActual : " + imgWidthActual);
+                    console.log("imgWidthToBe : " + imgWidthToBe);
+                    var marginLeft = -Math.round((imgWidthActual - imgWidthToBe) / 2)
+                    console.log("marginLeft : " + marginLeft);
+                    img.style.cssText = 'width: auto; height: 100%; margin-left: '
+                        + marginLeft + 'px;'
+                } else {
+                    // 이미지가 div보다 길쭉한 경우 가로를 div에 맞추고 세로를 잘라낸다
+                    img.style.cssText = 'width: 100%; height: auto; margin-left: 0;';
+                }
+            }
+        });
+
+
+        // 다음 영상 재생
+        $(document).off("click", ".btnNext.answer").on("click", ".btnNext.answer", function (e) {
+            var curr = parseInt($("#now_page").text());
+            var tot_cnt = parseInt($(this).data("tot_cnt"));
+            if (tot_cnt == curr) {
+                $("#alert_message").html("마지막 영상입니다.");
+                openPopup("start_end_pop");
+            } else if (tot_cnt > curr) {
+                $(".ans_video").attr("style", "display:none");
+                $(".message").attr("style", "display:none");
+                $("#video_" + (curr + 1)).attr("style", "display:''");
+                $(".message.ans_" + (curr + 1)).attr("style", "display:''");
+                $("#now_page").text((curr + 1));
+                document.getElementById("video_" + curr).pause();
+                document.getElementById("video_" + (curr + 1)).play();
+            }
+        });
+
+        // 이전 영상 재생
+        $(document).off("click", ".btnPrev.answer").on("click", ".btnPrev.answer", function (e) {
+            var curr = parseInt($("#now_page").text());
+            var tot_cnt = parseInt($(this).data("tot_cnt"));
+            if (curr == 1) {
+                $("#alert_message").html("처음 영상입니다.");
+                openPopup("start_end_pop");
+            } else if (curr > 1) {
+                $(".ans_video").attr("style", "display:none");
+                $(".message").attr("style", "display:none");
+                $("#video_" + (curr - 1)).attr("style", "display:''");
+                $(".message.ans_" + (curr - 1)).attr("style", "display:''");
+                $("#now_page").text((curr - 1));
+                document.getElementById("video_" + curr).pause();
+                document.getElementById("video_" + (curr - 1)).play();
+            }
+        });
+
+        // 영상 확인 닫기 팝업
+        function videoClosePopup() {
+            $('#start_end_pop').hide();
+            return false;
+        }
+
+        // 전체 재생
+        $(document).off("click", "#btn_play_all").on("click", "#btn_play_all", function (e) {
+            openPopup("video_pop");
+            var tot_cnt = $("#video_pop").data("tot_cnt");
+            //console.log("tot_cnt : "+tot_cnt);
+            $("#now_page").text(1);
+            $("#tot_page").text(tot_cnt);
+            loopVideo(1, tot_cnt);
+        });
+
+        var loopVideo = function (i, tot_cnt) {
+            if (tot_cnt >= i) {
+                $("#video_" + i).attr("style", "display:''");
+                $(".message.ans_" + i).attr("style", "display:''");
+                document.getElementById("video_" + i).play();
+                document.getElementById("video_" + i).onended = function () {
+                    $("#video_" + i).attr("style", "display:none");
+                    $(".message.ans_" + i).attr("style", "display:none");
+                    var j = i + 1;
+                    loopVideo(j, tot_cnt);
+                    if (j == tot_cnt) {
+                        $("#now_page").text(tot_cnt);
+                    } else {
+                        if (j < tot_cnt) {
+                            $("#now_page").text(j);
+                        } else {
+                            $("#now_page").text(1);
+                        }
+                    }
+                };
+            } else {
+                $("#video_1").attr("style", "display:''");
+                $(".message.ans_1").attr("style", "display:''");
+                $("#now_page").text(1);
+                //loopVideo(1, tot_cnt);
+                return;
+            }
+        }
+
+        // 영상 팝업창 닫기
+        $(document).off("click", "#video_close").on("click", "#video_close", function (e) {
+            window.location.reload();
+            /*
+            closePopup();
+            var tot_cnt = $("#video_pop").data("tot_cnt");
+            var i;
+            for (i = 1; i <= tot_cnt; i++) {
+              document.getElementById("video_"+i).load();
+              document.getElementById("video_"+i).pause();
+            }
+            */
+        });
+
+        // 다음 프로필영상 재생
+        $(document).off("click", ".btnNext.profile").on("click", ".btnNext.profile", function (e) {
+            var curr = parseInt($("#vp_now_page").text());
+            var tot_cnt = parseInt($(this).data("tot_cnt"));
+            if (tot_cnt == curr) {
+                $("#alert_message").html("마지막 영상입니다.");
+                openPopup("start_end_pop");
+            } else if (tot_cnt > curr) {
+                $(".profile_video").attr("style", "display:none");
+                $(".message").attr("style", "display:none");
+                $("#profile_video_" + (curr + 1)).attr("style", "display:''");
+                $(".message.profile_" + (curr + 1)).attr("style", "display:''");
+                $("#vp_now_page").text((curr + 1));
+                document.getElementById("profile_video_" + curr).pause();
+                document.getElementById("profile_video_" + (curr + 1)).play();
+            }
+        });
+
+        // 이전 프로필영상 재생
+        $(document).off("click", ".btnPrev.answprofileer").on("click", ".btnPrev.profile", function (e) {
+            var curr = parseInt($("#vp_now_page").text());
+            var tot_cnt = parseInt($(this).data("tot_cnt"));
+            if (curr == 1) {
+                $("#alert_message").html("처음 영상입니다.");
+                openPopup("start_end_pop");
+            } else if (curr > 1) {
+                $(".profile_video").attr("style", "display:none");
+                $(".message").attr("style", "display:none");
+                $("#profile_video_" + (curr - 1)).attr("style", "display:''");
+                $(".message.profile_" + (curr - 1)).attr("style", "display:''");
+                $("#vp_now_page").text((curr - 1));
+                document.getElementById("profile_video_" + curr).pause();
+                document.getElementById("profile_video_" + (curr - 1)).play();
+            }
+        });
+
+        // 프로필영상 확인 닫기 팝업
+        function videoClosePopup() {
+            $('#start_end_pop').hide();
+            return false;
+        }
+
+        // 프로필 영상 전체 재생
+        $(document).off("click", "#btn_play_vp").on("click", "#btn_play_vp", function (e) {
+            openPopup("profile_video_pop");
+            var tot_cnt = $("#profile_video_pop").data("tot_cnt");
+            console.log("tot_cnt : " + tot_cnt);
+            $("#vp_now_page").text(1);
+            $("#vp_tot_page").text(tot_cnt);
+            loopProfileVideo(1, tot_cnt);
+        });
+
+        var loopProfileVideo = function (i, tot_cnt) {
+            if (tot_cnt >= i) {
+                $("#profile_video_" + i).attr("style", "display:''");
+                $(".message.profile_" + i).attr("style", "display:''");
+                document.getElementById("profile_video_" + i).play();
+                document.getElementById("profile_video_" + i).onended = function () {
+                    $("#profile_video_" + i).attr("style", "display:none");
+                    $(".message.profile_" + i).attr("style", "display:none");
+                    var j = i + 1;
+                    loopProfileVideo(j, tot_cnt);
+                    if (j == tot_cnt) {
+                        $("#vp_now_page").text(tot_cnt);
+                    } else {
+                        if (j < tot_cnt) {
+                            $("#vp_now_page").text(j);
+                        } else {
+                            $("#vp_now_page").text(1);
+                        }
+                    }
+                };
+            } else {
+                $("#profile_video_1").attr("style", "display:''");
+                $(".message.profile_1").attr("style", "display:''");
+                $("#vp_now_page").text(1);
+                //loopProfileVideo(1, tot_cnt);
+                return;
+            }
+        }
+
+        // 프로필 영상 팝업창 닫기
+        $(document).off("click", "#profile_video_close").on("click", "#profile_video_close", function (e) {
+            window.location.reload();
+            /*
+            closePopup();
+            var tot_cnt = $("#profile_video_pop").data("tot_cnt");
+            var i;
+            for (i = 1; i <= tot_cnt; i++) {
+              document.getElementById("profile_video_"+i).load();
+              document.getElementById("profile_video_"+i).pause();
+            }
+            */
+        });
+
+        // 목록으로 이동
+        $(document).off("click", "#btn_go_list").on("click", "#btn_go_list", function (e) {
+            var entp_mem_no = "{{.EntpMemNo}}";
+            //var recrut_sn = $("#recrut_sn").val();
+            var p_recrut_sn = "{{.pRecrutSn}}";
+            var evl_prgs_stat = "{{.pEvlPrgsStat}}";
+            var sex = "{{.pSex}}";
+            var age = "{{.pAge}}";
+            var vp_yn = "{{.pVpYn}}";
+            var favr_aply_pp = "{{.pFavrAplyPp}}";
+            var sort_gbn = "{{.pSortGbn}}";
+            var page_no = "{{.pPageNo}}";
+            var keyword = "{{.pKeyword}}";
+            var size = "{{.pSize}}";
+            //var param = "entp_mem_no="+entp_mem_no+"&recrut_sn="+recrut_sn+"&p_recrut_sn="+p_recrut_sn+"&p_evl_prgs_stat="+evl_prgs_stat+"&p_sex="+sex+"&p_age="+age+"&p_vp_yn="+vp_yn+"&p_favr_aply_pp="+favr_aply_pp+"&p_sort_gbn="+sort_gbn+"&p_page_no="+page_no+"&p_keyword="+keyword+"&p_size="+size;
+            var param = "entp_mem_no=" + entp_mem_no + "&p_recrut_sn=" + p_recrut_sn + "&p_evl_prgs_stat=" + evl_prgs_stat + "&p_sex=" + sex + "&p_age=" + age + "&p_vp_yn=" + vp_yn + "&p_favr_aply_pp=" + favr_aply_pp + "&p_sort_gbn=" + sort_gbn + "&p_page_no=" + page_no + "&p_keyword=" + keyword + "&p_size=" + size;
+            window.location.href = "/applicant/list?" + param;
+        });
+
+        // 지원자관심설정 팝업
+        $(document).off("click", "#favr_aply_pp_yn").on("click", "#favr_aply_pp_yn", function (e) {
+            var entp_mem_no = "{{.EntpMemNo}}";
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+
+            if ($("#favr_aply_pp_yn").hasClass("active")) {
+                //$("#confirmMessage_favor").html("해당 지원자를<br>관심 해제 하시겠습니까?");
+                //openPopup("favor_set_pop");
+                favorSet(entp_mem_no, recrut_sn, pp_mem_no, '0'); //해제
+            } else {
+                //$("#confirmMessage_favor").html("해당 지원자를<br>관심 설정 하시겠습니까?");
+                //openPopup("favor_set_pop");
+                favorSet(entp_mem_no, recrut_sn, pp_mem_no, '1'); //설정
+            }
+        });
+
+        // 지원자관심 설정,해제
+        /*
+        $(document).off("click", "#btn_favor_confirm").on("click", "#btn_favor_confirm", function(e) {
+          var entp_mem_no = "{{.EntpMemNo}}";
+      var recrut_sn = "{{.RecrutSn}}";
+      var pp_mem_no = "{{.PpMemNo}}";
+      
+      if($("#favr_aply_pp_yn").hasClass("active")) {
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '0'); //해제
+      } else {
+        favorSet(entp_mem_no, recrut_sn, pp_mem_no, '1'); //설정
+      }
+    });
+    */
+
+        // 지원자관심 처리
+        var favorSet = function (entp_mem_no, recrut_sn, pp_mem_no, favr_aply_pp_yn) {
+            $.ajax({
+                cache: false,
+                url: '/recruit/favor/member/update',
+                data: {
+                    entp_mem_no: entp_mem_no,
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    favr_aply_pp_yn: favr_aply_pp_yn
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == 1) {
+                        //console.log("success");
+                        $('.popupWrap.favor').hide();
+                        if (favr_aply_pp_yn == "1") {
+                            $("#favr_aply_pp_yn").addClass("active");
+                        } else {
+                            $("#favr_aply_pp_yn").removeClass("active");
+                        }
+                    } else {
+                        //console.log("error");
+                        $('.popupWrap.favor').hide();
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+
+        // 공고상세이동
+        $(document).off("click", "#btn_recruit_detail").on("click", "#btn_recruit_detail", function (e) {
+            var entp_mem_no = $(this).data("entp_mem_no");
+            var recrut_sn = $(this).data("recruit_sn");
+            console.log("entp_mem_no : " + entp_mem_no);
+            console.log("recrut_sn : " + recrut_sn);
+            window.location.href = "/recruit/post/detail?entp_mem_no=" + entp_mem_no + "&recrut_sn=" + recrut_sn;
+        });
+
+        // 채용진행 팝업
+        $(document).off("click", "#btn_recruit_ing").on("click", "#btn_recruit_ing", function (e) {
+            $("#confirmMessage").html("지원자에게 결과가 즉시 통보되며<br>결정을 번복하실 수 없습니다.<br>계속 진행 하시겠습니까?");
+            $(".status").removeClass("ing end");
+            openPopup("recruit_common_pop");
+            $(".status").addClass("ing");
+        });
+
+        // 채용포기 팝업
+        $(document).off("click", "#btn_recruit_end").on("click", "#btn_recruit_end", function (e) {
+            $("#confirmMessage").html("채용 포기를 선택하실 경우<br>지원자의 상세 정보가 삭제되고<br>결정을 번복하실 수 없습니다.<br>계속 진행 하시겠습니까?");
+            $(".status").removeClass("ing end");
+            openPopup("recruit_common_pop");
+            $(".status").addClass("end");
+        });
+
+        // 채용진행, 채용포기
+        $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function (e) {
+            var entp_mem_no = "{{.EntpMemNo}}";
+            var recrut_sn = "{{.RecrutSn}}";
+            var pp_mem_no = "{{.PpMemNo}}";
+            if ($(".status").hasClass("ing")) {
+                console.log("진행");
+                recrutEval(entp_mem_no, recrut_sn, pp_mem_no, '03');
+                $(".loading").attr("style", "display:''");
+            } else {
+                console.log("포기");
+                recrutEval(entp_mem_no, recrut_sn, pp_mem_no, '04');
+                $(".loading").attr("style", "display:''");
+            }
+        });
+
+        // 채용결정팝업 닫기
+        $(document).off("click", "#btn_result_confirm").on("click", "#btn_result_confirm", function (e) {
+            $('.popupWrap.result').hide();
+            var entp_mem_no = "{{.EntpMemNo}}";
+            var p_recrut_sn = "{{.pRecrutSn}}";
+            var evl_prgs_stat = "{{.pEvlPrgsStat}}";
+            var sex = "{{.pSex}}";
+            var age = "{{.pAge}}";
+            var vp_yn = "{{.pVpYn}}";
+            var favr_aply_pp = "{{.pFavrAplyPp}}";
+            var sort_gbn = "{{.pSortGbn}}";
+            var page_no = "{{.pPageNo}}";
+            var keyword = "{{.pKeyword}}";
+            var size = "{{.pSize}}";
+            var param = "entp_mem_no=" + entp_mem_no + "&p_recrut_sn=" + p_recrut_sn + "&p_evl_prgs_stat=" + evl_prgs_stat + "&p_sex=" + sex + "&p_age=" + age + "&p_vp_yn=" + vp_yn + "&p_favr_aply_pp=" + favr_aply_pp + "&p_sort_gbn=" + sort_gbn + "&p_page_no=" + page_no + "&p_keyword=" + keyword + "&p_size=" + size;
+            window.location.href = "/applicant/list?" + param;
+        });
+
+        // 채용평가 처리
+        var recrutEval = function (entp_mem_no, recrut_sn, pp_mem_no, gbn_cd) {
+            $.ajax({
+                cache: false,
+                url: '/recruit/eval/update',
+                data: {
+                    entp_mem_no: entp_mem_no,
+                    recrut_sn: recrut_sn,
+                    pp_mem_no: pp_mem_no,
+                    gbn_cd: gbn_cd
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                    $(".loading").attr("style", "display:none");
+                },
+                success: function (rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+
+                    if (rtnCd == 1) {
+                        console.log("success");
+                        if (gbn_cd == "03") {
+                            $('.popupWrap.confirm').hide();
+                            $(".loading").attr("style", "display:none");
+                            openPopup("recruit_result_pop");
+                        } else {
+                            var p_entp_mem_no = "{{.EntpMemNo}}";
+                            var p_recrut_sn = "{{.pRecrutSn}}";
+                            var evl_prgs_stat = "{{.pEvlPrgsStat}}";
+                            var sex = "{{.pSex}}";
+                            var age = "{{.pAge}}";
+                            var vp_yn = "{{.pVpYn}}";
+                            var favr_aply_pp = "{{.pFavrAplyPp}}";
+                            var sort_gbn = "{{.pSortGbn}}";
+                            var page_no = "{{.pPageNo}}";
+                            var keyword = "{{.pKeyword}}";
+                            var size = "{{.pSize}}";
+                            var param = "entp_mem_no=" + p_entp_mem_no + "&p_recrut_sn=" + p_recrut_sn + "&p_evl_prgs_stat=" + evl_prgs_stat + "&p_sex=" + sex + "&p_age=" + age + "&p_vp_yn=" + vp_yn + "&p_favr_aply_pp=" + favr_aply_pp + "&p_sort_gbn=" + sort_gbn + "&p_page_no=" + page_no + "&p_keyword=" + keyword + "&p_size=" + size;
+                            window.location.href = "/applicant/list?" + param;
+                        }
+                    } else {
+                        console.log("error");
+                        $('.popupWrap.confirm').hide();
+                        $(".loading").attr("style", "display:none");
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        // 2020중견기업
+        var setCustomCareer = function () {
+            console.log("setCustomCareer");
+
+            $("#school").text("-");
+            $("#career").text("-");
+            $("#license").text("-");
+            $("#lang").text("-");
+            $("#pdf_name").text("이력서");
+            $("#pdf").text("");
+            $("#pdf").attr("href", "#");
+            var email = "{{.Email}}";
+
+            $.ajax({
+                crossOrigin: true,
+                cache: false,
+                url: 'https://www.fome-job.com/api/',
+                data: {
+                    client_id: "54594548",
+                    client_secret: "6b8ce262163448a0dc02638ccbd8789c",
+                    mode: "doc_info",
+                    email: email,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+
+                    console.log("rep Log : " + JSON.stringify(rep));
+
+                    if (rep.result_code == 200) {
+                        $("#school").text(rep.data.school);
+                        $("#career").text(rep.data.career + "년");
+                        $("#license").text(rep.data.license);
+                        $("#lang").text(rep.data.lang);
+                        $("#pdf").text(rep.data.pdf);
+                        $("#pdf").attr("href", rep.data.pdf);
+                        setCustomCareerApplyStatus();
+                    } else {
+                        $("#profile_error_msg")
+                            .css("color", "red")
+                            .text("이력 데이터를 찾지 못했습니다. ( 오류코드 : " + rep.result_code + ")");
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+
+        var setCustomCareerApplyStatus = function () {
+            var email = "{{.Email}}";
+            var recrutSn = "{{.RecrutSn}}";
+
+            $("#apply_status_name").text("서류지원합격여부");
+            $.ajax({
+                crossOrigin: true,
+                cache: false,
+                url: 'https://www.fome-job.com/api/',
+                data: {
+                    client_id: "54594548",
+                    client_secret: "6b8ce262163448a0dc02638ccbd8789c",
+                    mode: "apply_status",
+                    email: email,
+                    RecrutSn: recrutSn,
+                },
+                type: 'POST',
+                dataType: "json",
+                error: function (e) {
+                    console.log("error" + e);
+                },
+                success: function (rep) {
+                    console.log("log : " + rep);
+
+                    if (rep.result_code == 200) {
+                        $("#apply_status").text(rep.data.status_detail + "(" + rep.data.status + ")");
+                    } else {
+                        $("#apply_status").text("오류(" + rep.result_code + ") : 합격여부 알 수 없음");
+                    }
+                },
+                error: function (e) {
+                    console.log("error + " + e);
+                }
+            });
+        }
+        // 2020중견기업
+    </script>
+
+{{end}}

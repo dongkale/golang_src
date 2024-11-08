@@ -1,0 +1,353 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <h2>앱 버전관리</h2>
+        <div class="recruitList">
+          <input type="hidden" id="curr_ver_cd">
+          <div class="tabMenu">
+            {{template "include/admin_contents_menu.html" .}}
+          </div>
+          <div class="listBox">
+            <div class="notice">
+              <table>
+                <colgroup>
+                  <col width="107px" />
+                  <col width="141px" />
+                  <col />
+                  <col width="160px" />
+                  <col width="141px" />
+                  <col width="100px" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>앱버전</th>
+                    <th>버전코드</th>
+                    <th>강제업데이트여부</th>
+                    <th>배포일자</th>
+                    <th>등록</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{range .VersionList}}
+                  <tr>
+                    <td>{{.AppGbn}}</td>
+                    <td>{{.AppVer}}</td>
+                    <td class="text"><a href="javascript:void(0);" id="app_cd">{{.AppVerCd}}</a></td>
+                    <td>{{.FrcUptYn}}</td>
+                    <td>{{.DstbSdt}}</td>
+                    <td>
+                      {{if eq "ANDROID" .AppGbn}}
+                      <a href="javascript:void(0);" id="btn_insert_android">[+]</a>
+                      {{else}}
+                      <a href="javascript:void(0);" id="btn_insert_ios">[+]</a>
+                      {{end}}
+                    </td>
+                  </tr>
+                  {{end}}
+                </tbody>
+              </table>
+            </div>
+            <div class="btnSec" id="info_text">
+              <b>앱이 배포된 즉시 버전관리가 필요합니다.<br>[+] 등록 버튼을 클릭 하시셔 등록해주세요.</b>
+            </div>
+            <div class="reqWrite1" style="display:none">
+              <table class="formTable">
+                <colgroup>
+                  <col width="160px" />
+                  <col />
+                </colgroup>
+                <tbody>
+                <form method="post" id="verFrm" name="verFrm">
+                  <tr height="40">
+                    <th class="tit">앱구분</th>
+                    <td style="margin-top: 100" id="app_gbn"></td>
+                  </tr>
+                  <tr height="40">
+                    <th class="tit">강제 업데이트 여부*</th>
+                    <td>
+                      <select name="frc_upt_yn" id="frc_upt_yn">
+                        <option value="N">아니오</option>
+                        <option value="Y">예</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr height="40">
+                    <th class="tit">앱 버전*</th>
+                    <td>
+                      <select name="ver_cd1" id="ver_cd1">
+                        <option value="">선택</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                      </select>
+                      .
+                      <select name="ver_cd2" id="ver_cd2">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                      </select>
+                      .
+                      <select name="ver_cd3" id="ver_cd3">
+                        <option value="0">0</option>
+                        {{range .CommonCount99List}}
+                        <option value="{{.Count99}}">{{.Count99}}</option>
+                        {{end}}
+                      </select>
+                    </td>
+                  </tr>
+                  <tr height="40">
+                    <th class="tit">앱버전코드(자동생성)</th>
+                    <td id="app_ver_cd"></td>
+                  </tr>
+                </tbody>
+                </form>
+              </table>
+            <div class="btnSec">
+              <a href="javascript:void(0);" id="btn_cancel">취소</a>
+              <a class="active" href="javascript:void(0);" id="btn_insert">등록</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 컨텐츠영역 -->
+    </div>
+
+    <!-- 등록 팝업 -->
+    <div class="popupWrap confirm" id="version_insert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">해당 앱 버전을 등록 하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 등록 팝업 -->
+
+    <script type="text/javascript">
+      $(document).off("change", "#ver_cd1").on("change", "#ver_cd1", function(e) {
+        var ver_cd1 = $(this).val();
+        var ver_cd2 = $("#ver_cd2").val();
+        var ver_cd3 = $("#ver_cd3").val();
+      
+        if (ver_cd1 > 0) {
+          ver_cd1 = ver_cd1+"0";
+        } else {
+          ver_cd1 = "";
+        }
+        if (ver_cd1 == 0) {
+          if (ver_cd2 > 0) {
+            ver_cd2 = ver_cd2+"0";
+          } else {
+            ver_cd2 = "";
+          }        
+        } else {
+          if (ver_cd2 > 0) {
+            ver_cd2 = ver_cd2+"0";
+          } else {
+            ver_cd2 = "00";
+          }        
+        }
+        if (ver_cd3 > 0) {
+          if (ver_cd3.length == 1) {
+            ver_cd3 = "0"+ver_cd3;
+          } else {
+            ver_cd3 = ver_cd3;
+          }
+        } else {
+          ver_cd3 = "00";
+        }          
+        $("#app_ver_cd").text(ver_cd1+ver_cd2+ver_cd3);
+      });
+
+      $(document).off("change", "#ver_cd2").on("change", "#ver_cd2", function(e) {
+        var ver_cd1 = $("#ver_cd1").val();
+        var ver_cd2 = $(this).val();
+        var ver_cd3 = $("#ver_cd3").val();
+
+        if (ver_cd1 > 0) {
+          ver_cd1 = ver_cd1+"0";
+        } else {
+          ver_cd1 = "";
+        }
+        if (ver_cd1 == 0) {
+          if (ver_cd2 > 0) {
+            ver_cd2 = ver_cd2+"0";
+          } else {
+            ver_cd2 = "";
+          }        
+        } else {
+          if (ver_cd2 > 0) {
+            ver_cd2 = ver_cd2+"0";
+          } else {
+            ver_cd2 = "00";
+          }        
+        }
+        if (ver_cd3 > 0) {
+          if (ver_cd3.length == 1) {
+            ver_cd3 = "0"+ver_cd3;
+          } else {
+            ver_cd3 = ver_cd3;
+          }
+        } else {
+          ver_cd3 = "00";
+        }        
+        $("#app_ver_cd").text(ver_cd1+ver_cd2+ver_cd3);
+      });
+      
+      $(document).off("change", "#ver_cd3").on("change", "#ver_cd3", function(e) {
+        var ver_cd1 = $("#ver_cd1").val();
+        var ver_cd2 = $("#ver_cd2").val();
+        var ver_cd3 = $(this).val();
+        if (ver_cd1 > 0) {
+          ver_cd1 = ver_cd1+"0";
+        } else {
+          ver_cd1 = "";
+        }
+        if (ver_cd2 > 0) {
+          ver_cd2 = ver_cd2+"0";
+        } else {
+          ver_cd2 = "00";
+        }        
+        if (ver_cd3 > 0) {
+          if (ver_cd3.length == 1) {
+            ver_cd3 = "0"+ver_cd3;
+          } else {
+            ver_cd3 = ver_cd3;
+          }
+        } else {
+          ver_cd3 = "00";
+        }        
+        $("#app_ver_cd").text(ver_cd1+ver_cd2+ver_cd3);
+      });      
+
+      // 안드로이드 버전 추가
+      $(document).off("click", "#btn_insert_android").on("click", "#btn_insert_android", function(e) {
+        // console.log("android");
+        $(".reqWrite1").css("display","none");
+        $(".reqWrite1").css("display","");
+        $("#info_text").css("display","none");
+        $("#app_gbn").text("Android");
+        $("#curr_ver_cd").val($(this).parent().prev().prev().prev().find("a").text());
+      });      
+
+      // 아이폰 버전 추가
+      $(document).off("click", "#btn_insert_ios").on("click", "#btn_insert_ios", function(e) {
+        // console.log("ios");
+        $(".reqWrite1").css("display","none");
+        $(".reqWrite1").css("display","");
+        $("#info_text").css("display","none");
+        $("#app_gbn").text("iOS");
+        $("#curr_ver_cd").val($(this).parent().prev().prev().prev().find("a").text());
+      });      
+      
+      // 취소
+      $(document).off("click", "#btn_cancel").on("click", "#btn_cancel", function(e) {
+        $(".reqWrite1").css("display","none");
+        $("#info_text").css("display","");
+        $("#app_gbn").text("");
+      });     
+
+      // 등록
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        var gbn = $("#app_gbn").text();
+        var ver1 = $("#ver_cd1").val();
+        var ver2 = $("#ver_cd2").val();
+        var ver3 = $("#ver_cd3").val();
+        if (!ver1 && !ver2 && !ver3) {
+          alert("앱버전을 선택해주세요.");
+          closePopup();
+          return;
+        }
+
+        var app_ver = ver1+"."+ver2+"."+ver3;
+        var os_gbn = "";
+        if (gbn == "Android") {
+          os_gbn = "AD";
+        } else {
+          os_gbn = "IS";
+        }
+
+        var app_ver_cd = $("#app_ver_cd").text();
+        var curr_ver_cd =  $("#curr_ver_cd").val();
+        // console.log("app_ver_cd : "+app_ver_cd);
+        // console.log("curr_ver_cd : "+curr_ver_cd);
+
+        var frc_upt_yn = $("#frc_upt_yn").val();
+
+        if (parseInt(app_ver_cd) <= parseInt(curr_ver_cd)) {
+          alert("이전 버전보다 같거나 작습니다.\n신규 버전은 이전보다 커야합니다.");
+          closePopup();
+          return;
+        }
+
+        console.log("app_ver : "+app_ver);
+        console.log("os_gbn : "+os_gbn);
+        console.log("app_ver_cd : "+app_ver_cd);
+        console.log("frc_upt_yn : "+frc_upt_yn);
+        
+        $.ajax({
+          cache : false,
+          url : '/admin/version/insert',
+          data : {
+            app_ver : app_ver,
+            os_gbn : os_gbn,
+            app_ver_cd : app_ver_cd,
+            frc_upt_yn : frc_upt_yn,
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              window.location.reload();
+            } else {
+              console.log("error");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+          }
+        });	
+        
+      });     
+      
+      // 앱등록
+      $(document).off("click", "#btn_insert").on("click", "#btn_insert", function(e) {
+        openPopup("version_insert_pop");
+      }); 
+
+    </script>    
+
+{{end}}    

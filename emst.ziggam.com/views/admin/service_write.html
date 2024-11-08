@@ -1,0 +1,245 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          {{if eq "03" .BrdGbnCd}}
+          <h2>이용약관 (개인)</h2>
+          {{else if eq "04" .BrdGbnCd}}
+          <h2>개인정보 취급방침</h2>
+          {{else}}
+          <h2>이용약관 (기업)</h2>
+          {{end}}
+        <div class="recruitList">
+        <div class="tabMenu">
+          <ul>
+            <!-- 활성화 페이지 class="active" -->
+            <li><a href="/admin/notice/list">공지사항</a></li>
+            <li><a href="/admin/event/content/list">이벤트</a></li>
+            <li><a href="/admin/inquiry/list">문의</a></li>
+            <li class="active"><a href="javascript:void(0);">서비스정책</a></li>
+            <!--<li><a href="/admin/entp/list">기업관리</a></li>-->
+            <li><a href="/admin/version/info">앱 버전관리</a></li>
+            <li><a href="/admin/intro/popup/list">INTRO 팝업관리</a></li>
+          </ul>
+        </div>
+        <div class="listBox">
+          <div class="reqWrite">
+          <form id="serviceForm" name="serviceForm" method="post">
+            <table class="formTable">
+              <colgroup>
+                <col width="80px" />
+                <col />
+              </colgroup>
+              <tbody>
+              <form method="post" action="#" id="notiFrm" name="notiFrm" enctype="multipart/form-data">
+                <tr>
+                  <th class="tit">구분*</th>
+                  <td>
+                    <select name="brd_gbn_cd" id="brd_gbn_cd" style="width: 140px">
+                      <option value="03" {{if eq "03" .BrdGbnCd}}selected{{end}}>이용약관 (개인)</option>
+                      <option value="04" {{if eq "04" .BrdGbnCd}}selected{{end}}>개인정보 취급방침</option>
+                      <option value="05" {{if eq "05" .BrdGbnCd}}selected{{end}}>이용약관 (기업)</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="tit">제목*</th>
+                  <td>
+                    <div class="countArea">
+                      <p class="count">(<span><em id="areaByteTitle">80</em>/80</span>)</p>
+                        <input type="text" class="w100p" maxlength="80" name="title" id="title" value="{{.Title}}" placeholder="서비스 제목을 입력해주세요">
+                      </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="tit">내용*</th> 
+                  <td><script name="noti_doc" id="noti_doc" type="text/plain">{{str2html .Cont}}</script></td>
+                </tr>
+              </tbody>
+              </form>
+            </table>
+            <div class="btnSec">
+              <a href="javascript:void(0);" id="btn_process" class="active">수정</a>
+            </div>
+          </form>
+          </div>
+        </div>
+      <!-- // 페이지 영역 -->
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var ue = UE.getEditor('noti_doc',{
+          initialFrameWidth :"100%",
+          initialFrameHeight:350,
+          scaleEnabled:true			
+        });
+        ue.ready(function () {
+          ue.addListener('focus', function () {
+            var ueFolderNm = "service";
+            var ueSubFolderNm = "policy";
+
+            ue.execCommand('serverparam', {
+              "ueFolderNm": ueFolderNm,
+              "ueSubFolderNm": ueSubFolderNm,
+            });
+          });
+        });
+
+        //$("#notiFrm").validate(validOption);
+        $("#title").keyup();
+      });
+
+      // 서비스 제목 글자수 체크
+      $(document).on("keyup","#title",function(){
+        textLenCheck(this, 80, "#areaByteTitle");
+      });
+
+      $(document).off("change", "#brd_gbn_cd").on("change", "#brd_gbn_cd", function(e) {
+        var gbn_cd = $('select[id=brd_gbn_cd] option:selected').val();
+        window.location.href="/admin/service/list?brd_gbn_cd="+gbn_cd
+      });
+
+      // 수정
+      $(document).off("click", "#btn_process").on("click", "#btn_process", function(e) {
+
+        if($("#title").val().length < 4){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("서비스 제목을 4자이상 입력해주세요");
+          return;
+        }            
+
+        if ($.trim(UE.getEditor('noti_doc').getContent()) == ""){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("서비스 내용을 입력해주세요");
+          return;
+        }        
+
+        var brd_gbn_cd = $('select[id=brd_gbn_cd] option:selected').val();
+        var title = $("#title").val();
+        var noti_doc = UE.getEditor('noti_doc').getContent();
+
+        var noti_doc1 = noti_doc.substring(0,1500);
+        var noti_doc2 = noti_doc.substring(1500,3000);
+        var noti_doc3 = noti_doc.substring(3000,4500);
+        var noti_doc4 = noti_doc.substring(4500,6000);
+        var noti_doc5 = noti_doc.substring(6000,7500);
+        var noti_doc6 = noti_doc.substring(7500,9000);
+        var noti_doc7 = noti_doc.substring(9000,10500);
+        var noti_doc8 = noti_doc.substring(10500,12000);
+        var noti_doc9 = noti_doc.substring(12000,13500);
+
+        var noti_doc10 = noti_doc.substring(13500,15000);
+        var noti_doc11 = noti_doc.substring(15000,16500);
+        var noti_doc12 = noti_doc.substring(16500,18000);
+        var noti_doc13 = noti_doc.substring(18000,19500);
+        var noti_doc14 = noti_doc.substring(19500,21000);
+        var noti_doc15 = noti_doc.substring(21000,22500);
+        var noti_doc16 = noti_doc.substring(22500,24000);
+        var noti_doc17 = noti_doc.substring(24000,25500);
+        var noti_doc18 = noti_doc.substring(25500,27000);
+        var noti_doc19 = noti_doc.substring(27000,28500);
+        var noti_doc20 = noti_doc.substring(28500,30000);
+
+        var noti_doc21 = noti_doc.substring(30000,31500);
+        var noti_doc21 = noti_doc.substring(31500,33000);
+        var noti_doc22 = noti_doc.substring(33000,34500);
+        var noti_doc23 = noti_doc.substring(34500,36000);
+        var noti_doc24 = noti_doc.substring(36000,37500);
+        var noti_doc25 = noti_doc.substring(37500,39000);
+        var noti_doc26 = noti_doc.substring(39000,40500);
+        var noti_doc27 = noti_doc.substring(40500,42000);
+        var noti_doc28 = noti_doc.substring(42000,43500);
+        var noti_doc29 = noti_doc.substring(43500,45000);
+        var noti_doc30 = noti_doc.substring(45000,46500);
+
+        /*
+        console.log("순번 : "+sn);
+        console.log("구분 : "+brd_gbn_cd);
+        console.log("제목 : "+title);
+        console.log("내용 : "+noti_doc1);
+        console.log("내용 : "+noti_doc2);
+        console.log("내용 : "+noti_doc3);
+        console.log("내용 : "+noti_doc4);
+        console.log("내용 : "+noti_doc5);
+        console.log("내용 : "+noti_doc6);
+        console.log("내용 : "+noti_doc7);
+        
+        return;
+        */
+        var formData = new FormData();
+
+        formData.append("brd_gbn_cd", brd_gbn_cd);
+        formData.append("title", title);
+        formData.append("notiDoc1", noti_doc1);
+        formData.append("notiDoc2", noti_doc2);
+        formData.append("notiDoc3", noti_doc3);
+        formData.append("notiDoc4", noti_doc4);
+        formData.append("notiDoc5", noti_doc5);
+        formData.append("notiDoc6", noti_doc6);
+        formData.append("notiDoc7", noti_doc7);
+        formData.append("notiDoc8", noti_doc8);
+        formData.append("notiDoc9", noti_doc9);
+        formData.append("notiDoc10", noti_doc10);
+        formData.append("notiDoc11", noti_doc11);
+        formData.append("notiDoc12", noti_doc12);
+        formData.append("notiDoc13", noti_doc13);
+        formData.append("notiDoc14", noti_doc14);
+        formData.append("notiDoc15", noti_doc15);
+        formData.append("notiDoc16", noti_doc16);
+        formData.append("notiDoc17", noti_doc17);
+        formData.append("notiDoc18", noti_doc18);
+        formData.append("notiDoc19", noti_doc19);
+        formData.append("notiDoc20", noti_doc20);
+        formData.append("notiDoc21", noti_doc21);
+        formData.append("notiDoc22", noti_doc22);
+        formData.append("notiDoc23", noti_doc23);
+        formData.append("notiDoc24", noti_doc24);
+        formData.append("notiDoc25", noti_doc25);
+        formData.append("notiDoc26", noti_doc26);
+        formData.append("notiDoc27", noti_doc27);
+        formData.append("notiDoc28", noti_doc28);
+        formData.append("notiDoc29", noti_doc29);
+        formData.append("notiDoc30", noti_doc30);
+        
+        $.ajax({
+          cache : false,
+          url : '/admin/service/process',
+          data : formData,
+          type : 'POST',
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            //$('.waitloadingbar').attr('style','display:none');
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == "1"){
+              window.location.reload();
+            } else {
+              console.log("message" + rtnMsg);
+            }
+          },
+          error : function() {
+            //$('.waitloadingbar').attr('style','display:none');
+          }
+        });	
+    });
+    </script>    
+
+{{end}}    

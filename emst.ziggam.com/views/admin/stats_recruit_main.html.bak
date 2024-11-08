@@ -1,0 +1,183 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <h2>통계 관리</h2>
+        <div class="recruitList">
+        <input type="hidden" id="page_no" value="{{.PageNo}}">  
+          <div class="tabMenu">
+            <ul>
+              <li><a href="/admin/stats/main">회원 현황</a></li>
+                  <li class="active"><a href="/admin/stats/period/main">채용 현황</a></li>
+                  <li><a href="/admin/stats/recruit/main">기간별 현황</a></li>
+            </ul>
+          </div>
+          <div class="listBox">
+            <div class="topSec">
+              <div class="posL">
+              </div>
+            </div>
+            <div class="memberList">
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="8">&nbsp;&nbsp;◎ 채용공고 등록현황</td>
+                </tr>
+                <tr>
+                    <th>전체</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc01TotCnt}}건</td>
+                    <th>신규(당일)</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc01NewCnt}}건</td>
+                    <th>진행</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc01IngCnt}}건</td>
+                    <th>종료</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc01EndCnt}}건</td>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <div class="memberList">
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="8">&nbsp;&nbsp;◎ 지원자 현황</td>
+                </tr>
+                <tr>
+                    <th>전체</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc02TotCnt}}건</td>
+                    <th>대기</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc02IngCnt}}건</td>
+                    <th>합격</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc02PassCnt}}건</td>
+                    <th>불합격</th>
+                    <td style="text-align: right; padding-right: 10px">{{.Rc02FailCnt}}건</td>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <div class="memberList sub1">
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <colgroup>
+                  <col />
+                  <col width="100px" />
+                  <col width="100px" />
+                  <col width="100px" />
+                  <col width="100px" />
+                  <col width="100px" />
+                  <col width="80px" />
+                </colgroup>
+                <thead>
+                  <tr>
+                      <td style="text-align: left; color:black; font-size: 14px"  colspan="5">&nbsp;&nbsp;◎ 기업별 지원 현황&nbsp;&nbsp;</td>
+                      <td style="text-align: right; padding-right: 10px" colspan="2">
+                        <select id="entp_mem_no">
+                          <option value="T10">TOP10</option>
+                          {{range .AdminStatsRCSub}}
+                          <option value="{{.SubEntpMemNo}}">{{.SubEntpKoNm}}</option>
+                          {{end}}
+                        </select>
+                      </td>
+                  </tr>
+                  <tr>
+                    <th>기업명</th>
+                    <th>지원수</th>
+                    <th>진행중수</th>
+                    <th>합격수</th>
+                    <th>불합격수</th>
+                    <th>매칭률</th>
+                    <th>상세</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{range .AdminStatsRC03}}
+                  <tr>
+                      <td style="text-align: left; padding-left: 10px">{{.Rc03EntpKoNm}}</td>
+                      <td style="text-align: right; padding-right: 10px">{{.Rc03ApplyCnt}}건</td>
+                      <td style="text-align: right; padding-right: 10px">{{.Rc03IngCnt}}건</td>
+                      <td style="text-align: right; padding-right: 10px">{{.Rc03PassCnt}}건</td>
+                      <td style="text-align: right; padding-right: 10px">{{.Rc03FailCnt}}건</td>
+                      <td style="text-align: right; padding-right: 10px">{{.Rc03MatchingRate}}%</td>
+                      <td>more</td>
+                  </tr>
+                {{end}}
+                </tbody>
+              </table>
+              </div>
+            </div>  
+            
+            
+          </div>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+  </div>
+
+    <script type="text/javascript">
+
+      // 채용공고 상세현황
+      $(document).off("click", "#btn_stats_recruit").on("click", "#btn_stats_recruit", function(e) {
+        //window.location.href="/admin/stats/member/detail?mem_gbn=P&stat_cd=01";
+      });
+
+      // 지원자 상세현황
+      $(document).off("click", "#btn_stats_apply").on("click", "#btn_stats_apply", function(e) {
+        //window.location.href="/admin/stats/member/detail?mem_gbn=E&stat_cd=01";
+      });
+
+      // 기업 선택
+      $(document).off("change", "#entp_mem_no").on("change", "#entp_mem_no", function(e) {
+        ajaxEntpList();
+      });
+
+      // 리스트 페이지 AJAX
+			var ajaxEntpList = function(v) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        //console.log("entp_mem_no : "+entp_mem_no);
+        
+        $.ajax({
+					type: "POST",
+					url: "/admin/stats/recruit/main",
+					data:{
+						entp_mem_no : entp_mem_no,
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnAdminStatsRC03Data.length > 0){
+							$(".memberList.sub1").find("tbody").children().remove();
+							$.each(rep.RtnAdminStatsRC03Data,function(e) {
+                var html = "";
+                html += "<tr>";
+                html += "<td style=\"text-align: left; padding-left: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03EntpKoNm+"</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03ApplyCnt+"건</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03IngCnt+"건</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03PassCnt+"건</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03FailCnt+"건</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsRC03Data[e].Rc03MatchingRate+"%</td>";
+                html += "<td>more</td>";
+                html += "</tr>";
+								$(".memberList.sub1").find("tbody").append(html);
+              })
+						}else{
+              $(".memberList.sub1").find("tbody").children().remove();
+              var html = "";
+              html += "<td colspan=\"7\">";
+              html += "<p class=\"noData\">내역이 없습니다</p>";
+              html += "</td>";
+              $(".memberList.sub1").find("tbody").append(html);
+						}
+					}
+				});				
+			}   
+
+    </script>
+
+{{end}}

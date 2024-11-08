@@ -1,0 +1,778 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <h2>기업회원 관리</h2>
+        <div class="recruitList">
+          <input type="hidden" id="runmode" value="{{.runmode}}">  
+        <input type="hidden" id="page_no" value="{{.PageNo}}">  
+        <input type="hidden" id="gbn_cd" value="{{.GbnCd}}">  
+        <input type="hidden" id="biz_url" value="{{.BizUrl}}">  
+
+          <div class="tabMenu">
+            <ul>
+              <!-- 활성화 페이지 class="active" -->
+              {{if eq "A" .GbnCd}}
+              <li class="active"><a href="javascript:void(0);">전체 <span>{{.ETotCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/admin/entp/list?pn=1&gbn_cd=A">전체 <span>{{.ETotCnt}}</span></a></li>
+              {{end}}
+              {{if eq "C" .GbnCd}}
+              <li class="active"><a href="javascript:void(0);">정상 <span>{{.EComCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/admin/entp/list?pn=1&gbn_cd=C">정상 <span>{{.EComCnt}}</span></a></li>
+              {{end}}
+              {{if eq "W" .GbnCd}}
+              <li class="active"><a href="javascript:void(0);">탈퇴 <span>{{.EWtdCnt}}</span></a></li>
+              {{else}}
+              <li><a href="/admin/entp/list?pn=1&gbn_cd=W">탈퇴 <span>{{.EWtdCnt}}</span></a></li>
+              {{end}}
+            </ul>
+            <!--<a href="#" class="excelDownload">회원 리스트 엑셀 저장</a>-->
+          </div>
+          <div class="listBox">
+            <div class="topSec">
+              <div class="posL">
+                <select name="vd_yn" id="vd_yn" class="st06" style="font-size: 13px">
+                  <option value="A">기업영상</option>
+                  <option value="Y">있음</option>
+                  <option value="N">없음</option>
+                </select>
+                <select name="use_yn" id="use_yn" class="st02" style="font-size: 13px">
+                  <option value="A">검증대기여부</option>
+                  <option value="0">검증대기</option>
+                </select>
+                <select name="os_gbn" id="os_gbn" class="st06" style="font-size: 13px">
+                  <option value="A">유입경로</option>
+                  <option value="WB">WEB</option>
+                  <option value="AD">Android</option>
+                  <option value="IS">IS</option>
+                </select>
+                <select name="jobfair" id="jobfair" class="st15" style="font-size: 13px">
+                  <option value="">참여 박람회</option>
+                  {{range .JobFairList}}
+                      <option value="{{.MngCd}}" data-title="{{.Title}}">{{.Title}}</option>
+                  {{end}}                                
+                </select>                
+                <h6 class="searchLoginTit">최근 접속 일시</h6>
+                <input type="text" id="login_sdy" style="width: 100px; height:38px;border-radius:4px;"/>&nbsp;~&nbsp;
+                <input type="text" id="login_edy" style="width: 100px; height:38px;border-radius:4px;"/>
+                <h6 class="searchPeriodTit">&nbsp가입 일시</h6>
+                <input type="text" id="sdy" style="width: 100px; height:38px;border-radius:4px;"/>&nbsp;~&nbsp;
+                <input type="text" id="edy" style="width: 100px; height:38px;border-radius:4px;"/>
+              </div>              
+              <div class="searchSec">
+                <div class="posL">                
+                  <div class="searchBox" style="width:242px">
+                    <input type="text" name="keyword" id="keyword" style="font-size: 13px" placeholder="검색조건(대표자,회사명,아이디)">
+                    <a href="javascript:void(0);" id="btn_search"><img src="/static/images/btn_search.gif" alt="검색"></a>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="sectionTop">
+              <div class="posL">
+                <!--<p class="total">총 <span id="tcnt">{{.TotCnt}}</span>건</p>-->
+                <span class="total" id="tcnt">총{{.TotCnt}}건</span>
+                <a href="javascript:void(0);" id="down_excel" class="btnExcel"><span></span>엑셀로 저장</a>
+              </div>
+              <div class="posR">
+                <select name="size" id="size" class="sort">
+                  <option value="10">10줄씩</option>
+                  <option value="30">30줄씩</option>
+                  <option value="50">50줄씩</option>
+                  <option value="100">100줄씩</option>
+                </select>
+              </div>
+            </div>  
+            <div class="memberList">
+              <table>
+                <colgroup>
+                  <col width="100px" /> <!--가입일시-->
+                  <col />               <!--기업관리코드-->
+                  <col width="130px" /> <!--박람회관리코드 -->
+                  <col width="130px" /> <!--회사명, [사업자번호] -->
+                  <col width="100px" /> <!--대표자명-->
+                  <col width="120px" /> <!--아이디-->
+                  <col width="100px" /> <!--담당자정보-->
+                  <col width="50px" />  <!--총지원수(신규)-->
+                  <col width="50px" />  <!--영상-->
+                  <col width="80px" />  <!--유입-->
+                  <col width="60px" />  <!--검증-->
+                  <col width="125px" /> <!--최근 접속 일시-->
+                  <col width="80px" />  <!--접속-->
+                </colgroup>
+                <thead>
+                  <tr style="height:50px">
+                    <th>가입일시</th>
+                    <th>기업관리코드</th>
+                    <th>참여 박람회</th>
+                    <th>회사명<br>[사업자번호]</th>
+                    <th>대표자명</th>
+                    <th>아이디</th>
+                    <th>담당자정보</th>
+                    <th>총지원수(신규)</th>
+                    <th>영상</th>
+                    <th>유입</th>
+                    <th>검증</th>
+                    <th>최근 접속 일시</th>
+                    <th>접속</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{if .AdminEntpList}}
+                  {{range .AdminEntpList}}
+                  <tr style="height:50px">
+                    {{if eq "01" .MemStatCd}}
+                    <td>{{.RegDt}}</td>
+                    {{else if eq "98" .MemStatCd}}
+                    <td style="color: blue">{{.MemStatDt}}<br>미검증기업</td>
+                    {{else if eq "99" .MemStatCd}}
+                      <td style="color: red">{{.MemStatDt}}<br>탈퇴기업</td>
+                    {{else}}
+                    <td style="color: red">{{.MemStatDt}}</td>
+                    {{end}}
+                    <td>{{.EntpMemNo}}</td>
+                    <td>
+                      {{range .JobFairCdsArr}}
+                          <p>{{.}}</p>
+                      {{end}}
+                    </td>
+                    <td><a href="javascript:void(0);" id="entp_info" data-mem_no="{{.EntpMemNo}}">{{.EntpKoNm}}<br>[{{.BizRegNo}}]</a></td>
+                    <td>{{.RepNm}}</td>
+                    <td>{{.EntpMemId}}</td>
+                    <td>{{.PpChrgNm}}<br>({{.PpChrgTelNo}})</td>
+                    <td>{{.TotAplyCnt}}({{.NewAplyCnt}})</td>
+                    <td>{{.VdYn}}</td>
+                    <td>{{.OsGbn}}</td>
+                    {{if eq "0" .UseYn}}
+                      <td style="color: red">대기</td>
+                    {{else}}
+                      {{if eq "Y" .VdYn}}
+                        <td>완료</td>
+                      {{else}}
+                        <td>-</td>
+                      {{end}}
+                    {{end}}
+                    <td>{{.LastLogin}}</td>
+                    <td>{{if eq "01" .MemStatCd}}<a href="javascript:void(0);" id="goLogin" data-mem_id="{{.EntpMemId}}" data-entp_nm="{{.EntpKoNm}}">[Login]</a>{{else}}-{{end}}</td>
+                  </tr>
+                  {{end}}
+                {{else}}
+                  <tr>
+                    <td colspan="10">
+                      <p class="noData">가입된 기업 회원이 없습니다</p>
+                    </td>
+                  </tr>
+                {{end}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="paging">
+            {{str2html .Pagination}}
+          </div>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+  </div>
+
+    <!-- 로그인 팝업 -->
+    <div class="popupWrap confirm" id="entp_common_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <input type="hidden" id="pop_mem_id">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 로그인 팝업 -->  
+    <!-- 엑셀다운 팝업 -->    
+    <div class="popupWrap confirm" id="pop_excel_download">
+        <div class="popup">
+          <div class="popContent">
+            <p id="confirmMessage">엑셀 파일을 저장하시겠습니까?</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="status" id="btn_excel_confirm">확인</a>
+          </div>
+        </div>
+        <span class="cover"></span>
+    </div>        
+    <!-- 엑셀다운 팝업 -->
+
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var readyChk = "{{.pGbnCd}}";
+        $("#tcnt").text($("#tot_cnt").val());
+
+        // var now = new Date();
+        // var year= now.getFullYear();
+        // var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+        // var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+                
+        // var now_dt = year + '-' + mon + '-' + day;
+        // $("#sdy").val("2018-01-01");
+        // $("#edy").val(now_dt);
+
+        if (readyChk != "") {
+
+          //목록에서 돌아왔을 시 파라미터 세팅
+          // 검색어설정
+            $("#keyword").val("{{.pKeyword}}");
+
+            var size = "{{.pSize}}";
+            var vd_yn = "{{.pVdYn}}";
+            var use_yn = "{{.pUseYn}}"
+
+          if (size != "") {
+                $('#size option[value={{.pSize}}]').prop('selected',true);
+          }
+          if (vd_yn != "") {
+                $('#vd_yn option[value={{.pVdYn}}]').prop('selected',true);
+          }
+          if (use_yn != "") {
+                $('#use_yn option[value={{.pUseYn}}]').prop('selected',true);
+          }
+
+          // OS 선택
+            var os_gbn = "{{.pOsGbn}}";
+          //console.log("pOsGbn : "+os_gbn);
+          if (os_gbn != "") {
+                $('#os_gbn option[value={{.pOsGbn}}]').attr('selected','selected');
+          }    
+
+            var sd = "{{.pSdy}}";
+            var ed = "{{.pEdy}}";
+
+          //console.log("sd : "+sd);
+          //console.log("ed : "+ed);
+          $("#sdy").val(sd.substring(0,4)+"-"+sd.substring(4,6)+"-"+sd.substring(6,8));
+          $("#edy").val(ed.substring(0,4)+"-"+ed.substring(4,6)+"-"+ed.substring(6,8));
+
+            var login_sd = "{{.pLoginSdy}}";
+            var login_ed = "{{.pLoginEdy}}";
+
+            $("#login_sdy").val(login_sd.substring(0,4)+"-"+login_sd.substring(4,6)+"-"+login_sd.substring(6,8));
+            $("#login_edy").val(login_ed.substring(0,4)+"-"+login_ed.substring(4,6)+"-"+login_ed.substring(6,8));
+
+            console.log("=== ReInit Sdy: " + sd )    
+            console.log("=== ReInit Edy: " + ed )    
+
+            console.log("=== ReInit LoginSdy: " + login_sd )    
+            console.log("=== ReInit LoginEdy: " + login_ed )    
+
+          // 페이지
+            var page_no = "{{.pPageNo}}";
+          if (page_no != "1") {
+            paging(page_no);
+          }
+
+          $("#btn_search").trigger("click");
+        } else {
+            // 웹페이지 출력시 초기값 -->
+            var sd = "{{.Sdy}}";
+            var ed = "{{.Edy}}";
+
+            $("#sdy").val(sd.substring(0,4)+"-"+sd.substring(4,6)+"-"+sd.substring(6,8));
+            $("#edy").val(ed.substring(0,4)+"-"+ed.substring(4,6)+"-"+ed.substring(6,8));
+
+            var login_sd = "{{.LoginSdy}}";
+            var login_ed = "{{.LoginEdy}}";
+
+            $("#login_sdy").val(login_sd.substring(0,4)+"-"+login_sd.substring(4,6)+"-"+login_sd.substring(6,8));
+            $("#login_edy").val(login_ed.substring(0,4)+"-"+login_ed.substring(4,6)+"-"+login_ed.substring(6,8));
+
+            console.log("=== Init Sdy: " + sd )    
+            console.log("=== Init Edy: " + ed )    
+
+            console.log("=== Init LoginSdy: " + login_sd )    
+            console.log("=== Init LoginEdy: " + login_ed )    
+            // <--
+        }
+      });
+
+      $(function(){
+        $('#sdy').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+          this.setOptions({
+            maxDate:$('#edy').val()?$('#edy').val():false
+          })
+        },
+        timepicker:false,
+      });
+      $('#edy').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+            this.setOptions({
+              minDate:$('#sdy').val()?$('#sdy').val():false
+            })
+          },
+          timepicker:false,
+        });
+      });      
+
+    $(function(){
+        var now = new Date();
+        $('#login_sdy').datetimepicker({
+            format:'Y-m-d',            
+            onShow:function( ct ){
+                this.setOptions({                    
+                    maxDate: $('#login_eday').val() ? $('#login_eday').val() : false
+                })
+            },
+            timepicker: false,            
+        });
+
+        $('#login_edy').datetimepicker({            
+            format:'Y-m-d',
+            onShow:function( ct ){
+                this.setOptions({
+                    minDate:$('#login_sdy').val()?$('#login_sdy').val():false                    
+                })
+            },
+            timepicker: false,            
+        });
+    });
+
+      // 로그인 팝업
+      $(document).off("click", "#goLogin").on("click", "#goLogin", function(e) {
+        var mem_id = $(this).data("mem_id");
+        var entp_nm = $(this).data("entp_nm");
+        $("#pop_mem_id").val(mem_id);
+        $("#confirmMessage").html("["+entp_nm+"] 기업으로<br>로그인 하시겠습니까?");
+
+        openPopup("entp_common_pop");
+      });
+
+      // 로그인 팝업
+      $(document).off("click", "#goCheck").on("click", "#goCheck", function(e) {
+        openPopup("recruit_alert_pop");
+      });
+
+      // 로그인 처리
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        //$(".loading").attr("style", "display:''");
+        var mem_id = $("#pop_mem_id").val();
+        
+        var biz_url_conf = $("#biz_url").val();
+        var bizUrl = biz_url_conf + '/admin/simple/pass?mem_id='+mem_id;
+        
+        console.log(bizUrl)        
+        
+        closePopup();
+
+        var popW = 1024
+        var popH = 1024
+        var popX = (screen.width / 2) - (popW/2)
+        var popY = (screen.height / 2) - (popH/2)
+        
+        //var result = window.open("localhost:7070/login",
+        var popupWindow = window.open(bizUrl)			 	
+      });
+
+      /*
+      var loginProc = function(mem_id){
+      var bizUrl = 'http://localhost:7070/admin/simple/pass';
+      $.ajax({
+          cache : false,
+          url : bizUrl,
+          data : {
+            mem_id : mem_id,
+          },
+          type : 'GET',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            cosole.log("rtnCd : "+rtnCd);
+
+            if (rtnCd == 1){
+                //window.location.replace("http://localhost:7070");
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+            //window.location.replace("/");
+          },
+        });      
+      }
+      */
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+      });   
+
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        $("#page_no").val(pageno);
+        ajaxEntpList();
+      }	
+
+      // 영상여부 선택
+      $(document).off("change", "#vd_yn").on("change", "#vd_yn", function(e) {
+        ajaxEntpList();
+      });
+
+      // 유입경로 선택
+      $(document).off("change", "#os_gbn").on("change", "#os_gbn", function(e) {
+        ajaxEntpList();
+      });
+
+      // 검증여부 선택
+      $(document).off("change", "#use_yn").on("change", "#use_yn", function(e) {
+        ajaxEntpList();
+      });
+
+    // 박람회
+    $(document).off("change", "#jobfair").on("change", "#jobfair", function(e) {
+        ajaxEntpList();
+    });
+
+			// 검색(Enter Key)
+			$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+				if (event.keyCode == 13) {
+					ajaxEntpList();
+				}
+      });
+
+      // 검색 (클릭)
+      $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+        ajaxEntpList();
+      });        
+
+      // 리스트 수 선택
+      $(document).off("change", "#size").on("change", "#size", function(e) {
+        $("#page_no").val(1);
+        ajaxEntpList();
+      });    
+
+    // 로그인 검색 시작 년월일
+    $(document).off("change", "#login_sdy").on("change", "#login_sdy", function(e) {
+        // var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        // var login_edy = $("#login_edy").val().replace(/\-/g,'');
+
+        if (!edy) {
+            console.log("not selected");
+        } else {
+            ajaxEntpList();
+        }
+    });         
+
+    // 로그인 검색 종료 년월일
+    $(document).off("change", "#login_edy").on("change", "#login_edy", function(e) {
+        // var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        // var login_edy = $("#login_edy").val().replace(/\-/g,'');
+
+        if (!sdy) {
+            console.log("not selected");
+        } else {
+            ajaxEntpList();
+        }
+    });
+
+      // 검색 시작 년월일
+      $(document).off("change", "#sdy").on("change", "#sdy", function(e) {
+        var sdy = $("#sdy").val().replace(/\-/g,'');
+        var edy = $("#edy").val().replace(/\-/g,'');
+
+        if (!edy) {
+          console.log("not selected");
+        } else {
+          ajaxEntpList();
+        }
+      });         
+
+      // 검색 종료 년월일
+      $(document).off("change", "#edy").on("change", "#edy", function(e) {
+
+        var sdy = $("#sdy").val().replace(/\-/g,'');
+        var edy = $("#edy").val().replace(/\-/g,'');
+
+        if (!sdy) {
+          console.log("not selected");
+        } else {
+          ajaxEntpList();
+        }
+      });     
+
+      // 리스트 페이지 AJAX
+			var ajaxEntpList = function(v) {
+        var gbn_cd = $("#gbn_cd").val();
+				var keyword = $("#keyword").val();
+        var vd_yn = $("#vd_yn").val();
+        var use_yn = $("#use_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');  //$("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+        var edy = $("#edy").val().replace(/\-/g,''); //$("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+        if (sdy.length < 8) {
+          sdy = ""
+        }
+        if (edy.length < 8) {
+          edy = ""
+        }
+
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');
+        if (login_sdy.length < 8) {
+            login_sdy = ""
+        }
+        if (login_edy.length < 8) {
+            login_edy = ""
+        }
+
+        console.log("login_sdy : "+login_sdy);
+        console.log("login_edy : "+login_edy);
+        /*
+        console.log("sex : "+sex);
+        console.log("age : "+age);
+        console.log("vp_yn : "+vp_yn);
+        console.log("page_no : "+page_no);
+        console.log("size : "+size);
+        console.log("sdy : "+sdy);
+        console.log("edy : "+edy);
+        //return;
+        */
+        
+        $.ajax({
+					type: "POST",
+					url: "/admin/entp/list",
+					data:{
+						gbn_cd : gbn_cd,
+						vd_yn : vd_yn,
+						use_yn : use_yn,
+						os_gbn : os_gbn,
+						keyword : keyword,
+						size : size,
+						pn : page_no,
+                jf_mng_cd : jf_mng_cd,
+                login_sdy : login_sdy,
+                login_edy : login_edy,
+            sdy : sdy,
+            edy : edy
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnAdminEntpListData.length > 0){
+							$(".memberList").find("tbody").children().remove();
+							$.each(rep.RtnAdminEntpListData,function(e) {
+                var html = "";
+                html += "<tr style=\"height:50px\">";
+                if (rep.RtnAdminEntpListData[e].MemStatCd == "01") {
+                  html += "<td>"+rep.RtnAdminEntpListData[e].RegDt+"</td>";
+                } else if (rep.RtnAdminEntpListData[e].MemStatCd == "98") {
+                  html += "<td style=\"color: blue\">"+rep.RtnAdminEntpListData[e].MemStatDt+"<br>미검증기업</td>";
+                } else {
+                  html += "<td style=\"color: red\">"+rep.RtnAdminEntpListData[e].MemStatDt+"</td>";
+                }
+                html += "<td>"+rep.RtnAdminEntpListData[e].EntpMemNo+"</td>";
+                        html += "<td>";  
+                        $.each(rep.RtnAdminEntpListData[e].JobFairCdsArr,function(i) {     
+                            html += "<p>" + rep.RtnAdminEntpListData[e].JobFairCdsArr[i] + "</p>";
+                        });
+                        html += "</td>";          
+                html += "<td><a href=\"javascript:void(0);\" id=\"entp_info\" data-mem_no=\""+rep.RtnAdminEntpListData[e].EntpMemNo+"\">"+rep.RtnAdminEntpListData[e].EntpKoNm+"<br>["+rep.RtnAdminEntpListData[e].BizRegNo+"]</a></td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].RepNm+"</td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].EntpMemId+"</td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].PpChrgNm+"<br>("+rep.RtnAdminEntpListData[e].PpChrgTelNo+")</td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].TotAplyCnt+"("+rep.RtnAdminEntpListData[e].NewAplyCnt+")</td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].VdYn+"</td>";
+                html += "<td>"+rep.RtnAdminEntpListData[e].OsGbn+"</td>";
+                if(rep.RtnAdminEntpListData[e].UseYn == "0") {
+                  html += "<td style=\"color: red\">대기</td>";
+                } else {
+                  if (rep.RtnAdminEntpListData[e].VdYn == "Y") {
+                    html += "<td>완료</td>";
+                  } else {
+                    html += "<td>-</td>";
+                  }
+                }
+                        html += "<td>"+rep.RtnAdminEntpListData[e].LastLogin+"</td>";
+                html += "<td>";
+                if (rep.RtnAdminEntpListData[e].MemStatCd == "01") {
+                  html += "<a href=\"javascript:void(0);\" id=\"goLogin\" data-mem_id=\""+rep.RtnAdminEntpListData[e].EntpMemId+"\" data-entp_nm=\""+rep.RtnAdminEntpListData[e].EntpKoNm+"\">[Login]</a>";
+                } else {
+                  html += "-";
+                }
+                html += "</td>";
+                html += "</tr>";
+								$(".memberList").find("tbody").append(html);
+                    });
+
+							$(".paging").children().remove();
+              $(".paging").append(rep.RtnAdminEntpListData[0].Pagination);
+                    $("#tcnt").text("총" + rep.RtnAdminEntpListData[0].TotCnt + "건");              
+						}else{
+              $(".memberList").find("tbody").children().remove();
+              var html = "";
+              html += "<td colspan=\"10\">";
+              html += "<p class=\"noData\">가입된 기업회원이 없습니다</p>";
+              html += "</td>";
+              $(".memberList").find("tbody").append(html);
+							$(".paging").children().remove();
+                    $("#tcnt").text("총" + 0 + "명");
+              $("#page_no").val("1");
+						}
+					}
+				});				
+			}   
+
+      // 기업상세
+      $(document).off("click", "#entp_info").on("click", "#entp_info", function(e) {
+        var mem_no = $(this).data("mem_no");
+
+        /* parameter setting */
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        var gbn_cd = $("#gbn_cd").val();
+        var vd_yn = $("#vd_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var use_yn = $("#use_yn").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');;
+        var edy = $("#edy").val().replace(/\-/g,'');;
+        var keyword = $("#keyword").val();
+        
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');
+
+        var param = "entp_mem_no="+mem_no+"&pn="+page_no+"&size="+size+"&gbn_cd="+gbn_cd+"&vd_yn="+vd_yn+"&os_gbn="+os_gbn+"&use_yn="+use_yn+"&sdy="+sdy+"&edy="+edy+"&keyword="+keyword+"&login_sdy="+login_sdy+"&login_edy="+login_edy;
+        
+        //window.location.href="/admin/entp/info?"+param;
+        var popupWindow = window.open("/admin/entp/info?"+param);
+        if(popupWindow && !popupWindow.closed)
+            popupWindow.focus();
+    });  
+
+    // 엑셀 저장
+    $(document).off("click", "#down_excel").on("click", "#down_excel", function (e) {
+        $('body, html').animate({scrollTop: 0}, 1);
+        openPopup("pop_excel_download");
+    });
+
+    $(document).off("click", "#btn_excel_confirm").on("click", "#btn_excel_confirm", function (e) {
+        $(".loading").attr("style", "display:''");
+
+        var gbn_cd = $("#gbn_cd").val();
+		var keyword = $("#keyword").val();
+        var vd_yn = $("#vd_yn").val();
+        var use_yn = $("#use_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');  //$("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+        var edy = $("#edy").val().replace(/\-/g,''); //$("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+        if (sdy.length < 8) {
+          sdy = ""
+        }
+        if (edy.length < 8) {
+          edy = ""
+        }
+
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');
+        if (login_sdy.length < 8) {
+            login_sdy = ""
+        }
+        if (login_edy.length < 8) {
+            login_edy = ""
+        }
+
+        console.log("login_sdy : "+login_sdy);
+        console.log("login_edy : "+login_edy);
+        /*
+        console.log("sex : "+sex);
+        console.log("age : "+age);
+        console.log("vp_yn : "+vp_yn);
+        console.log("page_no : "+page_no);
+        console.log("size : "+size);
+        console.log("sdy : "+sdy);
+        console.log("edy : "+edy);
+        //return;
+        */
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/list/excel',
+            data : {
+                gbn_cd : gbn_cd,
+				vd_yn : vd_yn,
+				use_yn : use_yn,
+				os_gbn : os_gbn,
+				keyword : keyword,
+				size : size,
+				pn : page_no,
+                jf_mng_cd : jf_mng_cd,
+                login_sdy : login_sdy,
+                login_edy : login_edy,
+                sdy : sdy,
+                edy : edy
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+                $(".loading").attr("style", "display:none");
+                closePopup();
+            },
+            success : function(rep) {
+                if (rep.RtnAdminEntpListExcelData) {
+                    var downFile = rep.RtnAdminEntpListExcelData[0].DownloadPath;
+                    console.log("[AJAX(//admin/entp/list/excel)]: "+ downFile);
+
+                    window.location.replace(downFile);                    
+                    $(".loading").attr("style", "display:none");
+                    closePopup();
+                } else {
+                    $(".loading").attr("style", "display:none");
+                    console.log("[AJAX(//admin/entp/list/excel)]: Login");
+                    window.location.href = "/login";
+                }
+            },
+        });	        
+      });  
+
+    </script>
+
+{{end}}

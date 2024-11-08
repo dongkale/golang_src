@@ -1,0 +1,112 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+  <div class="formArea">
+    <a href="javascript:void(0);" class="btnBack">이전페이지로돌아가기</a>
+    <p class="findSec">아이디 찾기</p>
+    <p class="findText">직감 기업회원 가입 당시 입력한<br/>
+    정보를 입력하시면 아이디를 찾을 수 있습니다.</p>
+    <div class="findForm">
+      <p><input type="text" class="formInput" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" placeholder="담당자 이름"></p>
+      <p><input type="text" class="formInput" name="biz_reg_no" id="biz_reg_no" maxlength="15" placeholder="사업자 등록번호 ('-' 없이 입력)"></p>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <p class="btn"><a href="javascript:void(0);" class="idFind" id="btn_find_id">아이디 찾기</a></p>
+      <!-- 벨리데이션문구가 없는경우는 텍스트만 제거해주세요-->
+      <p class="validationMessage findId"></p>
+    </div>
+    <div class="viewBox">
+      <p class="text">입력하신 정보로 등록된 아이디 결과입니다.</br/>
+      (개인정보 보호를 위해 일부분은 *로 표시됩니다)</p>
+      <div class="boxInfo">
+        <p class="id"></p>
+        <p class="date"></p>
+      </div>
+      <!-- 버튼 class="active" 추가시 버튼활성화 -->
+      <p class="btn"><a href="/common/login">로그인</a></p>
+    </div>
+    <div class="customer">
+      <p class="text">
+        <span>비밀번호를 찾으시나요?</span>
+        <a href="/common/find/pwd">비밀번호 찾기</a>
+      </p>
+      <p class="info">* 아이디, 비밀번호 찾기 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a> 를 이용해주세요.</p>
+    </div>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <p class="copy"><img src="/static/images/copyright.jpg" alt="ⓒ QRATE.CO. All rights reserved."></p>
+  </div>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+<script type='text/javascript'>
+
+  // 아이디 찾기
+  $(document).off("click", "#btn_find_id").on("click", "#btn_find_id", function(){
+      var rtn = "";
+      var pp_chrg_nm = $("#pp_chrg_nm").val();
+      var biz_reg_no = $("#biz_reg_no").val();
+
+      if($("#pp_chrg_nm").val().length == 0){
+        $(".validationMessage.findId").text("담당자 이름을 입력해주세요.");
+        return;
+      }
+
+      if($("#biz_reg_no").val().length == 0){
+        $(".validationMessage.findId").text("사업자 등록번호를 입력해주세요.");
+        return;
+      }
+
+      $.ajax({
+        cache : false,
+        url : '/common/find/id',
+        data : {
+          pp_chrg_nm : pp_chrg_nm,
+          biz_reg_no : biz_reg_no,
+        },
+        type : 'POST',
+        async : false,
+        dataType : "json",
+        success : function(rep) {
+          var rtnCd = rep.RtnCd;
+          var rtnMsg = rep.RtnMsg;
+          var rtnData = rep.RtnData;
+
+          if (rtnCd == 1){
+            $(".validationMessage.findid").text("");
+            $(".viewBox").show();
+            $(".boxInfo .id").text(rtnData.ResultId);
+            $(".boxInfo .date").text("가입일 : "+rtnData.ResultDy);
+          } else {
+            $(".viewBox").hide();
+            $(".validationMessage.findId").text("일치하는 정보가 없습니다.");
+            $(".boxInfo .id").text("");
+            $(".boxInfo .date").text("");
+            $("#pp_chrg_nm").val("");
+            $("#biz_reg_no").val("");
+            rtn = false;
+          }
+        },
+        error : function(e) {
+          console.log("error:"+JSON.stringify(e));
+          window.location.replace("/");
+          rtn = false;
+        },
+      });
+      return rtn;
+  });
+
+
+  $(document).off("click", "#pp_chrg_nm").on("click", "#pp_chrg_nm", function(){
+    $(".validationMessage.findId").text("");
+  });
+  
+  $(document).off("click", "#biz_reg_no").on("click", "#biz_reg_no", function(){
+    $(".validationMessage.findId").text("");
+  });  
+
+</script>
+{{end}}

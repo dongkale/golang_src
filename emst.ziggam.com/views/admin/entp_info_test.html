@@ -1,0 +1,789 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+  <!-- 컨텐츠 영역 -->
+  <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top_write.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>기업회원 관리</h2>      
+        <input type="hidden" id="pPageNo" value="{{.pPageNo}}">
+        <input type="hidden" id="pSize" value="{{.pSize}}">
+        <input type="hidden" id="pGbnCd" value="{{.pGbnCd}}">
+        <input type="hidden" id="pVdYn" value="{{.pVdYn}}">
+        <input type="hidden" id="pSyyyy" value="{{.pSyyyy}}">
+        <input type="hidden" id="pSmm" value="{{.pSmm}}">
+        <input type="hidden" id="pSdd" value="{{.pSdd}}">
+        <input type="hidden" id="pEyyyy" value="{{.pEyyyy}}">
+        <input type="hidden" id="pEmm" value="{{.pEmm}}">
+        <input type="hidden" id="pEdd" value="{{.pEdd}}">
+        <input type="hidden" id="pKeyword" value="{{.pKeyword}}">
+        <input type="hidden" id="pEntpMemNo" value="{{.EntpMemNo}}">
+        <input type="hidden" id="vd_no" value="1">
+        
+        <div class="businessInfo">
+          <div class="businessImage">
+            <span class="img"><img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/entp_no_img.png'" alt="" class="entp_logo_loaded"></span>
+          </div>
+          <div class="businessForm">
+            <dl class="company">
+              <dt>{{.EntpKoNm}}</dt>
+              <dd>사업자 등록번호 {{.BizRegNo}}</dd>
+            </dl>
+            <div class="row">
+              <dl class="col3">
+                <dt>대표자명 *</dt>
+                <dd><input type="text" name="rep_nm" id="rep_nm" maxlength="20" value="{{.RepNm}}" placeholder="이름" disabled="disabled"></dd>
+                <dd class="validate rep_nm_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>설립일 *</dt>
+                <dd><input type="text" name="est_dy" id="est_dy" maxlength="8" value="{{.EstDy}}" disabled="disabled" numberOnly placeholder="YYYYMMDD"></dd>
+                <dd class="validate est_dy_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>임직원 수 *</dt>
+                <dd><input type="text" name="emp_cnt" id="emp_cnt" maxlength="5" value="{{.EmpCnt}}" disabled="disabled" numberOnly placeholder="명"></dd>
+                <dd class="validate emp_cnt_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>업종/업태 *</dt>
+                <dd class="mb5"><input type="text" name="biz_tpy" id="biz_tpy" maxlength="50" value="{{.BizTpy}}" disabled="disabled" placeholder="업종"></dd>
+                <dd><input type="text" name="biz_cond" id="biz_cond" maxlength="50" value="{{.BizCond}}" disabled="disabled" placeholder="업태"></dd>
+                <dd class="validate message_biz_tpy biz_cond_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>담당자 정보 *</dt>
+                <dd class="mb5"><input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" value="{{.PpChrgNm}}" disabled="disabled" placeholder="이름"></dd>
+                <dd><input type="text" name="pp_chrg_tel_no" id="pp_chrg_tel_no" maxlength="12" value="{{.PpChrgTelNo}}" disabled="disabled" placeholder="휴대폰/내선 번호"></dd>
+                <dd class="validate pp_chrg_nm_message pp_chrg_tel_no_message "></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>회사주소 *</dt>
+                <input type="hidden" name="zip" id="zip" value="{{.Zip}}" readonly>
+                <dd class="address mb5"><input type="text" name="addr" id="addr" value="{{.Addr}}" disabled="disabled"></dd>
+                <dd class="mb5"><input type="text" name="dtl_addr" id="dtl_addr" value="{{.DtlAddr}}" disabled="disabled"></dd>
+                <dd><input type="text" name="ref_addr" id="ref_addr" value="{{.RefAddr}}" disabled="disabled"></dd>
+                <dd class="validate addr_message dtl_addr_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>기업태그 *</dt>
+                <dd><input type="text" name="entp_htag1" id="entp_htag1" value="{{.EntpHtag1}}" maxlength="10" disabled="disabled" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="validate entp_htag1_message"></dd>
+                <dd class="count">(<span><em id="areaByteTag1">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+                <dd><input type="text" name="entp_htag2" id="entp_htag2" value="{{.EntpHtag2}}" maxlength="10" disabled="disabled" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag2">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+                <dd><input type="text" name="entp_htag3" id="entp_htag3" value="{{.EntpHtag3}}" maxlength="10" disabled="disabled" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag3">10</em>/10</span>)</dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>기업 슬로건 *</dt>
+                <dd><input type="text" name="entp_intr" id="entp_intr" maxlength="30"value="{{.EntpIntr}}" disabled="disabled" placeholder="회사를 소개할 수 있는 문구를 작성해주세요."></dd>
+                <dd class="validate entp_intr_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>홈페이지</dt>
+                <dd><input type="text" name="home_pg" id="home_pg" maxlength="50" value="{{.HomePg}}" disabled="disabled" placeholder="회사 공식 홈페이지 URL을 입력해주세요."></dd>
+              </dl>
+            </div>
+          </div>
+          <div class="businessVideo">
+            <div class="topArea">
+              <p class="subTit">기업 홍보 영상  {{if eq "Y" .VideoYn}}<span>({{.VideoCnt}}/4)</span>
+              <a href="javascript:void(0);" id="btn_play_all" class="btnAllPlay"><span>전체 재생</span></a>{{end}}
+              </p>
+            </div>
+            <form id="uptForm" name="uptForm" method="post" enctype="multipart/form-data">
+            {{if eq "Y" .VideoYn}}
+            <div class="list">
+              <ul>
+                {{if .VdFilePath1}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath1}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle1}}
+                  <p class="text">{{.vdTitle1}}</p>
+                  {{end}}
+                  {{if eq 1 .VideoCnt}}
+                  <p class="texts" style="text-align: center"><button type="button" style="cursor: pointer" id="video_delete" data-vd_no="1">삭제</button></p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath2}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath2}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle2}}
+                  <p class="text">{{.vdTitle2}}</p>
+                  {{end}}
+                  {{if eq 2 .VideoCnt}}
+                  <p class="texts" style="text-align: center"><button type="button" style="cursor: pointer" id="video_delete" data-vd_no="2">삭제</button></p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath3}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath3}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle3}}
+                  <p class="text">{{.vdTitle3}}</p>
+                  {{end}}
+                  {{if eq 3 .VideoCnt}}
+                  <p class="texts" style="text-align: center"><button type="button" style="cursor: pointer" id="video_delete" data-vd_no="3">삭제</button></p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath4}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath4}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle4}}
+                  <p class="text">{{.vdTitle4}}</p>
+                  {{end}}
+                  {{if eq 4 .VideoCnt}}
+                  <p class="texts" style="text-align: center"><button type="button" style="cursor: pointer" id="video_delete" data-vd_no="4">삭제</button></p>
+                  {{end}}
+                </li>
+                {{end}}
+
+                {{if eq 1 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text2" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload2" data-vd_no="2">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert2">[등록하기]</p>
+                  </span>
+                </li>
+                {{else if eq 2 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text3" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload3" data-vd_no="3">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert3">[등록하기]</p>
+                  </span>
+                </li>
+                {{else if eq 3 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text4" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload4" data-vd_no="4">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert4">[등록하기]</p>
+                  </span>
+                </li>
+                {{end}}
+
+              </ul>
+            </div>
+            {{else}}
+            <div class="list">
+              <p class="noData">등록된 기업 홍보 영상이 없습니다.<br/>
+                직감 APP을 통해 기업을 홍보할 수 있는 영상을 촬영해주세요.
+                <br>
+                <a href="javascript:void(0);" id="video_upload"><sapn style="font-size: 16px; color: blue">[+]등록하기</sapn></a>
+              </p>
+              <p class="text" id="vd_text" style="text-align: center">영상을 선택해주세요.</p>
+              <br>
+              <p class="btn"><a href="javascript:void(0);" id="btn_insert" style="display: none">등록하기</a></p>
+              <br>
+              </div>
+            {{end}}
+            <!--
+            <p class="textGuide">* PC 관리자 페이지를 통한 기업 홍보 영상의 수정 및 등록은 불가능합니다.<br/>
+            직감 APP의 기업회원 로그인>설정>기업 홍보영상 관리를 이용해주세요.</p>
+            <p class="btn"><a href="javascript:void(0);" id="btn_update">기업 정보 저장</a></p>
+            -->
+            <br>
+            <p class="btn"><a href="javascript:void(0);" id="btn_back">목록</a></p>
+            <input type="file" name="entp_video" id="entp_video" accept="video/*" style="display:none">
+          </div>
+        </form> 
+      </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 영상팝업 -->
+    <div class="popupWrap" id="video_pop" data-tot_cnt="{{.VideoCnt}}">
+      <div class="videoPopup">
+        <div class="popContent">
+          <div class="movie pop">
+          {{if .VdFilePath1}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_1" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath1}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath2}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_2" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath2}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath3}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_3" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath3}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath4}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_4" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath4}}" type="video/mp4">
+            </video>
+          {{end}}
+          </div>
+          <p class="page">( <em id="entp_now_page"></em> / <em id="tot_page">4</em> )</p>
+        </div>
+        <a href="javascript:void(0);" class="btnPrev entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_prev.png" title="이전 영상"></a>
+        <a href="javascript:void(0);" class="btnNext entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_next.png" title="다음 영상"></a>
+        <a href="javascript:void(0);" class="btnClose" id="video_close"><img src="/static/images/btn_video_close.png" widht="30px" height="30px" title="닫기"></a>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 영상팝업 -->    
+
+    <!-- 처음/마지막 영상 알림 -->
+    <div class="popupWrap sepop" id="start_end_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_message"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="videoClosePopup()">확인</a>
+        </div>
+      </div>
+    </div>
+    <!-- // 처음/마지막 영상 알림 -->    
+
+    <!-- 완료알림팝업 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_text">정상적으로 수정되었습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 완료알림팝업 -->    
+  
+    <!-- 로그인 팝업 -->
+    <div class="popupWrap confirm" id="entp_delete_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">해당 영상을 삭제하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 로그인 팝업 -->  
+
+    <script type="text/javascript">
+
+      // 영상 삭제
+      $(document).off("click", "#video_delete").on("click", "#video_delete", function(e){
+        var vd_no = $(this).data("vd_no");
+        $("#vd_no").val(vd_no);
+
+        openPopup("entp_delete_pop");
+      });
+
+      // 삭제 처리
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var vd_no = $("#vd_no").val();
+        var gbn_cd = "U";
+
+        // console.log("entp_mem_no : "+entp_mem_no);
+        // console.log("vd_no : "+vd_no);
+        // console.log("gbn_cd : "+gbn_cd);
+        deleteProc(entp_mem_no, vd_no, gbn_cd);
+      });
+
+      var deleteProc = function(entp_mem_no, vd_no, gbn_cd){
+      $.ajax({
+          cache : false,
+          url : '/admin/entp/video/delete',
+          data : {
+            entp_mem_no : entp_mem_no,
+            vd_no : vd_no,
+            gbn_cd : gbn_cd,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+              window.location.reload();
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+          },
+        });      
+      }      
+
+      $(document).off("click", "#video_upload").on("click", "#video_upload", function(e){
+        e.preventDefault();
+        $("#vd_text").text("영상을 선택해주세요.");
+        $("#btn_insert").css("display","none");
+        $("#entp_video").trigger('click');
+      });
+
+      $(document).off("click", "#video_upload2").on("click", "#video_upload2", function(e){
+        e.preventDefault();
+        $("#vd_no").val("2");
+        $("#vd_text2").text("영상을 선택해주세요.");
+        $("#btn_insert2").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      $(document).off("click", "#video_upload3").on("click", "#video_upload3", function(e){
+        e.preventDefault();
+        $("#vd_no").val("3");
+        $("#vd_text3").text("영상을 선택해주세요.");
+        $("#btn_insert3").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      $(document).off("click", "#video_upload4").on("click", "#video_upload4", function(e){
+        e.preventDefault();
+        $("#vd_no").val("4");
+        $("#vd_text4").text("영상을 선택해주세요.");
+        $("#btn_insert4").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      // 영상 체크
+      $(document).off("change", "#entp_video").on("change", "#entp_video",function(e) {
+        readURL(this);
+      });
+
+      var readURL = function(input) {
+        var ext = $('#entp_video').val().split('.').pop().toLowerCase();
+        console.log("ext : "+ext);
+        var vd_no = $("#vd_no").val();
+
+        if($.inArray(ext, ['mp4','mov','avi']) == -1) {
+          $("#entp_video").val("");
+          return false;
+        }
+
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var fileValue = $("#entp_video").val().split("\\");
+            var fileName = fileValue[fileValue.length-1]; // 파일명
+            var fileExt = $("#entp_video").val().split('.').pop().toLowerCase(); //파일확장자
+            if (vd_no == "2") {
+              $("#vd_text2").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#btn_insert2").css("display","");
+            } else if (vd_no == "3") {
+              $("#vd_text3").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#btn_insert3").css("display","");
+            } else if (vd_no == "4") {
+              $("#vd_text4").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#btn_insert4").css("display","");
+            } else {
+              $("#vd_text").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#btn_insert").css("display","");
+            }
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }	
+
+      // 영상등록하기
+      $(document).off("click", "#btn_insert").on("click", "#btn_insert", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "I";
+
+        //console.log("entp_mem_no : "+entp_mem_no);    
+        //console.log("entp_video : "+entp_video);    
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert/test',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });  
+
+      // 영상2등록하기
+      $(document).off("click", "#btn_insert2").on("click", "#btn_insert2", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert/test',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });        
+
+      // 영상3등록하기
+      $(document).off("click", "#btn_insert3").on("click", "#btn_insert3", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert/test',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });  
+
+      // 영상4등록하기
+      $(document).off("click", "#btn_insert4").on("click", "#btn_insert4", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert/test',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        //$('.popupWrap.alert').hide();
+        window.location.reload();
+      });  
+
+      // 다음 영상 재생
+      $(document).off("click", ".btnNext.entp").on("click", ".btnNext.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (tot_cnt == curr) {
+          //console.log("마지막 영상");
+          $("#alert_message").html("마지막 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (tot_cnt > curr){
+          //console.log("마지막 영상아님 : "+ (curr+1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr+1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr+1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr+1)).play();
+        }
+      });
+
+      // 이전 영상 재생
+      $(document).off("click", ".btnPrev.entp").on("click", ".btnPrev.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (curr == 1) {
+          //console.log("처음 영상");
+          $("#alert_message").html("처음 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (curr > 1){
+          //console.log("처음 영상아님 : "+ (curr-1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr-1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr-1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr-1)).play();
+        }
+      });    
+
+      // 영상 확인 닫기 팝업
+      function videoClosePopup() {
+        $('#start_end_pop').hide();
+        return false;
+      }
+
+      // 전체 재생
+      $(document).off("click", "#btn_play_all").on("click", "#btn_play_all", function(e) {
+        openPopup("video_pop");
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        //console.log("tot_cnt : "+tot_cnt);
+        $("#entp_now_page").text(1);
+        $("#tot_page").text(tot_cnt);
+        loopVideo(1, tot_cnt);
+      });
+      
+      var loopVideo = function(i, tot_cnt) {
+        if (tot_cnt >= i) {
+          $("#video_"+i).attr("style", "display:''");
+          document.getElementById("video_"+i).play();
+          document.getElementById("video_"+i).onended = function() {
+            $("#video_"+i).attr("style", "display:none");
+            var j = i + 1;
+            loopVideo(j, tot_cnt);
+            if (j == tot_cnt) {
+              $("#entp_now_page").text(tot_cnt);
+            } else {
+              if (j < tot_cnt) {
+                $("#entp_now_page").text(j);
+              } else {
+                $("#entp_now_page").text(1);
+              }
+            }
+          };
+        } else {
+          $("#video_1").attr("style", "display:''");
+          $("#entp_now_page").text(1);
+          //loopVideo(1, tot_cnt);
+          return;
+        }
+      }
+
+      // 영상 팝업창 닫기
+      $(document).off("click", "#video_close").on("click", "#video_close", function(e) {
+        window.location.reload();
+        /*
+        closePopup();
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        var i;
+        for (i = 1; i <= tot_cnt; i++) {
+          document.getElementById("video_"+i).load();
+          document.getElementById("video_"+i).pause();
+        }
+        */
+      });      
+
+      // Form Validation Check
+      $(document).ready(function() {
+
+          $("#entp_htag1").keyup();
+          $("#entp_htag2").keyup();
+          $("#entp_htag3").keyup();
+
+          var img_chk = "{{.LogoPtoPath}}";
+          if (!img_chk) {
+            $("#img_yn").val("N");
+          } else {
+            $("#img_yn").val("M");
+          }
+
+     });
+
+      // 목록으로
+      $(document).off("click", "#btn_back").on("click", "#btn_back", function(e) {
+
+        /* parameter setting */
+        var page_no = $("#pPageNo").val();
+        var size = $("#pSize").val();
+        var gbn_cd = $("#pGbnCd").val();
+        var vd_yn = $("#pVdYn").val();
+        var s_yyyy = $("#pSyyyy").val();
+        var s_mm = $("#pSmm").val();
+        var s_dd = $("#pSdd").val();
+        var e_yyyy = $("#pEyyyy").val();
+        var e_mm = $("#pEmm").val();
+        var e_dd = $("#pEdd").val();
+        var keyword = $("#pKeyword").val();
+
+        var param = "p_page_no="+page_no+"&p_size="+size+"&p_gbn_cd="+gbn_cd+"&p_vd_yn="+vd_yn+"&p_s_yyyy="+s_yyyy+"&p_s_mm="+s_mm+"&p_s_dd="+s_dd+"&p_e_yyyy="+e_yyyy+"&p_e_mm="+e_mm+"&p_e_dd="+e_dd+"&p_keyword="+keyword;
+        window.location.href="/admin/entp/list?"+param;
+      });      
+
+    </script>
+{{end}}

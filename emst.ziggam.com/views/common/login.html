@@ -1,0 +1,170 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 로그인 전체 레이아웃 -->
+<div class="pageLogin">
+<form id="loginForm" name="loginForm" method="post" onsubmit="return false">
+  <input type="hidden" id="save_id" value="{{.SaveId}}">
+  <div class="formArea">
+    <h1><img src="/static/images/logo_ems_main.png" alt="직감"></h1>
+    <div class="form">
+      <p class="id"><input type="text" name="mem_id" id="mem_id" style="text-transform: lowercase" maxlength="16" placeholder="아이디"></p>
+      <p class="pw"><input type="password" name="pwd" id="pwd" maxlength="16" placeholder="비밀번호"></p>
+      <p class="idCheck"><input type="checkbox" style="visibility: hidden" class="custom idCheck" name="idCheck" id="idCheck" {{if eq "Y" .SaveId}}checked{{end}}><label for="idCheck">아이디 저장</label></p>
+      <!-- 벨리데이션문구가 없는경우는 텍스트만 제거해주세요-->
+      <p class="validationMessage login"></p>
+      <p class="loginBtn"><a href="javascript:void(0);" id="btn_login">로그인</a></p>
+        <!--
+      <p class="moreBtn">
+          <a href="/entp/write/step1">회원가입</a>
+          <a href="/common/find/id">아이디 찾기</a>
+          <a href="/common/find/pwd">비밀번호 찾기</a>
+      </p>
+      -->
+    </div>
+  </div>
+  <span class="loginBoxBg"></span>
+  <div class="footer">
+    <!--<p><a href="mailto:support@ziggam.com">고객센터</a></p>-->
+    <p class="copy">ⓒ Qrate Corp. All rights reserved.</p>
+  </div>
+</form>
+</div>
+<!-- // 로그인 전체 레이아웃 -->
+
+<!-- 팝업 -->
+<div class="popupWrap" id="entp_control_popup">
+  <div class="infoPopup">
+    <p class="popTit">검증이 안된 기업은 로그인 하실 수 없습니다.</p>
+    <p class="joinImg"><img src="/static/images/ico_joinComplete.jpg" alt="인증완료"></p>
+    <div class="addText">
+      <p>로그인 해제를 원하실 경우<br>담당자 연락처 및 사업자등록증 사본과 함께</br>support@ziggam.com 메일로 문의 주시기 바랍니다.<br>확인 후 빠른 시일내로 로그인 해제를 도와드리겠습니다.</p>
+    </div>
+    <p class="btn st02"><a href="javascript:void(0);" id="btn_confirm">확인</a></p>
+  </div>
+  <span class="cover"></span>
+</div>
+<!-- // 기업회원인증완료팝업 -->
+
+<script type='text/javascript'>
+
+    // 팝업 닫기
+    $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+      $('#entp_control_popup').hide();
+    });  
+
+    $(document).off("click", "#mem_id").on("click", "#mem_id", function(){
+      $(".validationMessage.login").text("");
+    });
+    
+    $(document).off("click", "#pwd").on("click", "#pwd", function(){
+      $(".validationMessage.login").text("");
+    });  
+
+    $(document).off("keydown", "#mem_id").on("keydown", "#mem_id", function(e) {
+      if (event.keyCode == 13) {
+        login();
+      }
+    });
+    $(document).off("keydown", "#pwd").on("keydown", "#pwd", function(e) {
+      if (event.keyCode == 13) {
+        login();
+      }
+    });    
+
+	  // 로그인
+    $(document).off("click", "#btn_login").on("click", "#btn_login", function(){
+      login();
+    });
+  
+  var login = function() {
+    var mem_id = $("#mem_id").val();
+    var pwd = $("#pwd").val();
+    var rtn = "";
+
+    if($("#mem_id").val().length < 4){
+      $(".validationMessage.login").text("아이디를 4자이상 입력해주세요.");
+      return;
+    }
+
+    if($("#pwd").val().length < 5){
+      $(".validationMessage.login").text("비밀번호를 6자이상 입력해주세요.");
+      return;
+    }
+
+    if($('input:checkbox[id="idCheck"]').is(":checked") == false){
+      $("#save_id").val("N");
+    } else {
+      $("#save_id").val("Y");
+    }
+
+    var save_id = $("#save_id").val();
+    $(".loading").attr("style", "display:''");
+
+    $.ajax({
+      cache : false,
+      url : '/common/login',
+      data : {
+        mem_id : mem_id,
+        pwd : pwd,
+        save_id : save_id,
+      },
+      type : 'POST',
+      async : false,
+      dataType : "json",
+      success : function(rep) {
+        var rtnCd = rep.RtnCd;
+        var rtnMsg = rep.RtnMsg;
+        var rtnData = rep.RtnData;
+        var rtnUrl = "{{.RtnUrl}}";
+
+        if (rtnCd == 1){
+          if (rtnUrl == ""){
+            window.location.replace("/");
+            rtn = false;
+          }else{
+            window.location.replace(rtnUrl);
+            rtn = false;
+          }
+
+        } else if(rtnCd == 100) {
+          console.log("신규 관리자로 이동");
+          alert("신규 기업관리자로 이동합니다.");
+          window.location.href="https://biz.ziggam.com";
+        /*
+        } else if(rtnCd == 5) {
+          console.log("이메일 인증대기 상태");
+          window.location.href="/common/standby/email?mem_no="+rtnData.MemNo;
+        } else if(rtnCd == 6) {
+          console.log("승인 대기 상태");  
+          window.location.href="/common/standby/auth";
+        } else if(rtnCd == 8) {
+          console.log("미검증 기업 상태");  
+          $(".validationMessage.login").text("검증되지 않은 기업입니다.");
+          openPopup("entp_control_popup");
+          $("#pwd").val("");
+          $(".loading").attr("style", "display:none");
+          //window.location.href="/common/standby/auth";
+        */
+        } else {
+          //console.log("login fail! : Password do not matched");		
+          //$("#btn_login").prop("disabled", false);
+          $(".validationMessage.login").text("아이디 또는 비밀번호가 일치하지 않습니다.");
+          $("#pwd").val("");
+          $(".loading").attr("style", "display:none");
+          rtn = false;
+        }
+      },
+      error : function(e) {
+        console.log("error:"+JSON.stringify(e));
+        $(".loading").attr("style", "display:none");
+        window.location.replace("/");
+        rtn = false;
+      },
+    });
+    return rtn;
+  }
+
+</script>
+{{end}}    

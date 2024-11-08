@@ -1,0 +1,66 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,700" rel="stylesheet">
+	<title>[직감]기업회원 인증 확인</title>
+	<style>
+		body{font-family: 'Noto Sans KR', sans-serif; color:#808285;}
+    </style>
+    <script>
+        function winClose() {
+            window.close();
+        }
+    </script>
+</head>
+<body>
+	<div style="width:100%;padding:30px 0;margin:0;color:#333;">
+	<table width="80%" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="margin:auto;"  summary="기업회원 인증 확인">
+		<caption style="display:none;">기업회원 인증 확인</caption>
+		<thead>
+			<tr>
+				<th style="padding-top:20px; padding-bottom: 10px; border-bottom:4px solid #00EFD5">
+					<!-- //직감로고 -->
+					<img src="{{.ImgServer}}/mail/ziggam_logo.png" width="15%">
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>					
+                    <div style="width:86%;margin:auto;padding:40px 15px 10px 15px;font-size:20px; text-align:center;">
+                        <strong><span style="color:#00CAED;">{{.EntpNm}}</span></strong><br>
+                        {{ if eq 1 .RtnCd }}
+                        인증이 완료 되었습니다.<br><br>
+                        {{ else }}
+                        인증에 실패 하였습니다.<br><br>
+                        {{ end }}
+					</div>
+				</td>
+            </tr>
+			<tr>
+				<td>
+                    <div style="width:80%;margin:auto;padding:10px 15px 30px 15px;font-size:14px; text-align: center;line-height: 1.2em;">
+                        <p>이메일 인증이 완료되면 내부 인증을 거친 후 기업회원 가입이 완료됩니다.</p>
+                        <p>이메일 인증이 실패한 경우에는 직감앱에서 인증메일 재전송하여 인증하시기 바랍니다.</p>
+					</div>					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table width="200px" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="margin:auto;padding:0 30px 30px 30px;">
+		<tbody>
+			<tr>
+				<td height="44" bgcolor="#00CAED" valign="middle" align="center" style="border-radius: 30px;">
+                    <!--<a href="#" style="color:#fff;font-size:15px;text-decoration: none;">인증완료</a>-->
+                    {{ if eq 1 .RtnCd }}
+                    <a href="javascript:winClose();" style="color:#fff;font-size:15px;text-decoration: none;">인증완료</a>
+                    {{ else }}
+                    <a href="javascript:winClose();" style="color:#fff;font-size:15px;text-decoration: none;">인증실패</a>
+                    {{ end }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

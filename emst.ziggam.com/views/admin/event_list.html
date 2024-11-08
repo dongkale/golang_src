@@ -1,0 +1,227 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+        <!-- top start -->
+        {{template "include/top.html" .}}
+        <!-- top end -->
+        <!-- 페이지 영역 -->
+        <div class="content">
+            <h2>프로필영상(이벤트) 관리</h2>
+            <div class="recruitList">
+                <input type="hidden" id="page_no" value="{{.PageNo}}">
+                <br>
+                <div class="listBox">
+                    <div class="topSec">
+                        <div class="posL">
+                            <select name="knd_cd" id="knd_cd" class="st04" style="font-size: 13px">
+                                <option value="A00">전체 프로필 영상</option>
+                                <option value="E01">[EVENT] 네 펜을 팔아봐</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sectionTop">
+                        <div class="posL">
+                            <p class="total">총 <span id="tcnt">{{.TotCnt}}</span>건</p>
+                        </div>
+                        <div class="posR">
+                            <select name="size" id="size" class="sort">
+                                <option value="10">10줄씩</option>
+                                <option value="30">30줄씩</option>
+                                <option value="50">50줄씩</option>
+                                <option value="100">100줄씩</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="memberList">
+                        <table>
+                            <colgroup>
+                                <col width="120px"/>
+                                <col width="140px"/>
+                                <col width="140px"/>
+                                <col width="80px"/>
+                                <col/>
+                                <col width="100px"/>
+                                <col width="50px"/>
+                                <col width="60px"/>
+                            </colgroup>
+                            <thead>
+                            <tr style="height:50px">
+                                <th>최종등록일시</th>
+                                <th>아이디</th>
+                                <th>이름</th>
+                                <th>성별</th>
+                                <th>이메일</th>
+                                <th>생년월일</th>
+                                <th>나이</th>
+                                <th>영상수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{if .AdminEventList}}
+                                {{range .AdminEventList}}
+                                    <tr style="height:50px">
+                                        <td>{{.RegDt}}</td>
+                                        <td>{{.MemId}}</td>
+                                        <td>{{.Nm}}</td>
+                                        <td>{{if eq "M" .Sex}}남자{{else}}여자{{end}}</td>
+                                        <td style="text-align: left">&nbsp;&nbsp;{{.Email}}</td>
+                                        <td>{{.BrthYmd}}</td>
+                                        <td>{{.Age}}세</td>
+                                        <td><a href="javascript:void(0);" id="vd_pop"
+                                               data-mem_no="{{.PpMemNo}}">{{.VdCntString}}</a></td>
+                                    </tr>
+                                {{end}}
+                            {{else}}
+                                <tr>
+                                    <td colspan="8">
+                                        <p class="noData">이벤트 내역이 없습니다</p>
+                                    </td>
+                                </tr>
+                            {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="paging">
+                    {{str2html .Pagination}}
+                </div>
+            </div>
+        </div>
+        <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+    </div>
+
+    <!-- 로그인 팝업 -->
+    <div class="popupWrap confirm" id="entp_common_pop">
+        <div class="popup">
+            <div class="popContent">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="popBtn">
+                <input type="hidden" id="pop_mem_id">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+    <!-- 로그인 팝업 -->
+
+    <script type="text/javascript">
+
+        // 영상 확인 팝업
+        $(document).off("click", "#vd_pop").on("click", "#vd_pop", function (e) {
+            var mem_no = $(this).data("mem_no");
+            var knd_cd = $("#knd_cd").val();
+
+            var windowW = 400;  // 창의 가로 길이
+            var windowH = 800;  // 창의 세로 길이
+            var left = Math.ceil((window.screen.width - windowW) / 2);
+            var top = Math.ceil((window.screen.height - windowH) / 2);
+
+            window.open("/admin/event/video?pp_mem_no=" + mem_no + "&knd_cd=" + knd_cd + "&vd_sn=", "vd_popup", "width=" + windowW + ", height=" + windowH + ", left=" + left + ", top=" + top + " ,resizable=0");
+        });
+
+        // 페이징처리
+        $(document).off("click", ".btnPrev.goPage").on("click", ".btnPrev.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+        $(document).off("click", ".num.goPage").on("click", ".num.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+        $(document).off("click", ".btnNext.goPage").on("click", ".btnNext.goPage", function (e) {
+            var pn = $(this).data("page");
+            paging(pn);
+        });
+
+        var paging = function (pageno) {
+            $("#page_no").val(pageno);
+            ajaxEventList();
+        }
+
+        // 이벤트 선택
+        $(document).off("change", "#knd_cd").on("change", "#knd_cd", function (e) {
+            $("#page_no").val(1);
+            ajaxEventList();
+        });
+
+        // 리스트 수 선택
+        $(document).off("change", "#size").on("change", "#size", function (e) {
+            $("#page_no").val(1);
+            ajaxEventList();
+        });
+
+        // 리스트 페이지 AJAX
+        var ajaxEventList = function (v) {
+            var knd_cd = $("#knd_cd").val();
+            var page_no = $("#page_no").val();
+            var size = $("#size").val();
+
+            /*
+            console.log("knd_cd : "+knd_cd);
+            console.log("page_no : "+page_no);
+            console.log("size : "+size);
+            //return;
+            */
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/event/list",
+                data: {
+                    knd_cd: knd_cd,
+                    size: size,
+                    pn: page_no,
+                },
+                dataType: "json",
+                error: function () {
+                },
+                success: function (rep) {
+                    if (rep.RtnAdminEventListData.length > 0) {
+                        $(".memberList").find("tbody").children().remove();
+                        $.each(rep.RtnAdminEventListData, function (e) {
+                            var html = "";
+
+                            html += "<tr style=\"height:50px\">";
+                            html += "<td>" + rep.RtnAdminEventListData[e].RegDt + "</td>";
+                            html += "<td>" + rep.RtnAdminEventListData[e].MemId + "</td>";
+                            html += "<td>" + rep.RtnAdminEventListData[e].Nm + "</td>";
+                            if (rep.RtnAdminEventListData[e].Sex == "M") {
+                                html += "<td>남자</td>";
+                            } else {
+                                html += "<td>여자</td>";
+                            }
+                            html += "<td style=\"text-align: left\">&nbsp;&nbsp;" + rep.RtnAdminEventListData[e].Email + "</td>";
+                            html += "<td>" + rep.RtnAdminEventListData[e].BrthYmd + "</td>";
+                            html += "<td>" + rep.RtnAdminEventListData[e].Age + "세</td>";
+                            html += "<td><a href=\"javascript:void(0);\" id=\"vd_pop\" data-mem_no=" + rep.RtnAdminEventListData[e].PpMemNo + ">" + rep.RtnAdminEventListData[e].VdCntString + "</a></td>";
+                            html += "</tr>";
+                            $(".memberList").find("tbody").append(html);
+                        })
+                        $(".paging").children().remove();
+                        $(".paging").append(rep.RtnAdminEventListData[0].Pagination);
+                        $("#tcnt").text(rep.RtnAdminEventListData[0].TotCnt);
+
+                    } else {
+                        $(".memberList").find("tbody").children().remove();
+                        var html = "";
+                        html += "<td colspan=\"8\">";
+                        html += "<p class=\"noData\">이벤트 내역이 없습니다</p>";
+                        html += "</td>";
+                        $(".memberList").find("tbody").append(html);
+                        $(".paging").children().remove();
+                        $("#tcnt").text(0);
+                        $("#page_no").val("1");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+{{end}}

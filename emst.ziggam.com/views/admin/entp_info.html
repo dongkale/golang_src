@@ -1,0 +1,2258 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+  <!-- 컨텐츠 영역 -->
+  <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top_write.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>기업회원 관리{{if eq "98" .MemStatCd}} - <span style="color:blue">미검증기업</span>{{else if eq "99" .MemStatCd}} - <span style="color:red">탈퇴기업</span>{{end}}</h2>
+	  <form id="uptForm" name="uptForm" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="pPageNo" value="{{.pPageNo}}">
+        <input type="hidden" id="pSize" value="{{.pSize}}">
+        <input type="hidden" id="pGbnCd" value="{{.pGbnCd}}">
+        <input type="hidden" id="pVdYn" value="{{.pVdYn}}">
+        <input type="hidden" id="pUseYn" value="{{.pUseYn}}">
+        <input type="hidden" id="pOsGbn" value="{{.pOsGbn}}">
+        <input type="hidden" id="pSdy" value="{{.pSdy}}">
+        <input type="hidden" id="pEdy" value="{{.pEdy}}">
+        <input type="hidden" id="pKeyword" value="{{.pKeyword}}">
+        <input type="hidden" id="pEntpMemNo" value="{{.EntpMemNo}}">
+        <input type="hidden" id="vd_no" value="1">
+        <input type="hidden" id="stat_cd">
+        <input type="hidden" id="use_yn">
+        <input type="hidden" id="pLoginSdy" value="{{.pLoginSdy}}">
+        <input type="hidden" id="pLoginEdy" value="{{.pLoginEdy}}">
+	  <input type="hidden" id="ori_logo_file" value="{{.OriLogoFile}}">
+	  <input type="hidden" id="img_yn" value="N">
+	  <input type="hidden" id="entp_mem_no" value="{{.EntpMemNo}}">
+        
+        <div class="businessInfo">
+          <div class="businessImage">
+          	<!--<span class="img"><img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/entp_no_img.png'" alt="" class="entp_logo_loaded"></span>-->
+			<a href="javascript:void(0);" id="logo_upload">
+				{{if .LogoPtoPath}}
+            <span class="img"><img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/entp_no_img.png'" alt="" class="entp_logo_loaded"></span>
+				{{else}}
+				<span class="img"><img src="/static/images/entp_no_img.png" style="opacity: 0.01;" alt="" class="entp_logo_loaded"></span>
+				{{end}}
+				<div class="imgGuide">
+				  {{if not .LogoPtoPath}}
+				  <p class="t01">직감 APP에 노출되는<br/>기업 CI를 등록해주세요.</p>
+				  <p class="t02">PNG, JPEG 파일만 등록 가능<br/>1:1 비율의 이미지 사용 권장</p>
+				  {{end}}
+				</div>
+			</a>
+			<span class="btn">
+			  <a href="javascript:void(0);" id="logo_upload"><img src="/static/images/btn_write.png" alt="등록"></a>
+			  <input type="file" name="entp_logo" id="entp_logo" accept="image/*" class="visual_img" style="display:none">
+			  <!--<a href="javascript:void(0);"><img src="/static/images/btn_delete.png" alt="삭제"></a>-->
+			</span>
+          </div>
+          <div class="businessForm">
+            <dl class="company">
+              <dt>{{.EntpKoNm}}</dt>
+            	<!--<dd>사업자 등록번호 {{.BizRegNo}}</dd>-->
+            </dl>
+            <div class="row">
+              <dl class="col3">
+				<dt>사업자 등록번호</dt>
+				<dd><input type="text" name="biz_reg_no" id="biz_reg_no" maxlength="20" value="{{.BizRegNo}}" disabled="disabled" placeholder="사업자 등록번호를 입력해주세요."></dd>				
+				</dl>                                
+			</div>
+            <div class="row">
+				<dl class="col3">
+                <dt>대표자명 *</dt>
+				<dd><input type="text" name="rep_nm" id="rep_nm" maxlength="20" value="{{.RepNm}}" placeholder="이름"></dd>
+                <dd class="validate rep_nm_message"></dd>
+              </dl>
+              <dl class="col3">
+                    <dt>대표번호 *</dt>
+                    <dd><input type="text" name="tel_no" id="tel_no" maxlength="15" value="{{.TelNo}}" placeholder="대표 내선번호 혹은 휴대폰 번호를 입력해주세요."></dd>
+                    <dd class="validate tel_no_message"></dd>
+                    </dl>
+                </dl>    
+                </dl>    
+            </div>    
+            <div class="row">
+				<dl class="col3">
+                <dt>설립일 *</dt>
+				<dd><input type="text" name="est_dy" id="est_dy" maxlength="8" value="{{.EstDy}}" numberOnly placeholder="YYYYMMDD"></dd>
+                <dd class="validate est_dy_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>임직원 수 *</dt>
+				<dd><input type="text" name="emp_cnt" id="emp_cnt" maxlength="5" value="{{.EmpCnt}}" numberOnly placeholder="명"></dd>
+                <dd class="validate emp_cnt_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>업종/업태 *</dt>
+				<!--<dd class="mb5"><input type="text" name="biz_tpy" id="biz_tpy" maxlength="50" value="{{.BizTpy}}" disabled="disabled" placeholder="업종"></dd>-->
+				<dd class="mb5">
+				<select name="biz_tpy_cd" id="biz_tpy_cd" required>
+					<option value="" disabled selected>업종을 선택해주세요.</option>                                                                                
+					{{range $key, $value := .MapBizTpyCd}}
+						{{if ne $key "00"}}
+							<option value="{{$key}}">{{$value}}</option>
+						{{end}} 
+					{{end}}                                 
+				</select>     
+				</dd>
+				<dd><input type="text" name="biz_cond" id="biz_cond" maxlength="50" value="{{.BizCond}}" placeholder="업태"></dd>
+                <dd class="validate message_biz_tpy biz_cond_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>담당자 정보 *</dt>
+				<dd class="mb5"><input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" value="{{.PpChrgNm}}" placeholder="이름"></dd>
+				<dd><input type="text" name="pp_chrg_tel_no" id="pp_chrg_tel_no" maxlength="12" value="{{.PpChrgTelNo}}" placeholder="휴대폰/내선 번호"></dd>
+                <dd class="validate pp_chrg_nm_message pp_chrg_tel_no_message "></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>이메일 *</dt>
+				<dd><input type="text" name="email" id="email" maxlength="30"value="{{.Email}}" placeholder="이메일"></dd>
+                <dd class="validate email_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>회사주소 *</dt>
+                <input type="hidden" name="zip" id="zip" value="{{.Zip}}" readonly>
+				<dd class="address">
+					<input class="address mb5" type="text" name="addr" id="addr" class="it address" value="{{.Addr}}" readonly
+						   placeholder="오른쪽 주소 검색버튼을 눌러 주소를 선택해주세요.">
+					<a href="javascript:void(0);" id="addr_search" onclick="Postcode()"
+					   class="btn type_blue st02">주소 검색</a>
+				</dd>
+				<!--<dd class="address mb5"><input type="text" name="addr" id="addr" value="{{.Addr}}" disabled="disabled"></dd>-->
+				<dd class="mb5"><input type="text" name="dtl_addr" id="dtl_addr" value="{{.DtlAddr}}" placeholder="나머지 주소를 입력해주세요."></dd>
+				<dd><input type="text" name="ref_addr" id="ref_addr" value="{{.RefAddr}}" readonly placeholder="도로명 주소 입력시 자동으로 입력됩니다."></dd>
+				<dd class="validate addr_message dtl_addr_message zip_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>기업태그 *</dt>
+				<dd><input type="text" name="entp_htag1" id="entp_htag1" value="{{.EntpHtag1}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="validate entp_htag1_message"></dd>
+                <dd class="count">(<span><em id="areaByteTag1">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+				<dd><input type="text" name="entp_htag2" id="entp_htag2" value="{{.EntpHtag2}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag2">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+				<dd><input type="text" name="entp_htag3" id="entp_htag3" value="{{.EntpHtag3}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag3">10</em>/10</span>)</dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>기업 슬로건 *</dt>
+				<dd><input type="text" name="entp_intr" id="entp_intr" maxlength="30"value="{{.EntpIntr}}" placeholder="회사를 소개할 수 있는 문구를 작성해주세요."></dd>
+				<dd class="count_textarea">(<span><em id="areaByteEntpIntr">30</em>/30</span>)</dd>
+                <dd class="validate entp_intr_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>홈페이지</dt>
+				<dd><input type="text" name="home_pg" id="home_pg" maxlength="50" value="{{.HomePg}}" placeholder="회사 공식 홈페이지 URL을 입력해주세요."></dd>
+              </dl>
+            </div>
+			<!---->			
+			<div class="row">
+				<dl class="col1">
+				<dt>회사 소개</dt>
+				<dd><textarea name="entp_profile" id="entp_profile" cols="30" rows="10" maxlength="1000" value="{{.EntpProfile}}" placeholder="간략한 회사 소개를 입력해주세요.">{{str2html .EntpProfile}}</textarea></dd>
+				<dd class="count_textarea">(<span><em id="areaByteEntpProfile">1</em>/1000</span>)</dd>
+				<!--<span class="count"><strong><em id="byteEntpProfile">1000</em></strong>/1000자</span>-->				
+				</dl>
+			</div>
+			<div class="row">
+				<dl class="col1">
+				<dt>사업 소개</dt>
+				<dd><textarea name="biz_intro" id="biz_intro" cols="30" rows="10" maxlength="1000" value="{{.BizIntro}}" placeholder="간략한 사업 소개를 입력해주세요.">{{str2html .BizIntro}}</textarea></dd>				
+				<dd class="count_textarea">(<span><em id="areaByteBizIntro">1</em>/1000</span>)</dd>				
+				</dl>
+			</div>
+
+			<div class="row">
+				<dl class="col1">
+				<dt>자본금(단위:백만원)</dt>
+				<dd><input type="text" name="entp_capital" id="entp_capital" maxlength="10" value="{{.EntpCapital}}" placeholder="자본금을 입력해주세요."></dd>
+				<dd class="count_textarea">(<span><em id="areaByteEntpCapital">10</em>/10</span>)</dd>
+				</dl>
+			</div>
+			<div class="row">
+				<dl class="col1">
+				<dt>매출액(단위:백만원)</dt>
+				<dd><input type="text" name="entp_total_sales" id="entp_total_sales" maxlength="10" value="{{.EntpTotalSales}}" placeholder="매출액을 입력해주세요."></dd>
+				<dd class="count_textarea">(<span><em id="areaByteEntpTotalSales">10</em>/10</span>)</dd>
+				</dl>
+			</div>
+			<div class="row">
+				<dl class="col1">
+				<dt>기업 형태</dt>
+				<dd>
+					<select name="entp_type_cd" id="entp_type_cd">
+						<option value="00" disabled selected>기업 형태 선택해주세요.</option>                                                                                
+						{{range $key, $value := .MapEntpTypeCd}}
+							{{if ne $key "00"}}
+							   <option value="{{$key}}">{{$value}}</option>
+							{{end}} 
+						{{end}}                                       
+					</select>         
+				</dd>			
+				</dl>
+			</div>
+			<div class="row">
+				<dl class="col1">
+				<dt>소재지</dt>
+				<dd><input type="text" name="location" id="location" maxlength="10" value="{{.Location}}" placeholder="소재지를 입력해주세요."></dd>
+				<dd class="count_textarea">(<span><em id="areaByteLocation">20</em>/20</span>)</dd>
+				</dl>
+			</div>
+            <!--
+			<div class="row">
+				<dl class="col1">
+				<dt>참가 박람회 리스트</dt>
+				<dd>
+					<select class="select" name="jobfair_list" style="height:100px;width:685px" multiple>                                        
+						{{range .JobFairList}}
+							<option value="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+						{{end}}                                    
+					</select>      
+				</dd>		                
+                <a href="javascript:void(0);" id="btn_jobfair_del">해제</a>
+				</dl>
+			</div>
+            -->
+            <!--
+            <div class="row">
+				<dl class="col1">
+				<dt>박람회 리스트</dt>
+				<dd>
+					<select class="select" name="jobfair_list" style="width:685px">                                        
+						{{range .JobFairNotRegList}}
+							<option value="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+						{{end}}                                    
+					</select>      
+				</dd>		                
+                <a href="javascript:void(0);" id="btn_jobfair_reg">등록</a>                 
+				</dl>
+			</div>
+            -->
+			<!---->
+            <div class="row">
+                <dl class="col1">
+                  <dt>최근 접속 일시</dt>
+                  <dd><input type="text" name="home_pg" id="home_pg" maxlength="50" value="{{.LoginDt}}" disabled="disabled"></dd>
+                </dl>
+              </div>
+			<!---->			
+			<div class="row">
+				<p class="btn">
+				  <a href="javascript:void(0);" id="btn_update" style="float: left">저장</a> 
+                  <!--<a href="javascript:void(0);" id="btn_update_test">테스트</a> -->
+				</p>
+			</div> 	
+            <!--		
+            </br>            
+            <div class="row">
+				<dl class="col1">
+				    <dt>박람회 관리</dt>		
+                    </br>
+                    <dd>
+                        <p>참가 박람회 리스트</p>
+                        <select class="select" name="jobfair_list" style="height:100px;width:685px" multiple>                                        
+                            {{range .JobFairList}}
+                                <option value="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+                            {{end}}                                    
+                        </select>     
+                    </dd>		                
+                    <a href="javascript:void(0);" id="btn_jobfair_reg">등록</a>   
+                    </br>
+                    <dd>
+                        <p>박람회 리스트</p>
+                        <select class="select" name="jobfair_list" style="width:685px">                                        
+                            {{range .JobFairNotRegList}}
+                                <option value="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+                            {{end}}                                    
+                        </select>        
+                    </dd>		                
+                    <a href="javascript:void(0);" id="btn_jobfair_reg">등록</a>   
+				</dl>
+			</div>
+            -->            
+        </div>       
+        <!-- 팀멤버 관리 -->			
+        <div class="teamMember">
+            <div class="topArea">
+                <p class="subTit">팀 멤버 관리</p>
+                </br>
+                <div class="row">
+                    <dl class="col1">
+                    <dt>팀 멤버</dt>
+                    <dd id="team_member_list">
+                        <select class="select list" id="team_member_list">
+                            {{range .TeamMemberList}}
+                               <option value="{{.EtPpChrgSn}}" data-entp_mem_id="{{.EtEntpMemId}}"  data-pp_chrg_nm="{{.EtPpChrgNm}}" data-pp_chrg_bp_nm="{{.EtPpChrgBpNm}}" data-pp_chrg_sn="{{.EtPpChrgSn}}" data-pp_chrg_gbn_cd="{{.EtPpChrgGbnCd}}">
+                                {{if eq "01" .EtPpChrgGbnCd}}     
+                                    {{.EtPpChrgNm}}-{{.EtPpChrgBpNm}}({{.EtEntpMemId}}) [{{.EtPpChrgSn}}] [A]
+                                {{else}}    
+                                    {{.EtPpChrgNm}}-{{.EtPpChrgBpNm}}({{.EtEntpMemId}}) [{{.EtPpChrgSn}}] 
+                                {{end}}
+                                </option>
+                            {{end}}                                    
+                        </select>                              
+                    </dd>		                                    
+                    <p class="texts" style="text-align: left">
+                        <dd>
+                            <input style="margin-top:5px;" type="text" name="pw_init" id="pw_init" minlength="6" maxlength="16">
+                            <!--<button type="button" style="cursor: pointer" id="btn_pw_init">[암호 초기화]</button>-->
+                            <a class="btn02" style="vertical-align: middle;margin-top: 5px;" id="btn_pw_init">암호 초기화</a>
+                        </dd>
+                    </p>              
+                    </dl>
+                </div>        
+            </div>
+        </div>            		
+        <!-- 팀멤버 관리 -->	
+        <!-- 박람회 관리 -->			
+        <div class="jobfair">
+            <div class="topArea">
+                <p class="subTit">박람회 관리</p>
+                </br>
+                <div class="row">
+                    <dl class="col1">
+                    <dt>참가 박람회</dt>
+                    <dd id="jobfair_reg_list">
+                        <!--
+                        <select class="select reg" id="jobfair_reg_list" multiple>
+                            {{range .JobFairList}}
+                                <option value="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+                            {{end}}                                    
+                        </select>      
+                        -->
+                    </dd>		                
+                    <!--<a href="javascript:void(0);" id="btn_jobfair_del">해제</a>-->
+                    <p class="texts" style="text-align: left">
+                        <button type="button" style="cursor: pointer" id="btn_jobfair_del">[삭제]</button>
+                    </p>              
+                    </dl>
+                </div>
+                </br>
+                <div class="row">
+                    <dl class="col1">
+                    <dt>전체 박람회</dt>
+                    <dd id="jobfair_list">
+                        <select class="select list" id="jobfair_list">
+                            {{range .JobFairNotRegList}}
+                               <option value="{{.MngCd}}" data-jobfair_title="{{.Title}}" data-jobfair_cd="{{.MngCd}}">{{.Title}}({{.MngCd}})</option>
+                            {{end}}                                    
+                        </select>                              
+                    </dd>		                
+                    <!--<a href="javascript:void(0);" id="btn_jobfair_reg">등록</a>-->
+                    <p class="texts" style="text-align: left">
+                        <button type="button" style="cursor: pointer" id="btn_jobfair_reg">[등록]</button>
+                    </p>              
+                    </dl>
+                </div>                    
+          </div>
+        </div>   
+        <!-- 박람회 관리 -->	        		
+          <div class="businessVideo">
+            <div class="topArea">
+              <p class="subTit">기업 홍보 영상  {{if eq "Y" .VideoYn}}<span>({{.VideoCnt}}/4)</span>
+              <a href="javascript:void(0);" id="btn_play_all" class="btnAllPlay"><span>전체 재생</span></a>{{end}}
+              {{if eq "0" .UseYn}}<span style="color: red">기업홍보영상 검증 대기중입니다</span>{{end}}
+              </p>
+            </div>
+          <!--<form id="uptForm" name="uptForm" method="post" enctype="multipart/form-data">-->
+            {{if eq "Y" .VideoYn}}
+            <div class="list">
+              <ul>
+                {{if .VdFilePath1}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload" id="video_area1">
+                      <source src="{{.VdFilePath1}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle1}}
+                  <p class="text">{{.vdTitle1}}</p>
+                  {{end}}
+                  {{if eq 1 .VideoCnt}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_all_delete" data-vd_no="1">[삭제]</button>&nbsp;&nbsp;
+                    <button type="button" style="cursor: pointer" id="video_upload" data-vd_no="1">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert" data-vd_no="1">[등록]</button>
+                  </p>
+                  {{else}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_upload" data-vd_no="1">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert" data-vd_no="1">[등록]</button>
+                  </p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath2}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload" id="video_area2">
+                      <source src="{{.VdFilePath2}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle2}}
+                  <p class="text">{{.vdTitle2}}</p>
+                  {{end}}
+                  {{if eq 2 .VideoCnt}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_delete" data-vd_no="2">[삭제]</button>&nbsp;&nbsp;
+                    <button type="button" style="cursor: pointer" id="video_upload2" data-vd_no="2">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert2" data-vd_no="2">[등록]</button>
+                  </p>
+                  {{else}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_upload2" data-vd_no="2">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert2" data-vd_no="2">[등록]</button>
+                  </p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath3}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload" id="video_area3">
+                      <source src="{{.VdFilePath3}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle3}}
+                  <p class="text">{{.vdTitle3}}</p>
+                  {{end}}
+                  {{if eq 3 .VideoCnt}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_delete" data-vd_no="3">[삭제]</button>&nbsp;&nbsp;
+                    <button type="button" style="cursor: pointer" id="video_upload3" data-vd_no="3">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert3" data-vd_no="3">[등록]</button>
+                  </p>
+                  {{else}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_upload3" data-vd_no="3">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert3" data-vd_no="3">[등록]</button>
+                  </p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath4}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload" id="video_area4">
+                      <source src="{{.VdFilePath4}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle4}}
+                  <p class="text">{{.vdTitle4}}</p>
+                  {{end}}
+                  {{if eq 4 .VideoCnt}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_delete" data-vd_no="4">[삭제]</button>&nbsp;&nbsp;
+                    <button type="button" style="cursor: pointer" id="video_upload4" data-vd_no="4">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert4" data-vd_no="4">[등록]</button>
+                  </p>
+                  {{else}}
+                  <p class="texts" style="text-align: center">
+                    <button type="button" style="cursor: pointer" id="video_upload4" data-vd_no="4">[수정]</button>
+                    <button type="button" style="cursor: pointer; display: none;" id="btn_insert4" data-vd_no="4">[등록]</button>
+                  </p>
+                  {{end}}
+                </li>
+                {{end}}
+
+                {{if eq 1 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text2" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload2" data-vd_no="2">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert2">[등록하기]</p>
+                  </span>
+                </li>
+                {{else if eq 2 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text3" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload3" data-vd_no="3">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert3">[등록하기]</p>
+                  </span>
+                </li>
+                {{else if eq 3 .VideoCnt}}
+                <li>
+                  <span class="video">
+                    <p id="vd_text4" style="text-align: center">영상을 선택해주세요.</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 16px; cursor:pointer" id="video_upload4" data-vd_no="4">[+]영상선택</p>
+                    <br><br>
+                    <p style="text-align: center; font-size: 20px; display: none; cursor:pointer" id="btn_insert4">[등록하기]</p>
+                  </span>
+                </li>
+                {{end}}
+
+              </ul>
+            </div>
+            {{else}}
+            <div class="list">
+              <p class="noData">등록된 기업 홍보 영상이 없습니다.<br/>
+                직감 APP을 통해 기업을 홍보할 수 있는 영상을 촬영해주세요.
+                <br>
+                <a href="javascript:void(0);" id="video_upload"><sapn style="font-size: 16px; color: blue">[+]등록하기</sapn></a>
+              </p>
+              <p class="text" id="vd_text" style="text-align: center">영상을 선택해주세요.</p>
+              <br>
+              <p class="btn"><a href="javascript:void(0);" id="btn_insert" style="display: none">등록하기</a></p>
+              <br>
+              </div>
+            {{end}}
+            <!--
+            <p class="textGuide">* PC 관리자 페이지를 통한 기업 홍보 영상의 수정 및 등록은 불가능합니다.<br/>
+            직감 APP의 기업회원 로그인>설정>기업 홍보영상 관리를 이용해주세요.</p>
+            <p class="btn"><a href="javascript:void(0);" id="btn_update">기업 정보 저장</a></p>
+            -->
+            <br>
+            <p class="btn">
+              <a href="javascript:void(0);" id="btn_back">목록</a> 
+              {{if eq "01" .MemStatCd}}<a href="javascript:void(0);" data-stat_cd="1" id="btn_control">제재하기</a>{{else}}<a class="active" href="javascript:void(0);" data-stat_cd="0" id="btn_control">제재해제</a>{{end}}
+              {{if eq "Y" .VideoYn}}
+              {{if eq "1" .UseYn}}<a href="javascript:void(0);" data-use_yn="1" id="btn_use">검증완료</a>{{else}}<a href="javascript:void(0);" data-use_yn="0" id="btn_use">검증대기</a>{{end}}
+              {{end}}
+            </p>
+            <input type="file" name="entp_video" id="entp_video" accept="video/*" style="display:none">
+          </div>
+        </form> 
+      </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 영상팝업 -->
+    <div class="popupWrap" id="video_pop" data-tot_cnt="{{.VideoCnt}}">
+      <div class="videoPopup">
+        <div class="popContent">
+          <div class="movie pop">
+          {{if .VdFilePath1}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_1" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath1}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath2}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_2" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath2}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath3}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_3" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath3}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath4}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_4" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath4}}" type="video/mp4">
+            </video>
+          {{end}}
+          </div>
+          <p class="page">( <em id="entp_now_page"></em> / <em id="tot_page">4</em> )</p>
+        </div>
+        <a href="javascript:void(0);" class="btnPrev entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_prev.png" title="이전 영상"></a>
+        <a href="javascript:void(0);" class="btnNext entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_next.png" title="다음 영상"></a>
+        <a href="javascript:void(0);" class="btnClose" id="video_close"><img src="/static/images/btn_video_close.png" widht="30px" height="30px" title="닫기"></a>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 영상팝업 -->    
+
+    <!-- 처음/마지막 영상 알림 -->
+    <div class="popupWrap sepop" id="start_end_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_message"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="videoClosePopup()">확인</a>
+        </div>
+      </div>
+    </div>
+    <!-- // 처음/마지막 영상 알림 -->    
+
+    <!-- 완료알림팝업 -->
+    <div class="popupWrap alert" id="update_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_text">정상적으로 수정되었습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_update_pop_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 완료알림팝업 -->    
+  
+    <!-- 영상 삭제 팝업 -->
+    <div class="popupWrap confirm" id="entp_delete_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">해당 영상을 삭제하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 영상 삭제 팝업 -->  
+
+    <!-- 영상 삭제 팝업 -->
+    <div class="popupWrap confirm" id="entp_all_delete_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">처음 영상을 삭제하면 앱내 메인 피드에서 사라집니다.<br>그래도 해당 영상을 삭제하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 영상 삭제 팝업 -->  
+
+    <!-- 영상 삭제 팝업 -->
+    <div class="popupWrap confirm" id="entp_update_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="confirmMessage">해당 영상을 수정하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_update_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 영상 삭제 팝업 -->  
+
+    <!-- 제재 팝업 -->
+    <div class="popupWrap confirm" id="entp_control_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="reason">제재사유
+            <select id="ctr_gbn_cd" name="ctr_gbn_cd">
+              <option value="98">미검증 기업</option>
+             </select>
+          </p>
+          <br>
+          <p class="control_msg" id="confirmMessage"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_control_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 제재 팝업 -->  
+
+    <!-- 검증 팝업 -->
+    <div class="popupWrap confirm" id="entp_use_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="use_text">해당영상을 검증완료처리 하시겠습니까?</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+          <a href="javascript:void(0);" class="status" id="btn_use_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>    
+    <!-- 검증 팝업 -->  
+
+    <div class="popupWrap confirm" id="update_yn_pop">
+        <div class="popup">
+            <div class="popContent">                
+                <p id="update_yn_text">정말로 저장 하시겠습니까?</p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_update_yn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>    
+
+    <div class="popupWrap confirm" id="already_reg_jobfair">
+        <div class="popup">
+            <div class="popContent">
+                <p id="alert_text">이미 등록된 박람회입니다.</p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <div class="popupWrap confirm" id="jobfair_reg_yn">
+        <div class="popup">
+            <div class="popContent">
+                <!--<p id="use_text">해당영상을 검증완료처리 하시겠습니까?</p>-->
+                <p id="jobfair_reg_yn_text"></p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_jobfair_reg_yn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>    
+
+    <div class="popupWrap confirm" id="jobfair_del_yn">
+        <div class="popup">
+            <div class="popContent">
+                <p id="use_text">선택한 박람회에 삭제 하시겠습니까?</p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_jobfair_del_yn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>    
+
+    <div class="popupWrap confirm" id="pw_init_yn">
+        <div class="popup">
+            <div class="popContent">                
+                <p id="pw_init_yn_text"></p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+                <a href="javascript:void(0);" class="status" id="btn_pw_init_yn_confirm">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>    
+
+    <div class="popupWrap confirm" id="empty_pw_init">
+        <div class="popup">
+            <div class="popContent">
+                <p id="alert_text">초기화 암호를 입력해주세요.</p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <div class="popupWrap confirm" id="valid_pw_init">
+        <div class="popup">
+            <div class="popContent">
+                <p id="alert_text">암호를 6~16 길이로 영문,숫자 포함으로 입력 해주세요.</p>
+            </div>
+            <div class="popBtn">
+                <a href="javascript:void(0);" onclick="closePopup()">확인</a>
+            </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+    <div class="popupWrap alert" id="update_fail_pop">
+        <div class="popup">
+          <div class="popContent">
+            <p id="alert_text">오류가 발생했습니다.</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" id="btn_update_fail_pop_confirm">확인</a>
+          </div>
+        </div>
+        <span class="cover"></span>
+    </div>
+
+	<!--<script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>-->
+    <script type="text/javascript">
+
+      // 검증 처리 팝업
+      $(document).off("click", "#btn_use").on("click", "#btn_use", function(e){
+        $("#use_yn").val($(this).data("use_yn"));
+        var chk = $("#use_yn").val();
+        console.log("chk : "+chk);
+        if (chk == "0") {
+          $("#use_text").html("해당영상을 검증완료처리 하시겠습니까?");
+        } else {
+          $("#use_text").html("해당영상을 검증대기처리 하시겠습니까?");
+        }
+        openPopup("entp_use_pop");
+      });
+
+      // 검증 처리
+      $(document).off("click", "#btn_use_confirm").on("click", "#btn_use_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var chk = $("#use_yn").val();
+        var entp_mem_no = $("#pEntpMemNo").val();
+
+        if (chk == "1") {
+          var use_yn = "0"
+        } else {
+          var use_yn = "1"
+        }
+        console.log("use_yn : "+use_yn);
+        console.log("entp_mem_no : "+entp_mem_no);
+
+        useProc(entp_mem_no, use_yn);
+      });          
+
+      var useProc = function(entp_mem_no, use_yn){
+      $.ajax({
+          cache : false,
+          url : '/admin/video/use/update',
+          data : {
+            entp_mem_no : entp_mem_no,
+            use_yn : use_yn,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+              window.location.reload();
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+          },
+        });      
+      }  
+
+      // 제재 처리 팝업
+      $(document).off("click", "#btn_control").on("click", "#btn_control", function(e){
+        $("#stat_cd").val($(this).data("stat_cd"));
+        var chk = $("#stat_cd").val();
+        console.log("chk : "+chk);
+        if (chk == "1") {
+          $("#reason").css("display","");
+          $(".control_msg").html("해당 기업을 제재하시겠습니까?");
+        } else {
+          $("#reason").css("display","none");
+          $(".control_msg").html("제재된 해당 기업을 해제하시겠습니까?");
+        }
+        openPopup("entp_control_pop");
+      });
+
+      // 제재 처리
+      $(document).off("click", "#btn_control_confirm").on("click", "#btn_control_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var chk = $("#stat_cd").val();
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = $("#ctr_gbn_cd").val();
+
+        // sbsson
+        var Email = "{{.Email}}";
+        var EntpKoNm = "{{.EntpKoNm}}";
+        var BizRegNo = "{{.BizRegNo}}";
+        var RepNm = "{{.RepNm}}";
+
+        console.log("chk : "+chk);
+        console.log("entp_mem_no : "+entp_mem_no);
+        console.log("gbn_cd : "+gbn_cd);
+
+        controlProc(entp_mem_no, gbn_cd, chk, Email, EntpKoNm, BizRegNo, RepNm);
+      });      
+
+      var controlProc = function(entp_mem_no, gbn_cd, chk, Email, EntpKoNm, BizRegNo, RepNm){
+      $.ajax({
+          cache : false,
+          url : '/admin/control',
+          data : {
+            entp_mem_no : entp_mem_no,
+            gbn_cd : gbn_cd,
+            chk : chk,
+
+            // sbsson
+            Email : Email,
+            EntpKoNm : EntpKoNm,
+            BizRegNo : BizRegNo,
+            RepNm : RepNm,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+              window.location.reload();
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+          },
+        });      
+      }  
+
+      // 영상 삭제
+      $(document).off("click", "#video_delete").on("click", "#video_delete", function(e){
+        var vd_no = $(this).data("vd_no");
+        $("#vd_no").val(vd_no);
+
+        openPopup("entp_delete_pop");
+      });
+
+      // 영상 삭제 초기화
+      $(document).off("click", "#video_all_delete").on("click", "#video_all_delete", function(e){
+        var vd_no = $(this).data("vd_no");
+        $("#vd_no").val(vd_no);
+
+        openPopup("entp_all_delete_pop");
+      });
+
+      // 삭제 처리
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        $(".loading").attr("style", "display:''");
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var vd_no = $("#vd_no").val();
+        var gbn_cd = "U";
+
+        // console.log("entp_mem_no : "+entp_mem_no);
+        // console.log("vd_no : "+vd_no);
+        // console.log("gbn_cd : "+gbn_cd);
+        deleteProc(entp_mem_no, vd_no, gbn_cd);
+      });
+
+      var deleteProc = function(entp_mem_no, vd_no, gbn_cd){
+      $.ajax({
+          cache : false,
+          url : '/admin/entp/video/delete',
+          data : {
+            entp_mem_no : entp_mem_no,
+            vd_no : vd_no,
+            gbn_cd : gbn_cd,
+          },
+          type : 'POST',
+          async : false,
+          dataType : "json",
+          success : function(rep) {
+            var rtnCd = rep.RtnCd;
+            var rtnMsg = rep.RtnMsg;
+
+            if (rtnCd == 1){
+              window.location.reload();
+            }
+          },
+          error : function(e) {
+            console.log("error:"+JSON.stringify(e));
+            $(".loading").attr("style", "display:none");
+          },
+        });      
+      }      
+
+      $(document).off("click", "#video_upload").on("click", "#video_upload", function(e){
+        e.preventDefault();
+        $("#vd_text").text("영상을 선택해주세요.");
+        $("#btn_insert").css("display","none");
+        $("#entp_video").trigger('click');
+      });
+
+      $(document).off("click", "#video_upload2").on("click", "#video_upload2", function(e){
+        e.preventDefault();
+        $("#vd_no").val("2");
+        $("#vd_text2").text("영상을 선택해주세요.");
+        $("#btn_insert2").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      $(document).off("click", "#video_upload3").on("click", "#video_upload3", function(e){
+        e.preventDefault();
+        $("#vd_no").val("3");
+        $("#vd_text3").text("영상을 선택해주세요.");
+        $("#btn_insert3").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      $(document).off("click", "#video_upload4").on("click", "#video_upload4", function(e){
+        e.preventDefault();
+        $("#vd_no").val("4");
+        $("#vd_text4").text("영상을 선택해주세요.");
+        $("#btn_insert4").css("display","none");
+        $("#entp_video").trigger('click');
+      });      
+
+      // 영상 수정
+      $(document).off("click", "#video_update").on("click", "#video_update", function(e){
+        var vd_no = $(this).data("vd_no");
+        $("#vd_no").val(vd_no);
+
+        openPopup("entp_update_pop");
+      });
+
+      // 영상 체크
+      $(document).off("change", "#entp_video").on("change", "#entp_video",function(e) {
+        readURL_EntpVideo(this);
+      });
+
+    var readURL_EntpVideo = function(input) {
+        var ext = $('#entp_video').val().split('.').pop().toLowerCase();
+        var vd_no = $("#vd_no").val();
+        console.log("ext : "+ext);
+        console.log("vd_no : "+vd_no);
+
+        if($.inArray(ext, ['mp4','mov','avi']) == -1) {
+          $("#entp_video").val("");
+          return false;
+        }
+
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var fileValue = $("#entp_video").val().split("\\");
+            var fileName = fileValue[fileValue.length-1]; // 파일명
+            var fileExt = $("#entp_video").val().split('.').pop().toLowerCase(); //파일확장자
+                
+            if (vd_no == "2") {
+              $("#vd_text2").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#video_upload2").css("display","none");
+              $("#btn_insert2").css("display","");
+            } else if (vd_no == "3") {
+              $("#vd_text3").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#video_upload3").css("display","none");
+              $("#btn_insert3").css("display","");
+            } else if (vd_no == "4") {
+              $("#vd_text4").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#video_upload4").css("display","none");
+              $("#btn_insert4").css("display","");
+            } else {
+              $("#vd_text").text("영상 ["+fileName+"]이 선택되었습니다.");
+              $("#video_upload").css("display","none");
+              $("#btn_insert").css("display","");
+            }
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }	
+
+      // 영상등록하기
+      $(document).off("click", "#btn_insert").on("click", "#btn_insert", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "I";
+
+        // console.log("entp_mem_no : "+entp_mem_no);    
+        // console.log("entp_video : "+entp_video);    
+        // return;
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });  
+
+      // 영상2등록하기
+      $(document).off("click", "#btn_insert2").on("click", "#btn_insert2", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });        
+
+      // 영상3등록하기
+      $(document).off("click", "#btn_insert3").on("click", "#btn_insert3", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });  
+
+      // 영상4등록하기
+      $(document).off("click", "#btn_insert4").on("click", "#btn_insert4", function(e) {
+        //console.log("영상등록");
+
+        var entp_video =  $("#entp_video")[0].files[0]; //파일
+        if (entp_video == undefined) {
+          entp_video = "";
+        }
+
+        var entp_mem_no = $("#pEntpMemNo").val();
+        var gbn_cd = "U";
+        var vd_no = $("#vd_no").val();
+        
+        var formData = new FormData();
+        formData.append("entp_mem_no", entp_mem_no);
+        formData.append("entp_video", entp_video);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("vd_no", vd_no);
+
+        $(".loading").attr("style", "display:''");
+
+        $.ajax({
+            cache : false,
+            url : '/admin/entp/video/insert',
+            data : formData,
+            type : 'POST',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+                //console.log("error" + JSON.stringify(e));
+                console.log("error : "+e);
+                $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+                var rtnCd = rep.RtnCd
+                var rtnMsg = rep.RtnMsg
+                if(rtnCd == 1){
+                    window.location.reload();
+                } else {
+                    console.log("등록 실패 : "+rtnMsg);
+                    $(".loading").attr("style", "display:none");
+                }
+            }
+        });        
+      });
+
+      // 알림팝업 닫기
+    // $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+    //     //$('.popupWrap.alert').hide();
+    //     window.location.reload();
+    // });  
+
+      // 다음 영상 재생
+      $(document).off("click", ".btnNext.entp").on("click", ".btnNext.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (tot_cnt == curr) {
+          //console.log("마지막 영상");
+          $("#alert_message").html("마지막 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (tot_cnt > curr){
+          //console.log("마지막 영상아님 : "+ (curr+1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr+1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr+1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr+1)).play();
+        }
+      });
+
+      // 이전 영상 재생
+      $(document).off("click", ".btnPrev.entp").on("click", ".btnPrev.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (curr == 1) {
+          //console.log("처음 영상");
+          $("#alert_message").html("처음 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (curr > 1){
+          //console.log("처음 영상아님 : "+ (curr-1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr-1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr-1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr-1)).play();
+        }
+      });    
+
+      // 영상 확인 닫기 팝업
+      function videoClosePopup() {
+        $('#start_end_pop').hide();
+        return false;
+      }
+
+      // 전체 재생
+      $(document).off("click", "#btn_play_all").on("click", "#btn_play_all", function(e) {
+        openPopup("video_pop");
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        //console.log("tot_cnt : "+tot_cnt);
+        $("#entp_now_page").text(1);
+        $("#tot_page").text(tot_cnt);
+        loopVideo(1, tot_cnt);
+      });
+      
+      var loopVideo = function(i, tot_cnt) {
+        if (tot_cnt >= i) {
+          $("#video_"+i).attr("style", "display:''");
+          document.getElementById("video_"+i).play();
+          document.getElementById("video_"+i).onended = function() {
+            $("#video_"+i).attr("style", "display:none");
+            var j = i + 1;
+            loopVideo(j, tot_cnt);
+            if (j == tot_cnt) {
+              $("#entp_now_page").text(tot_cnt);
+            } else {
+              if (j < tot_cnt) {
+                $("#entp_now_page").text(j);
+              } else {
+                $("#entp_now_page").text(1);
+              }
+            }
+          };
+        } else {
+          $("#video_1").attr("style", "display:''");
+          $("#entp_now_page").text(1);
+          //loopVideo(1, tot_cnt);
+          return;
+        }
+      }
+
+      // 영상 팝업창 닫기
+      $(document).off("click", "#video_close").on("click", "#video_close", function(e) {
+        window.location.reload();
+        /*
+        closePopup();
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        var i;
+        for (i = 1; i <= tot_cnt; i++) {
+          document.getElementById("video_"+i).load();
+          document.getElementById("video_"+i).pause();
+        }
+        */
+      });      
+
+      // Form Validation Check
+      $(document).ready(function() {
+        $("#uptForm").validate(validOption);
+
+		//console.log( "{{.LogoPtoPath}}");
+		
+		var biz_tpy_cd = "{{.BizTpyCd}}";
+        $("#biz_tpy_cd").val(biz_tpy_cd);
+
+        var entp_type_cd = "{{.EntpTypeCd}}";
+        $("#entp_type_cd").val(entp_type_cd);          
+		
+		//$("#biz_reg_no").keyup();
+
+          $("#entp_htag1").keyup();
+          $("#entp_htag2").keyup();
+          $("#entp_htag3").keyup();
+
+		$("#entp_intr").keyup();
+		$("#entp_profile").keyup();
+		$("#biz_intro").keyup();
+		$("#entp_capital").keyup();
+		$("#entp_total_sales").keyup();
+		$("#location").keyup();		  
+
+          var img_chk = "{{.LogoPtoPath}}";
+          if (!img_chk) {
+            $("#img_yn").val("N");
+          } else {
+            $("#img_yn").val("M");
+          }
+
+        jobfairRegList({{.JobFairList}});
+        
+        //updateBtnEnable(true);        
+     });
+
+    // $(document).keypress(function(){
+
+    //     console.log("== " + event.which + ": " + $("#uptForm").valid());
+    //     if(event.which == 70){  //f
+    //         console.log("You have payed respect");
+    //     }
+    // });
+
+     // 기업정보수정 Validation
+     var validOption = {
+        onkeyup: false
+        ,onclick: false
+        ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+            if($(element).valid()){				// 체크 통과
+                var id = $(element).attr("id");	
+                $("."+id+"_message").text("");	// message box clear
+            }
+        }
+        ,onfocusin: function(element) {			// 포커스 인 시 동작
+            var id = $(element).attr("id");
+            //console.log("input id : "+id);
+            resetInput(id);
+        }
+        ,rules: {
+            rep_nm : {
+                required: true, 
+                maxlength: 20
+            },
+            est_dy : {
+                required: true, 
+                number: true,
+                minlength: 8
+            },
+            emp_cnt : {
+                required: true, 
+                number: true
+            },
+            biz_tpy : {
+                required: true, 
+            },
+            biz_cond : {
+                required: true, 
+            },
+            pp_chrg_nm : {
+                required: true, 
+            },
+            pp_chrg_tel_no : {
+                required: true, 
+            },
+            email: {
+              required: true,
+              email: true,
+              remote: {
+                url:"/common/dup_chk"
+                ,type: "post"
+                ,data: {
+                  gbn_cd: '002'
+                  ,item_val: function() {
+                    return $("#email").val();
+                  }
+                  ,entp_mem_no: '{{.EntpMemNo}}'
+                }
+              }	
+            },
+            addr : {
+                required: true, 
+            },
+            dtl_addr : {
+                required: true, 
+            },
+            entp_htag1 : {
+                required: true,
+                maxlength: 10 
+            },
+            entp_intr : {
+                required: true, 
+                maxlength: 30
+            },
+        }
+        ,errorPlacement: function(error, element){		
+            var id = element.attr("id");
+            //console.log("err_id :"+id);
+            $("."+id+"_message").text(error.text());
+        }
+        ,messages: {
+            rep_nm: {
+                required: "대표자명을 입력해주세요."
+            },
+            est_dy: {
+                required: "설립일을 입력해주세요.",
+                number: "YYYYMMDD 형식의 숫자로 입력해주세요.",
+                minlength: "YYYYMMDD 형식으로 입력해주세요."
+            },
+            emp_cnt: {
+                required: "임직원수를 입력해주세요.",
+                number: "숫자로 입력해주세요."
+            },
+            biz_tpy: {
+                required: "업종과 업태를 입력해주세요."
+            },
+            biz_cond: {
+                required: "업종과 업태를 입력해주세요."
+            },
+            pp_chrg_nm: {
+                required: "담당자 정보를 입력하세요."
+            },
+            pp_chrg_tel_no: {
+                required: "담당자 정보를 입력하세요."
+            },
+            email:{
+              required: "이메일을 입력해주세요",
+              email: "올바른 이메일형식이 아닙니다.",
+              remote: "이미 존재하는 이메일입니다"
+            },
+            addr: {
+                required: "회사 주소를 입력해 주세요."
+            },
+            dtl_addr: {
+                required: "회사 주소를 입력해 주세요."
+            },
+            entp_htag1: {
+                required: "기업태그를 입력해주세요.",
+                maxlength: "10자내로 입력해주세요."
+            },
+            entp_intr: {
+                required: "기업 슬로건을 입력해주세요.",
+                maxlength: "30자내로 입력해주세요."
+            },
+        }
+        ,success: function(element){
+            var str = $(element).attr("id");
+            var id = str.substring(0,str.length-6);
+        }
+    }
+
+      // 목록으로
+      $(document).off("click", "#btn_back").on("click", "#btn_back", function(e) {
+
+        /* parameter setting */
+        var page_no = $("#pPageNo").val();
+        var size = $("#pSize").val();
+        var gbn_cd = $("#pGbnCd").val();
+        var vd_yn = $("#pVdYn").val();
+        var os_gbn = $("#pOsGbn").val();
+        var use_yn = $("#pUseYn").val();
+        var sdy = $("#pSdy").val();
+        var edy = $("#pEdy").val();
+        var keyword = $("#pKeyword").val();
+
+        var login_sdy = $("#pLoginSdy").val();
+        var login_edy = $("#pLoginEdy").val();
+
+        console.log("use_yn : "+use_yn);
+        console.log("login_sdy : "+login_sdy);
+        console.log("login_edy : "+login_edy);
+
+
+        var param = "p_page_no="+page_no+"&p_size="+size+"&p_gbn_cd="+gbn_cd+"&p_vd_yn="+vd_yn+"&p_os_gbn="+os_gbn+"&p_use_yn="+use_yn+"&p_sdy="+sdy+"&p_edy="+edy+"&p_keyword="+keyword+"&p_login_sdy="+login_sdy+"&p_login_edy="+login_edy;
+        window.location.href="/admin/entp/list?"+param;
+      });      
+
+	$(document).on("keyup", "#entp_htag1", function () {
+        textLenCheck(this, 10, "#areaByteTag1");
+    });      
+
+	$(document).on("keyup", "#entp_htag2", function () {
+        textLenCheck(this, 10, "#areaByteTag2");
+    });      
+
+	$(document).on("keyup", "#entp_htag3", function () {
+        textLenCheck(this, 10, "#areaByteTag3");
+    });      
+	
+	$(document).on("keyup", "#entp_intr", function () {
+        textLenCheck(this, 30, "#areaByteEntpIntr");
+    });      
+
+	$(document).on("keyup", "#entp_profile", function () {
+        textLenCheck(this, 1000, "#areaByteEntpProfile");
+    });
+
+	$(document).on("keyup", "#biz_intro", function () {
+        textLenCheck(this, 1000, "#areaByteBizIntro");
+    });
+	
+	$(document).on("keyup", "#entp_capital", function () {
+        textLenCheck(this, 10, "#areaByteEntpCapital");		        
+    });      
+
+	$(document).on("keyup", "#entp_total_sales", function () {
+        textLenCheck(this, 10, "#areaByteEntpTotalSales");		
+    });      
+
+	$(document).on("keyup", "#location", function () {
+        textLenCheck(this, 20, "#areaByteLocation");		
+    });      
+
+	function Postcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if (data.userSelectedType === 'R') {
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if (data.buildingName !== '' && data.apartment === 'Y') {
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if (extraAddr !== '') {
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("ref_addr").value = extraAddr;
+
+                } else {
+                    document.getElementById("ref_addr").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("zip").value = data.zonecode;
+                document.getElementById("addr").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("dtl_addr").focus();
+
+                // LDK 2020/08/27 : 기업 정보 코드화 <-->
+                document.getElementById("location").value = addr.split(' ')[0] + ' ' + addr.split(' ')[1];    
+            }
+        }).open();
+    }	
+
+     // input box reset
+     var resetInput = function(id){
+        $("."+id+"_message").text(""); // message box clear
+    }
+
+	$(document).off("click", "#logo_upload").on("click", "#logo_upload", function(e){
+        e.preventDefault();
+        $("#entp_logo").trigger('click');
+    });
+
+	// 질문이미지 체크
+	$(document).off("change", "#entp_logo").on("change", "#entp_logo",function(e) {
+        readURL_EntpLogo(this);
+    });
+
+    // 주소검색
+    $(document).off("click", "#addr_search").on("click", "#addr_search", function(e) {
+        $(".zip_message").text("");
+    });  
+
+	// 질문이미지 수정
+	var readURL_EntpLogo = function(input) {
+        var ext = $('#entp_logo').val().split('.').pop().toLowerCase();
+        //console.log("ext : "+ext);
+
+        if($.inArray(ext, ['png','jpg','jpeg','gif']) == -1) {
+            showMessagePopup("질문이미지 입력 알림",".jpg, .jpeg, .gif .png 형식만 등록해주세요.");
+            $("#entp_logo").val("");
+            return false;
+        }
+       
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $(".entp_logo_loaded").attr('src', e.target.result);
+                $(".entp_logo_loaded").css('opacity','1');
+                $(".t01").text("");
+                $(".t02").text("");
+            }
+
+            reader.readAsDataURL(input.files[0]);
+
+            var fileValue = $("#entp_logo").val().split("\\");
+            var fileName = fileValue[fileValue.length-1]; // 파일명
+            var fileExt = $("#entp_logo").val().split('.').pop().toLowerCase(); //파일확장자
+
+            $("#img_yn").val("Y");
+        }
+    }	
+
+    // 기업정보 수정 Y/N
+    $(document).off("click", "#btn_update").on("click", "#btn_update", function(){
+        openPopup("update_yn_pop");
+    });
+
+	// 기업정보 수정
+    $(document).off("click", "#btn_update_yn_confirm").on("click", "#btn_update_yn_confirm", function(){
+        closePopup("update_yn_pop");
+
+      	var img_yn = $("#img_yn").val() //이미지 여부
+        //console.log("img_yn : "+img_yn);
+
+        if (img_yn == "N") {
+        	console.log("이미지를 등록해주세요.");
+			window.scrollTo(0,0);
+			$(".t01").fadeOut(300, function() {
+				$(this).css("color","#6b6b6b");
+			});
+			$(".t01").fadeIn(1000, function() {
+				$(this).css("color","#e04c53");
+			});
+
+          	return;
+        }
+
+        if (!$("#zip").val()) {
+          	$("#addr").focus();
+          	$(".zip_message").text("주소검색을 통해 입력해주세요.");
+          	return;
+        }
+
+      	if($("#uptForm").valid()){
+			var entp_logo =  $("#entp_logo")[0].files[0]; //이미지
+			if (entp_logo == undefined) {
+				entp_logo = "";
+			}
+
+			var rep_nm = $("#rep_nm").val().replace(/'/gi,"`"); //대표자명
+            var tel_no = $("#tel_no").val(); //대표번호
+
+			var est_dy = $("#est_dy").val(); //설립일
+            if (est_dy.length > 0 && est_dy.length < 8) {
+                $(".est_dy_message").text("YYYYMMDD 형식으로 입력해주세요.");
+                return false;
+            }
+
+            if (!isDate(est_dy)) {
+                $(".est_dy_message").text("YYYYMMDD 형식으로 입력해주세요.");
+                return false;
+            }              
+
+			var emp_cnt = $("#emp_cnt").val(); //임직원수
+            if (!emp_cnt) {
+                emp_cnt = 0;
+            }
+			//var biz_tpy = $("#biz_tpy").val().replace(/'/gi,"`"); //업종
+			var biz_cond = $("#biz_cond").val().replace(/'/gi,"`"); //업태
+			var pp_chrg_nm = $("#pp_chrg_nm").val(); //담당자명
+			var pp_chrg_tel_no = $("#pp_chrg_tel_no").val(); //담당자연락처
+			var email = $("#email").val(); //이메일
+			var zip = $("#zip").val(); //우편번호
+			var addr = $("#addr").val(); //주소
+			//var dtl_addr = $("#dtl_addr").val(); //상세주소
+            var dtl_addr = $("#dtl_addr").val().replace(/'/gi, "`"); //상세주소
+			var ref_addr = $("#ref_addr").val(); //참고주소
+			var entp_htag1 = $("#entp_htag1").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그1
+			var entp_htag2 = $("#entp_htag2").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그2
+			var entp_htag3 = $("#entp_htag3").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그3
+			var entp_intr = $("#entp_intr").val().replace(/'/gi,"`"); //참고주소
+			var home_pg = $("#home_pg").val().replace(/'/gi,"`"); //홈페이지
+			var logo_ext = $("#entp_logo").val().split('.').pop().toLowerCase(); //파일확장자
+			var ori_logo_file = $("#ori_logo_file").val(); //기존로고파일경로
+			var ori_logo_file_ext = $("#ori_logo_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+
+			var entp_mem_no = $("#entp_mem_no").val();
+            if (entp_mem_no == null || entp_mem_no == undefined || entp_mem_no == "") {
+                console.log("EntpMemNo is emtpy !! ");
+                return false;
+            }
+
+			var biz_tpy_cd = $("select[id=biz_tpy_cd] option:selected").val();  // 업종 코드
+            var biz_tpy = $("#biz_tpy_cd option:checked").text();               // 업종 이름
+
+            var entp_profile= $("#entp_profile").val().replace(/'/gi,"`");  // 기업 소개
+            var biz_intro= $("#biz_intro").val().replace(/'/gi,"`");        // 사업 소개
+
+            var entp_capital= $("#entp_capital").val().replace(/'/gi,"`");          // 자본금
+            var entp_total_sales= $("#entp_total_sales").val().replace(/'/gi,"`");  // 매출액
+
+            var entp_type_cd = $("select[id=entp_type_cd] option:selected").val();  // 기업 형태 코드
+            var entp_type = $("#entp_type_cd option:checked").text();               // 기업 형태
+            var location = $("#location").val().replace(/'/gi,"`");                 // 소재지
+            
+			///*
+			console.log("이미지여부 : "+img_yn);    
+			console.log("이미지 : "+entp_logo);    
+			console.log("대표자명 : "+rep_nm);    
+			console.log("설립일 : "+est_dy);    
+			console.log("임직원수 : "+emp_cnt);    
+			console.log("업종 : "+biz_tpy);    
+			console.log("업태 : "+biz_cond);    
+			console.log("담당자명 : "+pp_chrg_nm);    
+			console.log("담당자연락처 : "+pp_chrg_tel_no);    
+			console.log("우편번호 : "+zip);    
+			console.log("주소 : "+addr);    
+			console.log("상세주소 : "+dtl_addr);    
+			console.log("참고주소 : "+ref_addr);    
+			console.log("기업태그1 : "+entp_htag1);    
+			console.log("기업태그2 : "+entp_htag2);    
+			console.log("기업태그3 : "+entp_htag3);    
+			console.log("참고주소 : "+entp_intr);    
+			console.log("홈페이지 : "+home_pg);    
+			console.log("파일확장자 : "+logo_ext);    
+
+			console.log("biz_tpy_cd : "+biz_tpy_cd);    
+			console.log("biz_tpy : "+biz_tpy);    
+			console.log("entp_profile : "+entp_profile);    
+			console.log("biz_intro : "+biz_intro);    
+			console.log("entp_capital : "+entp_capital);    
+			console.log("entp_total_sales : "+entp_total_sales);    
+			console.log("entp_type_cd : "+entp_type_cd);    
+			console.log("entp_type : "+entp_type);    
+			console.log("location : "+location);    
+			//*/  			
+			
+			var formData = new FormData();
+			formData.append("img_yn", img_yn);
+			formData.append("entp_logo", entp_logo);
+			formData.append("logo_ext", logo_ext);
+			formData.append("rep_nm", rep_nm);
+            formData.append("tel_no", tel_no);
+			formData.append("est_dy", est_dy);
+			formData.append("emp_cnt", emp_cnt);
+			formData.append("biz_tpy", biz_tpy);
+			formData.append("biz_cond", biz_cond);
+			formData.append("pp_chrg_nm", pp_chrg_nm);
+			formData.append("pp_chrg_tel_no", pp_chrg_tel_no);
+			formData.append("email", email);
+			formData.append("zip", zip);
+			formData.append("addr", addr);
+			formData.append("dtl_addr", dtl_addr);
+			formData.append("ref_addr", ref_addr);
+			formData.append("entp_htag1", entp_htag1);
+			formData.append("entp_htag2", entp_htag2);
+			formData.append("entp_htag3", entp_htag3);
+			formData.append("entp_intr", entp_intr);
+			formData.append("home_pg", home_pg);
+			formData.append("ori_logo_file", ori_logo_file);
+			formData.append("ori_logo_file_ext", ori_logo_file_ext);
+
+			formData.append("entp_mem_no", entp_mem_no);
+
+            formData.append("biz_tpy_cd", biz_tpy_cd);            
+            formData.append("entp_profile", entp_profile);
+            formData.append("biz_intro", biz_intro);
+            formData.append("entp_capital", entp_capital);
+            formData.append("entp_total_sales", entp_total_sales);
+            formData.append("entp_type_cd", entp_type_cd);
+            formData.append("entp_type", entp_type);
+            formData.append("location", location); 
+
+			$(".loading").attr("style", "display:''");
+
+			$.ajax({
+				cache : false,
+				url : '/entp/info/update/v2',
+				data : formData,
+				type : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+				contentType: false,
+				dataType : "json",
+				error : function(e) {
+					//console.log("error" + JSON.stringify(e));
+					console.log("error : "+e);
+					$(".loading").attr("style", "display:none");
+				},
+				success : function(rep) {
+					var rtnCd = rep.RtnCd
+					var rtnMsg = rep.RtnMsg
+					if(rtnCd == 1){
+						//window.location.reload();
+						$(".loading").attr("style", "display:none");
+						openPopup("update_pop");
+					} else if (rtnCd == 99) {
+					    window.location.href = rtnMsg;
+					    console.log("message : " + rtnMsg);
+				    } else {
+						console.log("등록 실패 : "+rtnMsg);
+						$(".loading").attr("style", "display:none");
+					}
+				}
+			});			
+		}
+    });
+
+    $(document).off("click", "#btn_update_test").on("click", "#btn_update_test", function(){
+
+        var est_dy = $("#est_dy").val(); //설립일
+
+        var ret = isValidDate(est_dy);    
+    });
+
+    //숫자만 입력가능
+    $("input:text[numberOnly]").on("focus", function() {        
+        var x = $(this).val();
+        
+    }).on("focusout", function() {
+        var x = $(this).val();855
+        if(x && x.length > 0) {
+            if(!$.isNumeric(x)) {
+                x = x.replace(/[^0-9]/g,"");
+            }
+            $(this).val(x);
+        }
+    }).on("keyup", function() {
+        $(this).val($(this).val().replace(/[^0-9]/g,""));
+    });
+    
+    // var updateBtnEnable = function(isEnable) {
+    //     if (isEnable == true) {
+    //         $('#btn_update').unbind('click', false);  // 활성화
+    //         $('#btn_update').css("background-color", "#092e40")
+    //     } else {
+    //         $('#btn_update').bind('click', false);      // 비 활성화
+    //         $('#btn_update').css("background-color", "#707070")
+    //     }    
+    // }
+
+    // 기업 박람회 삭제
+    $(document).off("click", "#btn_jobfair_del").on("click", "#btn_jobfair_del", function(){
+        var sel_jobfair = [];
+             
+        $('#jobfair_reg_list option:selected').each(function(){                
+            sel_jobfair.push($(this).val());
+        });
+        
+        console.log(sel_jobfair.join(","))
+
+        var entp_mem_no = "{{.EntpMemNo}}";
+        var entp_ko_nm = "{{.EntpKoNm}}";        
+        
+        console.log(`Check: EntpMemNo:${entp_mem_no}, EntpKoNm:${entp_ko_nm}, JobFair:${sel_jobfair.join(",")}`);
+
+        openPopup("jobfair_del_yn");
+    });
+
+    $(document).off("click", "#btn_jobfair_del_yn_confirm").on("click", "#btn_jobfair_del_yn_confirm", function(){
+        closePopup("jobfair_del_yn");
+
+        var sel_jobfair = [];
+             
+        $('#jobfair_reg_list option:selected').each(function(){                
+            sel_jobfair.push($(this).val());
+        });
+        
+        console.log(sel_jobfair.join(","))
+
+        var entp_mem_no = "{{.EntpMemNo}}";
+        var entp_ko_nm = "{{.EntpKoNm}}";        
+        
+        console.log(`Confirm: EntpMemNo:${entp_mem_no}, EntpKoNm:${entp_ko_nm}, JobFair:${sel_jobfair.join(",")}`);
+
+        jobfairEntpDel(entp_mem_no, sel_jobfair.join(","))
+    });
+
+    $(document).off("click", "#btn_jobfair_reg").on("click", "#btn_jobfair_reg", function(){
+        var sel_jobfair = $("select[id=jobfair_list] option:selected").val();
+        var sel_jobfair_nm = $("select[id=jobfair_list] option:selected").data("jobfair_title");
+
+        console.log(`Select: ${sel_jobfair_nm}(${sel_jobfair})`);
+
+        // 등록된 리스트 -> 중복 체크
+        // var reg_list = [];
+        // $('#jobfair_reg_list option').each(function(){ 
+        //     reg_list.push($(this).val());
+        // });
+        
+        // //var findResult = reg_list.find((e) => e == sel_val) != undefined ? true : false;        
+        // if (reg_list.find((e) => e == sel_jobfair) != undefined) {
+        //     //alert("이미 등록한 박람회입니다")
+        //     openPopup("already_reg_jobfair");
+        //     return;
+        // }
+
+        var is_dup = false;
+        $('#jobfair_reg_list option').each(function(){             
+            if ($(this).val() == sel_jobfair) {
+                is_dup = true;
+                return false;
+            }
+        });
+
+        if (is_dup == true) {
+            openPopup("already_reg_jobfair");
+            return;
+        }
+
+        var entp_mem_no = "{{.EntpMemNo}}";
+        var entp_ko_nm = "{{.EntpKoNm}}";        
+        
+        console.log(`Check: EntpMemNo:${entp_mem_no}, EntpKoNm:${entp_ko_nm}, JobFair:${sel_jobfair}`);
+        
+        openPopup("jobfair_reg_yn");
+        $("#jobfair_reg_yn_text").html(`${entp_ko_nm} 을(를) ${sel_jobfair_nm} 에 <br>등록 하시겠습니가?`);
+    });
+
+    $(document).off("click", "#btn_jobfair_reg_yn_confirm").on("click", "#btn_jobfair_reg_yn_confirm", function(){
+        closePopup("jobfair_reg_yn");
+
+        var sel_jobfair = $("select[id=jobfair_list] option:selected").val();
+        var sel_jobfair_nm = $("select[id=jobfair_list] option:selected").data("jobfair_title");
+       
+        var is_dup = false;
+        $('#jobfair_reg_list option').each(function(){             
+            if ($(this).val() == sel_jobfair) {
+                is_dup = true;
+                return false;
+            }
+        });
+
+        if (is_dup == true) {
+            //alert("이미 등록된 박람회입니다")        
+            openPopup("already_reg_jobfair");
+            return;
+        }
+
+        var entp_mem_no = "{{.EntpMemNo}}";
+        var entp_ko_nm = "{{.EntpKoNm}}";        
+        
+        console.log(`Confirm: EntpMemNo:${entp_mem_no}, EntpKoNm:${entp_ko_nm}, JobFair:${sel_jobfair}`);
+
+        jobfairEntpReg(entp_mem_no, sel_jobfair)
+    });
+
+    var jobfairEntpReg = function(entp_mem_no, job_fair){
+        $.ajax({
+            cache : false,
+            url : '/jobfair/entp/reg',
+            data : {
+                entp_mem_no : entp_mem_no,
+                job_fair : job_fair,
+            },
+            type : 'POST',
+            async : false,
+            dataType : "json",
+            success : function(rep) {
+                //console.log("Result:"+JSON.stringify(rep));         
+
+                if (rep) {
+                    var rtnData = rep.RslData
+                    
+                    if (rtnData.RtnCd == 1) {
+                        jobfairRegList(rep.RslJobFairList);
+                    } else if(rtnData.RtnCd == 99) {
+                        window.location.href = rtnData.RtnMsg;
+					    console.log("message: "+JSON.stringify(rtnData));                        
+                    } else {
+                        console.log("error:"+JSON.stringify(rtnData));                        
+                    }
+                }
+            },
+            error : function(e) {
+                console.log("error:"+JSON.stringify(e));                
+            },
+        });      
+    }  
+
+    var jobfairEntpDel = function(entp_mem_no, job_fair_arr){
+        $.ajax({
+            cache : false,
+            url : '/jobfair/entp/del',
+            data : {
+                entp_mem_no : entp_mem_no,
+                job_fair_arr : job_fair_arr,
+            },
+            type : 'POST',
+            async : false,
+            dataType : "json",
+            success : function(rep) {
+                //console.log("Result:"+JSON.stringify(rep));         
+
+                if (rep) {
+                    var rtnData = rep.RslData
+                    
+                    if (rtnData.RtnCd == 1) {
+                        jobfairRegList(rep.RslJobFairList);
+
+                        //var html = ``;
+                        //var rtnJobFairList = rep.RslJobFairList;
+
+                        // $("#jobfair_reg_list").children().remove();
+
+                        // html += `<select class="select reg" id="jobfair_reg_list" multiple>"`;                    
+                        // $.each(rtnJobFairList, function (e) {                                
+                        //     html += `<option value="${rtnJobFairList[e].MngCd}">${rtnJobFairList[e].Title}(${rtnJobFairList[e].MngCd})</option>`;
+                        // })
+                        // html += `</select>`;                        
+
+                        // $("#jobfair_reg_list").append(html);
+                    } else if(rtnData.RtnCd == 99) {
+                        window.location.href = rtnData.RtnMsg;
+					    console.log("message: "+JSON.stringify(rtnData));                        
+                    } else {
+                        console.log("error:"+JSON.stringify(rtnData));                        
+                    }
+                }
+            },
+            error : function(e) {
+                console.log("error:"+JSON.stringify(e));                
+            },
+        });      
+    }  
+
+    var jobfairRegList = function(job_fair_list) {
+        var html = ``;
+        
+        $("#jobfair_reg_list").children().remove();
+
+        html += `<select class="select reg" id="jobfair_reg_list" multiple>`;
+        $.each(job_fair_list, function (e) {                                
+            html += `<option value="${job_fair_list[e].MngCd}">${job_fair_list[e].Title}(${job_fair_list[e].MngCd})</option>`;
+        })
+        html += `</select>`;                        
+
+        $("#jobfair_reg_list").append(html);
+    }
+
+    // var jobfairAllList = function(job_fair_list){
+    //     var html = ``;
+        
+    //     $("#jobfair_list").children().remove();
+
+    //     html += `<select class="select list" id="jobfair_list">`;                            
+    //     $.each(job_fair_list, function (e) {                                
+    //         html += `<option value="${job_fair_list[e].MngCd}" data-jobfair_title="${job_fair_list[e].Title}" data-jobfair_cd="${job_fair_list[e].MngCd}">${job_fair_list[e].Title}(${job_fair_list[e].MngCd})</option>`;
+    //     })
+    //     html += `</select>`;                        
+
+    //     $("#jobfair_list").append(html);
+    // }    
+
+    // 기업 멤버 암호 초기화
+    $(document).off("click", "#btn_pw_init").on("click", "#btn_pw_init", function(){
+
+        var pw = $("#pw_init").val().replace(/'/gi,"`");         
+        if (pw == "") {
+            openPopup("empty_pw_init");
+            return;
+        }
+
+        if (pw.length < 6 || pw.length > 16) {
+            openPopup("valid_pw_init");
+            return;
+        }
+        
+        var entp_mem_no = "{{.EntpMemNo}}";        
+        var pp_chrg_sn = $("select[id=team_member_list] option:selected").data("pp_chrg_sn");
+        var pp_chrg_nm = $("select[id=team_member_list] option:selected").data("pp_chrg_nm");
+        var pp_chrg_bp_nm = $("select[id=team_member_list] option:selected").data("pp_chrg_bp_nm");
+        var entp_mem_id = $("select[id=team_member_list] option:selected").data("entp_mem_id");                
+                
+        console.log(`Check: EntpMemNo:${entp_mem_no}, PpChrgSn:${pp_chrg_sn}, Pwd:${pw}`);        
+        
+        openPopup("pw_init_yn");
+        $("#pw_init_yn_text").html(`${pp_chrg_nm}-${pp_chrg_bp_nm}(${entp_mem_id}) 멤버의 암호를 </br>[${pw}] 로 초기화 하시겠습니가?`);
+    });
+
+    $(document).off("click", "#btn_pw_init_yn_confirm").on("click", "#btn_pw_init_yn_confirm", function(){
+        closePopup("pw_init_yn");     
+        
+        var pw = $("#pw_init").val().replace(/'/gi,"`");         
+        if (pw == "") {
+            openPopup("empty_pw_init");
+            return;
+        }
+        
+        if (pw.length < 6 || pw.length > 16) {
+            openPopup("valid_pw_init");
+            return;
+        }
+
+        var entp_mem_no = "{{.EntpMemNo}}";        
+        var pp_chrg_sn = $("select[id=team_member_list] option:selected").data("pp_chrg_sn");        
+                
+        console.log(`Confirm: EntpMemNo:${entp_mem_no}, PpChrgSn:${pp_chrg_sn}, Pwd:${pw}`);
+
+        entpTeamMemberPwUpdate(entp_mem_no, pp_chrg_sn, pw);
+    });   
+    
+    var entpTeamMemberPwUpdate = function(entp_mem_no, pp_chrg_sn, pw){
+        $.ajax({
+            cache : false,
+            url : '/team/member/pwd/update',
+            data : {
+                entp_mem_no : entp_mem_no,
+                pp_chrg_sn : pp_chrg_sn,
+                pwd : pw,
+            },
+            type : 'POST',
+            async : false,
+            dataType : "json",
+            success : function(rep) {                
+                if (rep) {                    
+                    if (rep.RtnCd == 1) {
+                        $(".loading").attr("style", "display:none");
+						openPopup("update_pop");                       
+                    } else if(rep.RtnCd == 99) {
+                        window.location.href = rep.RtnMsg;
+					    console.log("message: "+JSON.stringify(rep));   
+                    } else {
+                        console.log("error:"+JSON.stringify(rep));         
+                        openPopup("update_fail_pop");
+                    }
+                }
+            },
+            error : function(e) {
+                console.log("error:"+JSON.stringify(e));                
+            },
+        });      
+    }  
+    
+    // 알림팝업 닫기
+    // $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+    //     //$('.popupWrap.alert').hide();
+    //     window.location.reload();
+    // });  
+
+    // 알림팝업 닫기
+    $(document).off("click", "#btn_update_pop_confirm").on("click", "#btn_update_pop_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+        window.location.reload();
+    });  
+
+    $(document).off("click", "#btn_update_fail_pop_confirm").on("click", "#btn_update_fail_pop_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+        //window.location.reload();
+    });
+
+    $("input[name=pw_init]").keyup( function(event) {         
+        if (!(event.keyCode >= 37 && event.keyCode <= 40)) {
+            var inputVal = $(this).val();
+
+            $(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+        }
+    });
+
+    
+    </script>
+{{end}}

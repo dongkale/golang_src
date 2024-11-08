@@ -1,0 +1,331 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>이벤트</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              {{template "include/admin_contents_menu.html" .}}
+            </div>
+            <div class="listBox">
+
+                  
+            <div class="reqWrite">
+            <input type="hidden" id="page_no" value="{{.PageNo}}">
+            <form id="inquiryForm" name="inquiryForm" method="post">
+            <input type="hidden" id="inq_gbn" name="inq_gbn">
+              <table class="formTable">
+                <colgroup>
+                  <col width="80px" />
+                  <col />
+                </colgroup>
+                <tbody>
+                <form method="post" action="#" id="notiFrm" name="notiFrm" enctype="multipart/form-data">
+                  <tr>
+                    <th class="tit">게시*</th>
+                    <td>
+                      <select name="gbn_cd" id="gbn_cd">
+                        <option value="">선택하세요</option>
+                        <option {{if eq "00" .GbnCd}}selected{{end}} value="00">공통</option>
+                        <option {{if eq "01" .GbnCd}}selected{{end}} value="01">기업</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="tit">제목*</th>
+                    <td>
+                      <div class="countArea">
+                        <p class="count">(<span><em id="areaByteTitle">80</em>/80</span>)</p>
+                          <input type="text" class="w100p" maxlength="80" name="title" id="title" value="{{.Title}}" placeholder="공지 제목을 입력해주세요">
+                        </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="tit">내용*</th> 
+                    <td><script name="event_doc" id="event_doc" type="text/plain">{{str2html .Cont}}</script></td>
+                  </tr>
+                </tbody>
+                </form>
+              </table>
+              <div class="btnSec">
+                <a href="javascript:void(0);" id="btn_cancel">목록</a>
+                <a href="javascript:void(0);" id="btn_process" data-cu_cd="{{.CuCd}}" class="active">{{if eq "U" .CuCd}}수정{{else}}등록{{end}}</a>
+                {{if eq "U" .CuCd}}
+                <a href="javascript:void(0);" id="btn_delete">삭제</a>
+                {{end}}
+              </div>
+              <p class="validationMessage"  style="display:none">게시 형태를 선택해주세요.</p>
+            </form>
+            </div>
+          </div>
+          <!-- // 페이지 영역 -->
+        </div>
+        <!-- 컨텐츠영역 -->
+      </div>
+
+      <!-- 삭제 팝업 -->
+      <div class="popupWrap confirm" id="event_delete_pop">
+        <div class="popup">
+          <div class="popContent">
+            <p id="confirmMessage">해당 이벤트를<br>삭제 하시겠습니까?</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+          </div>
+        </div>
+        <span class="cover"></span>
+      </div>    
+      <!-- 삭제 팝업 -->
+
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var ue = UE.getEditor('event_doc',{
+          initialFrameWidth :"100%",
+          initialFrameHeight:350,
+          scaleEnabled:true			
+        });
+        ue.ready(function () {
+          ue.addListener('focus', function () {
+            var ueFolderNm = "service";
+            var ueSubFolderNm = "event";
+
+            ue.execCommand('serverparam', {
+              "ueFolderNm": ueFolderNm,
+              "ueSubFolderNm": ueSubFolderNm,
+            });
+          });
+        });
+
+        //$("#notiFrm").validate(validOption);
+        $("#title").keyup();
+      });
+
+      // 공지 제목 글자수 체크
+      $(document).on("keyup","#title",function(){
+        textLenCheck(this, 80, "#areaByteTitle");
+      });
+
+      $(document).off("change", "#gbn_cd").on("change", "#gbn_cd", function(e) {
+        $(".validationMessage").attr("style", "display:none");
+        $(".validationMessage").text("");
+      });
+
+      // 목록
+      $(document).off("click", "#btn_cancel").on("click", "#btn_cancel", function(e) {
+        var pn = $("#page_no").val();
+        window.location.href="/admin/event/content/list?pn="+pn;
+      });
+
+      // 삭제
+      $(document).off("click", "#btn_delete").on("click", "#btn_delete", function(e) {
+        openPopup("event_delete_pop");
+      });      
+
+     // 이벤트 삭제
+     $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        var serno = "{{.Sn}}";
+        var pn = $("#page_no").val();
+
+        $(".loading").attr("style", "display:''");
+        $.ajax({
+          cache : false,
+          url : '/admin/event/delete',
+          data : {
+            sn : serno
+          },
+          type : 'POST',
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == 1){
+              window.location.href="/admin/event/content/list?pn"+pn;
+            } else {
+              console.log("error");
+              $(".loading").attr("style", "display:none");
+            }
+          },
+          error : function(e) {
+            console.log("error + "+e);
+            $(".loading").attr("style", "display:none");
+          }
+        });	
+     });            
+
+      // 등록/수정
+      $(document).off("click", "#btn_process").on("click", "#btn_process", function(e) {
+
+        if(!$("#gbn_cd").val()){
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("게시구분을 선택해주세요");
+          return;
+        }
+
+        if($("#title").val().length < 4){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("이벤트제목을 4자이상 입력해주세요");
+          return;
+        }            
+
+        if ($.trim(UE.getEditor('event_doc').getContent()) == ""){
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+          $(".validationMessage").attr("style", "display:''");
+          $(".validationMessage").text("이벤트내용을 입력해주세요");
+          return;
+        }        
+
+        var serno = "{{.Sn}}";
+        var cu_cd = $(this).data("cu_cd");
+        var sn = serno;
+        var gbn_cd = $('select[id=gbn_cd] option:selected').val();
+        var title = $("#title").val();
+        var event_doc = UE.getEditor('event_doc').getContent();
+
+        /*
+        console.log("cu_cd : "+cu_cd);
+        console.log("sn : "+sn);
+        console.log("gbn_cd : "+gbn_cd);
+        console.log("title : "+title);
+        console.log("event_doc : "+event_doc);
+        
+        if ($.trim(UE.getEditor('event_doc').getContent()) == ""){
+          $(".event_doc_message").addClass("error");
+          $(".event_doc_message").text("내용을 입력해주세요");
+          return;
+        }
+        */
+
+        var event_doc1 = event_doc.substring(0,1500);
+        var event_doc2 = event_doc.substring(1500,3000);
+        var event_doc3 = event_doc.substring(3000,4500);
+        var event_doc4 = event_doc.substring(4500,6000);
+        var event_doc5 = event_doc.substring(6000,7500);
+        var event_doc6 = event_doc.substring(7500,9000);
+        var event_doc7 = event_doc.substring(9000,10500);
+        var event_doc8 = event_doc.substring(10500,12000);
+        var event_doc9 = event_doc.substring(12000,13500);
+
+        var event_doc10 = event_doc.substring(13500,15000);
+        var event_doc11 = event_doc.substring(15000,16500);
+        var event_doc12 = event_doc.substring(16500,18000);
+        var event_doc13 = event_doc.substring(18000,19500);
+        var event_doc14 = event_doc.substring(19500,21000);
+        var event_doc15 = event_doc.substring(21000,22500);
+        var event_doc16 = event_doc.substring(22500,24000);
+        var event_doc17 = event_doc.substring(24000,25500);
+        var event_doc18 = event_doc.substring(25500,27000);
+        var event_doc19 = event_doc.substring(27000,28500);
+        var event_doc20 = event_doc.substring(28500,30000);
+
+        var event_doc21 = event_doc.substring(30000,31500);
+        var event_doc21 = event_doc.substring(31500,33000);
+        var event_doc22 = event_doc.substring(33000,34500);
+        var event_doc23 = event_doc.substring(34500,36000);
+        var event_doc24 = event_doc.substring(36000,37500);
+        var event_doc25 = event_doc.substring(37500,39000);
+        var event_doc26 = event_doc.substring(39000,40500);
+        var event_doc27 = event_doc.substring(40500,42000);
+        var event_doc28 = event_doc.substring(42000,43500);
+        var event_doc29 = event_doc.substring(43500,45000);
+        var event_doc30 = event_doc.substring(45000,46500);
+
+        /*
+        console.log("순번 : "+sn);
+        console.log("구분 : "+brd_gbn_cd);
+        console.log("제목 : "+title);
+        console.log("내용 : "+event_doc1);
+        console.log("내용 : "+event_doc2);
+        console.log("내용 : "+event_doc3);
+        console.log("내용 : "+event_doc4);
+        console.log("내용 : "+event_doc5);
+        console.log("내용 : "+event_doc6);
+        console.log("내용 : "+event_doc7);
+        
+        return;
+        */
+        var formData = new FormData();
+
+        formData.append("sn", sn);
+        formData.append("cu_cd", cu_cd);
+        formData.append("gbn_cd", gbn_cd);
+        formData.append("title", title);
+        formData.append("notiDoc1", event_doc1);
+        formData.append("notiDoc2", event_doc2);
+        formData.append("notiDoc3", event_doc3);
+        formData.append("notiDoc4", event_doc4);
+        formData.append("notiDoc5", event_doc5);
+        formData.append("notiDoc6", event_doc6);
+        formData.append("notiDoc7", event_doc7);
+        formData.append("notiDoc8", event_doc8);
+        formData.append("notiDoc9", event_doc9);
+        formData.append("notiDoc10", event_doc10);
+        formData.append("notiDoc11", event_doc11);
+        formData.append("notiDoc12", event_doc12);
+        formData.append("notiDoc13", event_doc13);
+        formData.append("notiDoc14", event_doc14);
+        formData.append("notiDoc15", event_doc15);
+        formData.append("notiDoc16", event_doc16);
+        formData.append("notiDoc17", event_doc17);
+        formData.append("notiDoc18", event_doc18);
+        formData.append("notiDoc19", event_doc19);
+        formData.append("notiDoc20", event_doc20);
+        formData.append("notiDoc21", event_doc21);
+        formData.append("notiDoc22", event_doc22);
+        formData.append("notiDoc23", event_doc23);
+        formData.append("notiDoc24", event_doc24);
+        formData.append("notiDoc25", event_doc25);
+        formData.append("notiDoc26", event_doc26);
+        formData.append("notiDoc27", event_doc27);
+        formData.append("notiDoc28", event_doc28);
+        formData.append("notiDoc29", event_doc29);
+        formData.append("notiDoc30", event_doc30);
+        
+        $.ajax({
+          cache : false,
+          url : '/admin/event/process',
+          data : formData,
+          type : 'POST',
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          dataType : "json",
+          error : function(e) {
+            console.log("error" + e);
+          },
+          success : function(rep) {
+            //$('.waitloadingbar').attr('style','display:none');
+            var rtnCd = rep.RtnCd
+            var rtnMsg = rep.RtnMsg
+
+            if(rtnCd == "1"){
+              var pn = $("#page_no").val();
+              window.location.href="/admin/event/content/list?pn="+pn;
+            } else {
+              console.log("message" + rtnMsg);
+              $("#btnInsert").prop("disabled", false);
+            }
+          },
+          error : function() {
+            //$('.waitloadingbar').attr('style','display:none');
+          }
+        });	
+    });
+    </script>    
+
+{{end}}    

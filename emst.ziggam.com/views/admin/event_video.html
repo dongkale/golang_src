@@ -1,0 +1,79 @@
+{{template "include/popup_base.html" .}}
+
+{{define "body"}}
+
+<table width="100%" height="100%">
+  <tr height="30">
+    <td colspan="{{.TotCnt}}" style="text-align: center">
+      [<span style="font:bold" id="thm_sec"></span>]&nbsp;<span id="qst_sec"></span>
+    </td>
+  </tr>
+  {{if .AdminEventVideo}}
+  <tr height="40">
+    {{range .AdminEventVideo}}
+    <td style="text-align: center">
+      {{if eq .VdSn .CVdSn}}
+      <a href="javascript:void(0);" style="color:black" id="btn_video" data-vd_sn="{{.VdSn}}"><b>{{.Sn}}번 영상{{if eq "01" .OpnSetCd}}(공개) {{else if eq "02" .OpnSetCd}}(부분공개){{else}}(비공개){{end}}</b></a>
+      {{else}}
+      <a href="javascript:void(0);" id="btn_video" data-vd_sn="{{.VdSn}}"><b>{{.Sn}}번 영상{{if eq "01" .OpnSetCd}}(공개) {{else if eq "02" .OpnSetCd}}(부분공개){{else}}(비공개){{end}}</b></a>
+      {{end}}
+    </td>
+    {{end}}
+  </tr>
+  {{else}}
+  <tr height="30">
+    <td style="text-align: center">
+      no data
+    </td>
+  </tr>
+  {{end}}
+  <tr>
+    <td colspan="{{.TotCnt}}">
+      <video controls width="100%" height="100%" controlsList="nodownload">
+        <source id="vd_play" src="{{.VVdFilePath}}" type="video/mp4">
+      </video>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    var vd_sn = "{{.VVdSn}}";
+
+    if (vd_sn == "0") {
+      console.log("최초 영상 실행");
+      $("#btn_video").trigger("click");
+    } else {
+
+      var reg_dt = "{{.VRegDt}}";
+      var vd_file_path = "{{.VVdFilePath}}";
+      var thm_knd_cd = "{{.VThmKndCd}}";
+      var qst_cd = "{{.VQstCd}}";
+      var thm_desc = "{{.VThmDesc}}";
+      var vd_sec = "{{.VVdSec}}";
+
+      console.log("reg_dt : "+reg_dt);
+      console.log("vd_file_path : "+vd_file_path);
+      console.log("thm_knd_cd : "+thm_knd_cd);
+      console.log("qst_cd : "+qst_cd);
+      console.log("thm_desc : "+thm_desc);
+      console.log("vd_sec : "+vd_sec);
+
+      //$("#vd_play").attr("scr",vd_file_path);
+      $("#thm_sec").text(thm_knd_cd);
+      $("#qst_sec").text(qst_cd);
+    }
+  });
+
+  // 영상 보기
+  $(document).off("click", "#btn_video").on("click", "#btn_video", function(e) {
+    var vd_sn = $(this).data("vd_sn");
+    var mem_no = "{{.PpMemNo}}";
+    var knd_cd = "{{.KndCd}}";
+    window.location.replace("/admin/event/video?pp_mem_no="+mem_no+"&knd_cd="+knd_cd+"&vd_sn="+vd_sn);
+  });
+
+</script>
+
+{{end}}

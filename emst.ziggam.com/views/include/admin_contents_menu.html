@@ -1,0 +1,39 @@
+<ul>
+    <!-- 활성화 페이지 class="active" -->
+    {{if eq "01" .SubMenuId}}
+    <li class="active"><a href="/admin/notice/list">공지사항</a></li>
+    {{else}}
+    <li><a href="/admin/notice/list">공지사항</a></li>
+    {{end}}
+    <!-- {{if eq "02" .SubMenuId}}
+    <li class="active"><a href="/admin/event/content/list">이벤트</a></li>
+    {{else}}
+    <li><a href="/admin/event/content/list">이벤트</a></li>
+    {{end}} -->
+    {{if eq "03" .SubMenuId}}
+    <li class="active"><a href="/admin/inquiry/list">문의</a></li>
+    {{else}}
+    <li><a href="/admin/inquiry/list">문의</a></li>
+    {{end}}
+    {{if eq "04" .SubMenuId}}
+    <li class="active"><a href="/admin/service/list">서비스정책</a></li>
+    {{else}}
+    <li><a href="/admin/service/list">서비스정책</a></li>
+    {{end}}
+    <!--<li><a href="/admin/entp/list">기업관리</a></li>-->
+    {{if eq "05" .SubMenuId}}
+    <li class="active"><a href="/admin/version/info">앱 버전관리</a></li>
+    {{else}}
+    <li><a href="/admin/version/info">앱 버전관리</a></li>
+    {{end}}
+    {{if eq "06" .SubMenuId}}
+    <li class="active"><a href="/admin/intro/popup/list">INTRO 팝업관리</a></li>
+    {{else}}
+    <li><a href="/admin/intro/popup/list">INTRO 팝업관리</a></li>
+    {{end}}
+    {{if eq "07" .SubMenuId}}
+    <li class="active"><a href="/admin/banner/list">배너관리</a></li>
+    {{else}}
+    <li><a href="/admin/banner/list">배너관리</a></li>
+    {{end}}
+</ul>

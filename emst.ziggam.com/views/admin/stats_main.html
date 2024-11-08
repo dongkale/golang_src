@@ -1,0 +1,251 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <h2>통계 관리</h2>
+        <div class="recruitList">
+        <input type="hidden" id="page_no" value="{{.PageNo}}">  
+          <div class="tabMenu">
+            <ul>
+              <li class="active"><a href="/admin/stats/main">회원 현황</a></li>
+              <li><a href="/admin/stats/recruit/main">채용 현황</a></li>
+              <li><a href="/admin/stats/period/main">기간별 현황</a></li>
+            </ul>
+          </div>
+          <div class="listBox">
+            <div class="topSec">
+              <div class="posL">
+              </div>
+            </div>
+            <div class="memberList">
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="6">&nbsp;&nbsp;◎ 개인회원 가입현황&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="btn_stats_member">more ▶</a></td>
+                </tr>
+                <tr>
+                    <th>총가입수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.TotMemCnt}}건</td>
+                    <th>신규(당일)수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.TdMemCnt}}건</td>
+                    <th>탈퇴수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.WdMemCnt}}건</td>
+                </tr>
+              </table>
+              <br>
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="6">&nbsp;&nbsp;◎ 기업회원 가입현황&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="btn_stats_entp">more ▶</a></td>
+                </tr>
+                <tr>
+                    <th>총가입수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.TotEntpCnt}}건</td>
+                    <th>신규(당일)수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.TdEntpCnt}}건</td>
+                    <th>탈퇴수</th>
+                    <td style="text-align: right; padding-right: 10px">{{.WdEntpCnt}}건</td>
+                </tr>
+              </table>
+              <br>
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="6">&nbsp;&nbsp;◎ OS, 성별 가입현황(개인회원)</td>
+                </tr>
+                <tr>
+                  <td colspan="6">
+                    <table>
+                      <tr>
+                          <th>Android</th>
+                          <th>iOS</th>
+                          <th>남자</th>
+                          <th>여자</th>
+                      </tr>
+                      <tr>
+                          <td style="text-align: right; padding-right: 10px">{{.AdMemCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.IsMemCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.MMemCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.FMemCnt}}건</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>      
+              </table>
+              <br>
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="6">&nbsp;&nbsp;◎ 영상 프로필 현황</td>
+                </tr>
+                <tr>
+                  <td colspan="6">
+                    <table>
+                      <tr>
+                          <th>총 프로필 등록 회원수</th>
+                          <th>총 등록수</th>
+                          <th>전체공개수</th>
+                          <th>부분공개수</th>
+                          <th>비공개수</th>
+                      </tr>
+                      <tr>
+                          <td style="text-align: right; padding-right: 10px">{{.VpMemCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.TotVpCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.FVpCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.PVpCnt}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.CVpCnt}}건</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <br>
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <tr>
+                    <td style="text-align: left; color:black; font-size: 14px" colspan="6">&nbsp;&nbsp;◎ 개인회원 연령분포 현황</td>
+                </tr>
+                <tr>
+                  <td colspan="6">
+                    <table>
+                      <tr>
+                          <th>~15세</th>
+                          <th>16~20세</th>
+                          <th>21~25세</th>
+                          <th>25~30세</th>
+                          <th>31~35세</th>
+                          <th>35~40세</th>
+                          <th>41~45세</th>
+                          <th>45~50세</th>
+                          <th>51~55세</th>
+                          <th>55~60세</th>
+                          <th>61~65세</th>
+                          <th>65~70세</th>
+                          <th>71세~</th>
+                      </tr>
+                      <tr>
+                          <td style="text-align: right; padding-right: 10px">{{.P10U}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P16_20}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P21_25}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P26_30}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P31_35}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P36_40}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P41_45}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P46_50}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P51_55}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P56_60}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P61_65}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P66_70}}건</td>
+                          <td style="text-align: right; padding-right: 10px">{{.P70O}}건</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <div class="memberList sub2">
+              <table style="border-top: 1px solid rgb(240, 240, 240);">
+                <colgroup>
+                  <col />
+                  <col width="200px" />
+                  <col width="200px" />
+                </colgroup>
+                <thead>
+                  <tr>
+                      <td style="text-align: left; color:black; font-size: 14px">&nbsp;&nbsp;◎ 기업회원 EVP영상 PV/UV 현황&nbsp;&nbsp;◎ 총({{.TotEvpCnt}})건</td>
+                      <td style="text-align: right; padding-right: 10px" colspan="2">
+                        <select id="entp_mem_no">
+                          <option value="T10">TOP10</option>
+                          {{range .AdminStatsSub3}}
+                          <option value="{{.LstEntpMemNo}}">{{.LstEntpKoNm}}</option>
+                          {{end}}
+                        </select>
+                      </td>
+                  </tr>
+                  <tr>
+                    <th>기업명</th>
+                    <th>PV</th>
+                    <th>UV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{range .AdminStatsSub2}}
+                  <tr>
+                      <td style="text-align: left; padding-left: 10px">{{.EntpKoNm}}</td>
+                      <td style="text-align: right; padding-right: 10px">{{.PvCnt}}건</td>
+                      <td style="text-align: right; padding-right: 10px">{{.UvCnt}}건</td>
+                  </tr>
+                  {{end}}
+                </tbody>
+              </table>
+              </div>
+            </div>            
+          </div>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+  </div>
+
+    <script type="text/javascript">
+
+      // 개인회원 상세현황
+      $(document).off("click", "#btn_stats_member").on("click", "#btn_stats_member", function(e) {
+        window.location.href="/admin/stats/member/detail?mem_gbn=P&stat_cd=01";
+      });
+
+      // 기업회원 상세현황
+      $(document).off("click", "#btn_stats_entp").on("click", "#btn_stats_entp", function(e) {
+        window.location.href="/admin/stats/member/detail?mem_gbn=E&stat_cd=01";
+      });
+
+      // 기업 선택
+      $(document).off("change", "#entp_mem_no").on("change", "#entp_mem_no", function(e) {
+        ajaxEntpList();
+      });
+
+      // 리스트 페이지 AJAX
+			var ajaxEntpList = function(v) {
+        var entp_mem_no = $("#entp_mem_no").val();
+        //console.log("entp_mem_no : "+entp_mem_no);
+        
+        $.ajax({
+					type: "POST",
+					url: "/admin/stats/main",
+					data:{
+						entp_mem_no : entp_mem_no,
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnAdminStatsSub2Data.length > 0){
+							$(".memberList.sub2").find("tbody").children().remove();
+							$.each(rep.RtnAdminStatsSub2Data,function(e) {
+                var html = "";
+                html += "<tr>";
+                html += "<td style=\"text-align: left; padding-left: 10px\">"+rep.RtnAdminStatsSub2Data[e].EntpKoNm+"</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsSub2Data[e].PvCnt+"건</td>";
+                html += "<td style=\"text-align: right; padding-right: 10px\">"+rep.RtnAdminStatsSub2Data[e].UvCnt+"건</td>";
+                html += "</tr>";
+								$(".memberList.sub2").find("tbody").append(html);
+              })
+						}else{
+              $(".memberList.sub2").find("tbody").children().remove();
+              var html = "";
+              html += "<td colspan=\"8\">";
+              html += "<p class=\"noData\">내역이 없습니다</p>";
+              html += "</td>";
+              $(".memberList.sub2").find("tbody").append(html);
+						}
+					}
+				});				
+			}   
+
+    </script>
+
+{{end}}

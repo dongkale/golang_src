@@ -1,0 +1,319 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 회원가입 -->
+<div class="pageLogin">
+  <div class="join">
+    <a href="javascript:void(0);" class="btnBack">이전페이지로돌아가기</a>
+    <dl class="topInfo">
+      <dt>회원가입</dt>
+      <dd>직감 기업회원</dd>
+      <dd class="step st03">STEP3</dd>
+    </dl>
+    <form id="regForm" name="regForm" method="post">
+    <input type="hidden" id="entp_ko_nm" value="{{.EntpKoNm}}">
+    <input type="hidden" id="biz_reg_no" value="{{.BizRegNo}}">
+    <input type="hidden" id="rep_nm" value="{{.RepNm}}">
+    <input type="hidden" id="pp_chrg_nm" value="{{.PpChrgNm}}">
+    <input type="hidden" id="pp_chrg_tel_no" value="{{.PpChrgTelNo}}">
+    <input type="hidden" id="email_recv_yn" value="{{.EmailRecvYn}}">
+    <div class="joinForm">
+      <dl>
+        <dt>로그인 정보</dt>
+        <dd>
+          <input type="text" name="entp_mem_id" id="entp_mem_id" maxlength="16" style="text-transform: lowercase;" class="alphaNum" placeholder="아이디">
+          <p class="validate entp_mem_id_message init">영문과 숫자만 사용 가능합니다. (4~16자)</p>
+          <!-- 
+          <p class="validate">아이디를 입력해주세요.</p>
+          <p class="validate">영문과 숫자로 이루어진 6~16자리 문자로 입력해주세요.</p>
+          -->
+        </dd>
+        <dd>
+          <input type="password" name="pwd" id="pwd" maxlength="16" placeholder="비밀번호">
+          <p class="validate pwd_message init">영문과 숫자가 모두 포함되어야 합니다. (6~16자)</p>
+          <!-- 
+          <p class="validate">비밀번호를 입력해주세요.</p>
+          <p class="validate">영문과 숫자로 이루어진 6~16자리 문자로 입력해주세요.</p>
+          -->
+        </dd>
+        <dd>
+          <input type="password" name="re_pwd" id="re_pwd" maxlength="16" placeholder="비밀번호 확인">
+          <p class="validate re_pwd_message init"></p>
+        </dd>
+        <dd class="emailAddress">
+          <input type="text" name="email" id="email" maxlength="30" placeholder="이메일 주소">
+          <p class="validate email_message init">입력하신 주소로 인증 메일이 발송되며, 변경이 불가능합니다.</p>
+          <!-- 
+          <p class="validate">이메일 주소를 입력해주세요.</p>
+          <p class="validate">이메일 주소를 정확히 입력해주세요.</p>
+          <p class="validate">중복된 이메일입니다.</p>
+          -->
+        </dd>
+      </dl>
+    </div>    
+    <p class="btn"><a href="javascript:void(0);" id="btn_complete">회원가입 완료</a></p>
+    <p class="info">* 아이디, 비밀번호 찾기 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a> 를 이용해주세요.</p>
+  </div>
+  <span class="loginBoxBg"></span>
+</form>
+</div>
+<!-- 회원가입 -->
+
+<!-- 일반팝업_버튼2개 -->
+<div class="popupWrap confirm" id="reg_common_pop">
+  <div class="popup">
+    <div class="popContent">
+      <p id="confirmMessage"></p>
+    </div>
+    <div class="popBtn">
+      <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+      <a href="javascript:void(0);" class="status" id="btn_confirm">확인</a>
+    </div>
+  </div>
+  <span class="cover"></span>
+</div>    
+<!-- 일반팝업_버튼2개 -->
+
+<!-- 일반팝업_버튼1개 -->
+<div class="popupWrap alert" id="join_alert_pop">
+  <div class="popup">
+    <div class="popContent">
+      <p>직감 기업 회원가입이 되신 걸<br>진심으로 감사드립니다.</p>
+    </div>
+    <div class="popBtn">
+      <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+    </div>
+  </div>
+  <span class="cover"></span>
+</div>
+<!-- // 일반팝업_버튼1개 -->     
+
+<script type="text/javascript">
+
+    // Form Validation Check
+    $(document).ready(function() {
+      $("#regForm").validate(validOption);
+    });
+
+    // Validation
+    var validOption = {
+      onkeyup: false
+      ,onclick: false
+      ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+        if($(element).valid()){				// 체크 통과
+          var id = $(element).attr("id");	
+          $(".validate."+id+"_message").removeClass("init");
+          $("."+id+"_message").text("");	// message box clear
+        }
+      }
+      ,onfocusin: function(element) {			// 포커스 인 시 동작
+        var id = $(element).attr("id");
+        resetInput(id);
+      }
+      ,rules: {
+        entp_mem_id: {
+          required: true,
+          maxlength: 16,
+				  minlength: 4,
+          remote: {
+            url:"/common/dup_chk"
+            ,type: "post"
+            ,data: {
+              gbn_cd: '001'
+              ,item_val: function() {
+                return $("#entp_mem_id").val();
+              }
+            }
+          }	
+        },
+        pwd : {
+          required: true, 
+          maxlength: 16, 
+          minlength: 6
+        },
+        re_pwd : {required: true, equalTo: "#pwd"},
+        email: {
+          required: true,
+          email: true,
+          remote: {
+            url:"/common/dup_chk"
+            ,type: "post"
+            ,data: {
+              gbn_cd: '002'
+              ,item_val: function() {
+                return $("#email").val();
+              }
+            }
+          }	
+        },
+      }
+      ,errorPlacement: function(error, element){		
+        var id = element.attr("id");
+        //console.log("err_id :"+id);
+        $(".validate."+id+"_message").removeClass("init");
+        $("."+id+"_message").text(error.text());
+      }
+      ,messages: {
+        entp_mem_id:{
+          required: "아이디를 입력해주세요"
+          ,minlength: "아이디는 최소 4자 이상입니다."
+          ,maxlength: "아이디는 최대 16자 이상입니다."
+          ,remote: "이미 존재하는 아이디입니다."
+
+        },
+        pwd: {
+          required: "비밀번호를 입력해주세요."
+          ,minlength: "비밀번호는 최소 6자 이상입니다."
+          ,maxlength: "비밀번호는 최대 16자 이상입니다."
+        },
+        re_pwd: {
+          required: "비밀번호를 다시 입력해주세요."
+          ,equalTo: "비밀번호가 일치하지 않습니다."
+        },
+        email:{
+          required: "이메일을 입력해주세요",
+          email: "올바른 이메일형식이 아닙니다.",
+          remote: "이미 존재하는 이메일입니다"
+        },
+      }
+      ,success: function(element){
+        var str = $(element).attr("id");
+        var id = str.substring(0,str.length-6);
+        $(".validate."+id+"_message").addClass("init");
+      }
+    }
+
+    // input box reset
+    var resetInput = function(id){
+      $("."+id+"_message").text("");				// message box clear
+    }
+    
+    // 기업회원 가입
+    $(document).off("click", "#btn_complete").on("click", "#btn_complete", function(e) {
+          if($("#regForm").valid()){
+          $(".loading").attr("style", "display:''");
+
+          var valid_pwd = $("#pwd").val();  
+          console.log
+          
+          if(CheckPass(valid_pwd) == false) {
+            $(".pwd_message").text("");
+            $(".pwd_message").text("비밀번호는 영문,숫자 조합으로 설정해주세요.");
+            $(".loading").attr("style", "display:none");
+            return;
+          }
+
+          var entp_ko_nm = $("#entp_ko_nm").val();
+          var biz_reg_no = $("#biz_reg_no").val();
+          var rep_nm = $("#rep_nm").val();
+          var pp_chrg_nm = $("#pp_chrg_nm").val();
+          var pp_chrg_tel_no = $("#pp_chrg_tel_no").val();
+          var entp_mem_id = $("#entp_mem_id").val();
+          var pwd = $("#pwd").val();
+          var email = $("#email").val();
+          var email_recv_yn = $("#email_recv_yn").val();
+
+          var formData = new FormData();
+          formData.append("entp_ko_nm", entp_ko_nm);
+          formData.append("biz_reg_no", biz_reg_no);
+          formData.append("rep_nm", rep_nm);
+          formData.append("pp_chrg_nm", pp_chrg_nm);
+          formData.append("pp_chrg_tel_no", pp_chrg_tel_no);
+          formData.append("entp_mem_id", entp_mem_id);
+          formData.append("pwd", pwd);
+          formData.append("email", email);
+          formData.append("email_recv_yn", email_recv_yn);
+
+          $.ajax({
+            url : '/entp/insert',
+            data : formData,
+            type : 'POST',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+              //console.log("error" + JSON.stringify(e));
+              $(".loading").attr("style", "display:none");
+            },
+            success : function(rep) {
+              var rtnCd = rep.RtnCd
+              var rtnMsg = rep.RtnMsg
+              var rtnMemId = rep.EntpMemId
+
+              if(rtnCd == "1"){
+                $(".loading").attr("style", "display:none");
+                $("#entp_ko_nm").val("");
+
+                // 로그인 처리
+                $.ajax({
+                    cache : false,
+                    url : '/entp/insert/login',
+                    data : {
+                      mem_id : rtnMemId,
+                    },
+                    type : 'POST',
+                    async : false,
+                    dataType : "json",
+                    success : function(rep) {
+                      var rtnCd = rep.RtnCd;
+                      var rtnMsg = rep.RtnMsg;
+
+                      if (rtnCd == 1){
+                          window.location.replace("/entp/info/write");
+                      }
+                    },
+                    error : function(e) {
+                      console.log("error:"+JSON.stringify(e));
+                      $(".loading").attr("style", "display:none");
+                      window.location.replace("/");
+                    },
+                  });      
+                //openPopup("join_alert_pop");
+              } else {
+                $(".loading").attr("style", "display:none");
+                console.log("회원가입 실패 : "+rtnMsg);
+              }
+            }
+          });	          
+        }
+    });
+
+    // 영문(소문자), 숫자만 입력
+    $(document).off("keyup", ".alphaNum").on("keyup", ".alphaNum", function(e) {
+      $(this).val($(this).val().replace(/[^a-z_0-9]/g,""));
+    });
+
+    // 영문(소문자), 숫자만 입력
+    $(document).off("focusout", ".alphaNum").on("focusout", ".alphaNum", function(e) {
+      $(this).val($(this).val().replace(/[^a-z_0-9]/g,""));
+    });
+
+    // 뒤로가기 팝업
+    $(document).off("click", ".btnBack").on("click", ".btnBack", function(e) {
+      $("#confirmMessage").html("회원가입이 완료되지 않았어요!<br>입력하신 내용은 저장되지 않았습니다.<br>정말 이동하시겠어요?");
+      openPopup("reg_common_pop");
+    });
+    
+    // 팝업창 닫기
+    $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+      history.go(-1);
+    });      
+
+    // 결과 팝업창 닫기
+    $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+      window.location.href="/common/login";
+    });   
+
+    // 영문,숫자조합 체크
+    function CheckPass(str){
+      var reg1 = /^[a-zA-Z0-9]{6,16}$/;
+      var reg2 = /[a-z]/g;    
+      var reg3 = /[A-Z]/g;    
+      var reg4 = /[0-9]/g;
+      return(reg1.test(str) &&  reg2.test(str) || reg3.test(str) && reg4.test(str));
+    };
+
+</script>
+
+{{end}}

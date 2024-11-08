@@ -1,0 +1,196 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+        <!-- top start -->
+        {{template "include/top.html" .}}
+        <!-- top end -->
+        <!-- 페이지 영역 -->
+        <div class="content">
+        <h2>문의하기</h2>
+        <div class="reqWrite">
+        <form id="inquiryForm" name="inquiryForm" method="post">
+        <input type="hidden" id="inq_gbn" name="inq_gbn">
+          <table class="formTable">
+            <colgroup>
+              <col width="80px" />
+              <col />
+            </colgroup>
+            <tbody>
+              <tr>
+                <th class="tit">종류</th>
+                <td>
+                  <select name="inq_gbn_cd" id="inq_gbn_cd">
+                    <option value="">선택하세요</option>
+                    <option value="01">이용 문의</option>
+                    <option value="02">오류 신고</option>
+                    <option value="03">제안 및 건의</option>
+                    <option value="99">기타</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th class="tit">제목</th>
+                <td>
+                  <div class="countArea">
+                    <p class="count">(<span><em id="areaByteTitle">30</em>/30</span>)</p>
+                      <input type="text" class="w100p" maxlength="30" name="inq_title" id="inq_title" placeholder="문의 제목을 입력해주세요">
+                    </div>
+                </td>
+              </tr>
+              <tr>
+                <th class="tit">내용</th>
+                <td><textarea name="inq_cont" id="inq_cont" cols="30" rows="10" maxlength="1000" placeholder="문의 내용을 입력해주세요."></textarea></td>
+              </tr>
+              <tr>
+                <th class="tit">이메일</th>
+                <td><input type="text" name="email" id="email" maxlength="50" value="{{.Email}}" placeholder="답변 받으실 수 있는 이메일 주소를 입력해주세요."></td>
+              </tr>
+            </tbody>
+          </table>
+          <dl class="privacy">
+            <dt>개인 정보 수집 및 이용 안내</dt>
+            <dd>문의에 대한 처리 및 답변을 위해 이메일 정보가 수집됩니다.</dd>
+            <dd class="checkbox">
+              <input type="checkbox" name="chk_agree" id="chk_agree" class="custom"><label for="chk_agree">동의합니다</label>
+            </dd>
+          </dl>
+          <div class="btnSec">
+            <a href="javascript:void(0);" onclick="openPopup('pop_request_pop')">취소</a>
+            <a href="javascript:void(0);" id="btn_inquiry" class="active">문의하기</a>
+          </div>
+          <p class="validationMessage"  style="display:none">문의 종류를 선택해주세요.</p>
+        </form>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+
+      <!-- 일반팝업_버튼1개 -->
+      <div class="popupWrap confirm" id="pop_request_pop">
+        <div class="popup">
+          <div class="popContent">
+            <p>입력 중이시던 내용이 있습니다.<br/>정말 나가시겠어요?</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" id="btn_confirm">확인</a>
+          </div>
+        </div>
+        <span class="cover"></span>
+      </div>
+      <!-- // 일반팝업_버튼1개 -->          
+
+    <script type="text/javascript">
+
+      // 팝업 확인
+      $(document).off("click", "#btn_confirm").on("click", "#btn_confirm", function(e) {
+        history.go(-1);
+      });            
+
+
+      // 문의하기
+      $(document).off("click", "#btn_inquiry").on("click","#btn_inquiry",function(e) {
+        
+          if($('input:checkbox[id="chk_agree"]').is(":checked") == false){
+              $(".validationMessage").attr("style", "display:''");
+              $(".validationMessage").text("개인 정보 수집 및 이용 안내 동의를 하세요");
+              return;
+          }  
+
+          if(!$("#inq_gbn").val()){
+            $(".validationMessage").attr("style", "display:''");
+            $(".validationMessage").text("문의 종류를 선택해주세요");
+            return;
+          }
+
+          if($("#inq_title").val().length < 4){
+            $(".validationMessage").attr("style", "display:none");
+            $(".validationMessage").text("");
+            $(".validationMessage").attr("style", "display:''");
+            $(".validationMessage").text("문의제목을 4자이상 입력해주세요");
+            return;
+          }          
+
+          if($("#inq_cont").val().length < 10){
+            $(".validationMessage").attr("style", "display:none");
+            $(".validationMessage").text("");
+            $(".validationMessage").attr("style", "display:''");
+            $(".validationMessage").text("문의내용을 10자이상 입력해주세요");
+            return;
+          }            
+
+          if($("#email").val().length == 0 ){
+            $(".validationMessage").attr("style", "display:none");
+            $(".validationMessage").text("");
+            $(".validationMessage").attr("style", "display:''");
+            $(".validationMessage").text("이메일을 입력해주세요");
+            return;
+          }   
+
+          var inq_gbn_cd = $("#inq_gbn_cd").val(); // 문의종류코드
+          var inq_title = $("#inq_title").val().replace(/'/gi,"`"); //문의제목
+          var inq_cont = $("#inq_cont").val().replace(/'/gi,"`"); // 문의내용
+          var email = $("#email").val(); // 이메일
+
+          var formData = new FormData();
+
+          formData.append("inq_gbn_cd", inq_gbn_cd);
+          formData.append("inq_title", inq_title);
+          formData.append("inq_cont", inq_cont);
+          formData.append("email", email);
+
+          $.ajax({
+            cache : false,
+            url : '/inquiry/insert',
+            data : formData,
+            type : 'POST',
+            processData: false,
+            contentType: false,
+            dataType : "json",
+            error : function(e) {
+              console.log("error" + e);
+              //$(".loading-wrap").removeClass("on");
+            },
+            success : function(rep) {
+              var rtnCd = rep.RtnCd
+              var rtnMsg = rep.RtnMsg
+
+              if(rtnCd == 1){
+                window.location.href = "/inquiry/list";
+              } else {
+                console.log("message : " + rtnMsg);
+                $("#btn_inquiry").prop("disabled", false);
+                //$(".loading-wrap").removeClass("on");
+              }
+            },
+            error : function() {
+              $("#btn_inquiry").prop("disabled", false);
+              //$(".loading-wrap").removeClass("on");
+            }
+          });	     
+      });
+
+      // 문의종류 선택
+      $(document).off("change","#inq_gbn_cd").on("change","#inq_gbn_cd",function() {
+          $("#inq_gbn").val(this.value);
+          $(".validationMessage").attr("style", "display:none");
+          $(".validationMessage").text("");
+      });
+
+      // 개인정보 수집동의 확인
+      $(document).off("click","#chk_agree").on("click","#chk_agree",function() {
+        if($('input:checkbox[id="chk_agree"]').is(":checked") == true){
+            $(".validationMessage").attr("style", "display:none");
+            $(".validationMessage").text("");
+        }
+      });
+
+      // 문의 제목 글자수 체크
+      $(document).on("keyup","#inq_title",function(){
+        textLenCheck(this, 30, "#areaByteTitle");
+      });
+    
+    </script>    
+{{end}}    

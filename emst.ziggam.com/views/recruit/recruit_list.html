@@ -1,0 +1,403 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <input type="hidden" id="page_no" value="1">
+      <input type="hidden" id="gbn_cd" value="{{.GbnCd}}">
+    
+      <!--// 파라미터 정의 -->
+      <input type="hidden" id="p_keyword" value="{{.pKeyword}}">  
+      <input type="hidden" id="p_empl_typ" value="{{.pEmplTyp1}}">  
+      <input type="hidden" id="p_job_grp_cd" value="{{.pJobGrpCd}}">  
+      <input type="hidden" id="p_sort_gbn" value="{{.pSortGbn}}">  
+      <input type="hidden" id="p_gbn_cd" value="{{.pGbnCd}}">  
+      <input type="hidden" id="p_page_no" value="{{.pPageNo}}">  
+
+      <div class="content">
+        <h2>채용 공고</h2>     
+        <div class="recruitList">
+          <div class="tabMenu">
+            <ul>
+              <!-- 활성화 페이지 class="active" -->
+              {{if eq "A" .GbnCd}}
+              <li id="gbn_a" class="active"><a href="/recruit/post/list?gbn_cd=A">전체 <span>{{.RecrutTotCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_a"><a href="/recruit/post/list">전체 <span>{{.RecrutTotCnt}}</span></a></li>
+              {{end}}
+              {{if eq "I" .GbnCd}}
+              <li id="gbn_i" class="active"><a href="/recruit/post/list?gbn_cd=I">채용중 <span>{{.RecrutIngCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_i"><a href="/recruit/post/list?gbn_cd=I">채용중 <span>{{.RecrutIngCnt}}</span></a></li>
+              {{end}}
+              {{if eq "E" .GbnCd}}
+              <li id="gbn_e" class="active"><a href="/recruit/post/list?gbn_cd=E">종료 <span>{{.RecrutEndCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_e"><a href="/recruit/post/list?gbn_cd=E">종료 <span>{{.RecrutEndCnt}}</span></a></li>
+              {{end}}
+            </ul>
+          </div>
+          <div class="listBox">
+            {{if .RecruitPostList}}
+            <div class="topSec">
+              <div class="posL jobgrp">
+                <select name="empl_typ_cd" id="empl_typ_cd">
+                  <option value="">고용형태를 선택해주세요.</option>
+                  <option value="01">정규직</option>
+                  <option value="05">아르바이트</option>
+                </select>
+                <em2>
+                <select name="job_grp_cd" id="job_grp_cd">
+                  <option value="">직무를 선택해주세요.</option>
+                </select>
+                </em2>
+              </div>
+              <div class="posR">                
+                <div class="searchBox">
+                  <input type="text" name="keyword" id="keyword" maxlength="30" placeholder="공고 제목을 입력하세요.">
+                  <a href="javascript:void(0);" id="btn_search"><img src="/static/images/btn_search.gif" alt="검색"></a>
+                </div>
+              </div>
+            </div>
+            <div class="sectionTop">
+              <div class="posL">
+                <p class="total">총 <span id="tcnt">0</span>개</p>
+              </div>
+              <div class="posR">
+                <select name="sort_gbn" id="sort_gbn" class="sort">
+                  <option value="01">등록일 순</option>
+                  <option value="02">마감일 순</option>
+                </select>
+              </div>
+            </div>
+            <ul>
+              {{range .RecruitPostList}}
+              <div class="section">
+                <div class="textWrap">
+                  <input type="hidden" id="tot_cnt" value="{{.TotCnt}}">
+                  <!-- 채용중 class="type1" / 기간마감 class="type2" / 종료 class="type3" -->
+                  {{if eq "END" .PrgsStat}}
+                  <span class="state type3">종료</span>
+                  {{else if eq "PED" .PrgsStat}}
+                  <span class="state type2">기간마감</span>
+                  {{else}}
+                  <span class="state type1">채용중</span>
+                  {{end}}
+                  <a href="javascript:void(0);" id="btn_apply_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}">{{.RecrutTitle}}</a> 
+                  <p class="date">{{.RecrutDy}} {{if eq "END" .PrgsStat}}(종료일 : {{.RecrutEdt}}){{end}}</p>
+                  <p class="textInfo"><span>{{if eq "R" .EmplTyp}}정규직{{else}}아르바이트{{end}}</span> | <span>{{.UpJobGrp}} &lt; {{.JobGrp}}</span></p>
+                </div>
+                <div class="recruitBtn">
+                  <a href="javascript:void(0);" class="btn_recruit" id="btn_apply_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}"><span>지원 현황</span></a>
+                  <a href="javascript:void(0);" class="btn_file" id="btn_recruit_detail" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}"><span>공고 상세</span></a>
+                </div>
+                <div class="stateCount">
+                    <a href="javascript:void(0);" id="btn_apply_prgs_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" data-evl_prgs_stat="00"><span class="text">전체</span><span class="count">{{.ApplyCnt}}</span></a>
+                    <a href="javascript:void(0);" id="btn_apply_prgs_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" data-evl_prgs_stat="02"><span class="text">대기</span><span class="count">{{.IngCnt}}</span></a>
+                    <a href="javascript:void(0);" id="btn_apply_prgs_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" data-evl_prgs_stat="03"><span class="text">합격</span><span class="count">{{.PassCnt}}</span></a>
+                    <a href="javascript:void(0);" id="btn_apply_prgs_stat" data-mem_no="{{.EntpMemNo}}" data-recruit_sn="{{.RecrutSn}}" data-evl_prgs_stat="04"><span class="text">불합격</span><span class="count">{{.FailCnt}}</span></a>
+                </div>
+              </div>
+            {{end}}
+            </ul>
+            {{else}}
+            <p class="noData">공고 내역이 없습니다.</p>
+            {{end}}
+            <div class="paging">
+                {{str2html .Pagination}}
+            </div>
+          </div>
+        </div>        
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var readyChk = "{{.pEmplTyp1}}";
+        $("#tcnt").text($("#tot_cnt").val());
+
+        if (readyChk != "") {
+
+          //목록에서 돌아왔을 시 파라미터 세팅
+          // 검색어설정
+          $("#keyword").val("{{.pKeyword}}");
+
+          // 정렬선택
+          var sort_gbn = "{{.pSortGbn}}";
+          if (sort_gbn != "") {
+            $('#sort_gbn option[value={{.pSortGbn}}]').attr('selected','selected');
+          }
+
+          // 고용형태 > 직무선택
+          var empl_typ = "{{.pEmplTyp1}}";
+          var job_grp_cd = "{{.pJobGrpCd}}";
+          if (empl_typ != "") {
+            $('#empl_typ_cd option[value={{.pEmplTyp1}}]').prop('selected',true);
+            $('#empl_typ_cd option[value={{.pEmplTyp1}}]').trigger("change");
+          }
+
+          // 페이지
+          var page_no = "{{.pPageNo}}";
+          if (page_no != "1") {
+            paging(page_no);
+          }
+
+          // 탭구분선택
+          var gbn_cd = "{{.pGbnCd}}";
+          if (gbn_cd != "") {
+            if (gbn_cd == "A") {
+              $("#gbn_a").addClass("active");
+              $("#gbn_i").removeClass("active");
+              $("#gbn_e").removeClass("active");
+            } else if (gbn_cd == "I") {
+              $("#gbn_a").removeClass("active");
+              $("#gbn_i").addClass("active");
+              $("#gbn_e").removeClass("active");
+            } else {
+              $("#gbn_a").removeClass("active");
+              $("#gbn_i").removeClass("active");
+              $("#gbn_e").addClass("active");
+            }
+          }
+
+          $("#btn_search").trigger("click");
+        }
+      });
+
+      // 공고상세이동
+      $(document).off("click", "#btn_recruit_detail").on("click", "#btn_recruit_detail", function(e) {
+        var e_mem_no = $(this).data("mem_no");
+        var r_sn = $(this).data("recruit_sn");
+				var keyword = $("#keyword").val();
+        var empl_typ = $("#empl_typ_cd").val();
+				var job_grp_cd = $("#job_grp_cd").val();
+        var sort_gbn = $("#sort_gbn").val();
+        var gbn_cd = $("#gbn_cd").val();
+        var page_no = $("#page_no").val();
+        var param = "entp_mem_no="+e_mem_no+"&recrut_sn="+r_sn+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+
+        window.location.href="/recruit/post/detail?"+param;
+      });
+
+      // 지원현황이동
+      $(document).off("click", "#btn_apply_stat").on("click", "#btn_apply_stat", function(e) {
+        var e_mem_no = $(this).data("mem_no");
+        var r_sn = $(this).data("recruit_sn");
+				var keyword = $("#keyword").val();
+        var empl_typ = $("#empl_typ_cd").val();
+				var job_grp_cd = $("#job_grp_cd").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var gbn_cd = $("#gbn_cd").val();
+        var page_no = $("#page_no").val();
+        var param = "entp_mem_no="+e_mem_no+"&recrut_sn="+r_sn+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+
+        window.location.href="/recruit/stat/list?"+param;
+      });
+
+      // 평가진행상태 이동
+      $(document).off("click", "#btn_apply_prgs_stat").on("click", "#btn_apply_prgs_stat", function(e) {
+        var e_mem_no = $(this).data("mem_no");
+        var r_sn = $(this).data("recruit_sn");
+				var keyword = $("#keyword").val();
+        var empl_typ = $("#empl_typ_cd").val();
+				var job_grp_cd = $("#job_grp_cd").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var gbn_cd = $("#gbn_cd").val();
+        var page_no = $("#page_no").val();
+        var evl_prgs_stat = $(this).data("evl_prgs_stat");
+        var param = "entp_mem_no="+e_mem_no+"&recrut_sn="+r_sn+"&evl_prgs_stat="+evl_prgs_stat+"&p_keyword="+keyword+"&p_empl_typ="+empl_typ+"&p_job_grp_cd="+job_grp_cd+"&p_sort_gbn="+sort_gbn+"&p_gbn_cd="+gbn_cd+"&p_page_no="+page_no;
+
+        window.location.href="/recruit/stat/list?"+param;
+      });
+
+      
+      // 고용형태 선택시 직무 변경
+      $(document).off("change", "#empl_typ_cd").on("change", "#empl_typ_cd", function(e) {
+        var pEmplTypCd = $('select[id=empl_typ_cd] option:selected').val();
+        var pEntpMemNo = "{{.MemNo}}";
+        $(".posL.jobgrp").find("em2").children().remove();
+        jobGrp2(pEntpMemNo, pEmplTypCd);
+        ajaxRecruitList();
+      });
+
+      // 직무 선택
+      $(document).off("change", "#job_grp_cd").on("change", "#job_grp_cd", function(e) {
+        ajaxRecruitList();
+      });
+
+      // 등록/마감일 선택
+      $(document).off("change", "#sort_gbn").on("change", "#sort_gbn", function(e) {
+        ajaxRecruitList();
+      });
+
+			// 공고명검색(Enter Key)
+			$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+				if (event.keyCode == 13) {
+					ajaxRecruitList();
+				}
+      });
+
+      // 공고명검색 (클릭)
+      $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+        ajaxRecruitList();
+      });      
+            
+      // 직무 생성
+      var jobGrp2 = function (pEntpMemNo,pEmplTypCd) {
+          $.ajax({
+              type: "POST",
+              url: "/common/jobgrp2",
+              data:{
+                  entp_mem_no : pEntpMemNo,
+                  empl_typ_cd : pEmplTypCd
+              },
+              dataType: "json",
+              success: function(args){
+                  if(args.RtnRecruitJobGrpListData.length > 0){
+                      $(".posL.jobgrp").find("em2").children().remove();
+                      var jobgrp = "{{.pJobGrpCd}}";
+                      console.log("jobgrp : "+jobgrp);
+                      var html = "";
+                      html += "<select name=\"job_grp_cd\" id=\"job_grp_cd\">";
+                      html += "<option value=\"\">직무를 선택해주세요.</option>";
+                      $.each(args.RtnRecruitJobGrpListData,function(e) {
+                          var grp2 = args.RtnRecruitJobGrpListData[e];
+                          if (grp2.RJobGrpCd == jobgrp) {
+                            html += "<option value='"+grp2.RJobGrpCd+"' selected>"+grp2.RJobGrpNm+"</option>";
+                          } else {
+                            html += "<option value='"+grp2.RJobGrpCd+"'>"+grp2.RJobGrpNm+"</option>";
+                          }
+                      })
+                      html += "</select>";
+                      $(".posL.jobgrp").find("em2").append(html);
+                      if (jobgrp != ""){
+                        $("#btn_search").trigger("click");
+                      }
+                  }else{
+                      var html = "";
+                      html += "<select name=\"job_grp_cd\" id=\"job_grp_cd\">";
+                      html += "<option value=\"\" disabled selected>직무를 선택해주세요.</option>";
+                      html += "</select>";
+                      $(".posL.jobgrp").find("em2").append(html);                    }
+              },
+              error: function(e){
+                  alert("fail "+e.responseText);
+              }
+          });
+      }
+
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        //console.log("pageno : "+pageno);
+        $("#page_no").val(pageno);
+        //window.location.href="/recruit/post/list?pn="+pageno;
+        // return;
+        ajaxRecruitList();
+      }	
+
+      // 리스트 페이지 AJAX
+			var ajaxRecruitList = function(v) {
+				var keyword = $("#keyword").val();
+        var empl_typ = $("#empl_typ_cd").val();
+				var job_grp_cd = $("#job_grp_cd").val();
+				var sort_gbn = $("#sort_gbn").val();
+        var gbn_cd = $("#gbn_cd").val();
+        var page_no = $("#page_no").val();
+
+        $.ajax({
+					type: "POST",
+					url: "/recruit/post/list",
+					data:{
+						keyword : keyword,
+						empl_typ : empl_typ,
+						job_grp_cd : job_grp_cd,
+            sort_gbn : sort_gbn,
+            gbn_cd : gbn_cd,
+						pn : page_no
+					},
+					dataType: "json",
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnRecruitPostListData.length > 0){
+							$(".listBox").find("ul").children().remove();
+							$.each(rep.RtnRecruitPostListData,function(e) {
+
+                var html = "";
+                html += "<div class=\"section\">";
+                html += "<div class=\"textWrap\">";
+                html += "<input type=\"hidden\" id=\"tot_cnt\" value=\"\">";
+                if (rep.RtnRecruitPostListData[e].PrgsStat == "END") {
+                  html += "<span class=\"state type3\">종료</span>";
+                } else if (rep.RtnRecruitPostListData[e].PrgsStat == "PED") {
+                  html += "<span class=\"state type2\">기간마감</span>";                
+                } else {
+                  html += "<span class=\"state type1\">채용중</span>";
+                }
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+">"+rep.RtnRecruitPostListData[e].RecrutTitle+"</a>";
+                if (rep.RtnRecruitPostListData[e].PrgsStat == "END") {
+                  html += "<p class=\"date\">"+rep.RtnRecruitPostListData[e].RecrutDy+" (종료일 : "+rep.RtnRecruitPostListData[e].RecrutEdt+")</p>";
+                } else {
+                  html += "<p class=\"date\">"+rep.RtnRecruitPostListData[e].RecrutDy+"</p>";
+                }
+                html += "<p class=\"textInfo\"><span>"
+                if (rep.RtnRecruitPostListData[e].EmplTyp == "R") {
+                  html += "정규직";
+                } else {
+                  html += "아르바이트";
+                }
+                html += "</span> | <span>"+rep.RtnRecruitPostListData[e].UpJobGrp+" &lt; "+rep.RtnRecruitPostListData[e].JobGrp+"</span>";
+                html += "</p>";
+                html += "</div>";
+                html += "<div class=\"recruitBtn\">";
+                html += "<a href=\"javascript:void(0);\" class=\"btn_recruit\" id=\"btn_apply_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+"><span>지원 현황</span></a>";
+                html += "<a href=\"javascript:void(0);\" class=\"btn_file\" id=\"btn_recruit_detail\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+"><span>공고 상세</span></a>";
+                html += "</div>";
+                html += "<div class=\"stateCount\">";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_prgs_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+" data-evl_prgs_stat=\"00\"><span class=\"text\">전체</span><span class=\"count\">"+rep.RtnRecruitPostListData[e].ApplyCnt+"</span></a>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_prgs_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+" data-evl_prgs_stat=\"02\"><span class=\"text\">대기</span><span class=\"count\">"+rep.RtnRecruitPostListData[e].IngCnt+"</span></a>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_prgs_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+" data-evl_prgs_stat=\"03\"><span class=\"text\">합격</span><span class=\"count\">"+rep.RtnRecruitPostListData[e].PassCnt+"</span></a>";
+                html += "<a href=\"javascript:void(0);\" id=\"btn_apply_prgs_stat\" data-mem_no="+rep.RtnRecruitPostListData[e].EntpMemNo+" data-recruit_sn="+rep.RtnRecruitPostListData[e].RecrutSn+" data-evl_prgs_stat=\"04\"><span class=\"text\">불합격</span><span class=\"count\">"+rep.RtnRecruitPostListData[e].FailCnt+"</span></a>";
+                html += "</div>";
+                html += "</div>";
+								$(".listBox").find("ul").append(html);
+              })
+							$(".paging").children().remove();
+              $(".paging").append(rep.RtnRecruitPostListData[0].Pagination);
+              $("#tcnt").text(rep.RtnRecruitPostListData[0].TotCnt);
+						}else{
+              $(".listBox").find("ul").children().remove();
+              var html = "";
+              html += "<p class=\"noData\">공고 내역이 없습니다.</p>";
+              $(".listBox").find("ul").append(html);
+							$(".paging").children().remove();
+              $("#tcnt").text(0);
+              $("#page_no").val("1");
+            }
+					}
+				});				
+			}      
+
+    </script>  
+
+    {{end}}

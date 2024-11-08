@@ -1,0 +1,805 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+  <!--<script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>-->
+
+  <!-- 컨텐츠 영역 -->
+  <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top_write.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>기업 정보 관리</h2>      
+        <form id="uptForm" name="uptForm" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="img_yn" value="N">
+        <input type="hidden" id="ori_logo_file" value="{{.OriLogoFile}}">
+        <div class="businessInfo">
+          <div class="businessImage">
+          <a href="javascript:void(0);" id="logo_upload">
+            {{if .LogoPtoPath}}
+            <span class="img"><img src="{{.LogoPtoPath}}" onerror="this.src='/static/images/entp_no_img.png'" alt="" class="entp_logo_loaded"></span>
+            {{else}}
+            <span class="img"><img src="/static/images/entp_no_img.png" style="opacity: 0.01;" alt="" class="entp_logo_loaded"></span>
+            {{end}}
+            <div class="imgGuide">
+              {{if not .LogoPtoPath}}
+              <p class="t01">직감 APP에 노출되는<br/>기업 CI를 등록해주세요.</p>
+              <p class="t02">PNG, JPEG 파일만 등록 가능<br/>1:1 비율의 이미지 사용 권장</p>
+              {{end}}
+            </div>
+            </a>
+            <span class="btn">
+              <a href="javascript:void(0);" id="logo_upload"><img src="/static/images/btn_write.png" alt="등록"></a>
+              <input type="file" name="entp_logo" id="entp_logo" accept="image/*" class="visual_img" style="display:none">
+              <!--<a href="javascript:void(0);"><img src="/static/images/btn_delete.png" alt="삭제"></a>-->
+            </span>
+          </div>
+          <div class="businessForm">
+            <dl class="company">
+              <dt>{{.EntpKoNm}}</dt>
+              <dd>사업자 등록번호 {{.BizRegNo}}</dd>
+            </dl>
+            <div class="row">
+              <dl class="col3">
+                <dt>대표자명 *</dt>
+                <dd><input type="text" name="rep_nm" id="rep_nm" maxlength="20" value="{{.RepNm}}" placeholder="이름"></dd>
+                <dd class="validate rep_nm_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>설립일 *</dt>
+                <dd><input type="text" name="est_dy" id="est_dy" maxlength="8" value="{{.EstDy}}" numberOnly placeholder="YYYYMMDD"></dd>
+                <dd class="validate est_dy_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>임직원 수 *</dt>
+                <dd><input type="text" name="emp_cnt" id="emp_cnt" maxlength="5" value="{{.EmpCnt}}" numberOnly placeholder="명"></dd>
+                <dd class="validate emp_cnt_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>업종/업태 *</dt>
+                <dd class="mb5"><input type="text" name="biz_tpy" id="biz_tpy" maxlength="50" value="{{.BizTpy}}" placeholder="업종"></dd>
+                <dd><input type="text" name="biz_cond" id="biz_cond" maxlength="50" value="{{.BizCond}}" placeholder="업태"></dd>
+                <dd class="validate message_biz_tpy biz_cond_message"></dd>
+              </dl>
+              <dl class="col3">
+                <dt>담당자 정보 *</dt>
+                <dd class="mb5"><input type="text" name="pp_chrg_nm" id="pp_chrg_nm" maxlength="10" value="{{.PpChrgNm}}" placeholder="이름"></dd>
+                <dd><input type="text" name="pp_chrg_tel_no" id="pp_chrg_tel_no" maxlength="12" value="{{.PpChrgTelNo}}" placeholder="휴대폰/내선 번호"></dd>
+                <dd class="validate pp_chrg_nm_message pp_chrg_tel_no_message "></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>이메일 *</dt>
+                <dd><input type="text" name="email" id="email" maxlength="80"value="{{.Email}}" placeholder="이메일"></dd>
+                <dd class="validate email_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>회사주소 *</dt>
+                <input type="hidden" name="zip" id="zip" value="{{.Zip}}" readonly>
+                <dd class="address mb5"><input type="text" name="addr" id="addr" value="{{.Addr}}" readonly placeholder="오른쪽 주소 검색을 눌러 주소를 선택해주세요."><a href="javascript:void(0);" id="addr_search" onclick="Postcode()">주소검색</a></dd>
+                <dd class="mb5"><input type="text" name="dtl_addr" id="dtl_addr" value="{{.DtlAddr}}" placeholder="나머지 주소를 입력해주세요."></dd>
+                <dd><input type="text" name="ref_addr" id="ref_addr" value="{{.RefAddr}}" readonly placeholder="도로명 주소 입력시 자동으로 입력됩니다."></dd>
+                <dd class="validate addr_message dtl_addr_message zip_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col3">
+                <dt>기업태그 *</dt>
+                <dd><input type="text" name="entp_htag1" id="entp_htag1" value="{{.EntpHtag1}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="validate entp_htag1_message"></dd>
+                <dd class="count">(<span><em id="areaByteTag1">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+                <dd><input type="text" name="entp_htag2" id="entp_htag2" value="{{.EntpHtag2}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag2">10</em>/10</span>)</dd>
+              </dl>
+              <dl class="col3">
+                <dt>&nbsp;</dt>
+                <dd><input type="text" name="entp_htag3" id="entp_htag3" value="{{.EntpHtag3}}" maxlength="10" placeholder="기업태그를 입력해주세요."></dd>
+                <dd class="count">(<span><em id="areaByteTag3">10</em>/10</span>)</dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>기업 슬로건 *</dt>
+                <dd><input type="text" name="entp_intr" id="entp_intr" maxlength="30"value="{{.EntpIntr}}" placeholder="회사를 소개할 수 있는 문구를 작성해주세요."></dd>
+                <dd class="validate entp_intr_message"></dd>
+              </dl>
+            </div>
+            <div class="row">
+              <dl class="col1">
+                <dt>홈페이지</dt>
+                <dd><input type="text" name="home_pg" id="home_pg" maxlength="50" value="{{.HomePg}}" placeholder="회사 공식 홈페이지 URL을 입력해주세요."></dd>
+              </dl>
+            </div>
+          </div>
+          <div class="businessVideo">
+            <div class="topArea">
+              <p class="subTit">기업 홍보 영상  {{if eq "Y" .VideoYn}}<span>({{.VideoCnt}}/4)</span>
+              <a href="javascript:void(0);" id="btn_play_all" class="btnAllPlay"><span>전체 재생</span></a>{{end}}
+              {{if eq "0" .UseYn}}<span style="color: red">기업홍보영상 검증 대기중입니다</span>{{end}}
+              </p>
+            </div>
+            {{if eq "Y" .VideoYn}}
+            <div class="list">
+              {{if .VdFilePath1}}
+              <ul>
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath1}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle1}}
+                  <p class="text">{{.vdTitle1}}</p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath2}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath2}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle2}}
+                  <p class="text">{{.vdTitle2}}</p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath3}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath3}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle3}}
+                  <p class="text">{{.vdTitle3}}</p>
+                  {{end}}
+                </li>
+                {{end}}
+                {{if .VdFilePath4}}
+                <li>
+                  <span class="video">
+                    <video controls width="100%" height="100%" controlsList="nodownload">
+                      <source src="{{.VdFilePath4}}" type="video/mp4">
+                    </video>
+                    <!--<img src="/static/images/sample_video02.jpg" alt="">
+                    <span class="btnPlay"><img src="/static/images/btn_play02.png" alt=""></span>
+                    <span class="time">00:30</span>
+                    <em class="timeCover"></em>-->
+                  </span>
+                  {{if .vdTitle4}}
+                  <p class="text">{{.vdTitle4}}</p>
+                  {{end}}
+                </li>
+                {{end}}
+              </ul>
+            </div>
+            {{else}}
+            <div class="list">
+              <p class="noData">등록된 기업 홍보 영상이 없습니다.<br/>
+                직감 APP을 통해 기업을 홍보할 수 있는 영상을 촬영해주세요.</p>
+            </div>
+            {{end}}
+            <p class="textGuide">* PC 관리자 페이지를 통한 기업 홍보 영상의 수정 및 등록은 불가능합니다.<br/>
+            직감 APP의 기업회원 로그인>설정>기업 홍보영상 관리를 이용해주세요.
+            {{if eq "0" .UseYn}}
+            <br><br>
+            * 양질의 기업홍보영상 노출을 위해 검증단계를 거쳐야 합니다.<br>
+            이점 양해 부탁드리고, 24시간 내로 검증처리 될 예정입니다.<br>
+            {{end}}
+            </p>
+            <p class="btn"><a href="javascript:void(0);" id="btn_update">기업 정보 저장</a></p>
+          </div>
+        </div>
+      </form> 
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 영상팝업 -->
+    <div class="popupWrap" id="video_pop" data-tot_cnt="{{.VideoCnt}}">
+      <div class="videoPopup">
+        <div class="popContent">
+          <div class="movie pop">
+          {{if .VdFilePath1}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_1" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath1}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath2}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_2" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath2}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath3}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_3" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath3}}" type="video/mp4">
+            </video>
+          {{end}}
+          {{if .VdFilePath4}}
+            <video controls width="100%" height="100%" name="video" class="entp_video" id="video_4" controlsList="nodownload" style="display:none"> 
+              <source src="{{.VdFilePath4}}" type="video/mp4">
+            </video>
+          {{end}}
+          </div>
+          <p class="page">( <em id="entp_now_page"></em> / <em id="tot_page">4</em> )</p>
+        </div>
+        <a href="javascript:void(0);" class="btnPrev entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_prev.png" title="이전 영상"></a>
+        <a href="javascript:void(0);" class="btnNext entp" data-tot_cnt="{{.VideoCnt}}"><img src="/static/images/btn_video_next.png" title="다음 영상"></a>
+        <a href="javascript:void(0);" class="btnClose" id="video_close"><img src="/static/images/btn_video_close.png" widht="30px" height="30px" title="닫기"></a>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 영상팝업 -->    
+
+    <!-- 처음/마지막 영상 알림 -->
+    <div class="popupWrap sepop" id="start_end_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_message"></p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" onclick="videoClosePopup()">확인</a>
+        </div>
+      </div>
+    </div>
+    <!-- // 처음/마지막 영상 알림 -->    
+
+    <!-- 완료알림팝업 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_text">정상적으로 수정되었습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 완료알림팝업 -->    
+  
+    <script type="text/javascript">
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        //$('.popupWrap.alert').hide();
+        window.location.reload();
+      });  
+
+      // 다음 영상 재생
+      $(document).off("click", ".btnNext.entp").on("click", ".btnNext.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (tot_cnt == curr) {
+          //console.log("마지막 영상");
+          $("#alert_message").html("마지막 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (tot_cnt > curr){
+          //console.log("마지막 영상아님 : "+ (curr+1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr+1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr+1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr+1)).play();
+        }
+      });
+
+      // 이전 영상 재생
+      $(document).off("click", ".btnPrev.entp").on("click", ".btnPrev.entp", function(e) {
+        var curr = parseInt($("#entp_now_page").text());
+        var tot_cnt = parseInt($(this).data("tot_cnt"));
+        //console.log("curr : "+curr);
+        //console.log("tot_cnt : "+tot_cnt);
+        if (curr == 1) {
+          //console.log("처음 영상");
+          $("#alert_message").html("처음 영상입니다.");
+          openPopup("start_end_pop");
+        } else if (curr > 1){
+          //console.log("처음 영상아님 : "+ (curr-1));
+          $(".entp_video").attr("style", "display:none");
+          $("#video_"+(curr-1)).attr("style", "display:''");
+          $("#entp_now_page").text((curr-1));
+          document.getElementById("video_"+curr).pause();
+          document.getElementById("video_"+(curr-1)).play();
+        }
+      });    
+
+      // 영상 확인 닫기 팝업
+      function videoClosePopup() {
+        $('#start_end_pop').hide();
+        return false;
+      }
+
+      // 전체 재생
+      $(document).off("click", "#btn_play_all").on("click", "#btn_play_all", function(e) {
+        openPopup("video_pop");
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        //console.log("tot_cnt : "+tot_cnt);
+        $("#entp_now_page").text(1);
+        $("#tot_page").text(tot_cnt);
+        loopVideo(1, tot_cnt);
+      });
+      
+      var loopVideo = function(i, tot_cnt) {
+        if (tot_cnt >= i) {
+          $("#video_"+i).attr("style", "display:''");
+          document.getElementById("video_"+i).play();
+          document.getElementById("video_"+i).onended = function() {
+            $("#video_"+i).attr("style", "display:none");
+            var j = i + 1;
+            loopVideo(j, tot_cnt);
+            if (j == tot_cnt) {
+              $("#entp_now_page").text(tot_cnt);
+            } else {
+              if (j < tot_cnt) {
+                $("#entp_now_page").text(j);
+              } else {
+                $("#entp_now_page").text(1);
+              }
+            }
+          };
+        } else {
+          $("#video_1").attr("style", "display:''");
+          $("#entp_now_page").text(1);
+          //loopVideo(1, tot_cnt);
+          return;
+        }
+      }
+
+      // 영상 팝업창 닫기
+      $(document).off("click", "#video_close").on("click", "#video_close", function(e) {
+        window.location.reload();
+        /*
+        closePopup();
+        var tot_cnt = $("#video_pop").data("tot_cnt");
+        var i;
+        for (i = 1; i <= tot_cnt; i++) {
+          document.getElementById("video_"+i).load();
+          document.getElementById("video_"+i).pause();
+        }
+        */
+      });      
+
+      // Form Validation Check
+      $(document).ready(function() {
+          $("#uptForm").validate(validOption);
+
+          $("#entp_htag1").keyup();
+          $("#entp_htag2").keyup();
+          $("#entp_htag3").keyup();
+
+          var img_chk = "{{.LogoPtoPath}}";
+          if (!img_chk) {
+            $("#img_yn").val("N");
+          } else {
+            $("#img_yn").val("M");
+          }
+
+     });
+
+      // 기업정보수정 Validation
+      var validOption = {
+          onkeyup: false
+          ,onclick: false
+          ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+              if($(element).valid()){				// 체크 통과
+                  var id = $(element).attr("id");	
+                  $("."+id+"_message").text("");	// message box clear
+              }
+          }
+          ,onfocusin: function(element) {			// 포커스 인 시 동작
+              var id = $(element).attr("id");
+              //console.log("input id : "+id);
+              resetInput(id);
+          }
+          ,rules: {
+              rep_nm : {
+                  required: true, 
+                  maxlength: 20
+              },
+              est_dy : {
+                  required: true, 
+                  number: true,
+                  minlength: 8
+              },
+              emp_cnt : {
+                  required: true, 
+                  number: true
+              },
+              biz_tpy : {
+                  required: true, 
+              },
+              biz_cond : {
+                  required: true, 
+              },
+              pp_chrg_nm : {
+                  required: true, 
+              },
+              pp_chrg_tel_no : {
+                  required: true, 
+              },
+              email: {
+                required: true,
+                email: true,
+                remote: {
+                  url:"/common/dup_chk"
+                  ,type: "post"
+                  ,data: {
+                    gbn_cd: '002'
+                    ,item_val: function() {
+                      return $("#email").val();
+                    }
+                    ,entp_mem_no: '{{.EntpMemNo}}'
+                  }
+                }	
+              },
+              addr : {
+                  required: true, 
+              },
+              dtl_addr : {
+                  required: true, 
+              },
+              entp_htag1 : {
+                  required: true,
+                  maxlength: 10 
+              },
+              entp_intr : {
+                  required: true, 
+                  maxlength: 30
+              },
+          }
+          ,errorPlacement: function(error, element){		
+              var id = element.attr("id");
+              //console.log("err_id :"+id);
+              $("."+id+"_message").text(error.text());
+          }
+          ,messages: {
+              rep_nm: {
+                  required: "대표자명을 입력해주세요."
+              },
+              est_dy: {
+                  required: "설립일을 입력해주세요.",
+                  number: "YYYYMMDD 형식의 숫자로 입력해주세요.",
+                  minlength: "YYYYMMDD 형식으로 입력해주세요."
+              },
+              emp_cnt: {
+                  required: "임직원수를 입력해주세요.",
+                  number: "숫자로 입력해주세요."
+              },
+              biz_tpy: {
+                  required: "업종과 업태를 입력해주세요."
+              },
+              biz_cond: {
+                  required: "업종과 업태를 입력해주세요."
+              },
+              pp_chrg_nm: {
+                  required: "담당자 정보를 입력하세요."
+              },
+              pp_chrg_tel_no: {
+                  required: "담당자 정보를 입력하세요."
+              },
+              email:{
+                required: "이메일을 입력해주세요",
+                email: "올바른 이메일형식이 아닙니다.",
+                remote: "이미 존재하는 이메일입니다"
+              },
+              addr: {
+                  required: "회사 주소를 입력해 주세요."
+              },
+              dtl_addr: {
+                  required: "회사 주소를 입력해 주세요."
+              },
+              entp_htag1: {
+                  required: "기업태그를 입력해주세요.",
+                  maxlength: "10자내로 입력해주세요."
+              },
+              entp_intr: {
+                  required: "기업 슬로건을 입력해주세요.",
+                  maxlength: "30자내로 입력해주세요."
+              },
+          }
+          ,success: function(element){
+              var str = $(element).attr("id");
+              var id = str.substring(0,str.length-6);
+          }
+      }
+
+      // input box reset
+      var resetInput = function(id){
+          $("."+id+"_message").text(""); // message box clear
+      }
+
+      $(document).off("click", "#logo_upload").on("click", "#logo_upload", function(e){
+        e.preventDefault();
+        $("#entp_logo").trigger('click');
+      });
+
+      // 질문이미지 체크
+      $(document).off("change", "#entp_logo").on("change", "#entp_logo",function(e) {
+        readURL(this);
+      });
+
+      // 주소검색
+      $(document).off("click", "#addr_search").on("click", "#addr_search", function(e) {
+        $(".zip_message").text("");
+      });       
+
+      // 질문이미지 수정
+      var readURL = function(input) {
+        var ext = $('#entp_logo').val().split('.').pop().toLowerCase();
+        //console.log("ext : "+ext);
+
+        if($.inArray(ext, ['png','jpg','jpeg','gif']) == -1) {
+          showMessagePopup("질문이미지 입력 알림",".jpg, .jpeg, .gif .png 형식만 등록해주세요.");
+          $("#entp_logo").val("");
+          return false;
+        }
+        /*
+        var iSize = 0;
+        var maxSize = 1024 * 1024 * 5; //5Mbyte
+
+        var browser=navigator.appName;
+        if (browser=="Microsoft Internet Explorer"){
+                var objFSO = new ActiveXObject("Scripting.FileSystemObject");
+                var sPath = $("#mquest_img")[0].value;
+                var objFile = objFSO.getFile(sPath);
+                var iSize = objFile.size;
+            }else {
+                iSize = ($("#mquest_img")[0].files[0].size);
+        }
+
+        if(iSize > maxSize) {
+          showMessagePopup("이미지 등록 알림","5MB이하 이미지로 등록해주세요.");
+          $("#mquest_img").val(""); //업로드 이미지 초기화
+          return false;
+        }
+        $("#quest_img_size").val(iSize);
+        */
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $(".entp_logo_loaded").attr('src', e.target.result);
+            $(".entp_logo_loaded").css('opacity','1');
+            $(".t01").text("");
+            $(".t02").text("");
+          }
+          reader.readAsDataURL(input.files[0]);
+
+          var fileValue = $("#entp_logo").val().split("\\");
+          var fileName = fileValue[fileValue.length-1]; // 파일명
+          var fileExt = $("#entp_logo").val().split('.').pop().toLowerCase(); //파일확장자
+          $("#img_yn").val("Y");
+        }
+      }	
+
+        // 기업정보 수정
+        $(document).off("click", "#btn_update").on("click", "#btn_update", function(){
+
+          var img_yn = $("#img_yn").val() //이미지 여부
+            //console.log("img_yn : "+img_yn);
+            if (img_yn == "N") {
+              console.log("이미지를 등록해주세요.");
+              window.scrollTo(0,0);
+              $(".t01").fadeOut(300, function() {
+                $(this).css("color","#6b6b6b");
+              });
+              $(".t01").fadeIn(1000, function() {
+                $(this).css("color","#e04c53");
+              });
+              return;
+            }
+
+            if (!$("#zip").val()) {
+              $("#addr").focus();
+              $(".zip_message").text("주소검색을 통해 입력해주세요.");
+              return;
+            }
+
+          if($("#uptForm").valid()){
+
+            var entp_logo =  $("#entp_logo")[0].files[0]; //이미지
+            if (entp_logo == undefined) {
+				      entp_logo = "";
+            }
+            var rep_nm = $("#rep_nm").val().replace(/'/gi,"`"); //대표자명
+            var est_dy = $("#est_dy").val(); //설립일
+            var emp_cnt = $("#emp_cnt").val(); //임직원수
+            var biz_tpy = $("#biz_tpy").val().replace(/'/gi,"`"); //업종
+            var biz_cond = $("#biz_cond").val().replace(/'/gi,"`"); //업태
+            var pp_chrg_nm = $("#pp_chrg_nm").val(); //담당자명
+            var pp_chrg_tel_no = $("#pp_chrg_tel_no").val(); //담당자연락처
+            var email = $("#email").val(); //이메일
+            var zip = $("#zip").val(); //우편번호
+            var addr = $("#addr").val(); //주소
+            var dtl_addr = $("#dtl_addr").val(); //상세주소
+            var ref_addr = $("#ref_addr").val(); //참고주소
+            var entp_htag1 = $("#entp_htag1").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그1
+            var entp_htag2 = $("#entp_htag2").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그2
+            var entp_htag3 = $("#entp_htag3").val().replace(/,/gi,"，").replace(/'/gi,"`"); //기업태그3
+            var entp_intr = $("#entp_intr").val().replace(/'/gi,"`"); //참고주소
+            var home_pg = $("#home_pg").val().replace(/'/gi,"`"); //홈페이지
+            var logo_ext = $("#entp_logo").val().split('.').pop().toLowerCase(); //파일확장자
+            var ori_logo_file = $("#ori_logo_file").val(); //기존로고파일경로
+            var ori_logo_file_ext = $("#ori_logo_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+
+            /*
+            console.log("이미지여부 : "+img_yn);    
+            console.log("이미지 : "+entp_logo);    
+            console.log("대표자명 : "+rep_nm);    
+            console.log("설립일 : "+est_dy);    
+            console.log("임직원수 : "+emp_cnt);    
+            console.log("업종 : "+biz_tpy);    
+            console.log("업태 : "+biz_cond);    
+            console.log("담당자명 : "+pp_chrg_nm);    
+            console.log("담당자연락처 : "+pp_chrg_tel_no);    
+            console.log("우편번호 : "+zip);    
+            console.log("주소 : "+addr);    
+            console.log("상세주소 : "+dtl_addr);    
+            console.log("참고주소 : "+ref_addr);    
+            console.log("기업태그1 : "+entp_htag1);    
+            console.log("기업태그2 : "+entp_htag2);    
+            console.log("기업태그3 : "+entp_htag3);    
+            console.log("참고주소 : "+entp_intr);    
+            console.log("홈페이지 : "+home_pg);    
+            console.log("파일확장자 : "+logo_ext);    
+            */  
+            
+            var formData = new FormData();
+            formData.append("img_yn", img_yn);
+            formData.append("entp_logo", entp_logo);
+            formData.append("logo_ext", logo_ext);
+            formData.append("rep_nm", rep_nm);
+            formData.append("est_dy", est_dy);
+            formData.append("emp_cnt", emp_cnt);
+            formData.append("biz_tpy", biz_tpy);
+            formData.append("biz_cond", biz_cond);
+            formData.append("pp_chrg_nm", pp_chrg_nm);
+            formData.append("pp_chrg_tel_no", pp_chrg_tel_no);
+            formData.append("email", email);
+            formData.append("zip", zip);
+            formData.append("addr", addr);
+            formData.append("dtl_addr", dtl_addr);
+            formData.append("ref_addr", ref_addr);
+            formData.append("entp_htag1", entp_htag1);
+            formData.append("entp_htag2", entp_htag2);
+            formData.append("entp_htag3", entp_htag3);
+            formData.append("entp_intr", entp_intr);
+            formData.append("home_pg", home_pg);
+            formData.append("ori_logo_file", ori_logo_file);
+            formData.append("ori_logo_file_ext", ori_logo_file_ext);
+
+            $(".loading").attr("style", "display:''");
+
+            $.ajax({
+                cache : false,
+                url : '/entp/info/update',
+                data : formData,
+                type : 'POST',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                dataType : "json",
+                error : function(e) {
+                    //console.log("error" + JSON.stringify(e));
+                    console.log("error : "+e);
+                    $(".loading").attr("style", "display:none");
+                },
+                success : function(rep) {
+                    var rtnCd = rep.RtnCd
+                    var rtnMsg = rep.RtnMsg
+                    if(rtnCd == 1){
+                        //window.location.reload();
+                        $(".loading").attr("style", "display:none");
+                        openPopup("recruit_alert_pop");
+                    } else {
+                        console.log("등록 실패 : "+rtnMsg);
+                        $(".loading").attr("style", "display:none");
+                    }
+                }
+            });
+          }
+      });
+
+      // 태그 글자수 체크
+      $(document).on("keyup","#entp_htag1",function(){
+        textLenCheck(this, 10, "#areaByteTag1");
+      });
+      $(document).on("keyup","#entp_htag2",function(){
+        textLenCheck(this, 10, "#areaByteTag2");
+      });
+      $(document).on("keyup","#entp_htag3",function(){
+        textLenCheck(this, 10, "#areaByteTag3");
+      });
+
+        //숫자만 입력가능
+        $("input:text[numberOnly]").on("focus", function() {
+            var x = $(this).val();
+        }).on("focusout", function() {
+            var x = $(this).val();
+            if(x && x.length > 0) {
+                if(!$.isNumeric(x)) {
+                    x = x.replace(/[^0-9]/g,"");
+                }
+                $(this).val(x);
+            }
+        }).on("keyup", function() {
+            $(this).val($(this).val().replace(/[^0-9]/g,""));
+        });
+
+
+        function Postcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("ref_addr").value = extraAddr;
+                
+                } else {
+                    document.getElementById("ref_addr").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("zip").value = data.zonecode;
+                document.getElementById("addr").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("dtl_addr").focus();
+            }
+        }).open();
+    }
+
+    </script>
+{{end}}

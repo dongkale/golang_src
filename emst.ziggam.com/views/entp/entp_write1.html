@@ -1,0 +1,81 @@
+{{template "include/common_base.html" .}}
+
+{{define "body"}}
+
+<!-- 회원가입 -->
+<div class="pageLogin">
+  <div class="join">
+    <dl class="topInfo">
+      <dt>회원가입</dt>
+      <dd>직감 기업회원</dd>
+      <dd class="step">STEP1</dd>
+    </dl>
+    <p class="agreement"><input type="checkbox" class="custom" name="tbl_check_all" id="tbl_check_all"><label for="tbl_check_all">모두 동의합니다</label></p>
+    <div class="privacy">
+      <p class="agree"><input type="checkbox" class="custom st02" name="tbl_check" id="tbl_chk_1"><label for="tbl_chk_1" class="tbl_check">이용약관에 동의합니다.<span class="point">(필수)</span></label></p>
+      <div>{{str2html .Cont}}</div>
+    </div>
+    <div class="privacy">
+      <p class="agree"><input type="checkbox" class="custom st02" name="tbl_check" id="tbl_chk_2"><label for="tbl_chk_2" class="tbl_check">개인정보 수집 및 이용에 동의합니다.<span class="point">(필수)</span></label></p>
+      <div>{{str2html .Cont1}}</div>
+    </div>
+    <p class="emailAgree"><input type="checkbox" class="custom st02" name="tbl_check" id="tbl_chk_3"><label for="tbl_chk_3" class="tbl_check">이메일 정보 수신에 동의합니다.<span class="text">(선택)</span></label></p>
+    <input type="hidden" id="email_recv_yn">
+    <p class="btn"><a href="javascript:void(0);" id="btn_next">다음</a></p>
+    <p class="validationMessage"></p>
+    <p class="info">* 아이디, 비밀번호 찾기 관련 문의사항은 <a href="mailto:support@ziggam.com">고객센터</a> 를 이용해주세요.</p>
+  </div>
+  <span class="loginBoxBg"></span>
+</div>
+<!-- 회원가입 -->
+
+<script type="text/javascript">
+
+	// 전체선택/해제
+	$(document).off("click", "#tbl_check_all").on("click","#tbl_check_all",function(e) {
+		if($(this).hasClass("checked")) {
+			$('input:checkbox[name="tbl_check"]').prop("checked",false);	
+      $(this).removeClass("checked");
+      $(".tbl_check").removeClass("checked");
+		}else{
+  		$('input:checkbox[name="tbl_check"]').prop("checked",true);
+			$(this).addClass("checked");
+      $(".tbl_check").addClass("checked");
+    }
+	});	 
+
+	$(document).off("change", "#tbl_chk_1").on("change","#tbl_chk_1",function(e) {
+        $(".validationMessage").text("");
+  });	 
+	$(document).off("change", "#tbl_chk_2").on("change","#tbl_chk_2",function(e) {
+        $(".validationMessage").text("");
+  });	 
+
+  // 다음
+	$(document).off("click", "#btn_next").on("click","#btn_next",function(e) {
+
+    if($('input:checkbox[id="tbl_chk_1"]').is(":checked") == false){
+        $(".validationMessage").text("이용약관에 동의를 하세요");
+        return;
+    }     
+
+    if($('input:checkbox[id="tbl_chk_2"]').is(":checked") == false){
+        $(".validationMessage").text("개인 정보 수집 및 이용 안내 동의를 하세요");
+        return;
+    }     
+
+    if($('input:checkbox[id="tbl_chk_3"]').is(":checked") == false){
+      $("#email_recv_yn").val("N");
+    } else {
+      $("#email_recv_yn").val("Y");
+    }
+
+    var email_recv_yn = $("#email_recv_yn").val();
+    //console.log("email_recv_yn : "+email_recv_yn);
+    window.location.href="/entp/write/step2?email_recv_yn="+email_recv_yn;
+
+	});	 
+
+</script>
+
+{{end}}

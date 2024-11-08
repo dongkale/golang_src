@@ -1,0 +1,1168 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+        <!-- top start -->
+        {{template "include/top.html" .}}
+        <!-- top end -->
+        <!-- 페이지 영역 -->
+        <div class="content">
+            <h2>배너 관리</h2>
+            <div class="recruitList">
+                <div class="tabMenu">
+                    {{template "include/admin_contents_menu.html" .}}
+                </div>
+                <form id="regForm" name="regForm" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="img_yn" value="N">
+                    <input type="hidden" id="list_img_yn" value="N">
+                    <input type="hidden" id="ori_img_file" value="{{.OriImgFile}}">
+                    <input type="hidden" id="ori_thumb_img_file" value="{{.OriThumbImgFile}}">
+                    <input type="hidden" id="list_ori_img_file" value="{{.ListOriImgFile}}">
+                    <input type="hidden" id="list_ori_thumb_img_file" value="{{.ListOriThumbImgFile}}">
+                    <input type="hidden" id="page_no" value="{{.PageNo}}">
+                    <input type="hidden" id="bnr_sn" value="{{.BnrSn}}">
+                    <input type="hidden" id="list_bnr_sn" value="{{.ListBnrSn}}">
+                    <div class="businessInfo">
+                        <div class="businessImage">
+                            <a href="javascript:void(0);" id="bnr_upload">
+                                {{if .PtoPath}}
+                                    <span class="img3"><img src="{{.PtoPath}}"
+                                                            onerror="this.src='/static/images/entp_no_img.png'" alt=""
+                                                            class="bnr_img_loaded"></span>
+                                {{else}}
+                                    <span class="img3"><img src="/static/images/entp_no_img.png" style="opacity: 0.01;"
+                                                            alt="" class="bnr_img_loaded"></span>
+                                {{end}}
+                                <div class="imgGuide3">
+                                    {{if not .PtoPath}}
+                                        <p class="t01">배너 이미지를 등록해주세요.</p>
+                                        <p class="t02">PNG, JPEG 파일만 등록 가능<br/>600 X 350 이미지 사용(필수)</p>
+                                    {{end}}
+                                </div>
+                            </a>
+                            <span class="btn" style="display: none;">
+                  <a href="javascript:void(0);" id="bnr_upload"><img src="/static/images/btn_write.png" alt="등록"></a>
+                  <input type="file" name="bnr_img" id="bnr_img" accept="image/*" class="visual_img"
+                         style="display:none">
+                </span>
+                        </div>
+                        <div class="businessForm">
+                            <div class="row">
+                                <dl class="col1">
+                                    <dt>배너명 *</dt>
+                                    <dd><input type="text" name="bnr_title" id="bnr_title" maxlength="100"
+                                               value="{{.BnrTitle}}" placeholder="제목"></dd>
+                                    <dd class="validate bnr_title_message"></dd>
+                                </dl>
+                            </div>
+                            <div class="row cmcd">
+                                <dl class="col1">
+                                    <dt>링크구분 *</dt>
+                                    <select name="lnk_gbn_cd" id="lnk_gbn_cd"
+                                            style="font-size: 14px; width:100px; height:30px">
+                                        <option value="">선택하세요</option>
+                                        {{range .CommonLnkGbnCd}}
+                                            <option value="{{.LgCdId}}">{{.LgCdNm}}</option>
+                                        {{end}}
+                                    </select>
+                                    <dd class="validate lnk_gbn_cd_message"></dd>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <em0>
+                                    </em0>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <em1>
+                                    </em1>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <em2>
+                                    </em2>
+                                </dl>
+                            </div>
+                            <div class="row recruit">
+                                <dl class="col1">
+                                    <em3>
+                                    </em3>
+                                </dl>
+                            </div>
+                            <div class="row multi">
+                                <dl class="col1">
+                                    <em4>
+                                    </em4>
+                                </dl>
+                            </div>
+
+                            <div class="row banner_list">
+                                <dl class="col1">
+                                    <em5>
+                                    </em5>
+                                </dl>
+                            </div>
+
+                            <div class="row link" style="display: none">
+                                <dl class="col1">
+                                    <dd><input type="text" name="link_url" id="link_url" maxlength="200"
+                                               value="{{.LnkGbnVal}}" placeholder="외부 링크를 입력해주세요."></dd>
+                                    <dd class="validate link_url_message"></dd>
+                                </dl>
+                            </div>
+                            <div class="row">
+                                <dl class="col1">
+                                    <dt>게시기간 *</dt>
+                                    <dd>
+                                        <input type="text" id="sdy" style="width: 100px; height:30px"/>&nbsp;~&nbsp;
+                                        <input type="text" id="edy" style="width: 100px; height:30px"/>
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="row">
+                                <dl class="col1">
+                                    <dt>노출여부 *</dt>
+                                    <dd>
+                                        <select name="use_yn" id="use_yn"
+                                                style="font-size: 14px; width:80px; height:30px">
+                                            <option value="0">대기</option>
+                                            <option value="1">노출</option>
+                                        </select>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <div class="btnSec">
+                            <a href="javascript:void(0);" id="btn_cancel">목록</a>
+                            <a href="javascript:void(0);" id="btn_process" data-cu_cd="{{.CuCd}}"
+                               class="active">{{if eq "U" .CuCd}}수정{{else}}등록{{end}}</a>
+                            <!--<a href="javascript:void(0);" id="btn_delete">삭제</a>-->
+                        </div>
+                        <p class="validationMessage" style="display:none">게시 형태를 선택해주세요.</p>
+                </form>
+            </div>
+            <!-- // 페이지 영역 -->
+        </div>
+        <!-- 컨텐츠영역 -->
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#regForm").validate(validOption);
+
+            var now = new Date();
+            var year = now.getFullYear();
+            var mon = (now.getMonth() + 1) > 9 ? '' + (now.getMonth() + 1) : '0' + (now.getMonth() + 1);
+            var day = now.getDate() > 9 ? '' + now.getDate() : '0' + now.getDate();
+
+            var now_dt = year + '-' + mon + '-' + day;
+            $("#sdy").val(now_dt);
+            $("#edy").val(now_dt);
+
+            var bnr_img_chk = "{{.PtoPath}}";
+            if (!bnr_img_chk) {
+                $("#img_yn").val("N");
+            } else {
+                $("#img_yn").val("M");
+            }
+
+            var list_img_chk = "{{.ListPhotoPath}}";
+            if (!list_img_chk) {
+                $("#list_img_yn").val("N");
+            } else {
+                $("#list_img_yn").val("M");
+            }
+
+            // 수정폼일 경우
+            if ("{{.CuCd}}" == "U") {
+
+                if ("{{.BnrKndCd}}" == "01") {
+                    $("#lnk_gbn_cd > option[value={{.LnkGbnCd}}]").prop("selected", "selected");
+                    $("#lnk_gbn_cd > option[value={{.LnkGbnCd}}]").trigger("change");
+
+                    $("#bnr_knd_cd > option[value={{.BnrKndCd}}]").prop("selected", "selected");
+                    $("#bnr_knd_cd > option[value={{.BnrKndCd}}]").trigger("change");
+
+                    linkMenu("G024");
+                } else {
+                    $("#lnk_gbn_cd > option[value={{.LnkGbnCd}}]").prop("selected", "selected");
+                    $("#lnk_gbn_cd > option[value={{.LnkGbnCd}}]").trigger("change");
+                    linkMenu("G025");
+                    //console.log("BnrKndCd : "+"{{.BnrKndCd}}");
+                    //console.log("LnkGbnVal : "+"{{.LnkGbnVal}}");
+                    bannerKndList("{{.LnkGbnVal}}", "{{.BnrSn}}");
+                }
+
+                if ("{{.BnrKndCd}}" == "01") { // 배너종류코드가 일반일 경우
+                    if ("{{.LnkGbnVal}}" == "03") {
+                        setTimeout(linkItem("03"), 1000);
+                    } else if ("{{.LnkGbnVal}}" == "01") {
+                        linkItem("01");
+                    } else if ("{{.LnkGbnVal}}" == "02") {
+                        linkItem("02");
+                    } else if ("{{.LnkGbnVal}}" == "04") {
+                        linkItem("04");
+                    } else if ("{{.LnkGbnVal}}" == "05") {
+                        linkItem("05");
+                    }
+                } /*else { // 배너종류코드가 리스트일 경우
+            if ("{{.LnkGbnVal}}" == "01") { //기업
+              linkItem("01");
+            } else if ("{{.LnkGbnVal}}" == "02") { //채용공고
+              linkItem("02");
+            }
+          }*/
+
+                if ("{{.EntpMemNo}}" != "") {
+                    if ("{{.LnkGbnVal}}" == "04" || "{{.LnkGbnVal}}" == "05") {
+                        console.log("기업관련");
+                    } else {
+                        linkRecruit('{{.EntpMemNo}}');
+                    }
+                }
+
+                var sd = "{{.Sdy}}";
+                var ed = "{{.Edy}}";
+
+                $("#sdy").val(sd.substring(0, 4) + "-" + sd.substring(4, 6) + "-" + sd.substring(6, 8));
+                $("#edy").val(ed.substring(0, 4) + "-" + ed.substring(4, 6) + "-" + ed.substring(6, 8));
+
+                $("#use_yn > option[value={{.UseYn}}]").prop("selected", "selected");
+            }
+
+            if ("{{.LnkGbnCd}}" == "01") {
+                $("#link_url").val("");
+            }
+        });
+
+        $(function () {
+            $('#sdy').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: $('#edy').val() ? $('#edy').val() : false
+                    })
+                },
+                timepicker: false,
+            });
+            $('#edy').datetimepicker({
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: $('#sdy').val() ? $('#sdy').val() : false
+                    })
+                },
+                timepicker: false,
+            });
+        });
+
+        // 이미지 찾아보기
+        $(document).off("click", "#bnr_upload").on("click", "#bnr_upload", function (e) {
+            //e.preventDefault();
+            $("#bnr_img").trigger('click');
+        });
+
+        // 이미지 체크
+        $(document).off("change", "#bnr_img").on("change", "#bnr_img", function (e) {
+            readURL(this, "bnr");
+        });
+
+        // 이미지 적용
+        // var readURL = function(input) {
+        //   var ext = $('#bnr_img').val().split('.').pop().toLowerCase();
+        //   //console.log("ext : "+ext);
+        //
+        //   if($.inArray(ext, ['png','jpg','jpeg','gif']) == -1) {
+        //     //showMessagePopup("질문이미지 입력 알림",".jpg, .jpeg, .gif .png 형식만 등록해주세요.");
+        //     $("#bnr_img").val("");
+        //     return false;
+        //   }
+        //
+        //   if (input.files && input.files[0]) {
+        //     var reader = new FileReader();
+        //     reader.onload = function(e) {
+        //       $(".bnr_img_loaded").attr('src', e.target.result);
+        //       $(".bnr_img_loaded").css('opacity','1');
+        //       $(".t01").text("");
+        //       $(".t02").text("");
+        //     };
+        //
+        //     reader.readAsDataURL(input.files[0]);
+        //
+        //     var fileValue = $("#bnr_img").val().split("\\");
+        //     var fileName = fileValue[fileValue.length-1]; // 파일명
+        //     var fileExt = $("#bnr_img").val().split('.').pop().toLowerCase(); //파일확장자
+        //     $("#img_yn").val("Y");
+        //   }
+        // };
+
+        // 그룹 이미지 찾아보기
+        $(document).off("click", "#list_upload").on("click", "#list_upload", function (e) {
+            //e.preventDefault();
+            $("#list_img").trigger('click');
+        });
+
+        // 그룹 이미지 체크
+        $(document).off("change", "#list_img").on("change", "#list_img", function (e) {
+            readURL(this, "list");
+        });
+
+        // 이미지 적용
+        var readURL = function (input, name) {
+            var ext = $("#" + name + "_img").val().split('.').pop().toLowerCase();
+            //console.log("ext : "+ext);
+
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg', 'gif']) == -1) {
+                //showMessagePopup("질문이미지 입력 알림",".jpg, .jpeg, .gif .png 형식만 등록해주세요.");
+                $("#" + name + "_img").val("");
+                return false;
+            }
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("." + name + "_img_loaded").attr('src', e.target.result);
+                    $("." + name + "_img_loaded").css('opacity', '1');
+                    $("." + name + "_upload" + " .t01").text("");
+                    $("." + name + "_upload" + " .t02").text("");
+                };
+
+                reader.readAsDataURL(input.files[0]);
+
+                var fileValue = $("#" + name + "_img").val().split("\\");
+                var fileName = fileValue[fileValue.length - 1]; // 파일명
+                var fileExt = $("#" + name + "_img").val().split('.').pop().toLowerCase(); //파일확장자
+                if (name !== "list") {
+                    $("#img_yn").val("Y");
+                } else {
+                    $("#" + name + "_img_yn").val("Y");
+                }
+                ;
+            }
+        };
+
+        // 링크구분 선택시
+        $(document).off("change", "#lnk_gbn_cd").on("change", "#lnk_gbn_cd", function (e) {
+            var pLnkGbnCd = $('select[id=lnk_gbn_cd] option:selected').val();
+            //console.log("pLnkGbnCd : "+pLnkGbnCd);
+            $(".cmcd").find("em0").children().remove();
+            $(".cmcd").find("em1").children().remove();
+            $(".cmcd").find("em2").children().remove();
+            $(".recruit").find("em3").children().remove();
+            $(".multi").find("em4").children().remove();
+            $(".link").css("display", "none");
+            if (pLnkGbnCd == "01") {
+                bannerKndMenu('G026');
+            } else if (pLnkGbnCd == "02") {
+                $(".cmcd").find("em1").children().remove();
+                $(".cmcd").find("em2").children().remove();
+                $(".recruit").find("em3").children().remove();
+                $(".multi").find("em4").children().remove();
+                $(".link").css("display", "");
+            }
+        });
+
+        // 배너종류(일반,리스트) 선택시
+        $(document).off("change", "#bnr_knd_cd").on("change", "#bnr_knd_cd", function (e) {
+            var pBnrKndCd = $('select[id=bnr_knd_cd] option:selected').val();
+
+            var pLnkGbnVal = $('select[id=lnk_gbn_val] option:selected').val();
+            //console.log("pBnrKndCd : "+pBnrKndCd);
+            $(".cmcd").find("em1").children().remove();
+            $(".cmcd").find("em2").children().remove();
+            $(".recruit").find("em3").children().remove();
+            $(".multi").find("em4").children().remove();
+            $(".link").css("display", "none");
+
+            if (pBnrKndCd != "02" || (pBnrKndCd == "02" && (pLnkGbnVal == ""))) {
+                $(".banner_list").find("em5").children().remove();
+            }
+
+            if (pBnrKndCd == "01") {
+                linkMenu('G024');
+            } else if (pBnrKndCd == "02") { // 추후 리스트 타입 추가 예정 2019.08.29
+
+                $(".cmcd").find("em1").children().remove();
+                $(".cmcd").find("em2").children().remove();
+                $(".recruit").find("em3").children().remove();
+                $(".multi").find("em4").children().remove();
+
+                //$(".link").css("display","");
+                linkMenu('G025');
+            }
+        });
+
+        // 내부링크 메뉴 > 배너종류 호출
+        var bannerKndMenu = function (pCdGrpId) {
+            $.ajax({
+                type: "POST",
+                url: "/common/code/list",
+                data: {
+                    cd_grp_id: pCdGrpId
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (args.RtnCommonCodeListData.length > 0) {
+                        $(".cmcd").find("em0").children().remove();
+                        var html = "";
+                        html += "<select name=\"bnr_knd_cd\" id=\"bnr_knd_cd\" style=\"font-size: 14px; width:100px; height:30px\">";
+                        html += "<option value=\"\">배너구분</option>";
+                        $.each(args.RtnCommonCodeListData, function (e) {
+                            if ("{{.BnrKndCd}}" == args.RtnCommonCodeListData[e].CdId) {
+                                html += "<option value='" + args.RtnCommonCodeListData[e].CdId + "' selected='selected'>" + args.RtnCommonCodeListData[e].CdNm + "</option>";
+                            } else {
+                                html += "<option value='" + args.RtnCommonCodeListData[e].CdId + "'>" + args.RtnCommonCodeListData[e].CdNm + "</option>";
+                            }
+                        })
+                        html += "</select>";
+                        html += "<dd class=\"validate bnr_knd_cd_message\"></dd>";
+                        $(".cmcd").find("em0").append(html);
+                    } else {
+                        var html = "";
+                        html += "<select name=\"bnr_knd_cd\" id=\"bnr_knd_cd\" style=\"font-size: 14px; width:100px; height:30px\">";
+                        html += "<option value=\"\" disabled selected>선택하세요</option>";
+                        html += "</select>";
+                        html += "<dd class=\"validate bnr_knd_cd_message\"></dd>";
+                        $(".cmcd").find("em0").append(html);
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        };
+
+        // 내부링크 메뉴 호출
+        var linkMenu = function (pCdGrpId) {
+            $.ajax({
+                type: "POST",
+                url: "/common/code/list",
+                data: {
+                    cd_grp_id: pCdGrpId
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (args.RtnCommonCodeListData.length > 0) {
+                        $(".cmcd").find("em1").children().remove();
+                        var lnk_gbn_cd = $("#lnk_gbn_cd").val();
+                        var bnr_knd_cd = $("#bnr_knd_cd").val();
+
+                        if (lnk_gbn_cd == "01" && (bnr_knd_cd == "01" || bnr_knd_cd == "02")) {
+
+                            var html = "";
+                            html += "<select name=\"lnk_gbn_val\" id=\"lnk_gbn_val\" style=\"font-size: 14px; width:200px; height:30px\">";
+                            html += "<option value=\"\">메뉴를 선택해주세요.</option>";
+                            $.each(args.RtnCommonCodeListData, function (e) {
+                                if ("{{.LnkGbnVal}}" == args.RtnCommonCodeListData[e].CdId) {
+                                    html += "<option value='" + args.RtnCommonCodeListData[e].CdId + "' selected='selected'>" + args.RtnCommonCodeListData[e].CdNm + "</option>";
+                                } else {
+                                    html += "<option value='" + args.RtnCommonCodeListData[e].CdId + "'>" + args.RtnCommonCodeListData[e].CdNm + "</option>";
+                                }
+                            })
+                            html += "</select>";
+                            html += "<dd class=\"validate lnk_gbn_val_message\"></dd>";
+                            $(".cmcd").find("em1").append(html);
+                        }
+                    } else {
+                        // var html = "";
+                        // html += "<select name=\"lnk_gbn_val\" id=\"lnk_gbn_val\" style=\"font-size: 14px; width:200px; height:30px\">";
+                        // html += "<option value=\"\" disabled selected>이동할 메뉴를 선택해주세요.</option>";
+                        // html += "</select>";
+                        // html += "<dd class=\"validate lnk_gbn_val_message\"></dd>";
+                        // $(".cmcd").find("em1").append(html);
+                    }
+
+                    lnk_gbn_val_change();
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        };
+
+        // 내부메뉴 선택시
+        $(document).off("change", "#lnk_gbn_val").on("change", "#lnk_gbn_val", function (e) {
+            lnk_gbn_val_change();
+        });
+
+        function lnk_gbn_val_change() {
+            var pLnkGbnVal = $('select[id=lnk_gbn_val] option:selected').val();
+            var pBnrKndCd = $("#bnr_knd_cd").val();
+            var pBnrSn = $("#bnr_sn").val();
+            //console.log("pBnrSn : "+pBnrSn);
+            $(".cmcd").find("em2").children().remove();
+
+            if (pBnrKndCd == "02") { // 배너종류코드가 리스트 타입일 경우
+                //console.log("배너종류 리스트타입!!");
+                $(".cmcd").find("em2").children().remove();
+                $(".recruit").find("em3").children().remove();
+                if (pLnkGbnVal == "01") {
+                    //console.log("기업리스트");
+                    $(".banner_list").find("em5").children().remove();
+                    bannerKndList("01", pBnrSn);
+                } else if (pLnkGbnVal == "02") {
+                    //console.log("채용공고 리스트");
+                    bannerKndList("02", pBnrSn);
+                } else {
+                    $(".banner_list").find("em5").children().remove();
+                    $(".multi").find("em4").children().remove();
+                }
+            } else {
+                if (pLnkGbnVal == "") {
+                    $(".cmcd").find("em2").children().remove();
+                    $(".recruit").find("em3").children().remove();
+                } else {
+                    if (pLnkGbnVal == "06" || pLnkGbnVal == "07") {
+                        //console.log("개인회원관련");
+                        $(".cmcd").find("em2").children().remove();
+                        $(".recruit").find("em3").children().remove();
+                    } else {
+                        linkItem(pLnkGbnVal);
+                    }
+                }
+            }
+        }
+
+        function make_list_group() {
+            $(".banner_list").find("em5").children().remove();
+
+            var html = "";
+            html += "<div class=\"row\" id=\"list_name\" name=\"list_name\">";
+            html += "<dl class=\"col1\">";
+            html += "<dt>리스트명 *</dt>";
+            html += "<dd><input type=\"text\" name=\"list_title\" id=\"list_title\" maxlength=\"100\"";
+            html += "value=\"{{.ListTitle}}\" placeholder=\"리스트명\"></dd>";
+            html += "<dd class=\"validate list_title_message\"></dd>";
+            html += "</dl>";
+            html += "</div>";
+
+            html += "<div class=\"ListImage\" id=\"list_image\" name=\"list_image\">";
+            html += "<a href=\"javascript:void(0);\" id=\"list_upload\">";
+            if ("{{.ListPhotoPath}}" != "") {
+                html += "<span class=\"img4\"><img src=\"{{.ListPhotoPath}}\"";
+                html += "onerror=\"this.src='/static/images/entp_no_img.png'\"";
+                html += "alt=\"\" class=\"list_img_loaded\"></span>";
+            } else {
+                html += "<span class=\"img4\"><img src=\"/static/images/entp_no_img.png\"";
+                html += "style=\"opacity: 0.01;\" alt=\"\" class=\"list_img_loaded\"></span>";
+            }
+            html += "<div class=\"imgGuide4\">";
+            if ("{{.ListPhotoPath}}" == "") {
+                html += "<p class=\"t01\">이미지 등록</p>";
+                html += "<p class=\"t02\">PNG, JPEG 파일만 등록 가능</p>";
+                html += "{{/*                            <p class=\"t02\">PNG, JPEG 파일만 등록 가능<br/>600 X 350 이미지 사용(필수)</p>*/}}";
+            }
+
+            html += "</div>";
+            html += "</a>";
+            html += "<span class=\"btn\" style='display: none;'>";
+            html += "<a href=\"javascript:void(0);\" id=\"list_upload\"><img src=\"/static/images/btn_write.png\" alt=\"등록\"></a>";
+            html += "<input type=\"file\" name=\"list_img\" id=\"list_img\" accept=\"image/*\" class=\"visual_img\"  style=\"display: none;\">";
+            html += "</span>";
+            html += "</div>";
+
+            html += "<div class=\"row\" name=\"div_list_link_url\" id=\"div_list_link_url\">";
+            html += "<dl class=\"col1\">";
+            html += "<dt>링크 주소 *</dt>";
+            html += "<dd>";
+            html += "<input type=\"text\" name=\"list_link_url\" id=\"list_link_url\" maxlength=\"100\" value=\"{{.ListLinkUrl}}\" placeholder=\"링크주소\" />";
+            html += "</dd>";
+            html += "<dd class=\"validate list_link_url_message\"></dd>";
+            html += "</dl>";
+            html += "</div>";
+
+            $(".banner_list").find("em5").append(html);
+        }
+
+        // 배너 리스트 타입 호출(기업, 채용공고)
+        var bannerKndList = function (pLnkGbnVal, pBnrSn) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/banner/kind/list",
+                data: {
+                    lnk_gbn_val: pLnkGbnVal,
+                    bnr_sn: pBnrSn
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (args.RtnBannerKindListData.length > 0) {
+                        $(".multi").find("em4").children().remove();
+                        var html = "";
+                        // 기업 리스트
+                        if (pLnkGbnVal == "01") {
+                            html += "<select name=\"lnk_gbn_list_val\" id=\"lnk_gbn_list_val\" multiple=\"multiple\">";
+                            $.each(args.RtnBannerKindListData, function (e) {
+                                if (args.RtnBannerKindListData[e].SelectYn == 'Y') {
+                                    if ("{{.LnkGbnVal}}" == pLnkGbnVal) {
+                                        html += "<option value='" + args.RtnBannerKindListData[e].EntpMemNo + "' selected='selected'>" + args.RtnBannerKindListData[e].EntpKoNm + "</option>";
+                                    } else {
+                                        html += "<option value='" + args.RtnBannerKindListData[e].EntpMemNo + "'>" + args.RtnBannerKindListData[e].EntpKoNm + "</option>";
+                                    }
+                                } else {
+                                    html += "<option value='" + args.RtnBannerKindListData[e].EntpMemNo + "'>" + args.RtnBannerKindListData[e].EntpKoNm + "</option>";
+                                }
+                            });
+                            html += "</select>";
+                            html += "<dd class=\"validate lnk_gbn_list_val_message\"></dd>";
+
+                            $(".banner_list").find("em5").children().remove();
+                        } else {
+                            // 채용공고 리스트
+                            var lnk_gbn_cd = $("#lnk_gbn_cd").val();
+                            var bnr_knd_cd = $("#bnr_knd_cd").val();
+
+                            if (lnk_gbn_cd == "01" && (bnr_knd_cd == "01" || bnr_knd_cd == "02")) {
+                                html += "<select name=\"lnk_gbn_list_val\" id=\"lnk_gbn_list_val\" multiple=\"multiple\">";
+                                $.each(args.RtnBannerKindListData, function (e) {
+                                    if (args.RtnBannerKindListData[e].SelectYn == 'Y') {
+                                        if ("{{.LnkGbnVal}}" == pLnkGbnVal) {
+                                            html += "<option value='" + args.RtnBannerKindListData[e].RecrutSn + "' selected='selected'>[" + args.RtnBannerKindListData[e].EntpKoNm + "] " + args.RtnBannerKindListData[e].RecrutTitle + "</option>";
+                                        } else {
+                                            html += "<option value='" + args.RtnBannerKindListData[e].RecrutSn + "'>[" + args.RtnBannerKindListData[e].EntpKoNm + "] " + args.RtnBannerKindListData[e].RecrutTitle + "</option>";
+                                        }
+                                    } else {
+                                        html += "<option value='" + args.RtnBannerKindListData[e].RecrutSn + "'>[" + args.RtnBannerKindListData[e].EntpKoNm + "] " + args.RtnBannerKindListData[e].RecrutTitle + "</option>";
+                                    }
+                                });
+                                html += "</select>";
+                                html += "<dd class=\"validate lnk_gbn_list_val_message\"></dd>";
+                            }
+                        }
+                        $(".multi").find("em4").append(html);
+                        $('#lnk_gbn_list_val').multiSelect();
+
+                        if (pLnkGbnVal == "01" || pLnkGbnVal == "02") {
+                            make_list_group();
+                        }
+                    } else {
+                        var html = "";
+                        html += "<select name=\"lnk_gbn_list_val\" id=\"lnk_gbn_list_val\">";
+                        html += "<option value=\"\" disabled selected>선택해주세요.</option>";
+                        html += "</select>";
+                        html += "<dd class=\"validate lnk_gbn_list_val_message\"></dd>";
+                        $(".lnk_gbn_list_val").find("em4").append(html);
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        }
+
+        // 내부링크 메뉴 호출
+        var linkItem = function (pLnkGbnVal) {
+            $.ajax({
+                type: "POST",
+                url: "/common/item/list",
+                data: {
+                    lnk_gbn_val: pLnkGbnVal
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (pLnkGbnVal == "03" || pLnkGbnVal == "04" || pLnkGbnVal == "05") {
+                        if (args.RtnCommonItemListData.length > 0) {
+                            $(".cmcd").find("em2").children().remove();
+                            $(".recruit").find("em3").children().remove();
+                            var html = "";
+                            html += "<select name=\"entp_mem_no\" id=\"entp_mem_no\" style=\"font-size: 14px; width:200px; height:30px\">";
+                            html += "<option value=\"\">기업을 선택해주세요.</option>";
+                            $.each(args.RtnCommonItemListData, function (e) {
+                                if ("{{.EntpMemNo}}" == args.RtnCommonItemListData[e].Item1) {
+                                    html += "<option value='" + args.RtnCommonItemListData[e].Item1 + "' selected='selected'>" + args.RtnCommonItemListData[e].Item2 + "</option>";
+                                } else {
+                                    html += "<option value='" + args.RtnCommonItemListData[e].Item1 + "'>" + args.RtnCommonItemListData[e].Item2 + "</option>";
+                                }
+                            })
+                            html += "</select>";
+                            html += "<dd class=\"validate entp_mem_no_message\"></dd>";
+                            $(".cmcd").find("em2").append(html);
+                        } else {
+                            var html = "";
+                            html += "<select name=\"entp_mem_no\" id=\"entp_mem_no\" style=\"font-size: 14px; width:200px; height:30px\">";
+                            html += "<option value=\"\" disabled selected>기업을 선택해주세요.</option>";
+                            html += "</select>";
+                            html += "<dd class=\"validate entp_mem_no_message\"></dd>";
+                            $(".cmcd").find("em2").append(html);
+                        }
+                    } else {
+                        var lnk_gbn_cd = $("#lnk_gbn_cd").val();
+                        var bnr_knd_cd = $("#bnr_knd_cd").val();
+                        if (lnk_gbn_cd == "01" && (bnr_knd_cd == "01" || bnr_knd_cd == "02")) {
+                            if (args.RtnCommonItemListData.length > 0) {
+                                $(".recruit").find("em3").children().remove();
+                                $(".cmcd").find("em2").children().remove();
+                                var html = "";
+                                html += "<select name=\"sn\" id=\"sn\" style=\"font-size: 14px; width:510px; height:30px\">";
+                                if (pLnkGbnVal == "01") {
+                                    html += "<option value=\"\">공지사항을 선택해주세요.</option>";
+                                } else if (pLnkGbnVal == "02") {
+                                    html += "<option value=\"\">이벤트를 선택해주세요.</option>";
+                                }
+                                $.each(args.RtnCommonItemListData, function (e) {
+                                    if ("{{.Sn}}" == args.RtnCommonItemListData[e].Item1) {
+                                        html += "<option value='" + args.RtnCommonItemListData[e].Item1 + "' selected='selected'>" + args.RtnCommonItemListData[e].Item2 + "</option>";
+                                    } else {
+                                        html += "<option value='" + args.RtnCommonItemListData[e].Item1 + "'>" + args.RtnCommonItemListData[e].Item2 + "</option>";
+                                    }
+                                })
+                                html += "</select>";
+                                html += "<dd class=\"validate sn_message\"></dd>";
+                                $(".recruit").find("em3").append(html);
+                            } else {
+                                //----
+                                $(".recruit").find("em3").children().remove();
+                                $(".cmcd").find("em2").children().remove();
+                                var html = "";
+                                html += "<select name=\"sn\" id=\"sn\" style=\"font-size: 14px; width:510px; height:30px\">";
+                                if (pLnkGbnVal == "01") {
+                                    html += "<option value=\"\" disabled selected>공지사항을 선택해주세요.</option>";
+                                } else if (pLnkGbnVal == "02") {
+                                    html += "<option value=\"\" disabled selected>이벤트를 선택해주세요.</option>";
+                                }
+                                html += "</select>";
+                                html += "<dd class=\"validate sn_message\"></dd>";
+                                $(".recruit").find("em3").append(html);
+                            }
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        }
+
+        // 기업 선택시
+        $(document).off("change", "#entp_mem_no").on("change", "#entp_mem_no", function (e) {
+            var pEntpMemNo = $('select[id=entp_mem_no] option:selected').val();
+            var pLnkGbnVal = $('select[id=lnk_gbn_val] option:selected').val();
+            //console.log("pLnkGbnVal : "+pLnkGbnVal);
+            if (pEntpMemNo == "") {
+                $(".recruit").find("em3").children().remove();
+            } else {
+                $(".recruit").find("em3").children().remove();
+                if (pLnkGbnVal == "03") {
+                    linkRecruit(pEntpMemNo);
+                }
+            }
+        });
+
+        // 내부링크 메뉴 호출
+        var linkRecruit = function (pEntpMemNo) {
+            $.ajax({
+                type: "POST",
+                url: "/common/recruit/list",
+                data: {
+                    entp_mem_no: pEntpMemNo
+                },
+                dataType: "json",
+                success: function (args) {
+                    if (args.RtnCommonRecruitListData.length > 0) {
+                        $(".recruit").find("em3").children().remove();
+                        var html = "";
+                        html += "<select name=\"recruit_sn\" id=\"recruit_sn\" style=\"font-size: 14px; width:510px; height:30px\">";
+                        html += "<option value=\"\">채용공고를 선택해주세요.</option>";
+                        $.each(args.RtnCommonRecruitListData, function (e) {
+                            if ("{{.RecrutSn}}" == args.RtnCommonRecruitListData[e].RecrutSn) {
+                                html += "<option value='" + args.RtnCommonRecruitListData[e].RecrutSn + "' selected='selected'>" + args.RtnCommonRecruitListData[e].RecrutTitle + "</option>";
+                            } else {
+                                html += "<option value='" + args.RtnCommonRecruitListData[e].RecrutSn + "'>" + args.RtnCommonRecruitListData[e].RecrutTitle + "</option>";
+                            }
+                        });
+                        html += "</select>";
+                        html += "<dd class=\"validate recruit_sn_message\"></dd>";
+                        $(".recruit").find("em3").append(html);
+                    } else {
+                        var html = "";
+                        html += "<select name=\"recruit_sn\" id=\"recruit_sn\" style=\"font-size: 14px; width:510px; height:30px\">";
+                        html += "<option value=\"\" disabled selected>채용공고를 선택해주세요.</option>";
+                        html += "</select>";
+                        html += "<dd class=\"validate recruit_sn_message\"></dd>";
+                        $(".recruit").find("em3").append(html);
+                    }
+                },
+                error: function (e) {
+                    alert("fail " + e.responseText);
+                }
+            });
+        }
+
+        // 목록
+        $(document).off("click", "#btn_cancel").on("click", "#btn_cancel", function (e) {
+            var pn = $("#page_no").val();
+            window.location.href = "/admin/banner/list?pn=" + pn;
+        });
+
+
+        // Validation
+        var validOption = {
+            onkeyup: false
+            , onclick: false
+            , onfocusout: function (element) {		// 포커스 아웃 시 동작
+                if ($(element).valid()) {				// 체크 통과
+                    var id = $(element).attr("id");
+                    $("." + id + "_message").text("");	// message box clear
+                }
+            }
+            , onfocusin: function (element) {			// 포커스 인 시 동작
+                var id = $(element).attr("id");
+                //console.log("input id : "+id);
+                resetInput(id);
+            }
+            , rules: {
+                bnr_title: {
+                    required: true,
+                    maxlength: 100
+                },
+                list_title: {
+                    required: true,
+                    maxlength: 100
+                },
+                lnk_gbn_cd: {
+                    required: true,
+                },
+                bnr_knd_cd: {
+                    required: true,
+                },
+                sdy: {
+                    required: true,
+                },
+                edy: {
+                    required: true,
+                },
+            }
+            , errorPlacement: function (error, element) {
+                var id = element.attr("id");
+                //console.log("err_id :"+id);
+                $("." + id + "_message").text(error.text());
+            }
+            , messages: {
+                bnr_title: {
+                    required: "배너 제목을 입력해주세요."
+                },
+                list_title: {
+                    required: "리스트명을 입력해주세요."
+                },
+                lnk_gbn_cd: {
+                    required: "링크구분을 선택해주세요.",
+                },
+                bnr_knd_cd: {
+                    required: "배너종류를 선택해주세요.",
+                },
+                sdy: {
+                    required: "게시시작일을 입력해주세요.",
+                },
+                edy: {
+                    required: "게시종료일을 입력해주세요.",
+                },
+            }
+            , success: function (element) {
+                var str = $(element).attr("id");
+                var id = str.substring(0, str.length - 6);
+            }
+        }
+
+        // input box reset
+        var resetInput = function (id) {
+            $("." + id + "_message").text(""); // message box clear
+        }
+
+        // 기업, 채용공고 리스트 선택시
+        $(document).off("change", "#lnk_gbn_list_val").on("change", "#lnk_gbn_list_val", function (e) {
+            //console.log("lnk_gbn_list_val click!");
+            $(".lnk_gbn_list_val_message").text("");
+        });
+
+        // 등록/수정
+        $(document).off("click", "#btn_process").on("click", "#btn_process", function (e) {
+
+            // 배너 이미지 등록 체크
+            var img_yn = $("#img_yn").val(); //이미지 여부
+            //console.log("img_yn : "+img_yn);
+
+            if (img_yn == "N") {
+                console.log("이미지를 등록해주세요.");
+                window.scrollTo(0, 0);
+                $("#bnr_upload .t01").fadeOut(300, function () {
+                    $(this).css("color", "#6b6b6b");
+                });
+                $("#bnr_upload .t01").fadeIn(1000, function () {
+                    $(this).css("color", "#e04c53");
+                });
+                return;
+            }
+
+            // 배너 이미지 등록 체크
+
+            // 그룹 이미지 등록 체크
+            var list_img_yn = $("#list_img_yn").val(); //이미지 여부
+            //console.log("img_yn : "+img_yn);
+
+            // if ($("#bnr_knd_cd").val() == "02" && list_img_yn == "N") {
+            //     console.log("이미지를 등록해주세요.");
+            //     window.scrollTo(0, 0);
+            //     $("#list_upload .t01").fadeOut(300, function () {
+            //         $(this).css("color", "#6b6b6b");
+            //     });
+            //     $("#list_upload .t01").fadeIn(1000, function () {
+            //         $(this).css("color", "#e04c53");
+            //     });
+            //     return;
+            // }
+            // 그룹 이미지 등록 체크
+
+            if ($("#regForm").valid()) {
+
+                // 배너 이미지
+                var bnr_img = $("#bnr_img")[0].files[0]; //이미지
+                if (bnr_img == undefined) {
+                    bnr_img = "";
+                }
+                // 배너 이미지
+
+                // 그룹 이미지
+                var list_img = "";
+                if (list_img_yn == "Y") {
+                    list_img = $("#list_img")[0].files[0]; //이미지
+                }
+
+                if (list_img == undefined) {
+                    list_img = "";
+                }
+                // 그룹 이미지
+
+                var bnr_sn = $("#bnr_sn").val();
+                var list_bnr_sn = $("#list_bnr_sn").val();
+                var bnr_title = $("#bnr_title").val();
+                var list_title = $("#list_title").val();
+                var lnk_gbn_cd = $("#lnk_gbn_cd").val();
+                var bnr_knd_cd = $("#bnr_knd_cd").val();
+                if (bnr_knd_cd == undefined) {
+                    bnr_knd_cd = "01";
+                }
+                var lnk_gbn_val = $("#lnk_gbn_val").val();
+                if (lnk_gbn_val == undefined) {
+                    lnk_gbn_val = "";
+                }
+                var entp_mem_no = $("#entp_mem_no").val();
+                if (entp_mem_no == undefined) {
+                    entp_mem_no = ""
+                }
+                var recruit_sn = $("#recruit_sn").val();
+                if (recruit_sn == undefined) {
+                    recruit_sn = ""
+                }
+                var sn = $("#sn").val();
+                if (sn == undefined || sn == "") {
+                    sn = 0
+                }
+                var link_url = $("#link_url").val();
+                var sdy = $("#sdy").val().replace(/\-/g, '');
+                ;
+                var edy = $("#edy").val().replace(/\-/g, '');
+                ;
+                var use_yn = $("#use_yn").val();
+                var cu_cd = $(this).data("cu_cd");
+                var lnk_gbn_list_val = $("#lnk_gbn_list_val").val();
+
+                // 내부링크
+                if ($("#lnk_gbn_cd").val() == "01") {
+                    if (lnk_gbn_val == "") {
+                        $(".lnk_gbn_val_message").text("메뉴를 선택해주세요");
+                        return;
+                    } else {
+                        if (bnr_knd_cd == "02") { // 배너종류코드가 리스트 타입일 경우
+                            //console.log("배너종류코드가 리스트 타입일 경우");
+                            //console.log("value : "+lnk_gbn_list_val);
+                            if (lnk_gbn_list_val.length == 0) {
+                                $(".lnk_gbn_list_val_message").text("컨텐츠를 선택해주세요");
+                                return;
+                            }
+                        } else {
+                            if (lnk_gbn_val == "01" || lnk_gbn_val == "02") { // 공지,이벤트일 경우
+                                if (sn == "") {
+                                    $(".sn_message").text("컨텐츠를 선택해주세요");
+                                    return;
+                                }
+                            } else if (lnk_gbn_val == "06" || lnk_gbn_val == "07") { // 개인설정, 영상프로필일 경우
+                                //console.log("개인화부분");
+                            } else {
+                                if (entp_mem_no == "") {
+                                    $(".entp_mem_no_message").text("기업을 선택해주세요");
+                                    return;
+                                } else {
+                                    if (lnk_gbn_val == "03") {
+                                        if (recruit_sn == "") {
+                                            $(".recruit_sn_message").text("채용공고를 선택해주세요");
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if ($("#lnk_gbn_cd").val() == "02") { //외부링크
+                    if ($("#link_url").val().length == 0) {
+                        $(".link_url_message").text("외부링크를 입력해주세요.");
+                        return;
+                    }
+                }
+
+                // 배너 이미지 영역
+
+                console.log("img_yn : " + img_yn);
+
+                if (img_yn == "Y") {
+                    var img_ext = $("#bnr_img").val().split('.').pop().toLowerCase(); //파일확장자
+                }
+
+                if (cu_cd == "U") {
+                    if (img_yn == "Y") {
+                        var ori_img_file = $("#ori_img_file").val(); //기존이미지파일경로
+                        var ori_img_file_ext = $("#ori_img_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+                    } else {
+                        var ori_img_file = "";
+                        var ori_img_file_ext = "";
+                    }
+                } else {
+                    var ori_img_file = "";
+                    var ori_img_file_ext = "";
+                }
+
+                var ori_thumb_img_file = $("#ori_thumb_img_file").val(); //기존썸네일파일경로
+
+                // 배너 이미지 영역
+
+                // 그룹 이미지 영역
+
+                console.log("list_img_yn : " + list_img_yn);
+
+                if (list_img_yn == "Y") {
+                    var list_img_ext = $("#list_img").val().split('.').pop().toLowerCase(); //파일확장자
+                }
+
+                if (cu_cd == "U") {
+                    if (list_img_yn == "Y") {
+                        var list_ori_img_file = $("#list_ori_img_file").val(); //기존이미지파일경로
+                        var list_ori_img_file_ext = $("#list_ori_img_file").val().split('.').pop().toLowerCase(); //원본파일확장자
+                    } else {
+                        var list_ori_img_file = "";
+                        var list_ori_img_file_ext = "";
+                    }
+                } else {
+                    var list_ori_img_file = "";
+                    var ori_img_file_ext = "";
+                }
+
+                var list_ori_thumb_img_file = $("#list_ori_thumb_img_file").val(); //기존썸네일파일경로
+
+                // 그룹 이미지 영역
+
+                // if (bnr_knd_cd == "02" && $("#list_link_url").val().length === 0) {
+                //     $(".list_link_url_message").text("링크주소를 입력해주세요.");
+                //     return;
+                // }
+
+                var list_link_url = $("#list_link_url").val();
+
+                console.log("cu_cd : " + cu_cd);
+                console.log("bnr_sn : " + bnr_sn);
+                console.log("list_bnr_sn : " + list_bnr_sn);
+                console.log("bnr_title : " + bnr_title);
+                console.log("list_title : " + list_title);
+                console.log("list_link_url : " + list_link_url);
+                console.log("lnk_gbn_cd : " + lnk_gbn_cd);
+                console.log("bnr_knd_cd : " + bnr_knd_cd);
+                console.log("lnk_gbn_list_val : " + lnk_gbn_list_val);
+                console.log("entp_mem_no : " + entp_mem_no);
+                console.log("recruit_sn : " + recruit_sn);
+                console.log("sn : " + sn);
+                if (lnk_gbn_cd == "01") { //내부링크
+                    console.log("lnk_gbn_val : " + lnk_gbn_val);
+                } else if (lnk_gbn_cd == "02") { //외부링크
+                    console.log("lnk_gbn_val : " + link_url);
+                } else { // 링크없음
+                    console.log("lnk_gbn_val : ");
+                }
+                console.log("sdy : " + sdy);
+                console.log("edy : " + edy);
+                //return;
+
+                var formData = new FormData();
+
+                formData.append("bnr_sn", bnr_sn);
+                formData.append("list_bnr_sn", list_bnr_sn);
+                formData.append("bnr_title", bnr_title);
+                formData.append("list_title", list_title);
+                formData.append("list_link_url", list_link_url);
+                formData.append("lnk_gbn_cd", lnk_gbn_cd);
+                formData.append("bnr_knd_cd", bnr_knd_cd);
+                formData.append("lnk_gbn_list_val", lnk_gbn_list_val);
+                formData.append("entp_mem_no", entp_mem_no);
+                formData.append("recruit_sn", recruit_sn);
+                formData.append("sn", sn);
+                if (lnk_gbn_cd == "01") { //내부링크
+                    formData.append("lnk_gbn_val", lnk_gbn_val);
+                } else if (lnk_gbn_cd == "02") { //외부링크
+                    formData.append("lnk_gbn_val", link_url);
+                } else { //링크없음
+                    formData.append("lnk_gbn_val", "");
+                }
+                formData.append("sdy", sdy);
+                formData.append("edy", edy);
+                formData.append("use_yn", use_yn);
+                formData.append("cu_cd", cu_cd);
+                // 배너 이미지 영역
+                formData.append("bnr_img", bnr_img);
+                formData.append("img_yn", img_yn);
+                formData.append("img_ext", img_ext);
+                formData.append("ori_img_file", ori_img_file);
+                formData.append("ori_thumb_img_file", ori_thumb_img_file);
+                formData.append("ori_img_file_ext", ori_img_file_ext);
+                // 배너 이미지 영역
+
+                // 그룹 이미지 영역
+                formData.append("list_img", list_img);
+                formData.append("list_img_yn", list_img_yn);
+                formData.append("list_img_ext", list_img_ext);
+                formData.append("list_ori_img_file", list_ori_img_file);
+                formData.append("list_ori_thumb_img_file", list_ori_thumb_img_file);
+                formData.append("list_ori_img_file_ext", list_ori_img_file_ext);
+                // 그룹 이미지 영역
+
+                $.ajax({
+                    cache: false,
+                    url: '/admin/banner/insert',
+                    data: formData,
+                    type: 'POST',
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    error: function (e) {
+                        console.log("error" + e);
+                    },
+                    success: function (rep) {
+                        $(".loading").attr("style", "display:''");
+                        var rtnCd = rep.RtnCd
+                        var rtnMsg = rep.RtnMsg
+
+                        if (rtnCd == "1") {
+                            var pn = $("#page_no").val();
+                            if (cu_cd == "C") {
+                                window.location.href = "/admin/banner/list";
+                            } else {
+                                window.location.reload();
+                            }
+                        } else {
+                            console.log("message : " + rtnMsg);
+                            $(".loading").attr("style", "display:none");
+                        }
+                    },
+                    error: function () {
+                        $(".loading").attr("style", "display:none");
+                    }
+                });
+            }
+        });
+    </script>
+
+{{end}}    

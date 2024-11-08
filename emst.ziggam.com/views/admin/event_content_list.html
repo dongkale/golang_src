@@ -1,0 +1,96 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+          <h2>이벤트</h2>
+          <div class="recruitList">
+            <div class="tabMenu">
+              <ul>
+                {{template "include/admin_contents_menu.html" .}}
+              </ul>
+            </div>
+            <div class="listBox">
+              <div class="notice">
+                <table>
+                  <colgroup>
+                    <col width="107px" />
+                    <col />
+                    <col width="141px" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>구분</th>
+                      <th>제목</th>
+                      <th>날짜</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {{if .EventContentList}} 
+                    {{range .EventContentList}}
+                    <tr>
+                      <td>{{.GbnNm}}</td>
+                      <td class="text"><a href="javascript:void(0);" id="goEvent" data-sn="{{.Sn}}">{{.Title}}</a></td>
+                      <td>{{.RegDt}}</td>
+                    </tr>
+                    {{end}}
+                  {{else}}
+                    <tr>
+                      <td colspan="3">
+                        <p class="noData">등록된 이벤트가 없습니다</p>
+                      </td>
+                    </tr>
+                  {{end}}
+                  </tbody>
+                </table>
+                <div class="paging">
+                  {{str2html .Pagination}}
+                </div>
+            </div>
+            <div class="btnSec">
+              <a href="javascript:void(0);" class="active" id="btn_write">이벤트 등록</a>
+            </div>
+        </div>
+        <!-- // 페이지 영역 -->
+      </div>
+      <!-- 컨텐츠영역 -->
+    </div>
+
+    <script type="text/javascript">
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        window.location.href="/admin/event/content/list?pn="+pageno;
+      }	
+
+      // 이벤트 등록
+      $(document).off("click", "#goEvent").on("click", "#goEvent", function(){
+        var sn = $(this).data("sn");
+        window.location.href="/admin/event/write?cu_cd=U&sn="+sn+"&pn={{.PageNo}}";
+      });
+      
+      // 이벤트 상세 페이지 이동
+      $(document).off("click", "#btn_write").on("click", "#btn_write", function(){
+        window.location.href="/admin/event/write?cu_cd=C&pn={{.PageNo}}";
+      });
+      
+    </script>    
+    {{end}}    

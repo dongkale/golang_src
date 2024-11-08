@@ -1,0 +1,482 @@
+{{template "include/base.html" .}}
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">
+        <h2>채용 정보 수정</h2>
+        <form id="regForm" name="regForm" method="post">
+        <input type="hidden" id="sex" name="sex" value="A">
+        <input type="hidden" id="upt_yn" name="upt_yn" value="{{.VdTitleUptYn}}">
+        <div class="recruit">
+          <dl class="recruitInfo">
+            <dt>채용 정보</dt>
+            <dd>º 채용 공고에 대한 기본 정보들을 모두 입력해주세요.</dd>
+            <dd>º 채용 공고 등록 후에는 수정이 불가능한 정보가 포함되어 있으니 주의하여 입력해주시기 바랍니다.</dd>
+            <dd>º 부적절한 내용이 포함되어 있을 경우 사전 경고 없이 변경 혹은 삭제될 수 있습니다.</dd>
+          </dl>
+          <div class="recruitForm">
+            <div class="row">
+              <p class="tit">공고 제목 * <span class="validationMessage recrut_title_message"></span></p>
+              <p class="input"><input type="text" name="recrut_title" class="title" id="recrut_title" maxlength="30" value="{{.RecrutTitle}}" placeholder="30자 이내의 공고 제목을 입력해주세요."></p>
+              <p class="count">(<span><em id="byteTitle">30</em>/30</span>)</p>
+            </div>
+            <div class="row col2">
+              <div class="col">
+                <p class="tit">공고 형태*</p>
+                <p class="text">{{if eq "R" .EmplTyp}}정규직{{else}}아르바이트{{end}}</p>
+                <p class="textInfo">* 공고 형태는 채용 공고 등록 후에는 수정이 불가능합니다.</p>
+              </div>
+              <div class="col">
+                <p class="tit">직무 선택*</p>
+                <p class="text">{{.UpJobGrp}} &gt; {{.JobGrp}}</p>
+                <p class="textInfo">* 공고 형태는 채용 공고 등록 후에는 수정이 불가능합니다.</p>
+              </div>
+            </div>
+            <div class="row col2">
+              <div class="col">
+                <p class="tit">성별 *<span class="validationMessage sex_message"></span></p>
+                <p class="input custom02">
+                  <input type="radio" name="gender" class="custom" {{if eq "A" .Sex}}checked{{end}} id="gender_a" value="A"><label for="gender_a">무관</label>
+                  <input type="radio" name="gender" class="custom" {{if eq "M" .Sex}}checked{{end}} id="gender_m" value="M"><label for="gender_m">남자</label>
+                  <input type="radio" name="gender" class="custom" {{if eq "F" .Sex}}checked{{end}} id="gender_f" value="F"><label for="gender_f">여자</label>
+                </p>
+              </div>
+              <div class="col">
+                <p class="tit">모집 인원 * <span class="validationMessage recrut_cnt_message"></span></p>
+                <p class="input">
+                  <input type="text" name="recrut_cnt" id="recrut_cnt" value="{{.RecrutCnt}}" maxlength="5" class="w350" numberOnly placeholder="명">
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <p class="tit">역할 * <span class="validationMessage rol_message"></span></p>
+              <p class="count">(<span><em id="byteRol">500</em>/500</span>)</p>
+              <p class="input"><textarea name="rol" id="rol" cols="30" rows="10" maxlength="500" placeholder="500자 이내로 작성해주세요.">{{.Rol}}</textarea></p>
+            </div>
+            <div class="row">
+              <p class="tit">지원 자격 및 우대사항 * <span class="validationMessage aply_qufct_message"></span></p>
+              <p class="count">(<span><em id="byteQufct">500</em>/500</span>)</p>
+              <p class="input"><textarea name="aply_qufct" id="aply_qufct" cols="30" rows="10" maxlength="500" placeholder="500자 이내로 작성해주세요.">{{.AplyQufct}}</textarea></p>
+            </div>
+            <div class="row">
+              <p class="tit">채용 절차 진행 시 발송 메시지 * <span class="validationMessage prgs_msg_message"></span></p>
+              <p class="count">(<span><em id="bytePrgs">100</em>/100</span>)</p>
+              <p class="input"><textarea name="prgs_msg" id="prgs_msg" cols="30" rows="10" maxlength="100" placeholder="예) 귀하의 면접을 희망합니다. 이력서, 포트폴리오, 자기소개서를 ziggam@qrate.co.kr로 보내주시기 바랍니다.">{{.PrgsMsg}}</textarea></p>
+              <ul class="info">
+                <li>º 합격 지원자에게 자동으로 발송되는 메시지입니다.</li>
+                <li>º 채용 절차 진행 시 필요한 서류와 송부 받을 메일 주소를 포함해 입력해주세요.</li>
+                <li class="point">채용 합격 시 발송되는 메시지를 입력해주세요.</li>
+              </ul>
+            </div>
+            <div class="row col2">
+              <div class="col">
+                <p class="tit">답변 시간 제한 선택 *</p>
+                <p class="text">{{.AnsLmtTmNm}}</p>
+                <ul class="info st02">
+                  <li>º 답변 시간은 지원자가 ‘지원하기’를 누른 시점부터 최종 지원 종료까지 걸린 시간입니다.</li>
+                  <li>º 답변 시간 제한을 설정하시면 모집 기간은 수정이 불가능합니다.</li>
+                </ul>
+              </div>
+              <div class="col">
+                <p class="tit">접수 기간 *</p>
+                <p class="text">{{.RecrutDy}} ({{.AcptPridNm}})</p>
+                <ul class="info st02">
+                  <li>º 접수 기간은 공고가 등록된 날부터 시작됩니다.</li>
+                  <li>º 접수 기간은 채용 공고 등록 후에는 수정이 불가능합니다.</li>
+                </ul>
+              </div>
+            </div>
+            {{if eq "danal" .SMemId}}
+            <div class="row col2">
+              <div class="col">
+                <p class="tit">영상 최대 촬영시간 *</p>
+                <p class="text">{{.RecMaxTm}}초</p>
+                <ul class="info st02">
+                  <li>º 답변 영상 최대 촬영시간을 의미합니다.</li>
+                  <li>º 답변 영상 최대 촬영시간을 설정하시면 수정이 불가능합니다.</li>
+                </ul>
+              </div>
+          </div>
+          {{end}}
+        </div>
+        <h2>채용 질문</h2>
+        <div class="recruit">
+          <dl class="recruitInfo">
+            <dt>채용 질문</dt>
+            <dd>º 질문은 최소 1개, 최대 5개까지 등록 가능합니다.</dd>
+            <!--<dd>º 첫 번째 자기소개 질문은 기본으로 적용되며 수정이 불가능합니다.</dd>-->
+            <dd>º 질문 내용은 채용 공고 등록 후 변경이 불가능합니다.</dd>
+            <dd>º 부적절한 내용이 포함되어 있을 경우 사전 경고 없이 변경 혹은 삭제될 수 있습니다.</dd>
+          </dl>
+          <div class="recruitForm st02">
+            <div class="row">
+              <p class="tit">질문 1 <span class="validationMessage qst_title1_message"></span></p>
+              <p class="input"><input type="text" name="qst_title1" id="qst_title1" value="{{.VdTitle1}}" {{if eq "N" .VdTitleUptYn}} readonly {{end}} placeholder="직무 수행에 적합한지 알아볼 수 있는 질문을 해보세요."></p>
+              <p class="count">(<span><em id="byteQstSn1">50</em>/50</span>)</p>
+            </div>
+            <div class="row">
+              <p class="tit">질문 2 <span class="validationMessage qst_title2_message"></span></p>
+              <p class="input"><input type="text" name="qst_title[]" id="qst_title2" value="{{.VdTitle2}}" {{if eq "N" .VdTitleUptYn}} readonly {{end}} placeholder="직무 수행에 적합한지 알아볼 수 있는 질문을 해보세요."></p>
+              <p class="count">(<span><em id="byteQstSn2">50</em>/50</span>)</p>
+            </div>
+            <div class="row">
+              <p class="tit">질문 3 <span class="validationMessage qst_title3_message"></span></p>
+              <p class="input"><input type="text" name="qst_title[]" id="qst_title3" value="{{.VdTitle3}}" {{if eq "N" .VdTitleUptYn}} readonly {{end}} placeholder="직무 수행에 적합한지 알아볼 수 있는 질문을 해보세요."></p>
+              <p class="count">(<span><em id="byteQstSn3">50</em>/50</span>)</p>
+            </div>
+            <div class="row">
+              <p class="tit">질문 4 <span class="validationMessage qst_title4_message"></span></p>
+              <p class="input"><input type="text" name="qst_title[]" id="qst_title4" value="{{.VdTitle4}}" {{if eq "N" .VdTitleUptYn}} readonly {{end}} placeholder="직무 수행에 적합한지 알아볼 수 있는 질문을 해보세요."></p>
+              <p class="count">(<span><em id="byteQstSn4">50</em>/50</span>)</p>
+            </div>
+            <div class="row">
+              <p class="tit">질문 5 <span class="validationMessage qst_title5_message"></span></p>
+              <p class="input"><input type="text" name="qst_title[]" id="qst_title5" value="{{.VdTitle5}}" {{if eq "N" .VdTitleUptYn}} readonly {{end}} placeholder="직무 수행에 적합한지 알아볼 수 있는 질문을 해보세요."></p>
+              <p class="count">(<span><em id="byteQstSn5">50</em>/50</span>)</p>
+            </div>
+          </div>
+          <p class="btnSec">
+            <a href="javascript:void(0);" id="btn_reg">수정 완료</a>
+          </p>
+        </div>
+      </form>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+
+    <!-- 일반팝업_버튼1개 -->
+    <div class="popupWrap alert" id="recruit_alert_pop">
+      <div class="popup">
+        <div class="popContent">
+          <p id="alert_text">정상적으로 수정되었습니다.</p>
+        </div>
+        <div class="popBtn">
+          <a href="javascript:void(0);" id="btn_alert_confirm">확인</a>
+        </div>
+      </div>
+      <span class="cover"></span>
+    </div>
+    <!-- // 일반팝업_버튼1개 -->    
+
+    <script type="text/javascript">
+
+      // Form Validation Check
+      $(document).ready(function() {
+          $("#regForm").validate(validOption);
+
+          $("#recrut_title").keyup();
+          $("#rol").keyup();
+          $("#aply_qufct").keyup();
+          $("#prgs_msg").keyup();
+          $("#qst_title1").keyup();
+          $("#qst_title2").keyup();
+          $("#qst_title3").keyup();
+          $("#qst_title4").keyup();
+          $("#qst_title5").keyup();
+      });
+
+      // 채용등록 Validation
+      var validOption = {
+          onkeyup: false
+          ,onclick: false
+          ,onfocusout: function(element) {		// 포커스 아웃 시 동작
+              if($(element).valid()){				// 체크 통과
+                  var id = $(element).attr("id");	
+                  $("."+id+"_message").text("");	// message box clear
+              }
+          }
+          ,onfocusin: function(element) {			// 포커스 인 시 동작
+              var id = $(element).attr("id");
+              resetInput(id);
+          }
+          ,rules: {
+              recrut_title : {
+                  required: true, 
+              },
+              recrut_cnt : {
+                  required: true, 
+              },
+              rol : {
+                  required: true, 
+              },
+              aply_qufct : {
+                  required: true, 
+              },
+              prgs_msg : {
+                  required: true, 
+              },
+              qst_title2 : {
+                  required: true, 
+              },
+          }
+          ,errorPlacement: function(error, element){		
+              var id = element.attr("id");
+              //console.log("err_id :"+id);
+              $("."+id+"_message").text(error.text());
+          }
+          ,messages: {
+              recrut_title: {
+                  required: "공고 제목을 입력해주세요."
+              },
+              recrut_cnt: {
+                  required: "모집 인원을 입력해주세요."
+              },
+              rol: {
+                  required: "채용 공고의 직무 역할에 대한 내용을 입력해주세요."
+              },
+              aply_qufct: {
+                  required: "채용 공고의 직무 역할에 대한 내용을 입력해주세요."
+              },
+              prgs_msg: {
+                  required: "채용 합격 시 발송되는 메시지를 입력해주세요."
+              },
+              qst_title2: {
+                  required: "2번째 질문을 입력해주세요."
+              },
+          }
+          ,success: function(element){
+              var str = $(element).attr("id");
+              var id = str.substring(0,str.length-6);
+          }
+      }
+
+      // input box reset
+      var resetInput = function(id){
+          $("."+id+"_message").text(""); // message box clear
+      }
+
+      // 채용공고등록
+      $(document).off("click", "#btn_reg").on("click", "#btn_reg", function(){
+          if($("#regForm").valid()){
+
+          var upt_yn = $("#upt_yn").val();
+
+          // 질문 공란 처리
+          var empty2 = $("#qst_title2").val().trim().length;
+          var empty3 = $("#qst_title3").val().trim().length;
+          var empty4 = $("#qst_title4").val().trim().length;
+          var empty5 = $("#qst_title5").val().trim().length;
+
+          var chk_val2 = 0;
+          var chk_val3 = 0;
+          var chk_val4 = 0;
+          var chk_val5 = 0;
+
+          if (empty2 > 0) {
+              chk_val2 = 0;
+          } else {
+              chk_val2 = 2;
+          }
+          if (empty3 > 0) {
+              chk_val3 = 0;
+          } else {
+              chk_val3 = 3;
+          }
+          if (empty4 > 0) {
+              chk_val4 = 0;
+          } else {
+              chk_val4 = 4;
+          } 
+          if (empty5 > 0) {
+              chk_val5 = 0;
+          } else {
+              chk_val5 = 5;
+          }
+
+          var sum_val = chk_val2 + chk_val3 + chk_val4 + chk_val5;
+          if (sum_val == 14 || sum_val == 12 || sum_val == 9 || sum_val == 5 || sum_val == 0) {
+              //console.log("pass : "+sum_val);
+          } else {
+              //console.log("fail : "+sum_val);
+              if (sum_val == 11) { //3번만 기입 할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 10) { //4번만 기입 할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 8) { //4번만 기입 할 경우
+                  $(".qst_title3_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 6) { //3,5번만 기입 할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              /*    
+              } else if (sum_val == 5) { //4,5번만 기입 할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 9) { //5번만 기입할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              */
+              } else if (sum_val == 8) { //2,4,번만 기입할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 7) { //2,5번만 기입할 경우
+                  $(".qst_title3_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 4) { //2,3,5번만 기입할 경우
+                  $(".qst_title4_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 3) { //2,4,5번만 기입할 경우
+                  $(".qst_title3_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              } else if (sum_val == 2) { //3,4,5번만 기입할 경우
+                  $(".qst_title2_message").text("질문은 순서에 맞게 채워주세요.");
+                  return;
+              }
+          }             
+          
+          $(".loading").attr("style", "display:''");
+
+          var entp_mem_no = "{{.EntpMemNo}}";
+          var recrut_sn = "{{.RecrutSn}}";
+          var recrut_title = $("#recrut_title").val().replace(/'/gi,"`"); //채용제목
+          var sex = $("#sex").val(); //성별
+          var recrut_cnt = $("#recrut_cnt").val(); //모집인원
+          var rol = $("#rol").val().replace(/'/gi,"`"); //역할
+          var aply_qufct = $("#aply_qufct").val().replace(/'/gi,"`"); //지원자격 및 우대사항
+          var prgs_msg = $("#prgs_msg").val().replace(/'/gi,"`"); //진행메세지
+
+          var qst_title_arr = []; //질문배열
+          var fixVal = $("#qst_title1").val().replace(/,/gi,"，").replace(/'/gi,"`");
+          $("input[name='qst_title[]']").each(function(i) {
+              var thisVal = $(this).val().trim().replace(/,/gi,"，").replace(/'/gi,"`");
+              if(thisVal != ""){
+                  qst_title_arr.push(thisVal);
+              }
+          });	
+          if (chk_val2 == 2){
+              qst_title_arr = fixVal;
+          } else {
+              qst_title_arr = fixVal+","+qst_title_arr;
+          }
+          /*
+          console.log("기업회원번호 : "+entp_mem_no);    
+          console.log("채용일련번호 : "+recrut_sn);    
+          console.log("채용제목 : "+recrut_title);    
+          console.log("성별 : "+sex);    
+          console.log("모집인원 : "+recrut_cnt);    
+          console.log("역할 : "+rol);    
+          console.log("지원자격 및 우대사항 : "+aply_qufct);    
+          console.log("진행메세지 : "+prgs_msg);    
+          console.log("질문배열 : "+qst_title_arr);    
+          */
+          
+          var formData = new FormData();
+          formData.append("entp_mem_no", entp_mem_no);
+          formData.append("recrut_sn", recrut_sn);
+          formData.append("recrut_title", recrut_title);
+          formData.append("sex", sex);
+          formData.append("recrut_cnt", recrut_cnt);
+          formData.append("rol", rol);
+          formData.append("aply_qufct", aply_qufct);
+          formData.append("prgs_msg", prgs_msg);
+          formData.append("qst_title_arr", qst_title_arr);
+          formData.append("upt_yn", upt_yn);
+
+          $.ajax({
+              cache : false,
+              url : '/recruit/post/update',
+              data : formData,
+              type : 'POST',
+              processData: false,
+              contentType: false,
+              dataType : "json",
+              error : function(e) {
+                  //console.log("error" + JSON.stringify(e));
+                  $(".loading").attr("style", "display:none");
+                  console.log("error : "+e);
+              },
+              success : function(rep) {
+                  var rtnCd = rep.RtnCd
+                  var rtnMsg = rep.RtnMsg
+                  if(rtnCd == 1){
+                      //console.log("수정 완료");
+                      $(".loading").attr("style", "display:none");
+                      openPopup("recruit_alert_pop");
+                      //window.location.href="/recruit/post/list";
+                  } else {
+                      //console.log("수정 실패 : "+rtnMsg);
+                      $(".loading").attr("style", "display:none");
+                      openPopup("recruit_alert_pop");
+                      ("#alert_text").text("서버오류로 수정에 실패하였습니다.");
+                  }
+              }
+          });
+        }
+      });        
+
+      // 알림팝업 닫기
+      $(document).off("click", "#btn_alert_confirm").on("click", "#btn_alert_confirm", function(e) {
+        $('.popupWrap.alert').hide();
+        history.go(-1);
+      });      
+
+      // 성별 체크
+      $(document).off("click","input:radio[name='gender']").on("click","input:radio[name='gender']",function(e) {
+          var gender = $(":radio[name='gender']:checked").val();
+          $("#sex").val(gender);
+      });  
+
+      // 공고 제목 글자수 체크
+      $(document).on("keyup","#recrut_title",function(){
+          textLenCheck(this, 30, "#byteTitle");
+      }); 
+
+      // 역할 글자수 체크
+      $(document).on("keyup","#rol",function(){
+          textLenCheck(this, 500, "#byteRol");
+      });       
+
+      // 자격 및 우대사항 글자수 체크
+      $(document).on("keyup","#aply_qufct",function(){
+          textLenCheck(this, 500, "#byteQufct");
+      });         
+
+      // 진행 메세지 글자수 체크
+      $(document).on("keyup","#prgs_msg",function(){
+          textLenCheck(this, 100, "#bytePrgs");
+      });        
+
+      // 질문 글자수 체크
+      $(document).on("keyup","#qst_title1",function(){
+          textLenCheck(this, 50, "#byteQstSn1");
+      });         
+      $(document).on("keyup","#qst_title2",function(){
+          textLenCheck(this, 50, "#byteQstSn2");
+      });         
+      $(document).on("keyup","#qst_title3",function(){
+          textLenCheck(this, 50, "#byteQstSn3");
+      });         
+      $(document).on("keyup","#qst_title4",function(){
+          textLenCheck(this, 50, "#byteQstSn4");
+      });         
+      $(document).on("keyup","#qst_title5",function(){
+          textLenCheck(this, 50, "#byteQstSn5");
+      });        
+
+      //숫자만 입력가능
+      $("input:text[numberOnly]").on("focus", function() {
+          var x = $(this).val();
+      }).on("focusout", function() {
+          var x = $(this).val();
+          if(x && x.length > 0) {
+              if(!$.isNumeric(x)) {
+                  x = x.replace(/[^0-9]/g,"");
+              }
+              $(this).val(x);
+          }
+      }).on("keyup", function() {
+          $(this).val($(this).val().replace(/[^0-9]/g,""));
+      });
+
+  </script>       
+
+{{end}}

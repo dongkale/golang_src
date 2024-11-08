@@ -1,0 +1,837 @@
+{{template "include/base.html" .}}
+
+<style type="text/css">
+.content {width:1350px}
+</style>
+
+{{define "body"}}
+
+    <!-- 컨텐츠 영역 -->
+    <div class="contentWrap">
+      <!-- top start -->
+      {{template "include/top.html" .}}
+      <!-- top end -->
+      <!-- 페이지 영역 -->
+      <div class="content">    
+        <h2>개인회원 관리</h2>
+        <div class="recruitList">
+        <input type="hidden" id="page_no" value="{{.PageNo}}">  
+        <input type="hidden" id="mem_stat" value="{{.MemStat}}">  
+          <div class="tabMenu">
+            <ul>
+              <!-- 활성화 페이지 class="active" -->
+              {{if eq "00" .MemStat}}
+              <li id="gbn_00" class="active"><a href="/admin/member/list?mem_stat=00">전체 <span>{{.TotMemCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_00"><a href="/admin/member/list?mem_stat=00">전체 <span>{{.TotMemCnt}}</span></a></li>
+              {{end}}
+              {{if eq "01" .MemStat}}
+              <li id="gbn_01" class="active"><a href="/admin/member/list?mem_stat=01">정상 <span>{{.RunMemCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_01"><a href="/admin/member/list?mem_stat=01">정상 <span>{{.RunMemCnt}}</span></a></li>
+              {{end}}
+              {{if eq "99" .MemStat}}
+              <li id="gbn_99" class="active"><a href="/admin/member/list?mem_stat=99">탈퇴 <span>{{.WtdMemCnt}}</span></a></li>
+              {{else}}
+              <li id="gbn_99"><a href="/admin/member/list?mem_stat=99">탈퇴 <span>{{.WtdMemCnt}}</span></a></li>
+              {{end}}
+            </ul>
+            <!--<a href="#" class="excelDownload">회원 리스트 엑셀 저장</a>-->
+          </div>
+          <div class="listBox">
+            <div class="topSec">
+              <div class="posL">
+                <select name="sex" id="sex" class="st12" style="font-size: 13px">
+                  <option value="A">성별</option>
+                  <option value="M">남자</option>
+                  <option value="F">여자</option>
+                </select>
+                <select name="age" id="age" class="st06" style="font-size: 13px">
+                  <option value="00">연령</option>
+                  <option value="01">19세 이하</option>
+                  <option value="02">20~29세</option>
+                  <option value="03">30~39세</option>
+                  <option value="04">40~49세</option>
+                  <option value="05">50~59세</option>
+                  <option value="06">60세 이상</option>
+                </select>
+                <select name="vp_yn" id="vp_yn" class="st11" style="font-size: 13px">
+                  <option value="9">영상</option>
+                  <option value="1">있음</option>
+                  <option value="0">없음</option>
+                </select>
+                <select name="os_gbn" id="os_gbn" class="st10" style="font-size: 13px">
+                  <option value="A">OS</option>
+                  <option value="AD">Android</option>
+                  <option value="IS">iOS</option>
+                  <option value="WEB">WEB</option>
+                </select>
+                <select name="mem_join_gbn_cd" id="mem_join_gbn_cd" class="st06" style="font-size: 13px">
+                  <option value="A">회원유형</option>
+                  <option value="00">일반</option>
+                  <option value="01">facebook</option>
+                  <option value="02">kakao</option>
+                  <option value="03">apple</option>
+                </select>
+                <select name="jobfair" id="jobfair" class="st15" style="font-size: 13px">
+                  <option value="">참여 박람회</option>
+                  {{range .JobFairList}}
+                      <option value="{{.MngCd}}" data-title="{{.Title}}">{{.Title}}</option>
+                  {{end}}                                
+                </select>
+                <h6 class="searchLoginTit">최근 접속 일시</h6>
+                <input type="text" id="login_sdy" style="width: 100px; height:38px;border-radius:4px;"/>&nbsp;~&nbsp;
+                <input type="text" id="login_edy" style="width: 100px; height:38px;border-radius:4px;"/>
+                <h6 class="searchPeriodTit">&nbsp가입 일시</h6>
+                <input type="text" id="sdy" style="width: 100px; height:38px;border-radius:4px;"/>&nbsp;~&nbsp;
+                <input type="text" id="edy" style="width: 100px; height:38px;border-radius:4px;"/>
+              </div>              
+            </div>            
+            <div class="searchSec">
+              <div class="posL">
+                <div class="searchBox" style="width:242px">
+                  <input type="text" name="keyword" id="keyword" style="font-size: 13px;" placeholder="검색조건(이름,아이디,이메일,휴대폰번호)">
+                  <a href="javascript:void(0);" id="btn_search"><img src="/static/images/btn_search.gif" alt="검색"></a>
+                </div>
+              </div>
+            </div>            
+            <div class="sectionTop">
+              <div class="posL">
+                <!--<p class="total"> <span id="tcnt">총{{.TotCnt}}명</span>-->
+                <span class="total" id="tcnt">총{{.TotCnt}}명</span>
+                <a href="javascript:void(0);" id="down_excel" class="btnExcel"><span></span>엑셀로 저장</a>
+                <!--</p>-->
+              </div>
+              <div class="posR">
+                <select name="size" id="size" class="sort">
+                  <option value="10">10줄씩</option>
+                  <option value="30">30줄씩</option>
+                  <option value="50">50줄씩</option>
+                  <option value="100">100줄씩</option>
+                </select>
+              </div>
+            </div>  
+            <div class="memberList">
+              <table>
+                <colgroup>
+                  <col width="110px" />
+                  <col width="60px" />
+                  <col width="80px" />
+                  <col width="100px" />
+                  <col width="40px" />
+                  <col width="130px" />
+                  <col width="40px" />
+                  <col width="80px" />
+                  <col width="50px" />
+                  <col width="100px" />
+                  <col />
+                  <col width="40px" />
+                  <col width="70px" />
+                  <col width="50px" />
+                  <col width="102px" />
+                  <col width="110px" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>가입일시</th>
+                    <th>유형</th>
+                    <th>이름</th>
+                    <th>관리번호</th>
+                    <th>영상</th>
+                    <th>아이디</th>
+                    <th>성별</th>
+                    <th>생년월일</th>
+                    <th>나이</th>
+                    <th>핸드폰번호</th>
+                    <th>이메일</th>
+                    <th>지원</th>
+                    <th>OS</th>
+                    <th>상태</th>
+                    <th>참여 박람회</th>
+                    <th>최근 접속 일시</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{if .AdminMemberList}}
+                  {{range .AdminMemberList}}
+                  <tr>
+                    <td>{{.RegDt}}</td>
+                    <td>{{.MemJoinGbnNm}}</td>
+                    <td><a href="javascript:void(0);" data-mem_no="{{.PpMemNo}}" id="go_member_detail">{{.Nm}}</a></td>
+                    <td>{{.PpMemNo}}</td>
+                    <td>{{if eq "0" .VpYn}}없음{{else}}<a href="javascript:void(0);" id="btn_play_vp">있음</a>{{end}}</td>
+                    <td><a href="javascript:void(0);" data-mem_no="{{.PpMemNo}}" id="go_member_detail">{{.MemId}}</a></td>
+                    <td>{{if eq "M" .Sex}}남{{else}}여{{end}}</td>
+                    <td>{{.BrthYmd}}</td>
+                    <td>{{.Age}}세</td>
+                    <td>{{.MoNo}}</td>
+                    <td style="text-align:left;">&nbsp;&nbsp;{{.Email}}</td>
+                    <td>{{.AhTotCnt}}건</td>
+                    <td>{{.OsGbn}}</td>
+                    <td>{{.MemStatNm}}</td>
+                    <td>
+                      {{range .JobFairCdsArr}}
+                          <p>{{.}}</p>
+                      {{end}}
+                    </td>
+                    <td>{{.LoginDt}}</td>
+                  </tr>
+                  {{end}}
+                {{else}}
+                  <tr>
+                    <td colspan="10">
+                      <p class="noData">가입된 회원이 없습니다</p>
+                    </td>
+                  </tr>
+                {{end}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="paging">
+            {{str2html .Pagination}}
+          </div>
+        </div>
+      </div>
+      <!-- // 페이지 영역 -->
+    </div>
+    <!-- 컨텐츠영역 -->
+    <!-- 엑셀다운 팝업 -->    
+    <div class="popupWrap confirm" id="pop_excel_download">
+        <div class="popup">
+          <div class="popContent">
+            <p id="confirmMessage">엑셀 파일을 저장하시겠습니까?</p>
+          </div>
+          <div class="popBtn">
+            <a href="javascript:void(0);" onclick="closePopup()">취소</a>
+            <a href="javascript:void(0);" class="status" id="btn_excel_confirm">확인</a>
+          </div>
+  </div>
+        <span class="cover"></span>
+    </div>        
+    <!-- 엑셀다운 팝업 -->
+
+    <script type="text/javascript">
+      
+      $(document).ready(function() {
+
+        
+        //목록에서 돌아왔을 시 파라미터 세팅
+        // 검색어설정
+        var readyChk = "{{.pMemStat}}";
+        if (readyChk != "") {
+
+          var keyword = "{{.pKeywords}}";
+          if (keyword != "") {
+            $("#keyword").val("{{.pKeywords}}");
+          }
+
+          // 성별 선택
+          var sex = "{{.pSex}}";
+          if (sex != "") {
+            $('#sex option[value={{.pSex}}]').attr('selected','selected');
+          }
+
+          // 연령 선택
+          var age = "{{.pAge}}";
+          if (age != "") {
+            $('#age option[value={{.pAge}}]').attr('selected','selected');
+          }        
+
+          // 영상프로필 선택
+          var vp_yn = "{{.pVpYn}}";
+          if (vp_yn != "") {
+            $('#vp_yn option[value={{.pVpYn}}]').attr('selected','selected');
+          }    
+
+          // OS 선택
+          var os_gbn = "{{.pOsGbn}}";
+          //console.log("pOsGbn : "+os_gbn);
+          if (os_gbn != "") {
+            $('#os_gbn option[value={{.pOsGbn}}]').attr('selected','selected');
+          }    
+
+          // 회원가입유형 선택
+          var mem_join_gbn_cd = "{{.pMemJoinGbnCd}}";
+          if (mem_join_gbn_cd != "") {
+            $('#mem_join_gbn_cd option[value={{.pMemJoinGbnCd}}]').attr('selected','selected');
+          }  
+
+          var sd = "{{.pSdy}}";
+          var ed = "{{.pEdy}}";
+
+          $("#sdy").val(sd.substring(0,4)+"-"+sd.substring(4,6)+"-"+sd.substring(6,8));
+          $("#edy").val(ed.substring(0,4)+"-"+ed.substring(4,6)+"-"+ed.substring(6,8));
+
+            var login_sd = "{{.pLoginSdy}}";
+            var login_ed = "{{.pLoginEdy}}";
+
+            $("#login_sdy").val(login_sd.substring(0,4)+"-"+login_sd.substring(4,6)+"-"+login_sd.substring(6,8));
+            $("#login_edy").val(login_ed.substring(0,4)+"-"+login_ed.substring(4,6)+"-"+login_ed.substring(6,8));
+
+            console.log("=== ReInit Sdy: " + sd )    
+            console.log("=== ReInit Edy: " + ed )    
+
+            console.log("=== ReInit LoginSdy: " + login_sd )    
+            console.log("=== ReInit LoginEdy: " + login_ed )    
+
+          // 페이지 사이즈 선택
+          var size = "{{.pSize}}";
+          if (size != "") {
+            $('#size option[value={{.pSize}}]').attr('selected','selected');
+          }   
+
+          // 페이지
+          var page_no = "{{.pPageNo}}";
+          if (page_no != "1") {
+            paging(page_no);
+          }
+
+          // 탭구분선택
+          var mem_stat = "{{.pMemStat}}";
+          if (mem_stat != "") {
+            if (mem_stat == "00") {
+              $("#gbn_00").addClass("active");
+              $("#gbn_01").removeClass("active");
+              $("#gbn_99").removeClass("active");
+            } else if (mem_stat == "01") {
+              $("#gbn_00").removeClass("active");
+              $("#gbn_01").addClass("active");
+              $("#gbn_99").removeClass("active");
+            } else {
+              $("#gbn_00").removeClass("active");
+              $("#gbn_01").removeClass("active");
+              $("#gbn_99").addClass("active");
+            }
+          }
+
+          $("#btn_search").trigger("click");
+        } else {            
+            // 웹페이지 출력시 초기값 -->
+            var sd = "{{.Sdy}}";
+            var ed = "{{.Edy}}";
+
+            $("#sdy").val(sd.substring(0,4)+"-"+sd.substring(4,6)+"-"+sd.substring(6,8));
+            $("#edy").val(ed.substring(0,4)+"-"+ed.substring(4,6)+"-"+ed.substring(6,8));
+
+            var login_sd = "{{.LoginSdy}}";
+            var login_ed = "{{.LoginEdy}}";
+
+            $("#login_sdy").val(login_sd.substring(0,4)+"-"+login_sd.substring(4,6)+"-"+login_sd.substring(6,8));
+            $("#login_edy").val(login_ed.substring(0,4)+"-"+login_ed.substring(4,6)+"-"+login_ed.substring(6,8));
+
+            console.log("=== Init Sdy: " + sd )    
+            console.log("=== Init Edy: " + ed )    
+
+            console.log("=== Init LoginSdy: " + login_sd )    
+            console.log("=== Init LoginEdy: " + login_ed )    
+            // <--
+        }
+      });
+
+      $(function(){
+        $('#sdy').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+          this.setOptions({
+            maxDate:$('#edy').val()?$('#edy').val():false
+          })
+        },
+        timepicker:false,
+      });
+      $('#edy').datetimepicker({
+          format:'Y-m-d',
+          onShow:function( ct ){
+            this.setOptions({
+              minDate:$('#sdy').val()?$('#sdy').val():false
+            })
+          },
+          timepicker:false,
+        });
+      });
+
+    $(function(){
+        var now = new Date();
+        $('#login_sdy').datetimepicker({
+            format:'Y-m-d',
+            //dateFormat:'yy-mm-dd',
+            onShow:function( ct ){
+                this.setOptions({                    
+                    maxDate: $('#login_eday').val() ? $('#login_eday').val() : false
+                })
+            },
+            timepicker: false,
+            // timepicker: true,
+            // scrollMonth: false,
+            // scrollTime: false,
+            // scrollInput: false,
+
+            // // timepicker 설정
+            // timeFormat:'HH:mm:ss',
+            // controlType:'select',
+            // oneLine:true,
+        });
+
+        $('#login_edy').datetimepicker({
+            //dateFormat:'yy-mm-dd',
+            format:'Y-m-d',
+            onShow:function( ct ){
+                this.setOptions({
+                    minDate:$('#login_sdy').val()?$('#login_sdy').val():false                    
+                })
+            },
+            timepicker: false,
+            // timepicker: true,
+            // scrollMonth: false,
+            // scrollTime: false,
+            // scrollInput: false,
+
+            // // timepicker 설정
+            // timeFormat:'HH:mm:ss',
+            // controlType:'select',
+            // oneLine:true,
+        });
+    });
+
+      // 회원 정보 상세
+      $(document).off("click", "#go_member_detail").on("click", "#go_member_detail", function(e) {
+        var mem_no = $(this).data("mem_no");
+        //console.log("mem_no : "+mem_no);
+        var mem_stat = $("#mem_stat").val();
+				var keyword = $("#keyword").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var mem_join_gbn_cd = $("#mem_join_gbn_cd").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        //var sdy = $("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+        //var edy = $("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');;
+        var edy = $("#edy").val().replace(/\-/g,'');;
+
+        if (sdy.length < 8) {
+          sdy = ""
+        }
+        if (edy.length < 8) {
+          edy = ""
+        }
+
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');;
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');;
+
+        if (login_sdy.length < 8) {
+            login_sdy = ""
+        }
+        if (login_edy.length < 8) {
+            login_edy = ""
+        }
+
+        console.log("=== [MeberDetail] sdy: " + sdy)
+        console.log("=== [MeberDetail] edy: " + edy)
+
+        console.log("=== [MeberDetail] login_sdy: " + login_sdy)
+        console.log("=== [MeberDetail] login_edy: " + login_edy)
+
+        var param = "pp_mem_no="+mem_no+"&p_mem_stat="+mem_stat+"&p_keyword="+keyword+"&p_sex="+sex+"&p_age="+age+"&p_vp_yn="+vp_yn+"&p_os_gbn="+os_gbn+"&p_mem_join_gbn_cd="+mem_join_gbn_cd+"&p_page_no="+page_no+"&p_size="+size+"&p_sdy="+sdy+"&p_edy="+edy+"&p_login_sdy="+login_sdy+"&p_login_edy="+login_edy;
+
+        //window.location.href="/admin/member/detail?"+param;
+
+        var popupWindow = window.open("/admin/member/detail?"+param)
+
+        // var popW = 1024;
+        // var popH = 1024;
+        // var popX = (screen.width / 2) - (popW/2);
+        // var popY = (screen.height / 2) - (popH/2);
+        // var popupWindow = window.open("/admin/member/detail?"+param, "newwindow",
+			 	//        					 "width=" + popW + ",height=" + popH + ",left=" + popX + ",top=" + popY + ",resizable=0");			
+        // if(popupWindow && !popupWindow.closed)
+        //    popupWindow.focus();
+      });
+
+      // 페이징처리
+      $(document).off("click", ".btnPrev.goPage").on("click",".btnPrev.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+      $(document).off("click", ".num.goPage").on("click",".num.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      $(document).off("click", ".btnNext.goPage").on("click",".btnNext.goPage",function(e) {
+        var pn = $(this).data("page");
+        paging(pn);
+      });
+    
+      var paging = function(pageno) {
+        //window.location.href="/admin/member/list?pn="+pageno;
+        $("#page_no").val(pageno);
+        ajaxMemberList();
+      }	
+
+      // 성별 선택
+      $(document).off("change", "#sex").on("change", "#sex", function(e) {
+        ajaxMemberList();
+      });
+
+      // 연령 선택
+      $(document).off("change", "#age").on("change", "#age", function(e) {
+        ajaxMemberList();
+      });
+
+      // 영상여부 선택
+      $(document).off("change", "#vp_yn").on("change", "#vp_yn", function(e) {
+        ajaxMemberList();
+      });
+
+      // OS구분 선택
+      $(document).off("change", "#os_gbn").on("change", "#os_gbn", function(e) {
+        ajaxMemberList();
+      });
+
+      // 회원가입유형 선택
+      $(document).off("change", "#mem_join_gbn_cd").on("change", "#mem_join_gbn_cd", function(e) {
+        ajaxMemberList();
+      });
+
+      // 성별 선택
+      $(document).off("change", "#sex").on("change", "#sex", function(e) {
+        ajaxMemberList();
+      });
+
+    // 박람회
+    $(document).off("change", "#jobfair").on("change", "#jobfair", function(e) {
+        ajaxMemberList();
+    });
+
+			// 검색(Enter Key)
+			$(document).off("keydown", "#keyword").on("keydown", "#keyword", function(e) {
+				if (event.keyCode == 13) {
+					ajaxMemberList();
+				}
+      });
+
+      // 검색 (클릭)
+      $(document).off("click", "#btn_search").on("click", "#btn_search", function(e) {
+        ajaxMemberList();
+      });        
+
+      // 리스트 수 선택
+      $(document).off("change", "#size").on("change", "#size", function(e) {
+        $("#page_no").val(1);
+        ajaxMemberList();
+      });    
+
+    // 로그인 검색 시작 년월일
+    $(document).off("change", "#login_sdy").on("change", "#login_sdy", function(e) {
+        // var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        // var login_edy = $("#login_edy").val().replace(/\-/g,'');
+
+        if (!edy) {
+            console.log("not selected");
+        } else {
+            ajaxMemberList();
+        }
+    });         
+
+    // 로그인 검색 종료 년월일
+    $(document).off("change", "#login_edy").on("change", "#login_edy", function(e) {
+        // var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        // var login_edy = $("#login_edy").val().replace(/\-/g,'');
+
+        if (!sdy) {
+            console.log("not selected");
+        } else {
+            ajaxMemberList();
+        }
+    });
+
+      // 검색 시작 년월일
+      $(document).off("change", "#sdy").on("change", "#sdy", function(e) {
+        var sdy = $("#sdy").val().replace(/\-/g,'');
+        var edy = $("#edy").val().replace(/\-/g,'');
+
+        if (!edy) {
+          console.log("not selected");
+        } else {
+          ajaxMemberList();
+        }
+      });         
+
+      // 검색 종료 년월일
+      $(document).off("change", "#edy").on("change", "#edy", function(e) {
+
+        var sdy = $("#sdy").val().replace(/\-/g,'');
+        var edy = $("#edy").val().replace(/\-/g,'');
+
+        if (!sdy) {
+          console.log("not selected");
+        } else {
+          ajaxMemberList();
+        }
+      });         
+
+
+      // 리스트 페이지 AJAX
+			var ajaxMemberList = function(v) {
+        var mem_stat = $("#mem_stat").val();
+				var keyword = $("#keyword").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var mem_join_gbn_cd = $("#mem_join_gbn_cd").val();
+        var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');  //$("#s_yyyy").val()+$("#s_mm").val()+$("#s_dd").val();
+        var edy = $("#edy").val().replace(/\-/g,''); //$("#e_yyyy").val()+$("#e_mm").val()+$("#e_dd").val();
+        if (sdy.length < 8) {
+          sdy = ""
+        }
+        if (edy.length < 8) {
+          edy = ""
+        }
+
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');
+        if (login_sdy.length < 8) {
+            login_sdy = ""
+        }
+        if (login_edy.length < 8) {
+            login_edy = ""
+        }
+
+        console.log("login_sdy : "+login_sdy);
+        console.log("login_edy : "+login_edy);
+        /*
+        console.log("sex : "+sex);
+        console.log("age : "+age);
+        console.log("vp_yn : "+vp_yn);
+        console.log("jf_mng_cd : "+jf_mng_cd);
+        console.log("page_no : "+page_no);
+        console.log("size : "+size);
+        console.log("sdy : "+sdy);
+        console.log("edy : "+edy);
+        //return;
+        */
+        
+        $.ajax({
+					type: "POST",
+					url: "/admin/member/list",
+					data:{
+						mem_stat : mem_stat,
+						sex : sex,
+						age : age,
+						vp_yn : vp_yn,
+            os_gbn : os_gbn,
+            mem_join_gbn_cd : mem_join_gbn_cd,
+                jf_mng_cd: jf_mng_cd,
+						keyword : keyword,
+						size : size,
+						pn : page_no,
+                login_sdy : login_sdy,
+                login_edy : login_edy,
+            sdy : sdy,
+            edy : edy
+					},
+					dataType: "json",
+			
+					error : function() {
+					},
+					success : function(rep) {
+						if(rep.RtnAdminMemberListData.length > 0){
+							$(".memberList").find("tbody").children().remove();
+							$.each(rep.RtnAdminMemberListData,function(e) {
+                var html = "";
+                html += "<tr>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].RegDt+"</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].MemJoinGbnNm+"</td>";
+                html += "<td><a href=\"javascript:void(0);\" data-mem_no="+rep.RtnAdminMemberListData[e].PpMemNo+" id=\"go_member_detail\">"+rep.RtnAdminMemberListData[e].Nm+"</a></td>";
+                        html += "<td>"+rep.RtnAdminMemberListData[e].PpMemNo+"</td>";
+
+                if (rep.RtnAdminMemberListData[e].VpYn == "1") {
+                  html += "<td><a href=\"javascript:void(0);\" id=\"btn_play_vp\">있음</a></td>";
+                } else {
+                  html += "<td>없음</td>";  
+                }
+                html += "<td><a href=\"javascript:void(0);\" data-mem_no="+rep.RtnAdminMemberListData[e].PpMemNo+" id=\"go_member_detail\">"+rep.RtnAdminMemberListData[e].MemId+"</a></td>";
+                if (rep.RtnAdminMemberListData[e].Sex == "M") {
+                  html += "<td>남</td>";
+                } else {
+                  html += "<td>여</td>";
+                }
+                html += "<td>"+rep.RtnAdminMemberListData[e].BrthYmd+"</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].Age+"세</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].MoNo+"</td>";
+                html += "<td style=\"text-align:left;\">&nbsp;&nbsp;"+rep.RtnAdminMemberListData[e].Email+"</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].AhTotCnt+"건</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].OsGbn+"</td>";
+                html += "<td>"+rep.RtnAdminMemberListData[e].MemStatNm+"</td>";
+                        
+                        //html += "<td>"+rep.RtnAdminMemberListData[e].JobFairCds+"</td>";                
+                        html += "<td>";           
+                        $.each(rep.RtnAdminMemberListData[e].JobFairCdsArr,function(i) {     
+                            html += "<p>" + rep.RtnAdminMemberListData[e].JobFairCdsArr[i] + "</p>";
+                        });
+                        html += "<td>"+rep.RtnAdminMemberListData[e].LoginDt+"</td>";                
+                        html += "</td>";    
+
+                html += "</tr>";
+								$(".memberList").find("tbody").append(html);
+              })
+					
+							$(".paging").children().remove();
+              $(".paging").append(rep.RtnAdminMemberListData[0].Pagination);
+                    $("#tcnt").text("총" + rep.RtnAdminMemberListData[0].TotCnt + "명");              
+						}else{
+              $(".memberList").find("tbody").children().remove();
+              var html = "";
+              html += "<td colspan=\"9\">";
+              html += "<p class=\"noData\">가입된 회원이 없습니다</p>";
+              html += "</td>";
+              $(".memberList").find("tbody").append(html);
+							$(".paging").children().remove();
+                    $("#tcnt").text("총" + 0 + "명");
+              $("#page_no").val("1");
+						}
+					}
+				});				
+			}   
+
+    // 엑셀 저장
+    $(document).off("click", "#down_excel").on("click", "#down_excel", function (e) {
+        $('body, html').animate({scrollTop: 0}, 1);
+        openPopup("pop_excel_download");
+    });
+
+    $(document).off("click", "#btn_excel_confirm").on("click", "#btn_excel_confirm", function (e) {
+        $(".loading").attr("style", "display:''");
+
+        var mem_stat = $("#mem_stat").val();
+		var keyword = $("#keyword").val();
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var vp_yn = $("#vp_yn").val();
+        var os_gbn = $("#os_gbn").val();
+        var mem_join_gbn_cd = $("#mem_join_gbn_cd").val();
+        var jf_mng_cd = $("select[id=jobfair] option:selected").val();
+        var page_no = $("#page_no").val();
+        var size = $("#size").val();
+        var sdy = $("#sdy").val().replace(/\-/g,'');
+        var edy = $("#edy").val().replace(/\-/g,'');
+        if (sdy.length < 8) {
+            sdy = ""
+        }
+        if (edy.length < 8) {
+            edy = ""
+        }
+
+        var login_sdy = $("#login_sdy").val().replace(/\-/g,'');
+        var login_edy = $("#login_edy").val().replace(/\-/g,'');
+        if (login_sdy.length < 8) {
+            login_sdy = ""
+        }
+        if (login_edy.length < 8) {
+            login_edy = ""
+        }
+
+        console.log("login_sdy : "+login_sdy);
+        console.log("login_edy : "+login_edy);
+
+        /*
+        console.log("keyword : "+keyword);
+        console.log("job_grp_cd : "+job_grp_cd);
+        console.log("evl_prgs_stat : "+evl_prgs_stat);
+        console.log("sex : "+sex);
+        console.log("age : "+age);
+        console.log("vp_yn : "+vp_yn);
+        console.log("favr_aply_pp : "+favr_aply_pp);
+        console.log("live_req_stat_cd : "+live_req_stat_cd);
+        console.log("sort_gbn : "+sort_gbn);
+        return;
+        */
+
+        $.ajax({
+            cache : false,
+            url : '/admin/member/list/excel',
+            data : {
+                sex: sex,
+                age: age,
+                vp_yn: vp_yn,
+                keyword: keyword,
+                sdy: sdy,
+                edy: edy,
+                mem_stat: mem_stat,
+                os_gbn: os_gbn,
+                mem_join_gbn_cd: mem_join_gbn_cd,
+                jf_mng_cd: jf_mng_cd,
+                login_sdy, login_sdy,
+                login_edy, login_edy
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+                $(".loading").attr("style", "display:none");
+                closePopup();
+            },
+            success : function(rep) {
+                if (rep.RtnAdminMemberListExcelData) {
+                    var downFile = rep.RtnAdminMemberListExcelData[0].DownloadPath;
+                    window.location.replace(downFile);
+                    console.log("[AJAX(//admin/member/list/excel)]: "+ downFile);
+                    $(".loading").attr("style", "display:none");
+                    closePopup();
+                } else {
+                    $(".loading").attr("style", "display:none");
+                    console.log("[AJAX(//admin/member/list/excel)]: Login");
+                    window.location.href = "/login";
+                }
+            },
+        });	        
+    });
+
+    /* 
+    var excelDownload = function(entp, evl, recru) {
+        $.ajax({
+            cache : false,
+            url : '/admin/member/list/excel',
+            data : {
+                sex: entp,
+                age: evl,
+                vp_yn: recru,
+                keyword: keyword,
+                sdy: sdy,
+                edy: edy,
+                mem_stat: mem_stat,
+                os_gbn: os_gbn,
+                mem_join_gbn_cd: mem_join_gbn_cd,
+                jf_mng_cd: jf_mng_cd,
+                login_sdy, login_sdy,
+                login_edy, login_edy
+            },
+            type : 'POST',
+            dataType : "json",
+            error : function(e) {
+                console.log("error" + e);
+                closePopup();
+            },
+            success : function(rep) {
+                if (rep.RtnRecruitApplyMemberExcelData) {
+                    var downFile = rep.RtnRecruitApplyMemberExcelData[0].DownloadPath;
+                    window.location.replace(downFile);
+                    closePopup();
+                } else {
+                    console.log("[AJAX(//admin/member/list/excel)]: Login");
+                    window.location.href = "/login";
+                }
+            },
+        });	                
+    }
+    */
+
+    </script>
+{{end}}
