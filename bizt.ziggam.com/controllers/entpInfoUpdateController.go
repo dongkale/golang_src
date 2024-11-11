@@ -73,15 +73,15 @@ func (c *EntpInfoUpdateController) Post() {
 	pEntpType := c.GetString("entp_type")              // 기업 형태(대기업,중견기업,중소기업,공사/공기업,외국계기업,기타)
 	pLocation := c.GetString("location")               // 소재지
 
-	log.Debug("pBizTpyCd: " + pBizTpyCd)
-	log.Debug("pBizTpy: " + pBizTpy)
-	log.Debug("pEntpProfile: " + pEntpProfile)
-	log.Debug("pBizIntro: " + pBizIntro)
-	log.Debug("pEntpCapital: " + pEntpCapital)
-	log.Debug("pEntpTotalSales: " + pEntpTotalSales)
-	log.Debug("pEntpTypeCd: " + pEntpTypeCd)
-	log.Debug("pEntpType: " + pEntpType)
-	log.Debug("pLocation: " + pLocation)
+	logs.Debug("pBizTpyCd: " + pBizTpyCd)
+	logs.Debug("pBizTpy: " + pBizTpy)
+	logs.Debug("pEntpProfile: " + pEntpProfile)
+	logs.Debug("pBizIntro: " + pBizIntro)
+	logs.Debug("pEntpCapital: " + pEntpCapital)
+	logs.Debug("pEntpTotalSales: " + pEntpTotalSales)
+	logs.Debug("pEntpTypeCd: " + pEntpTypeCd)
+	logs.Debug("pEntpType: " + pEntpType)
+	logs.Debug("pLocation: " + pLocation)
 
 	// Start : Oracle DB Connection
 	env, srv, ses, err := GetRawConnection()
@@ -104,7 +104,7 @@ func (c *EntpInfoUpdateController) Post() {
 	// 	ora.S,   /* SET_MEM_NO */
 	// )
 
-	log.Debug(fmt.Sprintf("CALL ZSP_ENTP_UPT_PROC_V2('%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', %v, '%v','%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
+	logs.Debug(fmt.Sprintf("CALL ZSP_ENTP_UPT_PROC_V2('%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', %v, '%v','%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
 		pLang, pEntpMemNo, pRepNm, pTelNo, pSmsRecvYn, pEmail, pEmailRecvYn, pInfoEqYn, pZip, pAddr, pDtlAddr, pRefAddr, pBizTpy, pbizCond, pEntpHtag1, pEntpHtag2, pEntpHtag3, pEntpIntr, pHomePg, pEmpCnt, pEstDy, pBizTpyCd, pEntpProfile, pBizIntro, pEntpCapital, pEntpTotalSales, pEntpTypeCd, pLocation))
 	stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL ZSP_ENTP_UPT_PROC_V2('%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', %v, '%v','%v', '%v', '%v', '%v', '%v', '%v', '%v', :1)",
 		pLang, pEntpMemNo, pRepNm, pTelNo, pSmsRecvYn, pEmail, pEmailRecvYn, pInfoEqYn, pZip, pAddr, pDtlAddr, pRefAddr, pBizTpy, pbizCond, pEntpHtag1, pEntpHtag2, pEntpHtag3, pEntpIntr, pHomePg, pEmpCnt, pEstDy, pBizTpyCd, pEntpProfile, pBizIntro, pEntpCapital, pEntpTotalSales, pEntpTypeCd, pLocation),
@@ -165,18 +165,18 @@ func (c *EntpInfoUpdateController) Post() {
 					orgFile := uploadPath + "/" + oriBizFile
 					var errOrg = os.Remove(orgFile)
 					if errOrg != nil {
-						log.Debug("Origin File Remove failed: %v", errOrg)
+						logs.Debug("Origin File Remove failed: %v", errOrg)
 					}
 
 					// 사업자등록증 업로드
-					log.Debug(fmt.Sprintf(imgDir+"/biz_%v_%v.%v", setMemNo, dateFmt, pEntpRegNoExt))
+					logs.Debug(fmt.Sprintf(imgDir+"/biz_%v_%v.%v", setMemNo, dateFmt, pEntpRegNoExt))
 					// 원본이미지
 					c.SaveToFile("entp_regno", fmt.Sprintf(imgDir+"/biz_%v_%v.%v", setMemNo, dateFmt, pEntpRegNoExt))
 
 					bizFilePath := "/biz/" + setMemNo + "/biz_" + setMemNo + "_" + dateFmt + "." + pEntpRegNoExt
 
 					// 사업자등록증 등록
-					log.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB_PROC( '%v', '%v', '%v', :1)",
+					logs.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB_PROC( '%v', '%v', '%v', :1)",
 						pLang, setMemNo, bizFilePath))
 
 					stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB_PROC( '%v', '%v', '%v', :1)",
@@ -216,18 +216,18 @@ func (c *EntpInfoUpdateController) Post() {
 					orgFile := imgDir + "/ori_" + setMemNo + "." + oriLogoFileExt
 					var errOrg = os.Remove(orgFile)
 					if errOrg != nil {
-						log.Debug("Origin File Remove failed: %v", errOrg)
+						logs.Debug("Origin File Remove failed: %v", errOrg)
 					}
 
 					// 기등록된 리사이징 이미지 파일 삭제
 					oriLogoFilePath := uploadPath + oriLogoFile
 					var err200 = os.Remove(oriLogoFilePath)
 					if err200 != nil {
-						log.Debug("Resizing File Remove failed: %v", err200)
+						logs.Debug("Resizing File Remove failed: %v", err200)
 					}
 
 					// 기업로고이미지 업로드
-					log.Debug(fmt.Sprintf(imgDir+"/ori_%v.%v", setMemNo, pEntpLogoExt))
+					logs.Debug(fmt.Sprintf(imgDir+"/ori_%v.%v", setMemNo, pEntpLogoExt))
 					// 원본이미지
 					c.SaveToFile("entp_logo", fmt.Sprintf(imgDir+"/ori_%v.%v", setMemNo, pEntpLogoExt))
 
@@ -245,7 +245,7 @@ func (c *EntpInfoUpdateController) Post() {
 
 					src, err := imaging.Open(uploadPath + oriLogoImgPath)
 					if err != nil {
-						log.Debug("Open failed: %v", err)
+						logs.Debug("Open failed: %v", err)
 					}
 
 					// 200 리사이징 이미지
@@ -258,11 +258,11 @@ func (c *EntpInfoUpdateController) Post() {
 
 					err = imaging.Save(dst, imgDir+"/"+setMemNo+"_"+dateFmt+"."+pEntpLogoExt)
 					if err != nil {
-						log.Debug("Save failed rszImg200: %v", err)
+						logs.Debug("Save failed rszImg200: %v", err)
 					}
 
 					// 기업로고 이미지 등록
-					log.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
+					logs.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
 						pLang, setMemNo, logoImgPath))
 
 					stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
@@ -288,20 +288,20 @@ func (c *EntpInfoUpdateController) Post() {
 					orgFile := imgDir + "/ori_" + setMemNo + "." + oriLogoFileExt
 					var errOrg = os.Remove(orgFile)
 					if errOrg != nil {
-						log.Debug("Origin File Remove failed: %v", errOrg)
+						logs.Debug("Origin File Remove failed: %v", errOrg)
 					}
 
 					// 기등록된 리사이징 이미지 파일 삭제
 					oriLogoFilePath := uploadPath + oriLogoFile
 					var err200 = os.Remove(oriLogoFilePath)
 					if err200 != nil {
-						log.Debug("Resizing File Remove failed: %v", err200)
+						logs.Debug("Resizing File Remove failed: %v", err200)
 					}
 
 					logoImgPath := ""
 
 					// 기업로고 이미지 삭제
-					log.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
+					logs.Debug(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
 						pLang, setMemNo, logoImgPath))
 
 					stmtProcCall, err := ses.Prep(fmt.Sprintf("CALL ZSP_ENTP_INFO_UPT_SUB2_PROC( '%v', '%v', '%v', :1)",
