@@ -123,7 +123,18 @@ func (c *ApiGetBannerDetailController) Get() {
 			lnkGbnCd = procRset.Row[4].(string)
 			lnkGbnVal = procRset.Row[5].(string)
 			brdGbnCd = procRset.Row[6].(string)
-			sn = procRset.Row[7].(int64)
+
+			if procRset.Row[7] != nil {
+				sn = procRset.Row[7].(int64)
+			} else {
+				sn = 0
+			}  						
+			// if val, ok := procRset.Row[7].(int64); ok {
+			// 	sn = val
+			// } else {
+			// 	sn = 0
+			// }			
+
 			entpMemNo = procRset.Row[8].(string)
 			recrutSn = procRset.Row[9].(string)
 			delYn = procRset.Row[10].(string)

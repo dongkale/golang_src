@@ -21,21 +21,42 @@ func fnIntFmt(in int64) (out string) {
 }
 
 func main() {
-	sessionconf := &session.ManagerConfig{
+	beegoInitialize()
+
+	beego.Run()
+}
+
+func beegoInitialize() {
+	// sessionconf := &session.ManagerConfig{		
+	// 	CookieName: "begoosessionID",
+	// 	Gclifetime: 3600,
+	// 	CookieLifeTime: 10,		
+	// }
+	beego.BConfig.WebConfig.Session.SessionOn = true
+
+	sessionconf := &session.ManagerConfig{				
 		CookieName: "begoosessionID",
 		Gclifetime: 3600,
-		CookieLifeTime: 10,
+		CookieLifeTime: 3600,
 	}
-	beego.GlobalSessions, _ = session.NewManager("memory", sessionconf)
+	
+	beego.GlobalSessions, _ = session.NewManager("memory", sessionconf)	
 	go beego.GlobalSessions.GC()
 
-	logs.SetLogger(logs.AdapterMultiFile, `{"filename":"logs/managert.ziggam.com.log"}`)
+	logs.SetLogger(logs.AdapterMultiFile, `{"filename":"logs/managert.ziggam.com.log", "maxlines":0, "maxsize":0, "daily":true, "maxdays":10, "rotate":true, "level":7}`)
 	
 	logs.EnableFuncCallDepth(true)
 	logs.SetLogFuncCallDepth(3)
 
-	beego.ErrorController(&controllers.ErrorController{})
-	beego.AddFuncMap("IntFmt", fnIntFmt)
-	beego.Run()
-}
+	beego.BConfig.WebConfig.Session.SessionOn = true
+	beego.BConfig.WebConfig.Session.SessionName = "begoosessionID"
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600
+	beego.BConfig.WebConfig.Session.SessionProvider = "memory"
+	beego.BConfig.WebConfig.Session.SessionProviderConfig = ""
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600	
 
+	beego.ErrorController(&controllers.ErrorController{})
+	beego.AddFuncMap("IntFmt", fnIntFmt)	
+}

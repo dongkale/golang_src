@@ -384,7 +384,8 @@
     $(document).ready(function () {
         $('input.custom').customInput();
 
-        $(`#recuit_select_cd option:eq(${"{{.GbnCd}}"})`).attr("selected", "selected");
+        var gbnCd = "{{.GbnCd}}";
+        $(`#recuit_select_cd option:eq(${gbnCd})`).attr("selected", "selected");
 
         $("#regForm").validate(validOption);
         

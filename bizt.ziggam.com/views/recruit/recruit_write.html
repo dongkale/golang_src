@@ -447,7 +447,8 @@
         //var qst_length_check_msg = "질문은 0자이상, 50자 이하여야 합니다.";
         // javascript  쪽 TblConfig.OneWayQAMaxLength 사용 안됨,  go 쪽 {{.TblConfig.OneWayQAMaxLength}} 사용
         //  --> 초기화 관련  문제인듯
-        var qst_length_check_msg = `질문은 0자이상, ${"{{.TblConfig.OneWayQAMaxLength}}"}자 이하여야 합니다.`;
+        var oneWayQAMaxLength = "{{.TblConfig.OneWayQAMaxLength}}";
+        var qst_length_check_msg = `질문은 0자이상, ${oneWayQAMaxLength}자 이하여야 합니다.`;
 
         $(document).ready(function () {
             // $('body').addClass("jui");

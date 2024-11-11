@@ -187,13 +187,13 @@
         <div class="row">
             <div class="data_count_area left aligned column" style="width: 50%">
                 <p>
-                    <span id="lbl_count_total" class="ui mini grey text">총 0개</span>
-                    <span id="lbl_count_use_y" class="ui mini blue text">사용 0</span>
-                    <span id="lbl_count_use_n" class="ui mini red text">미사용 0</span>
-                    <span id="lbl_count_wait" class="ui mini violet text">대기 0</span>
-                    <span id="lbl_count_ing" class="ui mini olive text">진행 0</span>
-                    <span id="lbl_count_close" class="ui mini yellow text">마감 0</span>
-                    <span id="lbl_count_select" class="ui mini green text">0개 선택</span>
+                    <span id="lbl_count_total" class="ui grey text">총 0개</span>
+                    <span id="lbl_count_use_y" class="ui blue text">사용 0</span>
+                    <span id="lbl_count_use_n" class="ui red text">미사용 0</span>
+                    <span id="lbl_count_wait" class="ui violet text">대기 0</span>
+                    <span id="lbl_count_ing" class="ui olive text">진행 0</span>
+                    <span id="lbl_count_close" class="ui yellow text">마감 0</span>
+                    <span id="lbl_count_select" class="ui green text">0개 선택</span>
                 </p>
             </div>
             <div class="data_button_area right aligned column" style="width: 50%">
@@ -2238,7 +2238,9 @@
             }
         }
 
-        function delete_contents(bnr_grp_sub_sn) {
+        function delete_contents(bnr_grp_sub_sn) {            
+            console.log("delete_contents: " + bnr_grp_sub_sn);
+
             $.ajax({
                 type: "POST",
                 url: "/api/content/delete",
@@ -2246,9 +2248,11 @@
                     bnr_grp_sub_sn: bnr_grp_sub_sn,
                 },
                 dataType: "json",
-                error: function () {
+                error: function (err) {
+                    console.log(err);
                 },
                 success: function (rep) {
+                    console.log(rep);
                     //window.location.reload();
                 }
             });

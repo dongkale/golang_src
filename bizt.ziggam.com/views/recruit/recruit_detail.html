@@ -1682,7 +1682,9 @@
                     //$("#apply_sort_way").val(rep.ApplySortWay);
                     // console.log(`=====================[AJAX] apply_sort_cd:${$("#apply_sort_cd").val()}, apply_sort_way:${$("#apply_sort_way").val()}`)
                     //ajaxToServerFileLog("Info", `apply_sort_cd:${$("#apply_sort_cd").val()}, apply_sort_way:${$("#apply_sort_way").val()}`);
-                    ajaxToServerFileLog("Info", `entp_meme_no:${"{{.EntpMemNo}}"}, apply_sort_cd:${rep.ApplySortCd}, apply_sort_way:${rep.ApplySortWay}`);
+                    var entpMemNo = "{{.EntpMemNo}}";
+
+                    ajaxToServerFileLog("Info", `entp_meme_no:${entpMemNo}, apply_sort_cd:${rep.ApplySortCd}, apply_sort_way:${rep.ApplySortWay}`);
                     
                     if (view_type == "L") {
                         $(".gridWrap.applicant_list").show();

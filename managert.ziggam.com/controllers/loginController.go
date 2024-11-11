@@ -37,6 +37,9 @@ func (c *LoginController) Get() {
 		return 
 	}
 
+	// mem_id__ := c.GetSession("mem_id")
+	// fmt.Println(mem_id__)
+
 	// // TEST
 	// session.Set(c.Ctx.Request.Context(), "mem_no", "E2020062600783")
 	// session.Set(c.Ctx.Request.Context(), "mem_id", "likemandoo")
@@ -161,7 +164,6 @@ func (c *LoginController) Post() {
 				session.Set(c.Ctx.Request.Context(), "mem_id", memId)
 				session.Set(c.Ctx.Request.Context(), "mem_sn", memSn)
 				session.Set(c.Ctx.Request.Context(), "auth_cd", authCd)
-
 			} else if rtnCd == 5 {
 				memNo = procRset.Row[2].(string)
 				memId = procRset.Row[3].(string)

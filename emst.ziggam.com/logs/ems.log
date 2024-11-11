@@ -353,3 +353,22 @@
 2024/11/08 16:07:06.401  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
 2024/11/08 16:07:06.545  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   236.5446ms|   match|[44m GET     [0m /     r:/
 2024/11/08 16:07:06.615  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    54.6038ms|   match|[44m GET     [0m /common/login   r:/common/login
+2024/11/08 18:41:53.230  [D] [baseController.go:75]  running prepare
+2024/11/08 18:41:53.232  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/08 18:41:53.342  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/08 18:41:53.596  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   365.7918ms|   match|[44m GET     [0m /     r:/
+2024/11/08 18:41:53.664  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    46.6467ms|   match|[44m GET     [0m /common/login   r:/common/login
+2024/11/08 18:42:00.289  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   114.2502ms|   match|[46m POST    [0m /common/login   r:/common/login
+2024/11/08 18:42:00.323  [D] [baseController.go:75]  running prepare
+2024/11/08 18:42:00.325  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/08 18:42:00.430  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/08 18:42:00.708  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   385.1413ms|   match|[44m GET     [0m /     r:/
+2024/11/08 18:42:00.784  [D] [baseController.go:75]  running prepare
+2024/11/08 18:42:00.786  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/08 18:42:00.850  [D] [router.go:1305]  |            ::1|[42m 200 [0m|           0s|   match|[44m GET     [0m /static/images/ico_alert.png
+2024/11/08 18:42:00.861  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      861.1µs|   match|[44m GET     [0m /static/images/main_stat01.jpg
+2024/11/08 18:42:00.866  [D] [router.go:1305]  |            ::1|[42m 200 [0m|           0s|   match|[44m GET     [0m /static/images/main_stat02.jpg
+2024/11/08 18:42:00.876  [D] [router.go:1305]  |            ::1|[42m 200 [0m|           0s|   match|[44m GET     [0m /static/images/main_stat03.jpg
+2024/11/08 18:42:00.882  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      622.4µs|   match|[44m GET     [0m /static/images/user_none_icon02.png
+2024/11/08 18:42:00.905  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/08 18:42:00.939  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   171.4987ms| nomatch|[44m GET     [0m /static/upload/logo/E2019011900001/E2019011900001_20200421175252.png

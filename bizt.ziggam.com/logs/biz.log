@@ -1,0 +1,344 @@
+2024/11/11 12:44:24.617  [D] [baseController.go:68]  Loading language: ko-KR
+2024/11/11 12:44:24.622  [D] [baseController.go:68]  Loading language: en-US
+2024/11/11 12:44:24.626  [D] [baseController.go:68]  Loading language: zh-CN
+2024/11/11 12:44:24.629  [I] [baseController.go:121]  [LoadConfig] Load Ok!!
+2024/11/11 12:44:25.233  [D] [admin.go:86]  now we don't start tasks here, if you use task module, please invoke task.StartTask, or task will not be executed
+2024/11/11 12:44:25.233  [I] [server.go:281]  http server Running on http://:7070
+2024/11/11 12:44:25.235  [I] [admin.go:92]  Admin server Running on localhost:7077
+2024/11/11 12:44:25.236  [I] [server.go:281]  http server Running on http://localhost:7077
+2024/11/11 12:44:35.016  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:35.630  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   614.8221ms|   match|[44m GET     [0m /     r:/
+2024/11/11 12:44:35.751  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    92.1654ms|   match|[44m GET     [0m /login   r:/login
+2024/11/11 12:44:36.479  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     5.6143ms|   match|[44m GET     [0m /static/images/logo-admin-main.png
+2024/11/11 12:44:38.754  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   102.0966ms|   match|[46m POST    [0m /login   r:/login
+2024/11/11 12:44:38.797  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:39.525  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   727.4278ms|   match|[44m GET     [0m /     r:/
+2024/11/11 12:44:39.710  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:40.025  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   314.6137ms|   match|[44m GET     [0m /     r:/
+2024/11/11 12:44:40.601  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   121.4789ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 12:44:49.923  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:50.322  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   399.1695ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 12:44:50.410  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:50.437  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     4.2244ms|   match|[44m GET     [0m /static/images/ic-regist-solid-blue.png
+2024/11/11 12:44:50.446  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      1.133ms|   match|[44m GET     [0m /static/images/icon-selectbox-arrow.png
+2024/11/11 12:44:50.454  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      571.4µs|   match|[44m GET     [0m /static/images/ic-calendar.png
+2024/11/11 12:44:50.460  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     1.3693ms|   match|[44m GET     [0m /static/images/icon-common-pagination-arrow-left-grey.png
+2024/11/11 12:44:50.467  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      596.9µs|   match|[44m GET     [0m /static/images/icon-common-pagination-arrow-right-grey.png
+2024/11/11 12:44:50.692  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   281.7471ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 12:44:53.191  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:53.664  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   472.5179ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 12:44:53.744  [D] [baseController.go:140]  running prepare
+2024/11/11 12:44:53.775  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      999.9µs|   match|[44m GET     [0m /static/images/ic-excel.png
+2024/11/11 12:44:53.781  [D] [router.go:1305]  |            ::1|[42m 200 [0m|           0s|   match|[44m GET     [0m /static/images/btn-list-selected.png
+2024/11/11 12:44:53.788  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     1.9971ms|   match|[44m GET     [0m /static/images/btn-list-grid-disabled.png
+2024/11/11 12:44:53.870  [D] [router.go:1305]  |            ::1|[42m 200 [0m|        709µs|   match|[44m GET     [0m /static/images/btn-checkbox-disabled-small.png
+2024/11/11 12:44:53.994  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   250.4022ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 12:47:29.522  [D] [baseController.go:140]  running prepare
+2024/11/11 12:47:29.883  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   360.9441ms|   match|[44m GET     [0m /invite/send   r:/invite/send
+2024/11/11 12:47:29.997  [D] [baseController.go:140]  running prepare
+2024/11/11 12:47:30.265  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   267.3866ms|   match|[44m GET     [0m /invite/send   r:/invite/send
+2024/11/11 12:51:14.406  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:14.731  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   324.7481ms|   match|[44m GET     [0m /     r:/
+2024/11/11 12:51:15.045  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:15.335  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   290.5712ms|   match|[44m GET     [0m /     r:/
+2024/11/11 12:51:16.115  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    157.436ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 12:51:31.458  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:31.763  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   305.1647ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:51:31.858  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:31.913  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:32.192  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   333.3892ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:51:32.512  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   599.8913ms|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:51:32.542  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    12.2666ms|   match|[44m GET     [0m /static/images/ic-admin-small.png
+2024/11/11 12:51:46.579  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:47.010  [D] [template.go:71]  template Execute err: html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 12:51:47.011  [E] [router.go:1246]  html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 12:51:47.013  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   433.7167ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 12:51:47.104  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    15.1071ms| nomatch|[44m GET     [0m /favicon.ico
+2024/11/11 12:51:51.374  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:51.615  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   241.0535ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:51:51.702  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:51.727  [D] [baseController.go:140]  running prepare
+2024/11/11 12:51:52.030  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    327.478ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:51:52.110  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   383.2217ms|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 12:53:53.514  [D] [baseController.go:140]  running prepare
+2024/11/11 12:53:53.829  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    315.954ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 12:53:53.935  [D] [baseController.go:140]  running prepare
+2024/11/11 12:53:54.207  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   272.1298ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 12:54:25.099  [D] [baseController.go:140]  running prepare
+2024/11/11 12:54:25.376  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   277.0485ms|   match|[46m POST    [0m /applicant/list   r:/applicant/list
+2024/11/11 12:54:34.990  [D] [baseController.go:140]  running prepare
+2024/11/11 12:54:35.289  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   299.3038ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 12:54:35.552  [D] [baseController.go:140]  running prepare
+2024/11/11 12:54:35.813  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   261.3954ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:45.782  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:46.128  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   346.5361ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 13:01:46.428  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:46.711  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   282.7074ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 13:01:50.986  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:51.239  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   253.0101ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:51.495  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:51.751  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   255.6053ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:53.813  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:54.103  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   289.6619ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:54.213  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:54.468  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   255.7883ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:57.258  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:57.534  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   275.7842ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 13:01:57.626  [D] [baseController.go:140]  running prepare
+2024/11/11 13:01:57.873  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   246.7637ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:02:23.003  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:23.223  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   220.8617ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:02:23.270  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    32.8536ms|   match|[44m GET     [0m /login   r:/login
+2024/11/11 17:02:23.461  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     2.0003ms|   match|[44m GET     [0m /static/images/logo-admin-main.png
+2024/11/11 17:02:24.975  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    91.0033ms|   match|[46m POST    [0m /login   r:/login
+2024/11/11 17:02:25.026  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:25.348  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   321.4412ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:02:25.453  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:25.766  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   314.2397ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:02:26.246  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   140.4347ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:02:30.160  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:30.516  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   356.4507ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:02:30.589  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:30.882  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   292.1583ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:02:32.108  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:32.400  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    291.573ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:02:32.496  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:32.790  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   293.6705ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:02:33.242  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   145.4768ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:02:38.132  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:38.431  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   298.4262ms|   match|[44m GET     [0m /entp/info/modify   r:/entp/info/modify
+2024/11/11 17:02:38.512  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     19.626ms|   match|[44m GET     [0m /static/images/ic-delete-small-white.png
+2024/11/11 17:02:38.534  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:38.559  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      7.966ms|   match|[44m GET     [0m /static/images/ic-plus-white.png
+2024/11/11 17:02:38.771  [D] [router.go:1305]  |            ::1|[42m 200 [0m|      972.9µs|   match|[44m GET     [0m /static/images/btn-checkbox-selected.png
+2024/11/11 17:02:38.819  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   285.1003ms|   match|[44m GET     [0m /entp/info/modify   r:/entp/info/modify
+2024/11/11 17:02:38.829  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     3.5581ms|   match|[44m GET     [0m /static/images/img-profile-company.png
+2024/11/11 17:02:40.431  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:40.787  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   356.8675ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:02:40.917  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:41.185  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   267.3686ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:02:41.827  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:42.117  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     290.31ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:02:42.228  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:42.596  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   367.4462ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:02:44.321  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:44.602  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   280.5086ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:02:44.702  [D] [baseController.go:140]  running prepare
+2024/11/11 17:02:44.959  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   256.9811ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:05:27.544  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:27.854  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   309.9166ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:05:27.970  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:28.015  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:28.268  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    297.495ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:05:28.357  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    342.447ms|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:05:28.377  [D] [router.go:1305]  |            ::1|[42m 200 [0m|           0s|   match|[44m GET     [0m /static/images/ic-admin-small.png
+2024/11/11 17:05:30.402  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:30.685  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   283.2683ms|   match|[44m GET     [0m /entp/info/modify   r:/entp/info/modify
+2024/11/11 17:05:30.919  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:31.121  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   201.9427ms|   match|[44m GET     [0m /entp/info/modify   r:/entp/info/modify
+2024/11/11 17:05:32.478  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:32.741  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   263.5613ms|   match|[44m GET     [0m /entp/video   r:/entp/video
+2024/11/11 17:05:32.832  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:33.101  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   268.7563ms|   match|[44m GET     [0m /entp/video   r:/entp/video
+2024/11/11 17:05:35.186  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:35.477  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   290.7889ms|   match|[44m GET     [0m /team/member/list   r:/team/member/list
+2024/11/11 17:05:35.561  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:35.582  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    11.5657ms|   match|[44m GET     [0m /static/images/ic-admin.png
+2024/11/11 17:05:35.587  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     4.9788ms|   match|[44m GET     [0m /static/images/ic-more.png
+2024/11/11 17:05:35.829  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   268.3965ms|   match|[44m GET     [0m /team/member/list   r:/team/member/list
+2024/11/11 17:05:51.456  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:51.694  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   237.2017ms|   match|[44m GET     [0m /applicant/list/all   r:/applicant/list/all
+2024/11/11 17:05:51.801  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:51.846  [D] [baseController.go:140]  running prepare
+2024/11/11 17:05:52.056  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   210.6585ms|   match|[46m POST    [0m /common/jobgrp   r:/common/jobgrp
+2024/11/11 17:05:52.293  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   492.3206ms|   match|[44m GET     [0m /applicant/list/all   r:/applicant/list/all
+2024/11/11 17:05:53.036  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   1.1902826s|   match|[46m POST    [0m /applicant/list/all   r:/applicant/list/all
+2024/11/11 17:05:53.075  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     8.4521ms|   match|[44m GET     [0m /static/images/img-profile-empty.png
+2024/11/11 17:05:53.114  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     5.6627ms|   match|[44m GET     [0m /static/images/img-profile-empty-02.png
+2024/11/11 17:06:43.630  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:43.955  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   324.7092ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:06:44.055  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:44.312  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   257.2989ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:06:44.827  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    109.784ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:06:45.190  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   115.0936ms|   match|[46m POST    [0m /msg/temp/update   r:/msg/temp/update
+2024/11/11 17:06:45.217  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:45.562  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    345.028ms|   match|[44m GET     [0m /message   r:/message
+2024/11/11 17:06:45.634  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     9.9999ms|   match|[44m GET     [0m /static/images/img-tooltip-01.png
+2024/11/11 17:06:45.667  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:45.683  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     6.6755ms|   match|[44m GET     [0m /static/images/message_bg.png
+2024/11/11 17:06:46.021  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   305.0338ms|   match|[44m GET     [0m /message/detail   r:/message/detail
+2024/11/11 17:06:46.032  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   364.8845ms|   match|[44m GET     [0m /message   r:/message
+2024/11/11 17:06:46.042  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     6.0012ms|   match|[44m GET     [0m /static/images/ic-star-solid-big-select.png
+2024/11/11 17:06:46.052  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    12.9998ms|   match|[44m GET     [0m /static/images/ic-lock.png
+2024/11/11 17:06:46.053  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     3.0008ms|   match|[44m GET     [0m /static/images/ic-calendar-circle.png
+2024/11/11 17:06:46.076  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     4.0077ms|   match|[44m GET     [0m /static/images/img-profile-empty-02@3x.png
+2024/11/11 17:06:48.794  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:49.112  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   318.1782ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:06:49.223  [D] [baseController.go:140]  running prepare
+2024/11/11 17:06:49.556  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   333.2183ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:06:50.226  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   162.3547ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:07:22.791  [D] [baseController.go:140]  running prepare
+2024/11/11 17:07:23.058  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   267.5422ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:07:23.173  [D] [baseController.go:140]  running prepare
+2024/11/11 17:07:23.431  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   257.6239ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:07:26.428  [D] [baseController.go:140]  running prepare
+2024/11/11 17:07:26.680  [D] [template.go:71]  template Execute err: html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:07:26.682  [E] [router.go:1246]  html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:07:26.683  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   254.9442ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:07:36.230  [D] [baseController.go:140]  running prepare
+2024/11/11 17:07:36.450  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   220.5582ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:07:36.559  [D] [baseController.go:140]  running prepare
+2024/11/11 17:07:36.812  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   253.3775ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:08:28.941  [D] [baseController.go:140]  running prepare
+2024/11/11 17:08:29.288  [D] [template.go:71]  template Execute err: html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:08:29.289  [E] [router.go:1246]  html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:08:29.290  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   349.4235ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:09:45.338  [D] [baseController.go:68]  Loading language: ko-KR
+2024/11/11 17:09:45.339  [D] [baseController.go:68]  Loading language: en-US
+2024/11/11 17:09:45.340  [D] [baseController.go:68]  Loading language: zh-CN
+2024/11/11 17:09:45.349  [I] [baseController.go:121]  [LoadConfig] Load Ok!!
+2024/11/11 17:09:48.843  [D] [admin.go:86]  now we don't start tasks here, if you use task module, please invoke task.StartTask, or task will not be executed
+2024/11/11 17:09:48.843  [I] [server.go:281]  http server Running on http://:7070
+2024/11/11 17:09:48.844  [I] [admin.go:92]  Admin server Running on localhost:7077
+2024/11/11 17:09:48.844  [I] [server.go:281]  http server Running on http://localhost:7077
+2024/11/11 17:10:36.496  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:36.999  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   502.2118ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:10:37.097  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    76.9972ms|   match|[44m GET     [0m /login   r:/login
+2024/11/11 17:10:40.152  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   191.9154ms|   match|[46m POST    [0m /login   r:/login
+2024/11/11 17:10:40.190  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:40.549  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   359.1167ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:10:40.650  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:41.045  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   395.0893ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:10:41.547  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   185.1941ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:10:44.052  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:44.595  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   543.5387ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:10:44.693  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:44.730  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:45.100  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   406.9565ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:10:45.223  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   493.5584ms|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:10:50.229  [D] [baseController.go:140]  running prepare
+2024/11/11 17:10:57.046  [D] [template.go:71]  template Execute err: html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:10:57.046  [E] [router.go:1246]  html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:10:57.047  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   6.8181262s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:11:25.912  [D] [baseController.go:140]  running prepare
+2024/11/11 17:11:26.309  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   396.9758ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:11:26.479  [D] [baseController.go:140]  running prepare
+2024/11/11 17:11:26.602  [D] [baseController.go:140]  running prepare
+2024/11/11 17:11:26.953  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   474.3778ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:11:27.060  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   457.6579ms|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:11:28.088  [D] [baseController.go:140]  running prepare
+2024/11/11 17:12:08.092  [D] [template.go:71]  template Execute err: html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:12:08.092  [E] [router.go:1246]  html/template:recruit/recruit_detail.html:1685:67: {{.EntpMemNo}} appears in a JS template literal
+2024/11/11 17:12:08.092  [D] [router.go:1305]  |            ::1|[42m 200 [0m|  40.0039052s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:15:49.533  [D] [baseController.go:140]  running prepare
+2024/11/11 17:15:49.850  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   317.1206ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:15:50.294  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    17.0024ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:15:50.300  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     15.502ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:15:50.661  [D] [baseController.go:140]  running prepare
+2024/11/11 17:15:50.706  [D] [baseController.go:140]  running prepare
+2024/11/11 17:15:51.660  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   998.2193ms|   match|[44m GET     [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:15:51.752  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    1.046714s|   match|[46m POST    [0m /live/nvn/list   r:/live/nvn/list
+2024/11/11 17:15:52.877  [D] [baseController.go:140]  running prepare
+2024/11/11 17:15:56.046  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   3.1689594s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:15:56.594  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     2.3538ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:15:56.605  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.8589ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:15:56.671  [D] [baseController.go:140]  running prepare
+2024/11/11 17:15:59.085  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.4142092s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:16:31.276  [D] [baseController.go:140]  running prepare
+2024/11/11 17:16:31.585  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   310.3802ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:16:32.173  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    18.2034ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:16:32.179  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    14.1447ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:16:32.211  [D] [baseController.go:140]  running prepare
+2024/11/11 17:16:32.540  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   329.1778ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:16:33.806  [D] [baseController.go:140]  running prepare
+2024/11/11 17:16:36.463  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.6577769s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:16:37.067  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.2313ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:16:37.075  [D] [router.go:1305]  |            ::1|[43m 404 [0m|       3.37ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:16:37.126  [D] [baseController.go:140]  running prepare
+2024/11/11 17:16:39.490  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.3641269s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:23:12.970  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:13.344  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   373.5194ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:23:14.155  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     9.8921ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:14.169  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    16.8868ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:14.178  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:14.536  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   357.6408ms|   match|[44m GET     [0m /     r:/
+2024/11/11 17:23:15.245  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   181.0436ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/11 17:23:18.550  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:19.015  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   464.8708ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:23:19.615  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.1335ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:19.626  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.4941ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:19.662  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:19.993  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    331.044ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:23:44.837  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:45.206  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   370.5372ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:23:45.875  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     7.0068ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:45.890  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    12.7914ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:45.913  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:46.197  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   283.9036ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:23:47.777  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:51.696  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   3.9198609s|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:23:52.251  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     1.9992ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:52.261  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.0005ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:52.327  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:52.659  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   331.9018ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:23:53.770  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:54.174  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   404.1505ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:23:54.730  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     1.9997ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:54.741  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     1.0006ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:54.774  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:55.075  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   300.4064ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:23:58.139  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:58.400  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   261.3367ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:23:59.010  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     2.4662ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:23:59.020  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.0957ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:23:59.067  [D] [baseController.go:140]  running prepare
+2024/11/11 17:23:59.416  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    348.967ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:24:00.500  [D] [baseController.go:140]  running prepare
+2024/11/11 17:24:00.770  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   269.7078ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:24:01.363  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.3701ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:24:01.369  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.7087ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:24:01.413  [D] [baseController.go:140]  running prepare
+2024/11/11 17:24:01.536  [D] [baseController.go:140]  running prepare
+2024/11/11 17:24:01.865  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   451.9295ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:24:02.020  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   485.1324ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:24:02.585  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     2.6566ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:24:02.594  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     1.6219ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:24:02.633  [D] [baseController.go:140]  running prepare
+2024/11/11 17:24:02.937  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   304.1347ms|   match|[44m GET     [0m /applicant/list   r:/applicant/list
+2024/11/11 17:25:48.152  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     4.8212ms|   match|[44m GET     [0m /static/images/btn-checkbox-selected-small.png
+2024/11/11 17:31:45.044  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:45.344  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    300.992ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:31:45.792  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    17.5456ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:31:45.793  [D] [router.go:1305]  |            ::1|[43m 404 [0m|      9.105ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:31:46.119  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:46.423  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   304.0525ms|   match|[44m GET     [0m /invite/send/list   r:/invite/send/list
+2024/11/11 17:31:48.842  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:49.137  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   295.0715ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:31:49.545  [D] [router.go:1305]  |            ::1|[43m 404 [0m|          2ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:31:49.554  [D] [router.go:1305]  |            ::1|[43m 404 [0m|          2ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:31:49.831  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:50.178  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   346.9833ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:31:51.365  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:51.709  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   344.0675ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:31:52.270  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.0065ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:31:52.278  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.5259ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:31:52.336  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:52.635  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   299.5313ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:31:54.153  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:54.417  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   263.9409ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:31:55.028  [D] [router.go:1305]  |            ::1|[43m 404 [0m|      4.909ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:31:55.039  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.2336ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:31:55.103  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:55.436  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   334.4483ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:31:56.690  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:56.973  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   283.2878ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:31:57.527  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.2785ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:31:57.536  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.5365ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:31:57.580  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:57.859  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    280.277ms|   match|[44m GET     [0m /recruit/post/list   r:/recruit/post/list
+2024/11/11 17:31:59.275  [D] [baseController.go:140]  running prepare
+2024/11/11 17:31:59.593  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   318.1409ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
+2024/11/11 17:32:00.210  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     3.9509ms| nomatch|[44m GET     [0m /static/js/html2canvas.js.map
+2024/11/11 17:32:00.210  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     4.5362ms| nomatch|[44m GET     [0m /static/js/pdfmake/pdfmake.min.js.map
+2024/11/11 17:32:00.266  [D] [baseController.go:140]  running prepare
+2024/11/11 17:32:00.544  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   277.5768ms|   match|[44m GET     [0m /recruit/post/detail   r:/recruit/post/detail
