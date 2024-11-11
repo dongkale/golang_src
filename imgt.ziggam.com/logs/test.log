@@ -163,3 +163,4 @@ D:/LDK_Work/Source/golang/pkg/mod/github.com/beego/beego/v2@v2.1.0/server/web/se
 2024/11/11 16:27:54.803  [D] [router.go:1305]  |            ::1|[47m 304 [0m|           0s|   match|[44m GET     [0m /static/upload/banner/20241111798/20241111798_20241111154354.png
 2024/11/11 16:50:02.414  [D] [router.go:1305]  |            ::1|[47m 304 [0m|      807.2µs|   match|[44m GET     [0m /static/upload/banner/20241111798/100_20241111798_20241111154354.png
 2024/11/11 16:50:08.330  [D] [router.go:1305]  |            ::1|[47m 304 [0m|           0s|   match|[44m GET     [0m /static/upload/banner/20241111798/20241111798_20241111154354.png
+2024/11/11 19:00:29.345  [D] [router.go:1305]  |            ::1|[47m 304 [0m|           0s|   match|[44m GET     [0m /static/upload/banner/20241111798/100_20241111798_20241111154354.png

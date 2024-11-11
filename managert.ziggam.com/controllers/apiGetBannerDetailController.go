@@ -135,8 +135,20 @@ func (c *ApiGetBannerDetailController) Get() {
 			// 	sn = 0
 			// }			
 
-			entpMemNo = procRset.Row[8].(string)
-			recrutSn = procRset.Row[9].(string)
+			// entpMemNo = procRset.Row[8].(string)
+			if (procRset.Row[8] != nil) {
+				entpMemNo = procRset.Row[8].(string)
+			} else {
+				entpMemNo = ""
+			}
+
+			// recrutSn = procRset.Row[9].(string)
+			if (procRset.Row[9] != nil) {
+				recrutSn = procRset.Row[9].(string)
+			} else {
+				recrutSn = ""
+			}
+			
 			delYn = procRset.Row[10].(string)
 			useYn = procRset.Row[11].(string)
 			ptoPath = procRset.Row[12].(string)

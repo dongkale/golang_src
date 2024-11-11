@@ -1672,3 +1672,18 @@ Help: https://docs.oracle.com/error-help/db/ora-12541/
 2024/11/11 16:50:11.511  [D] [apiGetBannerGroupDetailListController.go:55]  CALL MNG_LIST_GRP_BAR_DTL_INFO('KR', 'MG181', 'RL', '0', '0', '20190101', '20201231', '20190101', '20201231', '', :1)
 2024/11/11 16:50:11.516  [D] [apiGetBannerGroupDetailListController.go:136]  CALL MNG_LIST_GRP_BAR_DTL_INFO RESULT ('[{0 1 20241111798 테스트2 /banner/20241111798/20241111798_20241111154354.png /banner/20241111798/100_20241111798_20241111154354.png 20241111 20241211 ING 20241111064354 MGS782 http://localhost:8070/static/upload/banner/20241111798/20241111798_20241111154354.png http://localhost:8070/static/upload/banner/20241111798/100_20241111798_20241111154354.png}]')
 2024/11/11 16:50:11.522  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   148.2057ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
+2024/11/11 18:59:54.354  [I] [server.go:281]  http server Running on http://:7010
+2024/11/11 18:59:58.299  [D] [router.go:1305]  |            ::1|[47m 302 [0m|      575.4µs| nomatch|[44m GET     [0m /contents
+2024/11/11 18:59:58.359  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    42.1044ms|   match|[44m GET     [0m /login   r:/login
+2024/11/11 19:00:08.905  [D] [loginController.go:97]  3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79
+2024/11/11 19:00:09.090  [D] [loginController.go:109]  CALL ZSP_LOGIN_PROC( 'KR', 'E', 'qrate', '3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79', 'N', '', '', '', :1)
+2024/11/11 19:00:09.121  [D] [template.go:71]  template Execute err: template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/11 19:00:09.122  [E] [router.go:1246]  template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/11 19:00:09.122  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   217.4374ms|   match|[46m POST    [0m /login   r:/login
+2024/11/11 19:00:09.196  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    32.0011ms|   match|[44m GET     [0m /     r:/
+2024/11/11 19:00:11.915  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250211', '', :1)
+2024/11/11 19:00:11.941  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   2.3005668s|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/11 19:00:28.271  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   187.8244ms|   match|[44m GET     [0m /contents   r:/contents
+2024/11/11 19:00:29.030  [D] [apiGetBannerGroupDetailListController.go:55]  CALL MNG_LIST_GRP_BAR_DTL_INFO('KR', 'MG181', 'RL', '0', '0', '20190101', '20201231', '20190101', '20201231', '', :1)
+2024/11/11 19:00:29.036  [D] [apiGetBannerGroupDetailListController.go:136]  CALL MNG_LIST_GRP_BAR_DTL_INFO RESULT ('[{0 1 20241111798 테스트2 /banner/20241111798/20241111798_20241111154354.png /banner/20241111798/100_20241111798_20241111154354.png 20241111 20241211 ING 20241111064354 MGS782 http://localhost:8070/static/upload/banner/20241111798/20241111798_20241111154354.png http://localhost:8070/static/upload/banner/20241111798/100_20241111798_20241111154354.png}]')
+2024/11/11 19:00:29.044  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   122.3419ms|   match|[44m GET     [0m /api/banner/detail/list   r:/api/banner/detail/list
