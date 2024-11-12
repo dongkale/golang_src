@@ -1969,3 +1969,206 @@
 2024/11/12 11:42:26.879  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   136.0011ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
 2024/11/12 11:42:26.981  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
 2024/11/12 11:42:27.022  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   273.9456ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:37:33.153  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:33.154  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:37:33.259  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:37:33.418  [D] [router.go:1305]  |            ::1|[47m 302 [0m|    264.219ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:37:33.489  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    51.0772ms|   match|[44m GET     [0m /common/login   r:/common/login
+2024/11/12 12:37:33.792  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:33.792  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:37:33.795  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:33.795  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:37:33.893  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:37:33.944  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   161.0765ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:37:33.990  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:37:34.023  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    236.323ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:37:35.384  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   105.7951ms|   match|[46m POST    [0m /common/login   r:/common/login
+2024/11/12 12:37:35.417  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:35.417  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:37:35.518  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:37:35.750  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   333.1141ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:37:35.802  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:35.802  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:37:35.914  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:37:35.976  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   183.5338ms| nomatch|[44m GET     [0m /static/upload/logo/E2019011900001/E2019011900001_20200421175252.png
+2024/11/12 12:37:36.022  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:36.023  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:37:36.029  [D] [baseController.go:75]  running prepare
+2024/11/12 12:37:36.029  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:37:36.115  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:37:36.157  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   135.4744ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:37:36.217  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:37:36.260  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   233.4157ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:52:43.967  [D] [baseController.go:55]  Loading language: ko-KR
+2024/11/12 12:52:43.968  [D] [baseController.go:55]  Loading language: en-US
+2024/11/12 12:52:43.969  [D] [baseController.go:55]  Loading language: zh-CN
+2024/11/12 12:52:44.431  [I] [server.go:281]  http server Running on http://:9090
+2024/11/12 12:52:47.109  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:47.110  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:52:47.225  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:52:47.350  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   241.8108ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:52:47.405  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    30.5092ms|   match|[44m GET     [0m /common/login   r:/common/login
+2024/11/12 12:52:47.811  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:47.813  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:52:47.813  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:47.814  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:52:47.937  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:52:47.974  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    177.519ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:52:48.022  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:52:48.069  [D] [router.go:1305]  |            ::1|[43m 404 [0m|     263.31ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:52:49.102  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    96.2832ms|   match|[46m POST    [0m /common/login   r:/common/login
+2024/11/12 12:52:49.134  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:49.134  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:52:49.215  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:52:49.385  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   251.4114ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:52:49.440  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:49.441  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:52:49.535  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:52:49.567  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   138.6958ms| nomatch|[44m GET     [0m /static/upload/logo/E2019011900001/E2019011900001_20200421175252.png
+2024/11/12 12:52:49.671  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:49.672  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:52:49.676  [D] [baseController.go:75]  running prepare
+2024/11/12 12:52:49.676  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:52:49.784  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:52:49.831  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   160.4628ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:52:49.871  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:52:49.900  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   225.6031ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:53:12.681  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:12.682  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:12.771  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:12.912  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    230.363ms|   match|[44m GET     [0m /admin/notice/list   r:/admin/notice/list
+2024/11/12 12:53:12.987  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:12.987  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:13.067  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:13.099  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   113.4578ms| nomatch|[44m GET     [0m /static/upload/logo/E2019011900001/E2019011900001_20200421175252.png
+2024/11/12 12:53:13.222  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:13.223  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:13.227  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:13.228  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:13.320  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:13.354  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   133.9223ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:53:13.399  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:13.433  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   208.0336ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:53:14.600  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:14.600  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:14.685  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:14.915  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   315.6552ms|   match|[44m GET     [0m /admin/banner/list   r:/admin/banner/list
+2024/11/12 12:53:14.965  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:14.966  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:14.986  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:14.988  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.046  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.104  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   141.2056ms| nomatch|[44m GET     [0m /static/upload/logo/E2019011900001/E2019011900001_20200421175252.png
+2024/11/12 12:53:15.133  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.204  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   235.9995ms| nomatch|[44m GET     [0m /static/upload/banner/20241111798/100_20241111798_20241111154354.png
+2024/11/12 12:53:15.235  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.236  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.239  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.240  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.244  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.245  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.296  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.297  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.296  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.298  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.298  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.299  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.323  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.354  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    120.004ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:53:15.376  [D] [baseController.go:75]  running prepare
+2024/11/12 12:53:15.377  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:53:15.396  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.457  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   228.9996ms| nomatch|[44m GET     [0m /static/upload/banner/20241111796/100_20241111796_20241111152634.png
+2024/11/12 12:53:15.508  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.548  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   307.0052ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:53:15.577  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.606  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   328.0009ms| nomatch|[44m GET     [0m /static/upload/banner/20241111795/100_20241111795_20241111105927.png
+2024/11/12 12:53:15.649  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.711  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   428.3939ms| nomatch|[44m GET     [0m /static/upload/banner/20210513771/100_20210513771_20210513110233.png
+2024/11/12 12:53:15.778  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.814  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   525.2426ms| nomatch|[44m GET     [0m /static/upload/banner/20210513770/100_20210513770_20210513110206.png
+2024/11/12 12:53:15.867  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:53:15.904  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   539.0595ms| nomatch|[44m GET     [0m /static/upload/banner/20210513769/100_20210513769_20210513105127.png
+2024/11/12 12:56:08.563  [D] [baseController.go:55]  Loading language: ko-KR
+2024/11/12 12:56:08.564  [D] [baseController.go:55]  Loading language: en-US
+2024/11/12 12:56:08.566  [D] [baseController.go:55]  Loading language: zh-CN
+2024/11/12 12:56:08.959  [I] [server.go:281]  http server Running on http://:9090
+2024/11/12 12:56:09.362  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:09.363  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:56:09.529  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:56:09.685  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   323.1647ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:56:09.769  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    61.5464ms|   match|[44m GET     [0m /common/login   r:/common/login
+2024/11/12 12:56:10.111  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:10.112  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:56:10.118  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:10.119  [D] [baseController.go:138]  mem_no:<nil>, mem_id:<nil>
+2024/11/12 12:56:10.195  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:56:10.229  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   130.1411ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:10.286  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', '<nil>', :1)
+2024/11/12 12:56:10.339  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   235.3696ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:56:11.501  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    85.8489ms|   match|[46m POST    [0m /common/login   r:/common/login
+2024/11/12 12:56:11.532  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:11.533  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:11.646  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:11.811  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   279.1664ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:56:12.156  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:12.158  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:12.165  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:12.166  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:12.257  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:12.300  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   146.6926ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:12.358  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:12.388  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   225.0976ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:56:12.930  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:12.931  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:13.010  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:13.166  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   235.6372ms|   match|[44m GET     [0m /admin/notice/list   r:/admin/notice/list
+2024/11/12 12:56:13.506  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:13.507  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:13.515  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:13.516  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:13.617  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:13.649  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   145.3369ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:13.710  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:13.740  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    228.321ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:56:14.575  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:14.576  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:14.654  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:14.869  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   294.0823ms|   match|[44m GET     [0m /admin/banner/list   r:/admin/banner/list
+2024/11/12 12:56:15.203  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:15.205  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:15.209  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:15.210  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:15.299  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:15.333  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   131.0442ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:15.378  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:15.426  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   219.3656ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:56:21.877  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:21.878  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:21.961  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:22.145  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    267.556ms|   match|[44m GET     [0m /admin/banner/write   r:/admin/banner/write
+2024/11/12 12:56:22.437  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:22.439  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:22.453  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:22.454  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:22.473  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     5.2549ms|   match|[44m GET     [0m /static/images/btn_write.png
+2024/11/12 12:56:22.537  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:22.579  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   144.7846ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:22.609  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:22.642  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   192.8787ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map
+2024/11/12 12:56:22.739  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   195.7878ms|   match|[46m POST    [0m /common/code/list   r:/common/code/list
+2024/11/12 12:56:22.831  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   280.6673ms|   match|[46m POST    [0m /common/code/list   r:/common/code/list
+2024/11/12 12:56:22.928  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   369.5575ms|   match|[46m POST    [0m /common/item/list   r:/common/item/list
+2024/11/12 12:56:23.057  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   202.0738ms|   match|[46m POST    [0m /common/item/list   r:/common/item/list
+2024/11/12 12:56:25.070  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:25.071  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:25.173  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:25.410  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   340.2619ms|   match|[44m GET     [0m /admin/banner/list   r:/admin/banner/list
+2024/11/12 12:56:25.752  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:25.754  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:25.759  [D] [baseController.go:75]  running prepare
+2024/11/12 12:56:25.760  [D] [baseController.go:138]  mem_no:E2019011900001, mem_id:qrate
+2024/11/12 12:56:25.846  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:25.891  [D] [router.go:1305]  |            ::1|[43m 404 [0m|    141.141ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment.min.js.map
+2024/11/12 12:56:25.945  [D] [baseController.go:159]  CALL SP_EMS_ENTP_BASIC_INFO_R('KR', 'E2019011900001', :1)
+2024/11/12 12:56:25.980  [D] [router.go:1305]  |            ::1|[43m 404 [0m|   221.8589ms| nomatch|[44m GET     [0m /static/plugin/momentJs/moment-with-locales.min.js.map

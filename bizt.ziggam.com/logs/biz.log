@@ -121,3 +121,26 @@ Help: https://docs.oracle.com/error-help/db/ora-12541/
 2024/11/12 11:42:12.995  [D] [baseController.go:140]  running prepare
 2024/11/12 11:42:13.338  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   343.1827ms|   match|[44m GET     [0m /     r:/
 2024/11/12 11:42:14.519  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   134.3108ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/12 12:37:27.192  [D] [baseController.go:140]  running prepare
+2024/11/12 12:37:27.401  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   208.6607ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:37:27.475  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    55.5505ms|   match|[44m GET     [0m /login   r:/login
+2024/11/12 12:37:29.288  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    98.2229ms|   match|[46m POST    [0m /login   r:/login
+2024/11/12 12:37:29.346  [D] [baseController.go:140]  running prepare
+2024/11/12 12:37:29.677  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   331.5591ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:37:29.803  [D] [baseController.go:140]  running prepare
+2024/11/12 12:37:30.093  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   289.2763ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:37:30.498  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   140.6061ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/12 12:49:29.939  [D] [baseController.go:140]  running prepare
+2024/11/12 12:49:30.152  [D] [router.go:1305]  |            ::1|[47m 302 [0m|   214.3576ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:49:30.466  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   302.9473ms|   match|[44m GET     [0m /login   r:/login
+2024/11/12 12:49:31.882  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    110.738ms|   match|[46m POST    [0m /login   r:/login
+2024/11/12 12:49:31.936  [D] [baseController.go:140]  running prepare
+2024/11/12 12:49:32.382  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   445.5652ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:49:32.534  [D] [baseController.go:140]  running prepare
+2024/11/12 12:49:32.906  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   371.2325ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:49:33.504  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   316.2873ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup
+2024/11/12 12:51:21.769  [D] [baseController.go:140]  running prepare
+2024/11/12 12:51:22.136  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   367.2854ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:51:22.421  [D] [baseController.go:140]  running prepare
+2024/11/12 12:51:22.826  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   405.2589ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:51:23.203  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   199.0004ms|   match|[44m GET     [0m /ads/popup   r:/ads/popup

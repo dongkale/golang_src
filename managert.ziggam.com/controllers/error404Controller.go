@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego/logs"
+	"github.com/beego/beego/v2/core/logs"
 )
 
 type Error404Controller struct {

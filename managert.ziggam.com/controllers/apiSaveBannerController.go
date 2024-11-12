@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/astaxie/beego/logs"
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/disintegration/imaging"
 	"gopkg.in/rana/ora.v4"

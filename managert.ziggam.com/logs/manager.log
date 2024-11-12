@@ -1,0 +1,15 @@
+2024/11/12 12:49:21.014  [I] [server.go:281]  http server Running on http://:7010
+2024/11/12 12:49:24.958  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/12 12:49:25.075  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   104.3462ms|   match|[44m GET     [0m /login   r:/login
+2024/11/12 12:49:27.263  [D] [loginController.go:97]  3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79
+2024/11/12 12:49:27.405  [D] [loginController.go:109]  CALL ZSP_LOGIN_PROC( 'KR', 'E', 'qrate', '3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79', 'N', '', '', '', :1)
+2024/11/12 12:49:27.511  [D] [template.go:71]  template Execute err: template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/12 12:49:27.512  [E] [router.go:1246]  template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/12 12:49:27.513  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    252.007ms|   match|[46m POST    [0m /login   r:/login
+2024/11/12 12:49:27.623  [D] [router.go:1305]  |            ::1|[42m 200 [0m|     64.999ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:49:28.274  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250212', '', :1)
+2024/11/12 12:49:28.286  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    80.0001ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/12 12:51:18.511  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    68.0039ms|   match|[44m GET     [0m /     r:/
+2024/11/12 12:51:19.543  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250212', '', :1)
+2024/11/12 12:51:19.558  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   116.6347ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/12 15:08:02.293  [I] [server.go:281]  http server Running on http://:7010

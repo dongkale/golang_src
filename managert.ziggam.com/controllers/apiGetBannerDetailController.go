@@ -5,7 +5,7 @@ import (
 
 	"managert.ziggam.com/models"
 
-	"github.com/astaxie/beego/logs"
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	ora "gopkg.in/rana/ora.v4"
 	"managert.ziggam.com/utils"

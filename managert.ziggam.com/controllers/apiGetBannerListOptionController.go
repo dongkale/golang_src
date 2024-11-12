@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
+
 	"managert.ziggam.com/models"
 
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
-	"github.com/astaxie/beego/logs"
 	ora "gopkg.in/rana/ora.v4"
 )
 
