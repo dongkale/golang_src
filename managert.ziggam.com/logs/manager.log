@@ -13,3 +13,17 @@
 2024/11/12 12:51:19.543  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250212', '', :1)
 2024/11/12 12:51:19.558  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   116.6347ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
 2024/11/12 15:08:02.293  [I] [server.go:281]  http server Running on http://:7010
+2024/11/12 16:11:09.974  [I] [server.go:281]  http server Running on http://:7010
+2024/11/12 16:11:12.537  [D] [router.go:1305]  |            ::1|[47m 302 [0m|           0s| nomatch|[44m GET     [0m /  
+2024/11/12 16:11:12.574  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    14.9996ms|   match|[44m GET     [0m /login   r:/login
+2024/11/12 16:11:14.750  [D] [loginController.go:97]  3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79
+2024/11/12 16:11:14.870  [D] [loginController.go:109]  CALL ZSP_LOGIN_PROC( 'KR', 'E', 'qrate', '3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79', 'N', '', '', '', :1)
+2024/11/12 16:11:14.909  [D] [template.go:71]  template Execute err: template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/12 16:11:14.910  [E] [router.go:1246]  template: main/main.html:11:62: executing "body" at <eq "" .BnrGrpTypCd>: error calling eq: invalid type for comparison
+2024/11/12 16:11:14.911  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   161.7549ms|   match|[46m POST    [0m /login   r:/login
+2024/11/12 16:11:14.991  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    39.1255ms|   match|[44m GET     [0m /     r:/
+2024/11/12 16:11:15.723  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250212', '', :1)
+2024/11/12 16:11:15.744  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   108.3161ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list
+2024/11/12 16:55:14.370  [D] [router.go:1305]  |            ::1|[42m 200 [0m|    63.4215ms|   match|[44m GET     [0m /     r:/
+2024/11/12 16:55:15.409  [D] [apiGetBannerGroupListController.go:49]  CALL MNG_LIST_GROUP_BANNER_INFO('KR', 'ALL', '0', '0', '20190101', '20250212', '', :1)
+2024/11/12 16:55:15.429  [D] [router.go:1305]  |            ::1|[42m 200 [0m|   110.8697ms|   match|[44m GET     [0m /api/banner/list   r:/api/banner/list

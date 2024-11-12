@@ -779,8 +779,8 @@
         });
 
         // 지원자 상세 팝업
-        $(document).off("click", "#applicant_detail").on("click", "#applicant_detail", function (e) {                        
-            var read_end_day = $(this).data("read_end_day");                       
+        $(document).off("click", "#applicant_detail").on("click", "#applicant_detail", function (e) {                  
+            var read_end_day = $(this).data("read_end_day");
             if (read_end_day == "Y") {
                 openPopup('message_no');
                 return;
