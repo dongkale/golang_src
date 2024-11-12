@@ -407,3 +407,23 @@ func CdnPathToImgSvrPath(cdnPath string, imgServer string, regDt string) string 
 
 	return fmt.Sprintf("%v%vtemp_%v%v", imgServer, dir, convDt.Year(), file)
 }
+
+func DbRowToInt64(value interface{}, defValue int64) int64 {
+	var resultValue int64 = defValue
+
+	if value != nil {
+		resultValue = value.(int64)
+	}  						
+
+	return resultValue;
+}
+
+func DbRowToString(value interface{}, defValue string) string {
+	var resultValue string = defValue
+
+	if value != nil {
+		resultValue = value.(string)
+	}  						
+
+	return resultValue;
+}

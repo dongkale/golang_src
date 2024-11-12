@@ -7,8 +7,9 @@ import (
 	"time"
 
 	"emst.ziggam.com/models"
-	beego "github.com/beego/beego/v2/server/web"
+	"emst.ziggam.com/utils"
 	"github.com/beego/beego/v2/core/logs"
+	beego "github.com/beego/beego/v2/server/web"
 	ora "gopkg.in/rana/ora.v4"
 )
 
@@ -156,7 +157,10 @@ func (c *AdminBannerListController) Get() {
 			lnkGbnNm = procRset.Row[4].(string)
 			lnkGbnVal = procRset.Row[5].(string)
 			brdGbnCd = procRset.Row[6].(string)
-			sn = procRset.Row[7].(int64)
+			
+			// sn = procRset.Row[7].(int64)
+			sn = utils.DbRowToInt64(procRset.Row[7], 0)
+			
 			ptoPath = procRset.Row[8].(string)
 			regDt = procRset.Row[9].(string)
 			bnrTitle = procRset.Row[10].(string)

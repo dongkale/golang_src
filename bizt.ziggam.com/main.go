@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"fmt"
-	"github.com/dustin/go-humanize"
+
 	_ "bizt.ziggam.com/routers"
 	"bizt.ziggam.com/utils"
 	beego "github.com/beego/beego/v2/server/web"
+	"github.com/dustin/go-humanize"
 
 	//"github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/server/web/session"
@@ -61,9 +62,19 @@ func main() {
 	sessionconf := &session.ManagerConfig{
 		CookieName: "begoosessionID",
 		Gclifetime: 3600,
+		CookieLifeTime: 3600,
 	}
 	beego.GlobalSessions, _ = session.NewManager("memory", sessionconf)
 	go beego.GlobalSessions.GC()
+
+	beego.BConfig.WebConfig.Session.SessionOn = true
+	beego.BConfig.WebConfig.Session.SessionName = "begoosessionID"
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600
+	beego.BConfig.WebConfig.Session.SessionProvider = "memory"
+	beego.BConfig.WebConfig.Session.SessionProviderConfig = ""
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600	
 
 	//beego.ErrorHandler("dbError", dbError)
 

@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"emst.ziggam.com/models"
-	beego "github.com/beego/beego/v2/server/web"
+	"emst.ziggam.com/utils"
 	"github.com/beego/beego/v2/core/logs"
+	beego "github.com/beego/beego/v2/server/web"
 	ora "gopkg.in/rana/ora.v4"
 )
 
@@ -118,7 +119,8 @@ func (c *AdminBannerWriteController) Get() {
 			lnkGbnCd = procRset.Row[3].(string)
 			lnkGbnVal = procRset.Row[4].(string)
 			brdGbnCd = procRset.Row[5].(string)
-			sn = procRset.Row[6].(int64)
+			// sn = procRset.Row[6].(int64)
+			sn = utils.DbRowToInt64(procRset.Row[6], 0)
 			entpMemNo = procRset.Row[7].(string)
 			recrutSn = procRset.Row[8].(string)
 			delYn = procRset.Row[9].(string)

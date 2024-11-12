@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	ora "gopkg.in/rana/ora.v4"
+	"managert.ziggam.com/utils"
 )
 
 type ApiGetBannerDetailController struct {
@@ -124,31 +125,21 @@ func (c *ApiGetBannerDetailController) Get() {
 			lnkGbnVal = procRset.Row[5].(string)
 			brdGbnCd = procRset.Row[6].(string)
 
-			if procRset.Row[7] != nil {
-				sn = procRset.Row[7].(int64)
-			} else {
-				sn = 0
-			}  						
+			sn = utils.DbRowToInt64(procRset.Row[7], 0)
+
+			// if procRset.Row[7] != nil {
+			// 	sn = procRset.Row[7].(int64)
+			// } else {
+			// 	sn = 0
+			// }  						
 			// if val, ok := procRset.Row[7].(int64); ok {
 			// 	sn = val
 			// } else {
 			// 	sn = 0
 			// }			
 
-			// entpMemNo = procRset.Row[8].(string)
-			if (procRset.Row[8] != nil) {
-				entpMemNo = procRset.Row[8].(string)
-			} else {
-				entpMemNo = ""
-			}
-
-			// recrutSn = procRset.Row[9].(string)
-			if (procRset.Row[9] != nil) {
-				recrutSn = procRset.Row[9].(string)
-			} else {
-				recrutSn = ""
-			}
-			
+			entpMemNo = procRset.Row[8].(string)			
+			recrutSn = procRset.Row[9].(string)
 			delYn = procRset.Row[10].(string)
 			useYn = procRset.Row[11].(string)
 			ptoPath = procRset.Row[12].(string)
