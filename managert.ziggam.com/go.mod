@@ -5,11 +5,11 @@ go 1.21
 require github.com/beego/beego/v2 v2.1.0
 
 require (
-	github.com/astaxie/beego v1.12.3
 	github.com/beego/i18n v0.0.0-20161101132742-e9308947f407
 	github.com/disintegration/imaging v1.6.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/smartystreets/goconvey v1.6.4
+	golang.org/x/text v0.7.0
 	gopkg.in/errgo.v1 v1.0.1
 	gopkg.in/rana/ora.v4 v4.1.15
 )
@@ -37,7 +37,6 @@ require (
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
